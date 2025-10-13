@@ -1,0 +1,11 @@
+/* Make content occupy the full width */
+main.content {
+    max-width: 100%;
+    margin: 0;
+    padding: 1rem 2rem;
+}
+
+/* Optional: widen tables too */
+table {
+    width: 100%;
+}

@@ -1,0 +1,332 @@
+---
+title: "Effective climate action can only be global in scope"
+subtitle: "Insights from a Core-Periphery SOCIO-ECO-MRIO-SFC Model"
+author:
+  - name: "Oriol Vallès Codina"
+    affiliation: "Johns Hopkins University, Net Zero Industrial Policy Lab, Department of Political Science"
+    email: 
+      - "oriolvallescodina@gmail.com"
+date: "`r Sys.Date()`"
+format:
+  html:
+    toc: true
+    toc_float: true
+    self-contained: true
+    page-layout: full
+    css: fullwidth.css
+execute:
+  echo: false
+---
+
+# Initialization
+
+The initial values and variables are loaded from the file stored in variable `identif` in a different structure as before.
+
+```{r init, warning = FALSE, message = FALSE}
+# Clear Environment
+rm(list = ls())
+
+# Load Auxiliary Functions
+# directory <- '' # '' for the markdown file, 'flexible_/' for R
+variable.table <<- read.csv('data/Variable_Definitions.csv')
+# source('functions/auxiliary_flexible_aug12.R') # load.new.init, auxiliary labeling functions, plotting
+source('functions/auxiliary_flexible_feb7.R')
+
+
+# Load Initial Values
+identif <- 'data/perfect_init_aug14_withBmatrix_PLE_CE.xlsx'
+initial <- load.new.init(identif)
+
+# Load Models
+source("functions/run_new_model_feb7.R") # function run.new.model(initial.values, model.equations)
+source("functions/MVP_model_aug14.R") # model equations
+
+# baseline <- run.new.model(initial, mvp.model)
+# saveRDS(baseline, file = 'data/baseline_aug14.RDS')
+baseline <- readRDS(file = 'data/baseline_aug14.RDS')
+```
+
+# Table of Industries
+
+```{r industry.table}
+kable(
+  data.frame(number = 1:length(initial$sectors), industry = initial$sectors),
+  booktabs = T
+)
+```
+
+
+# MRIO $A$ Matrix Visualization
+
+Importantly, the column names of the $A$ matrix contained in `identif` determine the country and industry labels in the whole model, following the grammar `country_label.industry_label`:
+
+```{r network}
+library(igraph)
+library(qgraph)
+go <- rowSums(initial$A.matrix)
+g <- graph_from_adjacency_matrix(
+  as.matrix(initial$A.matrix),
+  mode = 'directed',
+  weighted = TRUE,
+  diag = F,
+  add.colnames = T
+)
+
+# Graph Visualization
+l <- qgraph.layout.fruchtermanreingold(
+  get.edgelist(g, names = FALSE),
+  vcount = vcount(g)
+)
+V(g)$size <- 7.5 * go^0.75
+V(g)$frame.color <- NA
+# V(g)$name <- apply(expand.grid(1 : unique(initial$K), initial$countries)[c(2,1)], 1, function(x) paste0(x, collapse = ""))
+V(g)$name <- rep(1:unique(initial$K), times = 2)
+V(g)$color <- rep(scales::hue_pal()(4)[c(1, 3)], each = unique(initial$K))
+E(g)$color <- alpha('black', E(g)$weight / max(E(g)$weight))
+
+par(mar = c(0, 0, 0, 0))
+plot(g, edge.arrow.size = 0)
+# title("MRIO (EU, red; RoW, emerald)")
+```
+
+# Calibration
+
+Target values are loaded in format long (`target.set`) and wide (`target.table.0`). Units are divided by 10,000 for convenience.
+
+```{r target}
+#### LOAD TARGET VALUES ####
+
+target.list <- load.target('data/target_values.xlsx')
+target.table <- target.list$wide
+target.set <- target.list$long
+target.vars <- target.set$var.label
+target.set$target <- baseline$simulation[
+  target.set$var,
+  baseline$initial$pars['nPeriods', 'value']
+]
+target.set$ratio <- round(target.set$target / target.set$value, 2)
+
+compute.target(baseline)
+```
+
+# Shock Example 7: Product Lifetime Extension
+
+## Run Shock
+
+This is a simple visualization of shock 7. Please note the new grammar to change initial values.
+
+```{r shock.run}
+# Time Period Selection
+t.shock <- initial$pars['t.shock', 'value'] # shock time period
+t0 <- 55 # initial time period for visualization
+tf <- initial$pars['nPeriods', 'value'] # final time period for visualization
+
+# Shock Selection and Run
+initial$pars['shock', 'value'] <- 7 # shock 7
+# ple.shock <- run.new.model(initial, mvp.model)
+# saveRDS(ple.shock, file = 'data/pleshock_aug14.RDS')
+ple.shock <- readRDS(file = 'data/pleshock_aug14.RDS')
+
+shock.title <- 'Scenario: Product Lifetime Extension'
+```
+
+## Visualize Shocked Variables
+
+```{r shock.view}
+view.shock(
+  ple.shock,
+  shock.vars = c(
+    'delta',
+    'id0',
+    'iota_g-1',
+    'iota_g-46',
+    'zeta_dc-28',
+    'beta-28',
+    'beta-29',
+    'beta-41'
+  ),
+  shock.sectors = c(NA, NA, NA, 46, 28, 28, 29, 41)
+)
+```
+
+## Visualize Impacts
+
+```{r shock.visualize.scaled}
+# Variable Selection
+selected.list <- list(
+  Economic = c('n', 'c', 'ineq', 'va', 'cab', 'nf', 'gdef', 'tb', 'go'),
+  Macroeconomic = c('c', 'rva', 'go', 'id'),
+  External = c('cab', 'gdef', 'tb'),
+  Social = c('n', 'nf', 'shp', 'shw'),
+  Prices = c('pa', 'pid', 'pg', 'pim'),
+  Employment = c('n', 'nf'),
+  Inequality = c('ydw', 'ydc', 'ineq', 'shp', 'shw'),
+  Debt.and.Wealth = c('lh', 'lf', 'v', 'k', 'b_s'),
+  Ecological = c('x_mat', 'mat', 'rec', 'emis', 'wa')
+)
+
+# Load Baseline - Shock Data
+df <- shock.long.new(baseline, ple.shock)
+
+# Plot Selected List Variables (scaled only if gdef is not there)
+for (i in 1:length(selected.list)) {
+  if ('gdef' %in% selected.list[[i]]) {
+    print(view.vars(
+      data = df,
+      viz.vars = selected.list[[i]],
+      var.label = names(selected.list)[i]
+    ))
+  } else {
+    print(view.scaled.vars(
+      data = df,
+      viz.vars = selected.list[[i]],
+      var.label = names(selected.list)[i]
+    ))
+  }
+}
+
+# Print Some Scaled Variables Example
+# view.scaled.vars(data = shock.long.new(baseline, ple.shock),
+#                  viz.vars = c('cab', 'ydw', 'n', 'rva'),
+#                  var.label = 'Scaled')
+
+# Print Some Variables Example (not scaled)
+# view.vars(data = shock.long.new(baseline, ple.shock),
+#           viz.vars = c('cab', 'ydw', 'n', 'rva'),
+#           var.label = 'Not Scaled')
+```
+
+## Visualize Selected Variables Without Function
+
+```{r shock.visualize.selected.2}
+# Selected Vars to plot
+selected <- c('n', 'c', 'ineq', 'va', 'cab', 'nf', 'gdef', 'tb', 'go')
+
+p.selected.vars <- filter(df, variable %in% selected) %>%
+  ggplot(aes(x = time, y = value, color = area, linetype = scenario)) +
+  facet_wrap(~name, scales = 'free') +
+  geom_line() +
+  geom_vline(
+    xintercept = initial$pars['t.shock', 'value'],
+    linetype = 'dashed',
+    linewidth = .4
+  ) +
+  labs(
+    title = shock.title,
+    subtitle = 'Selected Indicators. Vertical dashed line indicates shock time'
+  )
+
+p.selected.vars
+```
+
+
+## Summary Table
+
+```{r ple.summary}
+# Summary Table for PLE Scenario
+ple.table <- shock.summary(
+  baseline,
+  shock.run = ple.shock,
+  t_ = c(t.shock + 1, t.shock + 7, t.shock + 20),
+  t_names = c('Immediate', 'Short.Term', 'Long.Term')
+)
+
+kable(ple.table, booktabs = T)
+```
+
+# Shock Example 4: Higher Use of Circular Economy Inputs
+
+## Run Shock
+
+This is a simple visualization of shock 4. Please note the new grammar to change initial values.
+
+```{r shock.run.2}
+# Shock Selection and Run
+init.ce <- load.new.init(
+  'data/perfect_init_aug14_withBmatrix_CE_inputs_higher_costs.xlsx'
+)
+
+# Time Period Selection
+t.shock <- init.ce$pars['t.shock', 'value'] # shock time period
+t0 <- 55 # initial time period for visualization
+tf <- init.ce$pars['nPeriods', 'value'] # final time period for visualization
+
+init.ce$pars['shock', 'value'] <- 4
+
+# ce.shock <- run.new.model(init.ce, mvp.model)
+# saveRDS(ce.shock, file = 'data/CE_shock_aug14.RDS')
+ce.shock <- readRDS(file = 'data/CE_shock_aug14.RDS')
+
+shock.title <- 'Scenario: Higher Use of Circular Economy Inputs'
+```
+
+## Visualize Shocked Variables
+
+```{r shock.view.2}
+view.shock(
+  ce.shock,
+  shock.vars = c('delta', 'vat-12'),
+  shock.sectors = c(NA, 12)
+)
+```
+
+## Visualize Impacts
+
+```{r shock.visualize.scaled.2}
+# Variable Selection
+selected.list <- list(
+  Economic = c('n', 'c', 'ineq', 'va', 'cab', 'nf', 'gdef', 'tb', 'go'),
+  Macroeconomic = c('c', 'rva', 'go', 'id'),
+  External = c('cab', 'gdef', 'tb'),
+  Social = c('n', 'nf', 'shp', 'shw'),
+  Prices = c('pa', 'pid', 'pg', 'pim'),
+  Employment = c('n', 'nf'),
+  Inequality = c('ydw', 'ydc', 'ineq', 'shp', 'shw'),
+  Debt.and.Wealth = c('lh', 'lf', 'v', 'k', 'b_s'),
+  Ecological = c('x_mat', 'mat', 'rec', 'emis', 'wa')
+)
+
+# Load Baseline - Shock Data
+df <- shock.long.new(baseline, ce.shock)
+
+# Plot Selected List Variables (scaled only if gdef is not there)
+for (i in 1:length(selected.list)) {
+  if ('gdef' %in% selected.list[[i]]) {
+    print(view.vars(
+      data = df,
+      viz.vars = selected.list[[i]],
+      var.label = names(selected.list)[i]
+    ))
+  } else {
+    print(view.scaled.vars(
+      data = df,
+      viz.vars = selected.list[[i]],
+      var.label = names(selected.list)[i]
+    ))
+  }
+}
+
+# Print Some Scaled Variables Example
+# view.scaled.vars(data = shock.long.new(baseline, ple.shock),
+#                  viz.vars = c('cab', 'ydw', 'n', 'rva'),
+#                  var.label = 'Scaled')
+
+# Print Some Variables Example (not scaled)
+# view.vars(data = shock.long.new(baseline, ple.shock),
+#           viz.vars = c('cab', 'ydw', 'n', 'rva'),
+#           var.label = 'Not Scaled')
+```
+
+## Summary Table
+
+```{r summary.table.2}
+ce.table <- shock.summary(
+  baseline,
+  shock.run = ce.shock,
+  t_ = c(t.shock + 1, t.shock + 7, t.shock + 20),
+  t_names = c('Immediate', 'Short.Term', 'Long.Term')
+)
+
+kable(ce.table, booktabs = T)
+```
+

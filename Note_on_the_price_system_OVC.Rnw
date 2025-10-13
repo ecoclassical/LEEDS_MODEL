@@ -1,0 +1,102 @@
+\documentclass[a4paper,10pt]{article}
+
+\usepackage[square]{natbib}
+%\usepackage{alifexi} 
+\usepackage{graphicx, color, adjustbox, framed, alltt, float, tabu, booktabs, empheq}
+\usepackage{longtable,array,multirow,wrapfig,colortbl,pdflscape,threeparttable,multicol}
+\usepackage{ucs, amsfonts, amssymb, amsmath, amsthm, mathtools, subfig,hyperref, rotating, makecell}
+\usepackage[usenames,dvipsnames,svgnames,table]{xcolor}
+\usepackage[square]{natbib}
+%\usepackage[backend=bibtex]{biblatex}
+%\bibliography{references}
+%\usepackage[nottoc,notlof,notlot]{tocbibind} 
+\usepackage[english]{babel}
+\graphicspath {{figure/}}
+
+%% The order is important
+\title{Notes on the Price System}
+\author{Oriol Vall\`{e}s Codina}\\
+%
+
+\begin{document}
+
+\maketitle
+
+\section{General Presentation of the Price System under the Free Mobility of Labor and Capital}
+
+These are the notes on classical price theory from Anwar Shaikh. Note that the main theoretical assumptions in classical political economy are the free mobility of labor and capital that establish a common exploitation and profit rates. However, in a core-periphery world system there is no free mobility of labor due to immigration barriers.
+
+\subsection{Commodity Law of Exchange}
+
+Let $\vec{p}$, $\vec{l}$, and $\vec{y}$ the row vectors of prices, direct labor coefficients, and value added per unit output, and $A$ the matrix of direct input-output coefficients. By definition, value-added per unit output is the difference between the price and costs per unit output:
+\begin{equation}
+\vec{y} = \vec{p} - \vec{p} A
+\end{equation}
+Suppose we have only owner-operated enterprises subject to competition such that competition equalizes income per hour. The free mobility of labor across lines of production using labor hours $\vec{l}$ induces the {\bf equalization of labor incomes} to $\bar{y}$, the common income per hour:
+\begin{equation}
+\vec{y} = \bar{y} \vec{l}
+\end{equation}
+Then the equilibrium price vector is 
+\begin{equation}
+\vec{p}^* = \vec{p}^* A + \bar{y} \vec{l} = \bar{y} \vec{v} 
+\end{equation}
+where $\vec{v}= \vec{l} [I-A]^{-1}$ is the vector of total (direct and indirect) labor-times, i.e. values. The monetary level of the common value added $\bar{y}$ determines the common ratio of competitive price to total labor time for $i=1,...,N$:
+\begin{equation}
+\frac{p_i^*}{v_i} = \bar{y}
+\end{equation}
+The common income per hour $\bar{y}$ is thus the common monetary equivalent of labor-time (MELT) for each commodity. If $\vec{x}$ is the vector of gross outputs and $\vec{y}$ the vector of net output in the Leontief sense, then common income per hour $\bar{y}$ is:
+\begin{equation}
+\frac{\vec{p} \cdot \vec{x}}{\vec{v} \cdot \vec{x}} = \frac{\vec{p} \cdot \vec{y}}{\vec{v} \cdot \vec{y}} = \bar{y}
+\end{equation}
+\begin{itemize}
+\item both the ratio of the sum of gross prices to gross value and
+\item the ratio of net prices to net values (living labor)
+\end{itemize}
+The MELT or its inverse, the standard labor value of money, indicate the proportion of the value created that workers received as a wage, or the proportion of labor-time expended workers are compensated for by the labor-time equivalent of the wage.
+
+\subsection{Capitalist commodity production with profits proportional to labor costs}
+Competition equalizes hourly wage rates and profits are proportional to labor incomes in every sector $i=1,...,N$. The value-added per hour of labor is again $y_i = \bar{y}$. Workers get fraction $\sigma \bar{y}$ and capitalists get fraction $(1-\sigma) \bar{y}$, so that the vectors of sectoral labor and capitalist incomes per unit output are proportional to labor time and profit-wage ratios are equal:
+\begin{equation}
+\left.\begin{aligned}
+         \sigma \bar{y} \to \vec{\sigma_w} = \sigma \bar{y} \vec{l} \qquad \\
+        (1- \sigma) \bar{y} \to \vec{\sigma_c} = (1-\sigma) \bar{y} \vec{l} \qquad
+       \end{aligned}
+ \right\}
+ \qquad \frac{\sigma_{c,i}}{\sigma_{w,i}} = \frac{1-\sigma}{\sigma}
+\end{equation}
+
+Finally, consider the {\it general} form of prices of production at some common wage $w$ and common rate of profit $r$ in which capital-labor ratios are not necessary equal. Now the price of production is a function of the distribution between wages and profits, i.e. $\vec{p} = \vec{p}(r)$ (the whole complication of general prices of production).
+\begin{equation}
+\vec{p}(r) = \vec{p} (r) A + w \vec{l} + r \vec{p} (r) K = w \vec{v} + r \vec{p}(r) H
+\end{equation}
+where $H \equiv K(I-A)^{-1}$ is the matrix of total capital-coefficients and $v \equiv \vec{k} (I-A)^{-1}$ is the vector of total labor-times or values. This is a system of $N$ equations in $N+2$ variables ($N$ prices, $w$ and $r$) so we have to choose in order to solve for the profit rate:
+\begin{itemize}
+\item a num\'{e}raire commodity to solve for prices 
+\item a wage rate relative to the num\'{e}raire, i.e. a real wage
+\end{itemize}
+Note that at $r=0$, $w=w_{\max} = \bar{y}$ is the common maximum money wage and value added, while at the other end $w=0$ and $r=r_{\max} = R$ is the common maximum rate of profit and value added. Then prices of production are then proportional to labor values at $r=0$:
+\begin{equation}
+\vec{p} (r=0) = \bar{y} \vec{v}
+\end{equation}
+At $r=R$, $1/R$ is the dominant eigenvalue and $\vec{p}(R)$ is the dominant left-hand eigenvector of $H$ {\it scaled} in a particular manner.
+\begin{equation}
+\vec{p} (r=R) = R \vec{p} (r=R) H
+\end{equation}
+
+\subsection{Sraffa on relative prices and wages}
+\begin{itemize}
+\item {\bf Inverse relation between real wage and profit rate} Sraffa's first point is that there is an {\it inverse} relation between real wages in term of any numeraire and the rate of profit: $\vec{p}/w = v [I - rH]^{-1} = \vec{v} [I + rH + r^2 H^2 + r^3 H^3 + ...]$. The general inverse relation does not tell us causation.
+\item {\bf Problem of numeraire in the variation of relative prices} We cannot tell whether the movement in any {\it relative} price arises from the commodity under consideration $i$ or the numeraire $j$ or both. Thus we need a numeraire a commodity whose prices does not change with distribution, i.e. the {\it standard commodity}. If wages are treated as being paid {\it ex ante} (contra CPE), there will be a negative linear relation between the wage in terms of the price of the net output per unit labor of the standard commodity, $w = 1 - \frac{r}{R}$.
+\item {\bf Structure of Standard Prices} When prices are expressed in terms of the standard commodity, complications of variations in the numeraire are eliminated, but movements of relative prices can still be very complex.
+\end{itemize}
+Classical theory maintains that market prices gravitate around prices of production. A vertically integrated Sraffian de-composition of prices of production can be expressed as the sum of 3 components: labor values, deviations which increase linearly with the profit rate and a potentially complex set of Wicksell-Sraffa effects of price changes in means of production:
+\begin{equation}
+\vec{p} (r) = \underbrace{\vec{v}}_{\text{labor values}} + \underbrace{r \vec{v} \left( H - \frac{1}{R} I \right)}_{\text{Marxian term}} + \underbrace{r (\vec{p}(r) - v) H}_{\text{Wicksell-Sraffa term}}
+\end{equation}
+If the effects of the last two terms are relatively small, we recover Ricardo's hypothesis that $\vec{p} (r) \sim \vec{v}$. But Marx insists that prices of production deviate systematically from labor values and his own transformation of values into prices of production is linear in the profit rate (equivalently, Wicksell-Sraffa effects are negligible). In his famous and incomplete transformation procedure in volume 3, Marx derives prices of production as linear functions whose deviations from values increased with the profit rate. The second {\bf Marxian term} encapsulates the deviations of the sector's vertically integrated ratio of embodied-to-living labor from the same ratio in the standard sector. The third {\bf Wicksell-Sraffa term} represents the feedback of price-value deviations on the monetary value of capital per unit output, which can make prices switch direction of deviation as the rate of profit is increased, inducing the possibility of {\bf re-switching}.\par
+The implication of re-switching of standard prices means that the monetary value of aggregate capital per unit labor across different methods of production on a wage-profit frontier could {\it go up} as the profit rate increased. This contradicts the neoclassical aggregate production assumption that higher aggregate capital-labor ratios are associated with lower profit rates (marginal products of capital). The existence of a negative correlation between aggregate capital-labor ratio and the rate of profit is perfectly consistent with the classical hypothesis that the real wage is determined by social-historical factors and the profit rate is determined by the real wage. Garegnani showed in 1970 that Samuelson's Surrogate Production function required prices equal to labor values.\par
+The empirical work of Shaikh and others supports the structural price theories of Ricardo and Marx. While they do not completely exclude re-switching, they certainly relegate it to a secondary role. This does not rehabilitate neoclassical economics: yet equality of prices and values is also the condition under which an aggregate pseudo (surrogate) production function obtains.
+
+
+
+\end{document}
