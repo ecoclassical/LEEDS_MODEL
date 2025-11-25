@@ -1,0 +1,53 @@
+---
+title: "NZIPL — Global Green Value Chain Explorer"
+subtitle: "Modern Beamer-like slides with Quarto + Reveal.js"
+author: "Oriol Vallès Codina"
+date: today
+format:
+  revealjs:
+    incremental: true
+    slide-number: true
+# css: styles.scss
+---
+
+::: {.center .title-slide-extra}
+**Clean, minimal, readable.**  
+Metropolis-inspired typographic scale and spacing.
+:::
+
+## Agenda {.section}
+
+- Motivation  
+- Data & pipeline  
+- Results  
+- Roadmap
+
+## Motivation
+
+::: columns
+::: column
+- Why a new explorer?  
+- Align with **Net Zero industrial policy**  
+- Transparent pipeline (DuckDB + Arrow + Parquet)
+:::
+
+::: column
+> “Simplicity is the ultimate sophistication.”  
+> — *Da Vinci*
+:::
+:::
+
+## Data & pipeline {.section}
+
+::: {.callout-note}
+**Stack:** R / Quarto / Arrow / DuckDB / Shiny modules  
+**Source of truth:** partitioned Parquet
+:::
+
+### Pipeline sketch
+
+```mermaid
+flowchart LR
+  A[Parquet Datasets] --> B[Arrow / DuckDB]
+  B --> C[Shiny Modules]
+  C --> D[Explorer (Positron)]

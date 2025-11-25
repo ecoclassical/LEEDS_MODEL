@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.7.31">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Oriol Vallès Codina">
+
+<title>Two-Region Macroeconomic Models: Policy Insights, Migration, and Sectoral Scope</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="two_region_models_files/libs/clipboard/clipboard.min.js"></script>
+<script src="two_region_models_files/libs/quarto-html/quarto.js" type="module"></script>
+<script src="two_region_models_files/libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="two_region_models_files/libs/quarto-html/popper.min.js"></script>
+<script src="two_region_models_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="two_region_models_files/libs/quarto-html/anchor.min.js"></script>
+<link href="two_region_models_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="two_region_models_files/libs/quarto-html/quarto-syntax-highlighting-e1a5c8363afafaef2c763b6775fbf3ca.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="two_region_models_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="two_region_models_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="two_region_models_files/libs/bootstrap/bootstrap-a5f8558feb849f0e262f365295844a56.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+
+
+</head>
+
+<body class="quarto-light">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+<div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+  <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#overview" id="toc-overview" class="nav-link active" data-scroll-target="#overview"><span class="header-section-number">1</span> Overview</a></li>
+  <li><a href="#backuskehoekydland-1992" id="toc-backuskehoekydland-1992" class="nav-link" data-scroll-target="#backuskehoekydland-1992"><span class="header-section-number">2</span> 1. Backus–Kehoe–Kydland (1992)</a></li>
+  <li><a href="#obstfeldrogoff-1995-2001" id="toc-obstfeldrogoff-1995-2001" class="nav-link" data-scroll-target="#obstfeldrogoff-1995-2001"><span class="header-section-number">3</span> 2. Obstfeld–Rogoff (1995, 2001)</a></li>
+  <li><a href="#galí-monacelli-2005" id="toc-galí-monacelli-2005" class="nav-link" data-scroll-target="#galí-monacelli-2005"><span class="header-section-number">4</span> 3. Galí &amp; Monacelli (2005)</a></li>
+  <li><a href="#godley-lavoie-2007-open-economy-sfc" id="toc-godley-lavoie-2007-open-economy-sfc" class="nav-link" data-scroll-target="#godley-lavoie-2007-open-economy-sfc"><span class="header-section-number">5</span> 4. Godley &amp; Lavoie (2007) – Open-Economy SFC</a></li>
+  <li><a href="#bhadurimarglin-and-extensions-onaran-blecker" id="toc-bhadurimarglin-and-extensions-onaran-blecker" class="nav-link" data-scroll-target="#bhadurimarglin-and-extensions-onaran-blecker"><span class="header-section-number">6</span> 5. Bhaduri–Marglin and Extensions (Onaran, Blecker)</a></li>
+  <li><a href="#palley-2015-structural-keynesian-northsouth" id="toc-palley-2015-structural-keynesian-northsouth" class="nav-link" data-scroll-target="#palley-2015-structural-keynesian-northsouth"><span class="header-section-number">7</span> 6. Palley (2015) – Structural Keynesian North–South</a></li>
+  <li><a href="#ecological-unequal-exchange-two-region-models" id="toc-ecological-unequal-exchange-two-region-models" class="nav-link" data-scroll-target="#ecological-unequal-exchange-two-region-models"><span class="header-section-number">8</span> 7. Ecological &amp; Unequal-Exchange Two-Region Models</a>
+  <ul class="collapse">
+  <li><a href="#dalessandro-luzzati-2014" id="toc-dalessandro-luzzati-2014" class="nav-link" data-scroll-target="#dalessandro-luzzati-2014"><span class="header-section-number">8.1</span> 7.1 D’Alessandro &amp; Luzzati (2014)</a></li>
+  <li><a href="#rezai-stagl-2016" id="toc-rezai-stagl-2016" class="nav-link" data-scroll-target="#rezai-stagl-2016"><span class="header-section-number">8.2</span> 7.2 Rezai &amp; Stagl (2016)</a></li>
+  </ul></li>
+  <li><a href="#rice-dice-nordhaus" id="toc-rice-dice-nordhaus" class="nav-link" data-scroll-target="#rice-dice-nordhaus"><span class="header-section-number">9</span> 8. RICE / DICE (Nordhaus)</a></li>
+  <li><a href="#mundellfleming-and-dornbusch-overshooting" id="toc-mundellfleming-and-dornbusch-overshooting" class="nav-link" data-scroll-target="#mundellfleming-and-dornbusch-overshooting"><span class="header-section-number">10</span> 9. Mundell–Fleming and Dornbusch Overshooting</a></li>
+  <li><a href="#comparative-summary-table" id="toc-comparative-summary-table" class="nav-link" data-scroll-target="#comparative-summary-table"><span class="header-section-number">11</span> Comparative Summary Table</a></li>
+  <li><a href="#notes-on-migration-modeling" id="toc-notes-on-migration-modeling" class="nav-link" data-scroll-target="#notes-on-migration-modeling"><span class="header-section-number">12</span> Notes on Migration Modeling</a></li>
+  <li><a href="#pointers-for-further-reading" id="toc-pointers-for-further-reading" class="nav-link" data-scroll-target="#pointers-for-further-reading"><span class="header-section-number">13</span> Pointers for Further Reading</a></li>
+  </ul>
+</nav>
+</div>
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Two-Region Macroeconomic Models: Policy Insights, Migration, and Sectoral Scope</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Oriol Vallès Codina </p>
+          </div>
+  </div>
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="overview" class="level2" data-number="1">
+<h2 data-number="1" class="anchored" data-anchor-id="overview"><span class="header-section-number">1</span> Overview</h2>
+<p>Two-region macroeconomic models are widely used to analyze international spillovers, financial imbalances, exchange-rate regimes, and climate policy coordination. This note summarizes <strong>policy recommendations/insights</strong>, whether models address <strong>migration flows</strong>, and whether they are <strong>single- or multi-sector</strong>.</p>
+<blockquote class="blockquote">
+<p>Tip: This is a conventional Quarto HTML document. Render with <code>quarto render two_region_models.qmd</code> or use your editor’s Render command.</p>
+</blockquote>
+<hr>
+</section>
+<section id="backuskehoekydland-1992" class="level2" data-number="2">
+<h2 data-number="2" class="anchored" data-anchor-id="backuskehoekydland-1992"><span class="header-section-number">2</span> 1. Backus–Kehoe–Kydland (1992)</h2>
+<p><strong>Tradition:</strong> Real Business Cycle (RBC)<br>
+<strong>Regions:</strong> Home vs.&nbsp;Foreign</p>
+<p><strong>Core mechanism:</strong> International comovement arises from productivity shocks and trade/financial linkages under frictionless competitive markets (with incomplete asset markets in practice).</p>
+<p><strong>Policy insights:</strong> - Observed consumption comovements are lower than predicted → <strong>risk-sharing is incomplete</strong>; financial frictions, home bias, or capital controls matter. - Highlights the need to model <strong>incomplete international asset markets</strong> for policy-relevant conclusions.</p>
+<p><strong>Migration:</strong> Not modeled (labor immobile).<br>
+<strong>Sectors:</strong> One representative tradable sector.</p>
+<hr>
+</section>
+<section id="obstfeldrogoff-1995-2001" class="level2" data-number="3">
+<h2 data-number="3" class="anchored" data-anchor-id="obstfeldrogoff-1995-2001"><span class="header-section-number">3</span> 2. Obstfeld–Rogoff (1995, 2001)</h2>
+<p><strong>Tradition:</strong> Two-country New Keynesian open economy<br>
+<strong>Regions:</strong> Two symmetric/asymmetric countries</p>
+<p><strong>Core mechanism:</strong> Monopolistic competition, nominal rigidities, pricing-to-market, and international asset trade generate rich <strong>policy spillovers</strong>.</p>
+<p><strong>Policy insights:</strong> - Under sticky prices, <strong>independent monetary policy</strong> may not be globally optimal; <strong>policy coordination</strong> can raise welfare relative to Nash behavior. - Exchange-rate regime choice interacts with nominal rigidities and home bias; pass-through and pricing-to-market shape optimal rules.</p>
+<p><strong>Migration:</strong> Not modeled.<br>
+<strong>Sectors:</strong> Typically <strong>two</strong> (tradables and non-tradables, differentiated varieties).</p>
+<hr>
+</section>
+<section id="galí-monacelli-2005" class="level2" data-number="4">
+<h2 data-number="4" class="anchored" data-anchor-id="galí-monacelli-2005"><span class="header-section-number">4</span> 3. Galí &amp; Monacelli (2005)</h2>
+<p><strong>Tradition:</strong> Small Open Economy New Keynesian (derived from a two-country setup)<br>
+<strong>Regions:</strong> Small domestic economy interacting with the rest of world</p>
+<p><strong>Core mechanism:</strong> Incomplete exchange-rate pass-through, Calvo price-setting, and foreign demand shocks.</p>
+<p><strong>Policy insights:</strong> - Optimal monetary rule: target <strong>domestic inflation</strong> and <strong>output gap</strong>, not the exchange rate; small economies retain <strong>monetary autonomy</strong> even with high openness. - Provides microfoundations for modern inflation-targeting in open economies.</p>
+<p><strong>Migration:</strong> Not modeled.<br>
+<strong>Sectors:</strong> One composite good (extensions split into tradables/non-tradables).</p>
+<hr>
+</section>
+<section id="godley-lavoie-2007-open-economy-sfc" class="level2" data-number="5">
+<h2 data-number="5" class="anchored" data-anchor-id="godley-lavoie-2007-open-economy-sfc"><span class="header-section-number">5</span> 4. Godley &amp; Lavoie (2007) – Open-Economy SFC</h2>
+<p><strong>Tradition:</strong> Stock–Flow Consistent (SFC) macro with two countries<br>
+<strong>Regions:</strong> Domestic vs.&nbsp;Foreign</p>
+<p><strong>Core mechanism:</strong> Full accounting of sectoral balance sheets and flow consistency; current account surpluses/deficits matched by opposite financial positions.</p>
+<p><strong>Policy insights:</strong> - <strong>External and internal balances must cohere</strong>; persistent current-account imbalances have balance-sheet consequences. - <strong>Coordinated fiscal policy</strong> can sustain demand without unsustainable debt accumulation. - Warns against <strong>export-led mercantilism</strong> as a generalized strategy.</p>
+<p><strong>Migration:</strong> Not explicit in the canonical chapters; extensions add remittances and labor flows.<br>
+<strong>Sectors:</strong> <strong>Multi-sector</strong> (households, firms, government, banks; often CB).</p>
+<hr>
+</section>
+<section id="bhadurimarglin-and-extensions-onaran-blecker" class="level2" data-number="6">
+<h2 data-number="6" class="anchored" data-anchor-id="bhadurimarglin-and-extensions-onaran-blecker"><span class="header-section-number">6</span> 5. Bhaduri–Marglin and Extensions (Onaran, Blecker)</h2>
+<p><strong>Tradition:</strong> Post-Keynesian, demand-driven growth with open economy linkages<br>
+<strong>Regions:</strong> Two economies with interacting demand regimes (wage-led vs.&nbsp;profit-led)</p>
+<p><strong>Core mechanism:</strong> Income distribution affects aggregate demand, investment, and net exports; spillovers transmit demand regimes across borders.</p>
+<p><strong>Policy insights:</strong> - <strong>Wage suppression</strong> abroad can depress global demand; a “race to the bottom” harms growth. - Advocates <strong>coordinated wage and fiscal policies</strong> to raise global growth and employment.</p>
+<p><strong>Migration:</strong> Generally not explicit; can be incorporated via labor supply or remittances.<br>
+<strong>Sectors:</strong> Usually <strong>one</strong> production sector (goods); some extensions separate capital goods/energy.</p>
+<hr>
+</section>
+<section id="palley-2015-structural-keynesian-northsouth" class="level2" data-number="7">
+<h2 data-number="7" class="anchored" data-anchor-id="palley-2015-structural-keynesian-northsouth"><span class="header-section-number">7</span> 6. Palley (2015) – Structural Keynesian North–South</h2>
+<p><strong>Tradition:</strong> Structural Keynesian with North–South asymmetries<br>
+<strong>Regions:</strong> Core (high-wage, high-productivity) vs.&nbsp;Periphery (low-wage, dependent)</p>
+<p><strong>Core mechanism:</strong> Asymmetric wage structures, technology gaps, and financial dependence shape trade and growth outcomes.</p>
+<p><strong>Policy insights:</strong> - Calls for <strong>industrial policy</strong>, <strong>capital management techniques</strong>, and labor-market institutions in the South to prevent divergence. - Recommends <strong>re-regulating global finance</strong> to stabilize external balances.</p>
+<p><strong>Migration:</strong> Sometimes present as a distributional/bargaining channel.<br>
+<strong>Sectors:</strong> Often <strong>two</strong> (primary vs.&nbsp;manufacturing).</p>
+<hr>
+</section>
+<section id="ecological-unequal-exchange-two-region-models" class="level2" data-number="8">
+<h2 data-number="8" class="anchored" data-anchor-id="ecological-unequal-exchange-two-region-models"><span class="header-section-number">8</span> 7. Ecological &amp; Unequal-Exchange Two-Region Models</h2>
+<section id="dalessandro-luzzati-2014" class="level3" data-number="8.1">
+<h3 data-number="8.1" class="anchored" data-anchor-id="dalessandro-luzzati-2014"><span class="header-section-number">8.1</span> 7.1 D’Alessandro &amp; Luzzati (2014)</h3>
+<p><strong>Tradition:</strong> Ecological macro/structuralist two-region frameworks<br>
+<strong>Policy insights:</strong> Trade-based growth is constrained by environmental limits; recommends <strong>Northern demand reduction</strong> alongside <strong>Southern ecological industrialization</strong> and technology transfer.<br>
+<strong>Migration:</strong> Typically not modeled explicitly.<br>
+<strong>Sectors:</strong> <strong>Multi-sector</strong> (energy/resources + goods).</p>
+</section>
+<section id="rezai-stagl-2016" class="level3" data-number="8.2">
+<h3 data-number="8.2" class="anchored" data-anchor-id="rezai-stagl-2016"><span class="header-section-number">8.2</span> 7.2 Rezai &amp; Stagl (2016)</h3>
+<p><strong>Tradition:</strong> Climate-policy spillovers in two-region macro<br>
+<strong>Policy insights:</strong> <strong>Carbon pricing</strong> in the North can worsen Southern terms of trade without redistribution; recommends <strong>global sharing of climate rents</strong> and transfers.<br>
+<strong>Migration:</strong> Not modeled.<br>
+<strong>Sectors:</strong> <strong>Multi-sector</strong> (energy + final goods).</p>
+<hr>
+</section>
+</section>
+<section id="rice-dice-nordhaus" class="level2" data-number="9">
+<h2 data-number="9" class="anchored" data-anchor-id="rice-dice-nordhaus"><span class="header-section-number">9</span> 8. RICE / DICE (Nordhaus)</h2>
+<p><strong>Tradition:</strong> Integrated Assessment Models (IAMs) with multiple regions; two-region variants are common for pedagogy<br>
+<strong>Core mechanism:</strong> Output and emissions feed climate dynamics and damages which feed back to output.</p>
+<p><strong>Policy insights:</strong> - Decentralized equilibria <strong>under-abate</strong> emissions; <strong>cooperative carbon pricing</strong> yields higher global welfare. - Useful for analyzing international <strong>climate agreements</strong> and burden-sharing.</p>
+<p><strong>Migration:</strong> Not modeled (population exogenous).<br>
+<strong>Sectors:</strong> Two broad blocks (production and climate/damages), often enriched with energy detail in RICE-type models.</p>
+<hr>
+</section>
+<section id="mundellfleming-and-dornbusch-overshooting" class="level2" data-number="10">
+<h2 data-number="10" class="anchored" data-anchor-id="mundellfleming-and-dornbusch-overshooting"><span class="header-section-number">10</span> 9. Mundell–Fleming and Dornbusch Overshooting</h2>
+<p><strong>Tradition:</strong> Open-economy IS–LM (Mundell–Fleming) and sticky-price exchange-rate dynamics (Dornbusch)<br>
+<strong>Regions:</strong> Two-country intuition often used, though canonical models are single small open economy</p>
+<p><strong>Policy insights:</strong> - With high capital mobility and fixed exchange rates, <strong>monetary policy loses autonomy</strong>; under flexible rates, stabilization is possible but with <strong>exchange-rate volatility</strong>. - Forms the backbone of the <strong>impossible trinity</strong>.</p>
+<p><strong>Migration:</strong> Not modeled.<br>
+<strong>Sectors:</strong> One composite tradable sector.</p>
+<hr>
+</section>
+<section id="comparative-summary-table" class="level2" data-number="11">
+<h2 data-number="11" class="anchored" data-anchor-id="comparative-summary-table"><span class="header-section-number">11</span> Comparative Summary Table</h2>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 21%">
+<col style="width: 21%">
+<col style="width: 28%">
+<col style="width: 28%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Model</th>
+<th style="text-align: left;">Policy Focus</th>
+<th style="text-align: center;">Migration</th>
+<th style="text-align: center;">Sectoral Scope</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Backus–Kehoe–Kydland (1992)</td>
+<td style="text-align: left;">Risk-sharing limits; incomplete markets</td>
+<td style="text-align: center;">No</td>
+<td style="text-align: center;">1</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Obstfeld–Rogoff (1995, 2001)</td>
+<td style="text-align: left;">Monetary/fiscal coordination; pass-through</td>
+<td style="text-align: center;">No</td>
+<td style="text-align: center;">2</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Galí–Monacelli (2005)</td>
+<td style="text-align: left;">Open-economy monetary rule</td>
+<td style="text-align: center;">No</td>
+<td style="text-align: center;">1 (often T/NT in ext.)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Godley–Lavoie (2007)</td>
+<td style="text-align: left;">Fiscal–external balance consistency</td>
+<td style="text-align: center;">Partial (extensions)</td>
+<td style="text-align: center;">Multi (incl.&nbsp;finance)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Bhaduri–Marglin (ext.)</td>
+<td style="text-align: left;">Wage/fiscal coordination for demand</td>
+<td style="text-align: center;">No</td>
+<td style="text-align: center;">1 (some ext.)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Palley (2015)</td>
+<td style="text-align: left;">North–South asymmetry, industrial policy</td>
+<td style="text-align: center;">Sometimes</td>
+<td style="text-align: center;">2</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">D’Alessandro–Luzzati (2014)</td>
+<td style="text-align: left;">Ecological limits, green industrialization</td>
+<td style="text-align: center;">No</td>
+<td style="text-align: center;">Multi</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Rezai–Stagl (2016)</td>
+<td style="text-align: left;">Climate policy spillovers, redistribution</td>
+<td style="text-align: center;">No</td>
+<td style="text-align: center;">Multi</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">RICE/DICE</td>
+<td style="text-align: left;">Cooperative carbon pricing</td>
+<td style="text-align: center;">No</td>
+<td style="text-align: center;">Multi (IAM)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Mundell–Fleming / Dornbusch</td>
+<td style="text-align: left;">Exchange-rate regimes, trilemma</td>
+<td style="text-align: center;">No</td>
+<td style="text-align: center;">1</td>
+</tr>
+</tbody>
+</table>
+<hr>
+</section>
+<section id="notes-on-migration-modeling" class="level2" data-number="12">
+<h2 data-number="12" class="anchored" data-anchor-id="notes-on-migration-modeling"><span class="header-section-number">12</span> Notes on Migration Modeling</h2>
+<ul>
+<li><strong>Rare in macro two-region cores</strong>; when present, migration is usually exogenous or via partial equilibrium channels (remittances, labor supply).<br>
+</li>
+<li><strong>Where to look:</strong> development/structuralist models (Lewis, Harris–Todaro), SFC/ABMs adding migration/remittances (e.g., Caiani et al., Dafermos et al.).<br>
+</li>
+<li><strong>Frontier direction:</strong> endogenize migration decisions linked to wage differentials, climate damages, and policy (industrial policy, carbon pricing), with feedback to sectoral demand and public finance.</li>
+</ul>
+<hr>
+</section>
+<section id="pointers-for-further-reading" class="level2" data-number="13">
+<h2 data-number="13" class="anchored" data-anchor-id="pointers-for-further-reading"><span class="header-section-number">13</span> Pointers for Further Reading</h2>
+<ul>
+<li>Backus, Kehoe, &amp; Kydland (1992). “International Real Business Cycles.” <em>AER</em>.</li>
+<li>Obstfeld &amp; Rogoff (1995, 2001). “Foundations of International Macroeconomics” and <em>Handbook</em> chapters.</li>
+<li>Galí &amp; Monacelli (2005). “Monetary Policy and Exchange Rate Volatility in a Small Open Economy.”</li>
+<li>Godley &amp; Lavoie (2007). <em>Monetary Economics</em> (open-economy chapters).</li>
+<li>Onaran &amp; Galanis (2013); Blecker &amp; Ibarra (2013) for wage-led/export-led debates.</li>
+<li>Palley (2015). <em>The Middle Class in Macroeconomics</em> / structural Keynesian articles.</li>
+<li>D’Alessandro &amp; Luzzati (2014); Rezai &amp; Stagl (2016) on ecological/climate spillovers.</li>
+<li>Nordhaus (2008, 2010). <em>A Question of Balance</em>; RICE/DICE documentation.</li>
+<li>Dornbusch (1976). “Expectations and Exchange Rate Dynamics.”</li>
+<li>Mundell (1963), Fleming (1962).</li>
+</ul>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+        const codeEl = trigger.previousElementSibling.cloneNode(true);
+        for (const childEl of codeEl.children) {
+          if (isCodeAnnotation(childEl)) {
+            childEl.remove();
+          }
+        }
+        return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

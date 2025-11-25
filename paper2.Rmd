@@ -27,7 +27,7 @@ The initial values and variables are loaded from the file stored in variable `id
 rm(list = ls())
 
 # Load Auxiliary Functions
-# directory <- '' # '' for the markdown file, 'flexible_/' for R
+directory <- '' # '' for the markdown file, 'flexible_/' for R
 variable.table <<- read.csv('data/Variable_Definitions.csv')
 # source('functions/auxiliary_flexible_aug12.R') # load.new.init, auxiliary labeling functions, plotting
 source('functions/auxiliary_flexible_feb7.R')
@@ -42,8 +42,8 @@ source("functions/run_new_model_feb7.R") # function run.new.model(initial.values
 source("functions/MVP_model_aug14.R") # model equations
 
 # baseline <- run.new.model(initial, mvp.model)
-# saveRDS(baseline, file = 'data/baseline_aug14.RDS')
-baseline <- readRDS(file = 'data/baseline_aug14.RDS')
+# saveRDS(baseline, file = 'data/baseline_nov25.RDS')
+baseline <- readRDS(file = 'data/baseline_nov25.RDS')
 ```
 
 # Table of Industries

@@ -1,0 +1,205 @@
+---
+title: "Two-Region Macroeconomic Models: Policy Insights, Migration, and Sectoral Scope"
+author: "Oriol Vallès Codina"
+format:
+  html:
+    theme: cosmo
+    toc: true
+    toc-depth: 3
+    number-sections: true
+    code-copy: true
+    df-print: paged
+execute:
+  echo: false
+  warning: false
+  message: false
+bibliography: ../../references.bib
+---
+
+## Overview
+
+Two-region macroeconomic models are widely used to analyze international spillovers, financial imbalances, exchange-rate regimes, and climate policy coordination. This note summarizes **policy recommendations/insights**, whether models address **migration flows**, and whether they are **single- or multi-sector**.
+
+> Tip: This is a conventional Quarto HTML document. Render with `quarto render two_region_models.qmd` or use your editor’s Render command.
+
+---
+
+## 1. Backus–Kehoe–Kydland (1992)
+
+**Tradition:** Real Business Cycle (RBC)  
+**Regions:** Home vs. Foreign
+
+**Core mechanism:** International comovement arises from productivity shocks and trade/financial linkages under frictionless competitive markets (with incomplete asset markets in practice).
+
+**Policy insights:**
+- Observed consumption comovements are lower than predicted → **risk-sharing is incomplete**; financial frictions, home bias, or capital controls matter.
+- Highlights the need to model **incomplete international asset markets** for policy-relevant conclusions.
+
+**Migration:** Not modeled (labor immobile).  
+**Sectors:** One representative tradable sector.
+
+---
+
+## 2. Obstfeld–Rogoff (1995, 2001)
+
+**Tradition:** Two-country New Keynesian open economy  
+**Regions:** Two symmetric/asymmetric countries
+
+**Core mechanism:** Monopolistic competition, nominal rigidities, pricing-to-market, and international asset trade generate rich **policy spillovers**.
+
+**Policy insights:**
+- Under sticky prices, **independent monetary policy** may not be globally optimal; **policy coordination** can raise welfare relative to Nash behavior.
+- Exchange-rate regime choice interacts with nominal rigidities and home bias; pass-through and pricing-to-market shape optimal rules.
+
+**Migration:** Not modeled.  
+**Sectors:** Typically **two** (tradables and non-tradables, differentiated varieties).
+
+---
+
+## 3. Galí & Monacelli (2005)
+
+**Tradition:** Small Open Economy New Keynesian (derived from a two-country setup)  
+**Regions:** Small domestic economy interacting with the rest of world
+
+**Core mechanism:** Incomplete exchange-rate pass-through, Calvo price-setting, and foreign demand shocks.
+
+**Policy insights:**
+- Optimal monetary rule: target **domestic inflation** and **output gap**, not the exchange rate; small economies retain **monetary autonomy** even with high openness.
+- Provides microfoundations for modern inflation-targeting in open economies.
+
+**Migration:** Not modeled.  
+**Sectors:** One composite good (extensions split into tradables/non-tradables).
+
+---
+
+## 4. Godley & Lavoie (2007) – Open-Economy SFC
+
+**Tradition:** Stock–Flow Consistent (SFC) macro with two countries  
+**Regions:** Domestic vs. Foreign
+
+**Core mechanism:** Full accounting of sectoral balance sheets and flow consistency; current account surpluses/deficits matched by opposite financial positions.
+
+**Policy insights:**
+- **External and internal balances must cohere**; persistent current-account imbalances have balance-sheet consequences.
+- **Coordinated fiscal policy** can sustain demand without unsustainable debt accumulation.
+- Warns against **export-led mercantilism** as a generalized strategy.
+
+**Migration:** Not explicit in the canonical chapters; extensions add remittances and labor flows.  
+**Sectors:** **Multi-sector** (households, firms, government, banks; often CB).
+
+---
+
+## 5. Bhaduri–Marglin and Extensions (Onaran, Blecker)
+
+**Tradition:** Post-Keynesian, demand-driven growth with open economy linkages  
+**Regions:** Two economies with interacting demand regimes (wage-led vs. profit-led)
+
+**Core mechanism:** Income distribution affects aggregate demand, investment, and net exports; spillovers transmit demand regimes across borders.
+
+**Policy insights:**
+- **Wage suppression** abroad can depress global demand; a “race to the bottom” harms growth.
+- Advocates **coordinated wage and fiscal policies** to raise global growth and employment.
+
+**Migration:** Generally not explicit; can be incorporated via labor supply or remittances.  
+**Sectors:** Usually **one** production sector (goods); some extensions separate capital goods/energy.
+
+---
+
+## 6. Palley (2015) – Structural Keynesian North–South
+
+**Tradition:** Structural Keynesian with North–South asymmetries  
+**Regions:** Core (high-wage, high-productivity) vs. Periphery (low-wage, dependent)
+
+**Core mechanism:** Asymmetric wage structures, technology gaps, and financial dependence shape trade and growth outcomes.
+
+**Policy insights:**
+- Calls for **industrial policy**, **capital management techniques**, and labor-market institutions in the South to prevent divergence.
+- Recommends **re-regulating global finance** to stabilize external balances.
+
+**Migration:** Sometimes present as a distributional/bargaining channel.  
+**Sectors:** Often **two** (primary vs. manufacturing).
+
+---
+
+## 7. Ecological & Unequal-Exchange Two-Region Models
+
+### 7.1 D’Alessandro & Luzzati (2014)
+**Tradition:** Ecological macro/structuralist two-region frameworks  
+**Policy insights:** Trade-based growth is constrained by environmental limits; recommends **Northern demand reduction** alongside **Southern ecological industrialization** and technology transfer.  
+**Migration:** Typically not modeled explicitly.  
+**Sectors:** **Multi-sector** (energy/resources + goods).
+
+### 7.2 Rezai & Stagl (2016)
+**Tradition:** Climate-policy spillovers in two-region macro  
+**Policy insights:** **Carbon pricing** in the North can worsen Southern terms of trade without redistribution; recommends **global sharing of climate rents** and transfers.  
+**Migration:** Not modeled.  
+**Sectors:** **Multi-sector** (energy + final goods).
+
+---
+
+## 8. RICE / DICE (Nordhaus)
+
+**Tradition:** Integrated Assessment Models (IAMs) with multiple regions; two-region variants are common for pedagogy  
+**Core mechanism:** Output and emissions feed climate dynamics and damages which feed back to output.
+
+**Policy insights:**
+- Decentralized equilibria **under-abate** emissions; **cooperative carbon pricing** yields higher global welfare.
+- Useful for analyzing international **climate agreements** and burden-sharing.
+
+**Migration:** Not modeled (population exogenous).  
+**Sectors:** Two broad blocks (production and climate/damages), often enriched with energy detail in RICE-type models.
+
+---
+
+## 9. Mundell–Fleming and Dornbusch Overshooting
+
+**Tradition:** Open-economy IS–LM (Mundell–Fleming) and sticky-price exchange-rate dynamics (Dornbusch)  
+**Regions:** Two-country intuition often used, though canonical models are single small open economy
+
+**Policy insights:**
+- With high capital mobility and fixed exchange rates, **monetary policy loses autonomy**; under flexible rates, stabilization is possible but with **exchange-rate volatility**.
+- Forms the backbone of the **impossible trinity**.
+
+**Migration:** Not modeled.  
+**Sectors:** One composite tradable sector.
+
+---
+
+## Comparative Summary Table
+
+| Model | Policy Focus | Migration | Sectoral Scope |
+|:--|:--|:--:|:--:|
+| Backus–Kehoe–Kydland (1992) | Risk-sharing limits; incomplete markets | No | 1 |
+| Obstfeld–Rogoff (1995, 2001) | Monetary/fiscal coordination; pass-through | No | 2 |
+| Galí–Monacelli (2005) | Open-economy monetary rule | No | 1 (often T/NT in ext.) |
+| Godley–Lavoie (2007) | Fiscal–external balance consistency | Partial (extensions) | Multi (incl. finance) |
+| Bhaduri–Marglin (ext.) | Wage/fiscal coordination for demand | No | 1 (some ext.) |
+| Palley (2015) | North–South asymmetry, industrial policy | Sometimes | 2 |
+| D’Alessandro–Luzzati (2014) | Ecological limits, green industrialization | No | Multi |
+| Rezai–Stagl (2016) | Climate policy spillovers, redistribution | No | Multi |
+| RICE/DICE | Cooperative carbon pricing | No | Multi (IAM) |
+| Mundell–Fleming / Dornbusch | Exchange-rate regimes, trilemma | No | 1 |
+
+---
+
+## Notes on Migration Modeling
+
+- **Rare in macro two-region cores**; when present, migration is usually exogenous or via partial equilibrium channels (remittances, labor supply).  
+- **Where to look:** development/structuralist models (Lewis, Harris–Todaro), SFC/ABMs adding migration/remittances (e.g., Caiani et al., Dafermos et al.).  
+- **Frontier direction:** endogenize migration decisions linked to wage differentials, climate damages, and policy (industrial policy, carbon pricing), with feedback to sectoral demand and public finance.
+
+---
+
+## Pointers for Further Reading
+
+- Backus, Kehoe, & Kydland (1992). “International Real Business Cycles.” *AER*.
+- Obstfeld & Rogoff (1995, 2001). “Foundations of International Macroeconomics” and *Handbook* chapters.
+- Galí & Monacelli (2005). “Monetary Policy and Exchange Rate Volatility in a Small Open Economy.”
+- Godley & Lavoie (2007). *Monetary Economics* (open-economy chapters).
+- Onaran & Galanis (2013); Blecker & Ibarra (2013) for wage-led/export-led debates.
+- Palley (2015). *The Middle Class in Macroeconomics* / structural Keynesian articles.
+- D’Alessandro & Luzzati (2014); Rezai & Stagl (2016) on ecological/climate spillovers.
+- Nordhaus (2008, 2010). *A Question of Balance*; RICE/DICE documentation.
+- Dornbusch (1976). “Expectations and Exchange Rate Dynamics.”
+- Mundell (1963), Fleming (1962).
+

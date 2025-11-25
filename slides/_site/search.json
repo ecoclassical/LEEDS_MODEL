@@ -1,0 +1,429 @@
+[
+  {
+    "objectID": "slides.html#agenda",
+    "href": "slides.html#agenda",
+    "title": "NZIPL — Global Green Value Chain Explorer",
+    "section": "Agenda",
+    "text": "Agenda\n\nMotivation\n\nData & pipeline\n\nResults\n\nRoadmap"
+  },
+  {
+    "objectID": "slides.html#motivation",
+    "href": "slides.html#motivation",
+    "title": "NZIPL — Global Green Value Chain Explorer",
+    "section": "Motivation",
+    "text": "Motivation\n\n\n\nWhy a new explorer?\n\nAlign with Net Zero industrial policy\n\nTransparent pipeline (DuckDB + Arrow + Parquet)\n\n\n\n“Simplicity is the ultimate sophistication.”\n— Da Vinci"
+  },
+  {
+    "objectID": "slides.html#data-pipeline",
+    "href": "slides.html#data-pipeline",
+    "title": "NZIPL — Global Green Value Chain Explorer",
+    "section": "Data & pipeline",
+    "text": "Data & pipeline\n\n\n\n\n\n\nNote\n\n\nStack: R / Quarto / Arrow / DuckDB / Shiny modules\nSource of truth: partitioned Parquet\n\n\n\nPipeline sketch\n```mermaid flowchart LR A[Parquet Datasets] –&gt; B[Arrow / DuckDB] B –&gt; C[Shiny Modules] C –&gt; D[Explorer (Positron)]"
+  },
+  {
+    "objectID": "slides_just2ce.html#motivation-do-climate-accords-drive-carbon-emissions",
+    "href": "slides_just2ce.html#motivation-do-climate-accords-drive-carbon-emissions",
+    "title": "NZIPL — Global Green Value Chain Explorer",
+    "section": "Motivation: Do Climate Accords Drive Carbon Emissions?",
+    "text": "Motivation: Do Climate Accords Drive Carbon Emissions?"
+  },
+  {
+    "objectID": "slides_just2ce.html#introduction-what-is-just2ce",
+    "href": "slides_just2ce.html#introduction-what-is-just2ce",
+    "title": "NZIPL — Global Green Value Chain Explorer",
+    "section": "Introduction: What is JUST2CE?",
+    "text": "Introduction: What is JUST2CE?\n\nJUST2CE = A Just Transition to the Circular Economy\n\nEU-funded project proposing an alternative way of looking at CE\n\nMost projects have focused on how to produce circularity. JUST2CE focuses on what (democracy, participation, gender, global justice)\n\nTwo milestones / WP5 deliverables:\n\nSystematic review of macro models assessing CE transition\n\nFormal model(s) to simulate & compare CE policies and transition scenarios"
+  },
+  {
+    "objectID": "slides_just2ce.html#systematic-literature-review",
+    "href": "slides_just2ce.html#systematic-literature-review",
+    "title": "Climate policies exclusively centered in the Global North harm the economy of the Global South",
+    "section": "Systematic Literature Review",
+    "text": "Systematic Literature Review"
+  },
+  {
+    "objectID": "slides_just2ce.html#systematic-literature-review-simplified",
+    "href": "slides_just2ce.html#systematic-literature-review-simplified",
+    "title": "Climate policies exclusively centered in the Global North harm the economy of the Global South",
+    "section": "Systematic Literature Review (Simplified)",
+    "text": "Systematic Literature Review (Simplified)"
+  },
+  {
+    "objectID": "slides_just2ce.html#citation-network-of-ecological-macroeconomics",
+    "href": "slides_just2ce.html#citation-network-of-ecological-macroeconomics",
+    "title": "Climate policies exclusively centered in the Global North harm the economy of the Global South",
+    "section": "Citation Network of Ecological Macroeconomics",
+    "text": "Citation Network of Ecological Macroeconomics"
+  },
+  {
+    "objectID": "slides_just2ce.html#main-gaps-identified",
+    "href": "slides_just2ce.html#main-gaps-identified",
+    "title": "Climate policies exclusively centered in the Global North harm the economy of the Global South",
+    "section": "Main Gaps Identified",
+    "text": "Main Gaps Identified\n\nModelling of Rebound Effects — limited treatment of demand/impact changes via prices, jobs, income\n\nTransitional Dynamics — IO analysis typically static\n\nLimited Socio-Economic Coverage — often only employment considered\n\nTechnology Innovation & Diffusion; Demand Assumptions — low-labor-cost tech may be preferred\n\nNorth–South / Core–Periphery Ecological Unequal Exchange (Dorninger 2021, Hickel)"
+  },
+  {
+    "objectID": "slides_just2ce.html#the-model-basic-features",
+    "href": "slides_just2ce.html#the-model-basic-features",
+    "title": "Climate policies exclusively centered in the Global North harm the economy of the Global South",
+    "section": "The Model: Basic Features",
+    "text": "The Model: Basic Features\nMain tools in (theory-to-data) macroeconomics:\n\nDSGE (and growth) models — Pros: mainstream, simple story. Cons: “small”, unique optimal equilibrium\n\nCGE models (and IAMs) — Pros: many variables, cross-industry links. Cons: unique optimal equilibrium, no finance\n\nCross-breeding two alternatives (Hardt & O’Neill 2017):\n\nLeontief IO Models — Pros: many variables, cross-industry links. Cons: static, no finance\n\nSFC Models — Pros: dynamics, finance. Cons: homogeneous output"
+  },
+  {
+    "objectID": "slides_just2ce.html#aim-research-questions",
+    "href": "slides_just2ce.html#aim-research-questions",
+    "title": "Climate policies exclusively centered in the Global North harm the economy of the Global South",
+    "section": "Aim / Research Questions",
+    "text": "Aim / Research Questions\n\nFew papers use IO–SFC models; none focuses on CE:\n\nBerg, Hartley & Richters (2015). A stock-flow consistent input-output model with applications to energy price shocks, interest rates, and heat emissions. New Journal of Physics.\n\nOther contributions Naqvi (2015); Valdecantos & Valentini (2017); Jackson & Jackson (2021); Cordier et al. (2015); Jackson et al. (2014)."
+  },
+  {
+    "objectID": "slides_just2ce.html#ecoiosfc-model",
+    "href": "slides_just2ce.html#ecoiosfc-model",
+    "title": "NZIPL — Global Green Value Chain Explorer",
+    "section": "ECO–IO–SFC Model",
+    "text": "ECO–IO–SFC Model\n\nTwo-country macro frame from standard SFC models (Godley & Lavoie 2007):\n\n\n\nSix sectors: households, production firms, government, commercial banks, central bank\n\nFour assets: cash, bank deposits, shares, government bills (+ advances)\n\nOnly loans to firms (no personal loans)\n\nFixed capital, no inventories\n\n\nSimple IO structure: 5 industries (manufacturing, agriculture, services) + waste, recycling\n\nIdentification: calibration to target final demand components\n\nSolution: numerical simulations (R), 100 periods, 100 iterations"
+  },
+  {
+    "objectID": "slides_just2ce.html#final-demand-and-gross-output",
+    "href": "slides_just2ce.html#final-demand-and-gross-output",
+    "title": "Climate policies exclusively centered in the Global North harm the economy of the Global South",
+    "section": "Final Demand and Gross Output",
+    "text": "Final Demand and Gross Output\nLet us consider a \\(3\\times 3\\) production. The final demand vector is:\n\\[\n\\mathbf{d}\n= \\begin{bmatrix} \\beta_1 \\\\ \\beta_2 \\\\ \\beta_3 \\end{bmatrix} c\n+ \\begin{bmatrix} \\iota_1 \\\\ \\iota_2 \\\\ \\iota_3 \\end{bmatrix} i_d\n+ \\begin{bmatrix} \\sigma_1 \\\\ \\sigma_2 \\\\ \\sigma_3 \\end{bmatrix} gov\n+ \\begin{bmatrix} \\eta_1 \\\\ \\eta_2 \\\\ \\eta_3 \\end{bmatrix} exp\n\\]\nThe gross output vector is:\n\\[\n\\mathbf{x} = \\mathbf{A} \\mathbf{x} + \\mathbf{d} = (\\mathbf{I}-\\mathbf{A})^{-1}\\mathbf{d}, \\quad\n\\mathbf{A} = \\begin{bmatrix}\na_{11} & a_{12} & a_{13} \\\\\na_{21} & a_{22} & a_{23} \\\\\na_{31} & a_{32} & a_{33}\n\\end{bmatrix}\n\\]"
+  },
+  {
+    "objectID": "slides_just2ce.html#government-led-transition-to-a-circular-economy",
+    "href": "slides_just2ce.html#government-led-transition-to-a-circular-economy",
+    "title": "NZIPL — Global Green Value Chain Explorer",
+    "section": "Government-led Transition to a Circular Economy",
+    "text": "Government-led Transition to a Circular Economy\nThere is a tendency for technical coefficients to converge to target CE values over time:\n\\[\na_{ij} = a_{ij,-1} + \\gamma_A(g)\\,\\big(a'_{ij,-1} - a_{ij,-1}\\big)\n\\]\nTarget transformation example:\n\n(In your repo, keep the original matrix illustration, or we’ll render a table figure with the same color coding.)"
+  },
+  {
+    "objectID": "slides_just2ce.html#balance-sheet",
+    "href": "slides_just2ce.html#balance-sheet",
+    "title": "Climate policies exclusively centered in the Global North harm the economy of the Global South",
+    "section": "Balance Sheet",
+    "text": "Balance Sheet"
+  },
+  {
+    "objectID": "slides_just2ce.html#transaction-flow-matrix",
+    "href": "slides_just2ce.html#transaction-flow-matrix",
+    "title": "Climate policies exclusively centered in the Global North harm the economy of the Global South",
+    "section": "Transaction-Flow Matrix",
+    "text": "Transaction-Flow Matrix"
+  },
+  {
+    "objectID": "slides_just2ce.html#multi-region-inputoutput",
+    "href": "slides_just2ce.html#multi-region-inputoutput",
+    "title": "Climate policies exclusively centered in the Global North harm the economy of the Global South",
+    "section": "Multi-Region Input–Output",
+    "text": "Multi-Region Input–Output"
+  },
+  {
+    "objectID": "slides_just2ce.html#calibration",
+    "href": "slides_just2ce.html#calibration",
+    "title": "Climate policies exclusively centered in the Global North harm the economy of the Global South",
+    "section": "Calibration",
+    "text": "Calibration"
+  },
+  {
+    "objectID": "slides_just2ce.html#government-and-central-bank",
+    "href": "slides_just2ce.html#government-and-central-bank",
+    "title": "Climate policies exclusively centered in the Global North harm the economy of the Global South",
+    "section": "Government and Central Bank",
+    "text": "Government and Central Bank"
+  },
+  {
+    "objectID": "slides_just2ce.html#shocks",
+    "href": "slides_just2ce.html#shocks",
+    "title": "Climate policies exclusively centered in the Global North harm the economy of the Global South",
+    "section": "Shocks",
+    "text": "Shocks\n\n\n\n\n\nShock\n\n\n\n\n\n\nReduction in Consumption Level\n\n\n\n\nChange in Consumption Composition towards Services\n\n\n\n\nProduct Life Time Extension\n\n\n\n\nHigher Recycling Rate\n\n\n\n\nHigher Propensity to Consume Green\n\n\n\n\nLower Extraction (or Conversion) Rate of Matter\n\n\n\n\nLower Discarding Rate of Socio-Economic Stock\n\n\n\n\nHigher Renewable Energy Share\n\n\n\n\nHigher Govt Spending towards Efficiency\n\n\n\n\nMore Selective Govt Spending towards Recycling Efficiency\n\n\n\n\nMore Progressive Taxation"
+  },
+  {
+    "objectID": "slides_just2ce.html#reduction-in-consumption-level",
+    "href": "slides_just2ce.html#reduction-in-consumption-level",
+    "title": "Climate policies exclusively centered in the Global North harm the economy of the Global South",
+    "section": "Reduction in Consumption Level",
+    "text": "Reduction in Consumption Level\n\n\nTop half \n\nBottom half"
+  },
+  {
+    "objectID": "slides_just2ce.html#reduction-in-consumption-level-households",
+    "href": "slides_just2ce.html#reduction-in-consumption-level-households",
+    "title": "Climate policies exclusively centered in the Global North harm the economy of the Global South",
+    "section": "Reduction in Consumption Level: Households",
+    "text": "Reduction in Consumption Level: Households"
+  },
+  {
+    "objectID": "slides_just2ce.html#ce-transition",
+    "href": "slides_just2ce.html#ce-transition",
+    "title": "Climate policies exclusively centered in the Global North harm the economy of the Global South",
+    "section": "CE Transition",
+    "text": "CE Transition"
+  },
+  {
+    "objectID": "slides_just2ce.html#ce-transition-ecological-indicators",
+    "href": "slides_just2ce.html#ce-transition-ecological-indicators",
+    "title": "Climate policies exclusively centered in the Global North harm the economy of the Global South",
+    "section": "CE Transition: Ecological Indicators",
+    "text": "CE Transition: Ecological Indicators"
+  },
+  {
+    "objectID": "slides_just2ce.html#change-by-shock-difference",
+    "href": "slides_just2ce.html#change-by-shock-difference",
+    "title": "Climate policies exclusively centered in the Global North harm the economy of the Global South",
+    "section": "Change by Shock, Difference",
+    "text": "Change by Shock, Difference\n\n\nTop half \n\nBottom half"
+  },
+  {
+    "objectID": "slides_just2ce.html#change-by-shock-percent",
+    "href": "slides_just2ce.html#change-by-shock-percent",
+    "title": "Climate policies exclusively centered in the Global North harm the economy of the Global South",
+    "section": "Change by Shock, Percent",
+    "text": "Change by Shock, Percent"
+  },
+  {
+    "objectID": "slides_just2ce.html#thank-you",
+    "href": "slides_just2ce.html#thank-you",
+    "title": "Climate policies exclusively centered in the Global North harm the economy of the Global South",
+    "section": "Thank you!",
+    "text": "Thank you!\noriolvallescodina@gmail.com\novalles1@jh.edu\n\nIf you want the title slide background elsewhere too, add data-background-image: ../figures/tsunami.jpeg to specific slides using fenced div attributes."
+  },
+  {
+    "objectID": "slides_just2ce.html#references",
+    "href": "slides_just2ce.html#references",
+    "title": "Climate policies exclusively centered in the Global North harm the economy of the Global South",
+    "section": "References",
+    "text": "References"
+  },
+  {
+    "objectID": "slides_just2ce.html#include",
+    "href": "slides_just2ce.html#include",
+    "title": "NZIPL — Global Green Value Chain Explorer",
+    "section": "Include",
+    "text": "Include\n\nECO-MRIO-SFC models to understand global value chains from a socio-economic perspective: macroeconomically and their class, gender, race component"
+  },
+  {
+    "objectID": "slides_just2ce.html#starting-point-just2ce",
+    "href": "slides_just2ce.html#starting-point-just2ce",
+    "title": "Climate policies exclusively centered in the Global North harm the economy of the Global South",
+    "section": "Starting Point: JUST2CE",
+    "text": "Starting Point: JUST2CE\n\nJUST2CE = A Just Transition to the Circular Economy\n\nEU-funded project proposing an alternative way of looking at CE\n\nMost projects have focused on how to produce circularity. JUST2CE focuses on what (democracy, participation, gender, global justice)\n\nTwo milestones / WP5 deliverables:\n\nSystematic review of macro models assessing CE transition\n\nFormal model(s) to simulate & compare CE policies and transition scenarios"
+  },
+  {
+    "objectID": "slides_just2ce.html#ecomriosfc-model",
+    "href": "slides_just2ce.html#ecomriosfc-model",
+    "title": "Climate policies exclusively centered in the Global North harm the economy of the Global South",
+    "section": "ECO–MRIO–SFC Model",
+    "text": "ECO–MRIO–SFC Model\n\nTwo-country macro frame from standard SFC models (Godley & Lavoie 2007):\n\n\n\nSix sectors: households, production firms, government, commercial banks, central bank\n\nFour assets: cash, bank deposits, shares, government bills (+ advances)\n\nOnly loans to firms (no personal loans)\n\nFixed capital, no inventories\n\n\nFlexible IO structure: currently 50+ industries\nIdentification: calibration to target final demand components\n\nSolution: numerical simulations (R), 100 periods, 100 iterations"
+  },
+  {
+    "objectID": "slides_just2ce.html#ecological-unequal-exchange-eue",
+    "href": "slides_just2ce.html#ecological-unequal-exchange-eue",
+    "title": "Climate policies exclusively centered in the Global North harm the economy of the Global South",
+    "section": "Ecological Unequal Exchange (EUE)",
+    "text": "Ecological Unequal Exchange (EUE)"
+  },
+  {
+    "objectID": "slides_just2ce.html#modeling-circular-economy-interventions-1",
+    "href": "slides_just2ce.html#modeling-circular-economy-interventions-1",
+    "title": "Climate policies exclusively centered in the Global North harm the economy of the Global South",
+    "section": "Modeling Circular Economy Interventions 1",
+    "text": "Modeling Circular Economy Interventions 1"
+  },
+  {
+    "objectID": "slides_just2ce.html#modeling-circular-economy-interventions-2",
+    "href": "slides_just2ce.html#modeling-circular-economy-interventions-2",
+    "title": "Climate policies exclusively centered in the Global North harm the economy of the Global South",
+    "section": "Modeling Circular Economy Interventions 2",
+    "text": "Modeling Circular Economy Interventions 2"
+  },
+  {
+    "objectID": "slides_just2ce.html#starting-point-the-just2ce-project",
+    "href": "slides_just2ce.html#starting-point-the-just2ce-project",
+    "title": "Climate policies exclusively centered in the Global North harm the economy of the Global South",
+    "section": "Starting Point: the JUST2CE project",
+    "text": "Starting Point: the JUST2CE project\n\nJUST2CE = A Just Transition to the Circular Economy\n\nEU-funded project proposing an alternative way of looking at CE\n\nMost projects have focused on how to produce circularity. JUST2CE focuses on what (democracy, participation, gender, global justice)\n\nTwo milestones / WP5 deliverables:\n\nSystematic review of macro models assessing CE transition (Fevereiro et al 2025)\nFormal model(s) to simulate & compare CE policies and transition scenarios (Vallès Codina et al., 2026?)"
+  },
+  {
+    "objectID": "slides_just2ce.html#theoretical-antedecents",
+    "href": "slides_just2ce.html#theoretical-antedecents",
+    "title": "Climate policies exclusively centered in the Global North harm the economy of the Global South",
+    "section": "Theoretical Antedecents",
+    "text": "Theoretical Antedecents\n\nIncreasing use of IO–SFC models; yet none focuses on CE:\n\nBerg, Hartley & Richters (2015). A stock-flow consistent input-output model with applications to energy price shocks, interest rates, and heat emissions.\nOther contributions Naqvi (2015); Naqvi and Stockhammer (2018); Valdecantos & Valentini (2017); Nieto et al (2019); Jackson & Jackson (2021); Cordier et al. (2015); Jackson et al. (2014)\nMEDEAS, Eurogreen, REAL, ToBe… increasingly very sophisticated one-region models"
+  },
+  {
+    "objectID": "slides_just2ce.html#government-led-ce-transition",
+    "href": "slides_just2ce.html#government-led-ce-transition",
+    "title": "Climate policies exclusively centered in the Global North harm the economy of the Global South",
+    "section": "Government-led CE Transition",
+    "text": "Government-led CE Transition"
+  },
+  {
+    "objectID": "slides_just2ce.html#outline",
+    "href": "slides_just2ce.html#outline",
+    "title": "Climate policies exclusively centered in the Global North harm the economy of the Global South",
+    "section": "Outline",
+    "text": "Outline\n\nECO-MRIO-SFC modeling as a tool to understand the very complex impact of (carbon) taxes and tariffs on global value chains from a socio-economic perspective: ecological, macroeconomic and distributional implications for class, gender, race / region\nTrade wars and global value chain fragmentation/regionalization\nChallenge how to overcome ecological unequal exchange\nCurrent model shows ecological and economic impacts are best in cooperative models\nImplications: competition vs cooperation in trade (Blecker 2025)"
+  },
+  {
+    "objectID": "slides_just2ce.html#prices",
+    "href": "slides_just2ce.html#prices",
+    "title": "Climate policies exclusively centered in the Global North harm the economy of the Global South",
+    "section": "Prices",
+    "text": "Prices"
+  },
+  {
+    "objectID": "slides_just2ce.html#motivation",
+    "href": "slides_just2ce.html#motivation",
+    "title": "Climate policies exclusively centered in the Global North harm the economy of the Global South",
+    "section": "Motivation",
+    "text": "Motivation"
+  },
+  {
+    "objectID": "slides_just2ce.html#classical-approach-to-prices",
+    "href": "slides_just2ce.html#classical-approach-to-prices",
+    "title": "Climate policies exclusively centered in the Global North harm the economy of the Global South",
+    "section": "Classical Approach to Prices",
+    "text": "Classical Approach to Prices\nFor \\(i = 1, ..., KN\\) commodities where there are \\(K\\) regions and \\(N\\) products per region:\n\\[p = w l + p A (1 + \\mu_i) (1 + \\kappa_i \\delta_i)\\]\nIsolating prices, \\[\np = w l [I - (1 + \\mu) (1 + \\kappa \\delta) A]^{-1} = w l B = w v\n\\]\nwhere \\(v \\equiv l B\\) and the augmented Leontief matrix is\n\\[B \\equiv [I - (1 + \\mu) (1 + \\kappa \\delta) A]^{-1}\\]\nunder uniform profitability rate \\(\\mu\\) and hence different markups."
+  },
+  {
+    "objectID": "slides_just2ce.html#carbon-taxation",
+    "href": "slides_just2ce.html#carbon-taxation",
+    "title": "Climate policies exclusively centered in the Global North harm the economy of the Global South",
+    "section": "Carbon Taxation",
+    "text": "Carbon Taxation\nCarbon taxes are internalized as a production cost for all commodities:\n\\[p' = p (1 + \\tau)\\]\nwhere \\(p = w l B\\) is the price before tax, \\(p'\\) is the price with tax, and \\(\\tau\\) is the product of emission intensity times the carbon price. In scalar notation, we write \\(p_i = w \\sum_j l_j b_{ji}\\) so that adding the carbon price yields:\n\\[p'_i = w (1 + \\tau_i) \\sum_j l_j b_{ji}\\]"
+  },
+  {
+    "objectID": "slides_just2ce.html#carbon-tariffs",
+    "href": "slides_just2ce.html#carbon-tariffs",
+    "title": "Climate policies exclusively centered in the Global North harm the economy of the Global South",
+    "section": "(Carbon) Tariffs",
+    "text": "(Carbon) Tariffs\nWe need to exploit the \\(KN \\times KN\\) dimensionality of global matrix of input-output coefficients \\(A\\) and thus the augmented Leontief matrix \\(B\\). For \\(K = N = 2\\), 2 products and 2 regions, labeled 1 to 4:\n\\[p = w (l_1, l_2, l_3, l_4) \\begin{pmatrix} b_{11} & b_{12} & b_{13} & b_{14} \\\\ b_{21} & b_{22} & b_{23} & b_{24} \\\\ b_{31} & b_{32} & b_{33} & b_{34} \\\\ b_{41} & b_{42} & b_{43} & b_{44} \\end{pmatrix}\\]\nIn the carbon taxation case, we defined \\(1 + \\tau\\) as a \\(KN\\)-vector, but it can also be thought of a diagonal matrix with zeros in the off-diagonal. For the carbon tariffs case, we should instead operate precisely on the off-diagonal matrices that refer to interregional trade. If region 1 imposes a tariff \\((\\tau_3, \\tau_4)\\) on products 1 and 2 of region 2, I would multiply coefficients \\(b_{ij}\\) by \\((1 + \\tau_i)\\) for \\(i = 3,4\\) and \\(j = 1,2\\):\n\\[p' = w (l_1, l_2, l_3, l_4) \\begin{pmatrix} b_{11} & b_{12} & b_{13} & b_{14} \\\\ b_{21} & b_{22} & b_{23} & b_{24} \\\\ b_{31}(1 + \\tau_3) & b_{32}(1 + \\tau_3) & b_{33} & b_{34} \\\\ b_{41}(1 + \\tau_4) & b_{42}(1 + \\tau_4) & b_{43} & b_{44} \\end{pmatrix}\\]"
+  },
+  {
+    "objectID": "slides_just2ce.html#modeling-circular-economy-interventions-1-product-lifetime-extension",
+    "href": "slides_just2ce.html#modeling-circular-economy-interventions-1-product-lifetime-extension",
+    "title": "Climate policies exclusively centered in the Global North harm the economy of the Global South",
+    "section": "Modeling Circular Economy Interventions 1: Product Lifetime Extension",
+    "text": "Modeling Circular Economy Interventions 1: Product Lifetime Extension"
+  },
+  {
+    "objectID": "slides_just2ce.html#modeling-circular-economy-interventions-2-resource-efficiency",
+    "href": "slides_just2ce.html#modeling-circular-economy-interventions-2-resource-efficiency",
+    "title": "Climate policies exclusively centered in the Global North harm the economy of the Global South",
+    "section": "Modeling Circular Economy Interventions 2: Resource Efficiency",
+    "text": "Modeling Circular Economy Interventions 2: Resource Efficiency"
+  },
+  {
+    "objectID": "slides_just2ce.html#final-demand-and-gross-output-constant-sector-shares",
+    "href": "slides_just2ce.html#final-demand-and-gross-output-constant-sector-shares",
+    "title": "Climate policies exclusively centered in the Global North harm the economy of the Global South",
+    "section": "Final Demand and Gross Output: Constant Sector Shares",
+    "text": "Final Demand and Gross Output: Constant Sector Shares\nLet us consider a \\(3\\times 3\\) production. The final demand vector is:\n\\[\n\\mathbf{d}\n= \\begin{bmatrix} \\beta_1 \\\\ \\beta_2 \\\\ \\beta_3 \\end{bmatrix} c\n+ \\begin{bmatrix} \\iota_1 \\\\ \\iota_2 \\\\ \\iota_3 \\end{bmatrix} i_d\n+ \\begin{bmatrix} \\sigma_1 \\\\ \\sigma_2 \\\\ \\sigma_3 \\end{bmatrix} gov\n+ \\begin{bmatrix} \\eta_1 \\\\ \\eta_2 \\\\ \\eta_3 \\end{bmatrix} exp\n\\]\nThe gross output vector is:\n\\[\n\\mathbf{x} = \\mathbf{A} \\mathbf{x} + \\mathbf{d} = (\\mathbf{I}-\\mathbf{A})^{-1}\\mathbf{d}, \\quad\n\\mathbf{A} = \\begin{bmatrix}\na_{11} & a_{12} & a_{13} \\\\\na_{21} & a_{22} & a_{23} \\\\\na_{31} & a_{32} & a_{33}\n\\end{bmatrix}\n\\]"
+  },
+  {
+    "objectID": "slides_just2ce.html#carbon-tariffs-1",
+    "href": "slides_just2ce.html#carbon-tariffs-1",
+    "title": "Climate policies exclusively centered in the Global North harm the economy of the Global South",
+    "section": "(Carbon) Tariffs 1",
+    "text": "(Carbon) Tariffs 1\nWe need to exploit the \\(KN \\times KN\\) dimensionality of global matrix of input-output coefficients \\(A\\) and thus the augmented Leontief matrix \\(B\\). For \\(K = N = 2\\), 2 products and 2 regions, labeled 1 to 4:\n\\[p = w (l_1, l_2, l_3, l_4) \\begin{pmatrix} b_{11} & b_{12} & b_{13} & b_{14} \\\\ b_{21} & b_{22} & b_{23} & b_{24} \\\\ b_{31} & b_{32} & b_{33} & b_{34} \\\\ b_{41} & b_{42} & b_{43} & b_{44} \\end{pmatrix}\\]"
+  },
+  {
+    "objectID": "slides_just2ce.html#carbon-tariffs-2",
+    "href": "slides_just2ce.html#carbon-tariffs-2",
+    "title": "Climate policies exclusively centered in the Global North harm the economy of the Global South",
+    "section": "(Carbon) Tariffs 2",
+    "text": "(Carbon) Tariffs 2\nIn the carbon taxation case, we defined \\(1 + \\tau\\) as a \\(KN\\)-vector, but it can also be thought of a diagonal matrix with zeros in the off-diagonal. For the tariffs case, operate precisely on the off-diagonal matrices that refer to interregional trade. If region 1 imposes a tariff \\((\\tau_3, \\tau_4)\\) on products 1 and 2 of region 2, we multiply coefficients \\(b_{ij}\\) by \\((1 + \\tau_i)\\) for \\(i = 3,4\\) and \\(j = 1,2\\):\n\\[p' = w (l_1, l_2, l_3, l_4) \\begin{pmatrix} b_{11} & b_{12} & b_{13} & b_{14} \\\\ b_{21} & b_{22} & b_{23} & b_{24} \\\\ b_{31}(1 + \\tau_3) & b_{32}(1 + \\tau_3) & b_{33} & b_{34} \\\\ b_{41}(1 + \\tau_4) & b_{42}(1 + \\tau_4) & b_{43} & b_{44} \\end{pmatrix}\\]"
+  },
+  {
+    "objectID": "slides_just2ce.html#motivation-exchange-is-unequal",
+    "href": "slides_just2ce.html#motivation-exchange-is-unequal",
+    "title": "Climate policies exclusively centered in the Global North harm the economy of the Global South",
+    "section": "Motivation: Exchange is Unequal",
+    "text": "Motivation: Exchange is Unequal"
+  },
+  {
+    "objectID": "slides_just2ce.html#ecological-unequal-exchange-eu-red-vs-row-green",
+    "href": "slides_just2ce.html#ecological-unequal-exchange-eu-red-vs-row-green",
+    "title": "Climate policies exclusively centered in the Global North harm the economy of the Global South",
+    "section": "Ecological Unequal Exchange: EU (red) vs RoW (green)",
+    "text": "Ecological Unequal Exchange: EU (red) vs RoW (green)\n\n\nTable of Industries\n\n\n\n\n\n#\n\n\nIndustry\n\n\n\n\n\n\n1\n\n\nAgriculture\n\n\n\n\n2\n\n\nAnimal Farming\n\n\n\n\n3\n\n\nForestry, logging and related service activities (02)\n\n\n\n\n4\n\n\nFishing, operating of fish hatcheries and fish farms; service activities incidental to fishing (05)\n\n\n\n\n5\n\n\nExtraction of Fossil-Fuels\n\n\n\n\n6\n\n\nMining & Quarrying of raw materials\n\n\n\n\n7\n\n\nProcessing of meat\n\n\n\n\n8\n\n\nProcessing of other food & beverage\n\n\n\n\n9\n\n\nManufacture of tobacco products (16)\n\n\n\n\n10\n\n\nManufacture of textiles\n\n\n\n\n11\n\n\nManufacture of wood and of products of wood and cork, except furniture; manufacture of articles of straw and plaiting materials (20)\n\n\n\n\n12\n\n\nRe-processing of secondary wood material into new wood material\n\n\n\n\n13\n\n\nPulp\n\n\n\n\n14\n\n\nRe-processing of secondary paper into new pulp\n\n\n\n\n15\n\n\nPaper\n\n\n\n\n16\n\n\nProcessing of Fossil Fuels\n\n\n\n\n17\n\n\nPlastics, basic\n\n\n\n\n18\n\n\nRe-processing of secondary plastic into new plastic\n\n\n\n\n19\n\n\nManufacture of Chemicals\n\n\n\n\n20\n\n\nManufacture of rubber and plastic products (25)\n\n\n\n\n21\n\n\nManufacture of glass and glass products\n\n\n\n\n22\n\n\nRe-processing of secondary glass into new glass\n\n\n\n\n23\n\n\nManufacture of other non-metallic mineral products\n\n\n\n\n24\n\n\nManufacture of cement, lime and plaster\n\n\n\n\n25\n\n\nRe-processing of ash into clinker\n\n\n\n\n26\n\n\nManufacture of Metals\n\n\n\n\n27\n\n\nRe-processing of Metals\n\n\n\n\n28\n\n\nManufacture of durable goods\n\n\n\n\n29\n\n\nManufacture of furniture; manufacturing n.e.c. (36)\n\n\n\n\n30\n\n\nRecycling\n\n\n\n\n31\n\n\nProduction of electricity by fossil fuels\n\n\n\n\n32\n\n\nProduction of electricity by renewable energy\n\n\n\n\n33\n\n\nTransmission & Distribution\n\n\n\n\n34\n\n\nManufacture of gas; distribution of gaseous fuels through mains\n\n\n\n\n35\n\n\nWater\n\n\n\n\n36\n\n\nConstruction (45)\n\n\n\n\n37\n\n\nRe-processing of secondary construction material into aggregates\n\n\n\n\n38\n\n\nSale, maintenance, repair of motor vehicles, motor vehicle parts, motorcycles, motorcycle parts and accessories\n\n\n\n\n39\n\n\nRetail sale of automotive fuel\n\n\n\n\n40\n\n\nRetail & Wholesale trade\n\n\n\n\n41\n\n\nLeisure Services\n\n\n\n\n42\n\n\nTransport\n\n\n\n\n43\n\n\nKIBS\n\n\n\n\n44\n\n\nReal estate activities (70)\n\n\n\n\n45\n\n\nRenting of machinery and equipment without operator and of personal and household goods (71)\n\n\n\n\n46\n\n\nResearch and development (73)\n\n\n\n\n47\n\n\nPublic administration and defence; compulsory social security (75)\n\n\n\n\n48\n\n\nEducation (80)\n\n\n\n\n49\n\n\nHealth and social work (85)\n\n\n\n\n50\n\n\nIncineration of Waste\n\n\n\n\n51\n\n\nBiogas & Composting\n\n\n\n\n52\n\n\nWaste water\n\n\n\n\n53\n\n\nLandfill of Waste\n\n\n\n\n54\n\n\nOther Services"
+  },
+  {
+    "objectID": "slides_just2ce.html#product-lifetime-extension",
+    "href": "slides_just2ce.html#product-lifetime-extension",
+    "title": "Climate policies exclusively centered in the Global North harm the economy of the Global South",
+    "section": "Product Lifetime Extension",
+    "text": "Product Lifetime Extension"
+  },
+  {
+    "objectID": "slides_just2ce.html#scenario-reduction-in-consumption-level",
+    "href": "slides_just2ce.html#scenario-reduction-in-consumption-level",
+    "title": "Climate policies exclusively centered in the Global North harm the economy of the Global South",
+    "section": "Scenario: Reduction in Consumption Level",
+    "text": "Scenario: Reduction in Consumption Level\n\n\nTop half \n\nBottom half"
+  },
+  {
+    "objectID": "slides_just2ce.html#scenario-product-lifetime-extension",
+    "href": "slides_just2ce.html#scenario-product-lifetime-extension",
+    "title": "Climate policies exclusively centered in the Global North harm the economy of the Global South",
+    "section": "Scenario: Product Lifetime Extension",
+    "text": "Scenario: Product Lifetime Extension"
+  },
+  {
+    "objectID": "slides_just2ce.html#scenario-product-lifetime-extension-1",
+    "href": "slides_just2ce.html#scenario-product-lifetime-extension-1",
+    "title": "Climate policies exclusively centered in the Global North harm the economy of the Global South",
+    "section": "Scenario: Product Lifetime Extension",
+    "text": "Scenario: Product Lifetime Extension"
+  },
+  {
+    "objectID": "slides_just2ce.html#product-lifetime-extension-scenario",
+    "href": "slides_just2ce.html#product-lifetime-extension-scenario",
+    "title": "Climate policies exclusively centered in the Global North harm the economy of the Global South",
+    "section": "Product Lifetime Extension Scenario",
+    "text": "Product Lifetime Extension Scenario\n\n\nExternal Indicators \n\nSocial Indicators \n\nEcological Indicators"
+  },
+  {
+    "objectID": "slides_just2ce.html#impact-product-lifetime-extension",
+    "href": "slides_just2ce.html#impact-product-lifetime-extension",
+    "title": "Climate policies exclusively centered in the Global North harm the economy of the Global South",
+    "section": "Impact: Product Lifetime Extension",
+    "text": "Impact: Product Lifetime Extension\n\n\nExternal Indicators \n\nSocial Indicators \n\nEcological Indicators"
+  },
+  {
+    "objectID": "slides_just2ce.html#scenario-summary-change-by-shock-difference",
+    "href": "slides_just2ce.html#scenario-summary-change-by-shock-difference",
+    "title": "Climate policies exclusively centered in the Global North harm the economy of the Global South",
+    "section": "Scenario Summary: Change by Shock, Difference",
+    "text": "Scenario Summary: Change by Shock, Difference\n\n\nTop half \n\nBottom half"
+  },
+  {
+    "objectID": "slides_just2ce.html#scenario-summary-change-by-shock-percent",
+    "href": "slides_just2ce.html#scenario-summary-change-by-shock-percent",
+    "title": "Climate policies exclusively centered in the Global North harm the economy of the Global South",
+    "section": "Scenario Summary: Change by Shock, Percent",
+    "text": "Scenario Summary: Change by Shock, Percent\n\n\nTop half \n\nBottom half"
+  },
+  {
+    "objectID": "slides_just2ce.html#future-work",
+    "href": "slides_just2ce.html#future-work",
+    "title": "Climate policies exclusively centered in the Global North harm the economy of the Global South",
+    "section": "Future Work",
+    "text": "Future Work\n\nMake explicit the military sector (military Keynesianism) and migration as a dynamic feedback\nGreen value chain upgrading from the NZIPL green tech dataset\nNZIPL Net-Zero Value Chain Explorer"
+  },
+  {
+    "objectID": "slides_just2ce.html#sankey-diagram-solar-2020",
+    "href": "slides_just2ce.html#sankey-diagram-solar-2020",
+    "title": "Climate policies exclusively centered in the Global North harm the economy of the Global South",
+    "section": "Sankey Diagram, Solar 2020",
+    "text": "Sankey Diagram, Solar 2020"
+  },
+  {
+    "objectID": "slides_just2ce.html#outline-1",
+    "href": "slides_just2ce.html#outline-1",
+    "title": "Climate policies exclusively centered in the Global North harm the economy of the Global South",
+    "section": "Outline",
+    "text": "Outline\n\nMake explicit the military sector (military Keynesianism) and migration as a dynamic feedback\nGreen value chain upgrading from the NZIPL green tech dataset\nNZIPL net-zero value chain explorer"
+  }
+]

@@ -1,0 +1,38 @@
+project:
+  type: website
+  output-dir: _site
+
+# Copy the figures directory into the output site so the server can serve it
+resources:
+  - figures/**
+
+format:
+  revealjs:
+    theme: moon
+   # css: styles.scss   # treat your SCSS as plain CSS (no layer markers needed)
+    slide-number: true
+    progress: true
+    toc: false
+    navigation-mode: vertical
+    controls-layout: edges
+    controls: true
+    center: false
+    hash: true
+    transition: fade
+    transition-speed: fast
+    background-transition: fade
+    width: 1280
+    height: 720
+    margin: 0.06
+    pdf-separate-fragments: false
+    code-copy: true
+    code-overflow: wrap
+    code-line-numbers: false
+    highlight-style: github
+    footer: | 
+      <p>Net Zero Industrial Policy Lab, Johns Hopkins University</p>
+
+execute:
+  echo: false
+  warning: false
+  message: false

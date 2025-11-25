@@ -1,0 +1,89 @@
+---
+title: "Utility, Conservation, and Falsifiability: Hands, Mirowski, and Modern Revealed Preference"
+author: "Oriol Vallès Codina"
+format: html
+execute:
+  echo: false
+  warning: false
+---
+
+# Utility, Conservation, and Falsifiability: Hands, Mirowski, and Modern Revealed Preference
+
+## 1. Aim and scope
+
+This note ties together **Mirowski’s “energy metaphor”**, **D. Wade Hands’ clarifications on integrability**, and the **revealed-preference (RP)** testing program (WARP/SARP/GARP, Afriat, stochastic RP), to assess whether neoclassical consumer theory is merely “as‑if” or whether it yields **empirically falsifiable conservation‑type restrictions**.
+
+---
+
+## 2. Mirowski’s thesis in brief: conservation as a scientific anchor
+
+Mirowski argues that many sciences lean on a **conservation principle** to define systems and measure change. Neoclassical economics, he claims, imported from mid‑19th‑century physics a **field** view in which **utility acts like potential energy**, encouraging the idea that **prices form a conservative vector field** (path independence, exact differentials) and implying problematic “conservation” statements such as a constant *utility+expenditure* sum. fileciteturn3file7L16-L25 fileciteturn3file0L75-L83
+
+Carlson’s survey frames this as an “integrability problem”: if you push the physics analogy literally, you get **absurdities** (e.g., constant utility+expenditure) and a tension between **subjective preference mappings** and **objective commodity flows**—a “mind–body” dualism in the theory’s foundations. fileciteturn3file0L79-L83 fileciteturn3file5L1-L17
+
+Mokyr’s review tempers the critique: physics analogies may be better treated as **heuristics** rather than **justifications**—useful for asking questions and borrowing tools, not for importing literal conservation laws. fileciteturn3file11L10-L19
+
+---
+
+## 3. Hands’ correction: which “conservation” does integrability buy?
+
+Hands shows that **the standard integrability conditions in modern micro (Slutsky symmetry/negativity)** do **not** make **Walrasian prices** a conservative vector field. Instead, they make the **compensated (Hicksian) demand** a conservative field whose potential is the **expenditure function**. Therefore, the “core physics metaphor” only holds in a **weaker, compensated** sense. fileciteturn3file3L10-L18 fileciteturn3file2L34-L43 fileciteturn3file4L13-L21
+
+Formally, Slutsky symmetry yields path‑independence for the compensated system (not the Marshallian one); Walrasian prices would be conservative only under much **stronger** (generally false) conditions—e.g., **vanishing income effects**. fileciteturn3file9L45-L62 fileciteturn3file12L10-L17
+
+**Implication.** If one insists on a conservation metaphor, the **right object** is the **expenditure/compensated demand system**. This also explains why celebrated results tied to a strict conservative structure (e.g., **Samuelson’s correspondence principle**) fail in general unless one imposes stronger symmetry than Slutsky’s. fileciteturn3file12L27-L37
+
+---
+
+## 4. RP makes maximization testable: WARP/SARP/GARP → Afriat → Stochastic RP
+
+### 4.1 Deterministic RP
+
+- **WARP/SARP/GARP.** These axioms forbid cycles in observed choices across budgets. **GARP** is the workhorse: if a finite dataset satisfies GARP, then it is **rationalizable** by a monotone, concave utility. (Afriat’s Theorem.) It also delivers the **Afriat Efficiency Index**, quantifying deviations from exact maximization.
+- **Slutsky‑type tests.** With price–quantity data, one can test **negativity and symmetry** (nonparametrically or with flexible demand systems). These are **conservation‑style restrictions** on substitution patterns.
+
+### 4.2 Stochastic RP (SRP)
+
+SRP (e.g., McFadden–Richter; Kitamura–Stoye) allows for noise and sampling variability, providing **statistical tests** of RP (and welfare bounds) when choices are probabilistic. In spirit, SRP relaxes exact conservation into **moment inequalities** that can be tested with finite samples.
+
+**Bottom line.** RP is **not** merely “as‑if”: it imposes sharp **inequality systems** that are **falsifiable** in finite datasets and **estimable** in noisy data.
+
+---
+
+## 5. Wong’s critique and the “as‑if” defense
+
+Wong (1978) argued that **Samuelson’s revealed‑preference project** did not fully escape **unobservables** or guarantee empirical content; the RP axioms risk tautology or vacuity if applied without **domain restrictions**, **regularity**, or **aggregation discipline**. The **“as‑if”** defense (Friedman) then looms: models explain by predictive success, not by realism of primitives.
+
+**Hands’ and Carlson’s take.** Even setting aside Mirowski’s hermeneutics, once you try to **literalize** the physics analogy, integrability delivers stringent conditions that can be inspected. In practice, modern micro backs away from the strong conservative field for prices and works with **compensated systems**, precisely to retain **testable structure** without absurdities. fileciteturn3file0L55-L63 fileciteturn3file8L11-L19
+
+---
+
+## 6. Aggregation and the limits of falsifiability (SMD)
+
+At the **aggregate** level, the Sonnenschein–Mantel–Debreu (SMD) results show that almost any well‑behaved excess demand can arise from some heterogeneity—so **tight RP at the individual level** does **not** translate into strong **aggregate** restrictions. Hence the “it depends on the modeler’s ingenuity” critique **does** bite at aggregation, even if micro‑level RP is empirically tight.
+
+---
+
+## 7. What does Hands’ reading imply for Mirowski and “conserved utility”?
+
+1. **Conservation lives in Hicksian space.** The mathematically defensible “conservation” is on **compensated** (not Marshallian) ground. The potential is **expenditure**, not utility+expenditure. fileciteturn3file4L13-L21
+2. **Falsifiability is real but localized.** RP and Slutsky restrictions provide **operational** content at the **individual/market** level; **SMD** weakens cross‑market, aggregate claims.
+3. **Heuristic, not dogma.** Treat the physics analogy as **heuristic** (Mokyr), while using its mathematical **discipline** (integrability, symmetry) to generate **testable inequalities**. fileciteturn3file11L10-L19
+4. **No free lunch for “as‑if.”** You can always craft “as‑if” stories, but once you **commit** to maximization with regularity (monotonicity, concavity), you inherit **Afriat/GARP tests** and **Slutsky** structure—**empirical commitments** that can fail in data.
+
+---
+
+## 8. Takeaways for your project on “conservation of value–utility”
+
+- In the **classical** (value) story, **exchange** is conservative; **labor/finance** are source/sink terms. In the **neoclassical** (utility) story, conservation appears most coherently in **compensated demand** (path‑independent expenditure). **That** is where the “field” metaphor runs cleanly.
+- If your paper argues that neoclassical economics “assumes conservation of total utility,” the precise target should be **compensated systems** (or very restrictive cases with vanishing income effects). Otherwise, **utility+expenditure conservation** is exactly the **“absurdity”** Mirowski criticized. fileciteturn3file0L79-L83
+- **Empirics to run:** (i) GARP/Afriat with efficiency indices; (ii) nonparametric **Slutsky** negativity/symmetry on Hicksian data; (iii) **stochastic RP** tests to assess statistical compliance.
+
+---
+
+## References to the discussion in this note (from your uploads)
+
+- **Carlson (1997).** *Mirowski’s Thesis and the “Integrability Problem” in Neoclassical Economics* — summary of the “energy metaphor,” integrability paradox, and the subjective/objective tension. fileciteturn3file7L16-L25 fileciteturn3file0L79-L83 fileciteturn3file5L1-L17
+- **Hands (1992, 1993).** Clarifies that Slutsky integrability → **compensated** (not Walrasian) conservative field; connects to failures of the correspondence principle when only Slutsky symmetry holds. fileciteturn3file12L6-L14 fileciteturn3file4L13-L21
+- **Mokyr (1991).** Argues for treating the physics analogy as **heuristic**, not literal justification; warns against taking “conservation of utility” too literally. fileciteturn3file11L10-L23
+

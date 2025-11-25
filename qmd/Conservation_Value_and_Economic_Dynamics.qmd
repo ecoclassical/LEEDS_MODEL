@@ -1,0 +1,227 @@
+---
+title: "Conservation of Value and Economic Dynamics"
+author: "Oriol Vallès Codina"
+format: html
+execute:
+  echo: false
+  warning: false
+---
+
+# Conservation of Value and Economic Dynamics
+
+## 1. Overview
+
+This paper connects three lines of analysis:
+
+1. The **principle of conservation of value in exchange** and the **labor theory of value** in classical political economy.
+2. The **Hamiltonian structure** of macroeconomic dynamics in the models of Goodwin and Flaschel–Semmler, representing conservative systems of value circulation.
+3. The **dissipative cycles** of financialized economies, exemplified by Foley (1987), in which credit and liquidity introduce nonconservative forces.
+
+The argument is that value conservation in exchange plays a role analogous to **energy conservation** in mechanics. Production and finance then appear as the *source* and *dissipative* terms that break this conservation.
+
+---
+
+## 2. The Classical Principle of Value Conservation
+
+### 2.1 Value in exchange
+
+In classical political economy, exchange is conservative: it redistributes value but does not create it. In pure circulation,
+
+$$
+\sum_i p_i \Delta x_i = 0,
+$$
+
+so the total value of commodities remains constant. Only **production**, through the application of **living labor**, generates new value:
+
+$$
+p^\top x = p^\top A x + wL, \quad \Rightarrow \quad p^\top (I-A)x = wL.
+$$
+
+Here, $A$ is the input–output matrix and $wL$ the newly created value. This identity expresses a **continuity equation of value**:
+
+$$
+\frac{dV}{dt} = \text{Value created by labor} - \text{Value destroyed by consumption or depreciation}.
+$$
+
+### 2.2 Relation to classical mechanics
+
+In physics, conservation of energy follows from time-translation symmetry (Noether’s theorem). In economics, value conservation arises from **exchange symmetry**—the equivalence of commodities in value terms. Labor breaks this symmetry by introducing a **source term** in the continuity equation.
+
+Thus, the classical system can be viewed as a **mechanical analogue**: exchange defines a conservative manifold, while production and financial activity appear as sources or sinks of value.
+
+---
+
+## 3. Goodwin’s Classical Growth Cycle
+
+Goodwin’s (1967) model couples employment ($\lambda$) and wage share ($\omega$):
+
+$$
+\dot{\lambda} = \lambda(a - b\omega), \qquad \dot{\omega} = \omega(-c + d\lambda).
+$$
+
+### 3.1 Hamiltonian representation
+
+Setting $q = \ln \lambda$ and $p = \ln \omega$, we have:
+
+$$
+\dot q = a - b e^{p}, \qquad \dot p = -c + d e^{q}.
+$$
+
+This admits the Hamiltonian:
+
+$$
+H(q,p) = a p - b e^{p} + c q - d e^{q}.
+$$
+
+Hamilton’s equations follow:
+
+$$
+\dot q = \frac{\partial H}{\partial p}, \qquad \dot p = -\frac{\partial H}{\partial q}.
+$$
+
+Hence, $dH/dt = 0$: the system is **conservative**. Level sets of $H$ form closed orbits—oscillations that redistribute value between wages and profits without net creation.
+
+### 3.2 Departures from conservation
+
+Fiscal policy, credit, or depreciation introduce nonconservative terms ($dH/dt \neq 0$), representing **creation or destruction of value** beyond exchange. The Hamiltonian kernel describes pure value circulation; policy and finance act as external forces doing work on the system.
+
+---
+
+## 4. Flaschel–Semmler: Intersectoral Value Circulation
+
+### 4.1 Dynamics
+
+Let $M = B - RA$ represent excess-demand and excess-profit couplings between sectors. The price–quantity adjustments are:
+
+$$
+\frac{\dot p}{p} = -\,\Delta_p M x, \qquad \frac{\dot x}{x} = \Delta_x M^\top p,
+$$
+
+where $\Delta_p, \Delta_x$ are positive diagonal matrices of adjustment speeds.
+
+### 4.2 Hamiltonian structure
+
+With $y = \ln p$ and $z = \ln x$:
+
+$$
+\dot y = -\,\Delta_p M e^{z}, \qquad \dot z = \Delta_x M^\top e^{y}.
+$$
+
+When $\Delta_p = \delta_p I$ and $\Delta_x = \delta_x I$,
+
+$$
+H(z,y) = \delta_x \mathbf{1}^\top M e^{y} + \delta_p \mathbf{1}^\top M^\top e^{z},
+$$
+
+generates the dynamics through:
+
+$$
+\dot z = \frac{\partial H}{\partial y}, \qquad \dot y = -\frac{\partial H}{\partial z}, \qquad \Rightarrow \frac{dH}{dt}=0.
+$$
+
+This Hamiltonian expresses conservation of total intersectoral value in exchange—an extension of Goodwin’s conservation law.
+
+### 4.3 Power and nonconservative forces
+
+When adjustment speeds differ or financial channels appear, the system becomes nonconservative. The rate of change of $H$ is:
+
+$$
+\dot H = \sum_i \Pi_i^{(x)} - \sum_i \Pi_i^{(p)},
+$$
+
+where
+
+$$
+\Pi_i^{(x)} = \delta_x \delta_p x_i [(M^\top p)_i]^2, \qquad \Pi_i^{(p)} = \delta_x \delta_p p_i [(Mx)_i]^2.
+$$
+
+The $\Pi$ terms measure the **sectoral power flow**—the rate at which value is created or dissipated by asymmetries, finance, or policy.
+
+---
+
+## 5. Foley (1987): Dissipative Liquidity–Profit Cycles
+
+Foley extends the classical circuit to include liquidity ratios ($m,f$) and profit rate ($r$). The system undergoes a Hopf bifurcation:
+
+$$
+\dot \rho = \mu \rho + \kappa \rho^3, \qquad \dot \theta = \omega_0 + O(\rho^2).
+$$
+
+Defining the energy-like function $E = \frac{1}{2}\rho^2$ yields:
+
+$$
+\dot E = \mu \rho^2 + \kappa \rho^4.
+$$
+
+Here:
+
+- $\mu \rho^2$ represents **power injection** (credit expansion, investment accelerators),
+- $\kappa \rho^4$ represents **dissipation** (liquidity constraint, repayment).
+
+The steady amplitude $\rho^2 = -\mu/\kappa$ defines a **stable limit cycle**. Foley’s model is thus **dissipative**: finance temporarily violates value conservation, producing nominal cycles of creation and destruction before equilibrium is restored.
+
+---
+
+## 6. From Conservative Exchange to Dissipative Finance
+
+| Model | Mathematical form | Economic meaning | Conservation property |
+|-------|-------------------|------------------|------------------------|
+| **Goodwin (1967)** | Lotka–Volterra / Hamiltonian | Wage–profit redistribution | Conservative exchange; no net value creation |
+| **Flaschel–Semmler** | Multi-sector Hamiltonian | Intersectoral value flows | Conservative if symmetric; production adds sources |
+| **Foley (1987)** | Hopf–Lyapunov dissipative | Credit–liquidity cycles | Nonconservative; finance creates and destroys value |
+
+These models trace the evolution from **closed conservative circuits** of classical exchange to **open dissipative circuits** under finance. Labor acts as a *source* of real value, while financial mechanisms create and destroy *nominal* value, introducing energy-like nonconservative forces into the macroeconomic system.
+
+### Conceptual correspondence
+
+| Mechanics | Political Economy |
+|------------|------------------|
+| Energy conservation | Conservation of value in exchange |
+| Potential energy | Stored composition of capital and labor |
+| Source term | Value creation by labor |
+| Friction / dissipation | Value destruction via finance or unproductive expenditure |
+| Power ($\dot H$) | Rate of value creation or destruction |
+
+---
+
+## 7. Mathematical Appendix
+
+### 7.1 Goodwin Hamiltonian
+
+Given
+$$
+\dot{\lambda} = \lambda(a - b\omega), \qquad \dot{\omega} = \omega(-c + d\lambda),
+$$
+set $q = \ln \lambda$, $p = \ln \omega$. Then
+$$
+\dot q = a - b e^{p}, \qquad \dot p = -c + d e^{q},
+$$
+which integrates to the Hamiltonian
+$$
+H(q,p) = a p - b e^{p} + c q - d e^{q},
+$$
+with $\dot q = \partial H / \partial p$ and $\dot p = -\partial H / \partial q$. The conservation $\dot H = 0$ holds in the absence of external forces.
+
+### 7.2 Flaschel–Semmler Hamiltonian
+
+For uniform adjustment speeds ($\Delta_p = \delta_p I$, $\Delta_x = \delta_x I$),
+$$
+\dot y = -\,\Delta_p M e^{z}, \qquad \dot z = \Delta_x M^\top e^{y},
+$$
+with Hamiltonian
+$$
+H(z,y) = \delta_x \mathbf{1}^\top M e^{y} + \delta_p \mathbf{1}^\top M^\top e^{z}.
+$$
+When speeds differ, $\dot H \neq 0$, indicating nonconservative behavior:
+$$
+\dot H = (M^\top p)^\top \Delta_x^\top \operatorname{diag}(x)(M^\top p) - (Mx)^\top \Delta_p^\top \operatorname{diag}(p)(Mx).
+$$
+This expression quantifies the net **power** generated or dissipated by asymmetries and financial interactions.
+
+---
+
+## 8. Conclusion
+
+The Hamiltonian framework of Goodwin and Flaschel–Semmler captures the classical principle that **exchange conserves value**—it merely redistributes it among agents or sectors. Labor, as productive activity, acts as the **source** of new value. Finance, conversely, introduces **nonconservative loops** that create and annihilate value within the circulation of capital.
+
+The unifying insight is that the economy functions as a **hybrid dynamical system**: partly conservative, governed by the law of value, and partly dissipative, driven by financial and policy forces. Classical value theory and modern system dynamics thus converge on a single principle: value behaves as an energy-like magnitude whose circulation, creation, and dissipation define the rhythm of capitalist reproduction.

@@ -1,0 +1,135 @@
+
+---
+title: "Major Trade Models Used by Major Institutions — Compact Summary"
+subtitle: "Structure • Use Cases • Policy Insights • Coverage (Sectors, Regions, Migration)"
+author: "Prepared for Oriol Vallès Codina"
+format:
+  html:
+    theme: cosmo
+    toc: true
+    toc-depth: 3
+    toc-location: left
+    number-sections: true
+    code-fold: false
+    smooth-scroll: false
+    anchor-sections: true
+    df-print: paged
+    pagetitle: "Major Trade Models — Compact Summary"
+    include-in-header:
+      text: |
+        <style>
+        /* -------- Compact layout tweaks -------- */
+        body { line-height: 1.3; }
+        main.content { padding-top: 0.5rem; padding-bottom: 1rem; }
+        .sidebar-navigation { font-size: 0.9em; }
+        h1, h2, h3, h4, h5 { margin-top: 0.6rem; margin-bottom: 0.3rem; line-height: 1.15; }
+        p { margin: 0.35rem 0; }
+        ul, ol { margin-top: 0.2rem; margin-bottom: 0.45rem; }
+        li { margin: 0.15rem 0; }
+        .callout { margin: 0.6rem 0; }
+        table { font-size: 0.92em; margin: 0.4rem 0; }
+        .datatable-container { margin: 0.2rem 0; }
+        .quarto-figure { margin: 0.2rem 0; }
+        .nav-page { padding-top: 0.3rem; }
+        .page-columns .content { gap: 0.8rem; }
+        .caption { margin-top: 0.2rem; }
+        pre, code { line-height: 1.2; }
+        /* tighter lists inside tables */
+        td ul, td ol { margin: 0.1rem 0; }
+        </style>
+page-layout: article
+---
+
+> **TL;DR**: This is a compact, no-frills reference you can render to HTML without big white-space gaps. It highlights the main models used by the World Bank, IMF, OECD, UNCTAD, and WTO; what they are good for; and whether they include sectoral detail and migration.
+
+## 1. One-screen overview
+
+| Institution | Representative model(s) | Model class | Typical scope | Sector detail | Regions | Migration/labor mobility | Often used for |
+|---|---|---|---|---:|---:|---|---|
+| **World Bank** | GTAP-based CGE (e.g., ENVISAGE/Linkage lineage), **WITS/SMART** (partial equilibrium) | CGE; Partial Eq. | Trade policy, global shocks, tariffs/NTBs | High (CGE) | Global | Limited (usually static mobility within/between sectors; migration occasionally via scenarios/links) | Tariff/NTB reforms, regional agreements, carbon border issues |
+| **IMF** | **GIMF**, open-economy DSGE variants, external-sector frameworks (EBA-lite) | DSGE / macro-econometric | Macro-financial + trade spillovers | Low–medium | Multi-region | Rarely explicit; labor supply shocks sometimes | Fiscal/monetary spillovers, terms-of-trade shocks, current-account analysis |
+| **OECD** | **METRO** (GTAP-based CGE), ICIO/TiVA-linked tools | CGE (+ ICIO accounting) | Supply chains, NTBs, services trade | High | Global | Usually limited; can approximate via labor market closures | Value chains, services trade, regulatory frictions, CBAM |
+| **UNCTAD** | **Global Policy Model (GPM)**; TRAINS + toolkit; partial-eq. analyses | Stock–flow macro (GPM); Partial Eq. | Macro-development scenarios with trade channels | Low–medium | Global | Can incorporate demographic/labor supply scenarios | Development strategies, global demand shifts, debt/trade interplay |
+| **WTO** | Econometric trade forecast models; CGE studies (often GTAP-based via partners) | Econometric; CGE (via studies) | Global trade monitoring & scenarios | Medium–high (in CGE studies) | Global | Typically not explicit | Forecasts, monitoring, scenario rundowns in flagship reports |
+
+## 2. What each institution’s stack does best (and where to be cautious)
+
+### World Bank
+- **Strengths**
+  - GTAP-based CGE lineage widely used and documented; rich sectoral detail; integrates tariffs, NTBs, and policy instruments.
+  - **WITS/SMART** is fast for **tariff-line** partial-equilibrium what-if analysis.
+- **Watch-outs**
+  - Comparative-static CGE settings can underplay dynamics and financial channels.
+  - Migration often handled indirectly (exogenous labor supply or linked modules).
+- **Typical insights**
+  - Welfare/real income effects by region/sector; trade creation/diversion; incidence by factor owners; CBAM pass-through.
+
+### IMF
+- **Strengths**
+  - **GIMF** and open-economy DSGE are strong on **intertemporal dynamics**, expectations, policy rules, and macro-financial spillovers.
+  - External-sector frameworks (e.g., EBA-lite) tie trade balances to fundamentals for policy assessment.
+- **Watch-outs**
+  - Sectoral granularity is thinner than CGE; trade structure stylized.
+  - Migration rarely explicit beyond labor supply/participation shocks.
+- **Typical insights**
+  - Fiscal/monetary mix under ToT shocks; current-account adjustments; debt dynamics with imported-inflation channels.
+
+### OECD
+- **Strengths**
+  - **METRO** (CGE) couples detailed sectors with **services and regulatory frictions**, well suited to **GVC** questions.
+  - ICIO/TiVA enables consistent value-added trade decomposition.
+- **Watch-outs**
+  - As with CGE: dynamics are stylized; financial constraints & distributional channels limited.
+- **Typical insights**
+  - Sourcing substitution, domestic value-added in exports, sectoral winners/losers of NTB changes, CBAM impacts along chains.
+
+### UNCTAD
+- **Strengths**
+  - **GPM** emphasizes **demand-led, stock–flow consistent macro** structure with developing-country focus.
+  - TRAINS database and toolkits offer tariff/NTB evidence for partial-eq. exercises.
+- **Watch-outs**
+  - Sectoral detail lower than CGE; trade structure often aggregated.
+- **Typical insights**
+  - Global demand and commodity cycles, distribution, external constraints, growth–trade–debt interactions.
+
+### WTO
+- **Strengths**
+  - **Econometric now/forecast** models for global trade volumes; convenes/commissions CGE scenario work.
+- **Watch-outs**
+  - Forecasts depend on global GDP assumptions; policy incidence by sector often comes from partner CGE studies.
+- **Typical insights**
+  - Near-term trade growth paths, risks, and alternative scenarios; synthesis of policy impacts across studies.
+
+## 3. Sectoral scope, regions, migration (at a glance)
+
+- **Sectoral scope**: CGE families (World Bank, OECD, partner studies for WTO) provide the richest **HS/ISIC→GTAP** sector mapping; IMF/UNCTAD macro models are coarser.
+- **Regions**: All offer **global, multi-region** setups; disaggregation varies by study and data vintage.
+- **Migration / labor mobility**:
+  - Commonly **limited** in baseline CGE closures (labor mobile across sectors within a region; international migration usually exogenous).
+  - Macro models (IMF, UNCTAD) may incorporate **labor supply/demography** scenarios rather than explicit migration microstructure.
+  - Dedicated migration–trade linkages often handled **via linked modules** or external literature rather than core models.
+
+## 4. Policy questions these models are good at
+
+- **Tariff/NTB reforms & trade agreements** → CGE (WB/OECD; WTO via studies): incidence by sector/region; rules-of-origin tests; CBAM leakage.
+- **Macro-financial spillovers of trade shocks** → IMF DSGE/GIMF: terms-of-trade; imported inflation; policy rules; current account.
+- **GVC restructuring / resilience** → OECD METRO + TiVA/ICIO: sourcing shifts, value-added, services linkages.
+- **Development & external constraints** → UNCTAD GPM: demand regimes, commodity cycles, debt–trade nexus.
+- **Short-run trade forecasts & risks** → WTO econometrics: monitoring and scenario bands.
+
+## 5. Modeling notes you may care about (compact)
+
+- **Calibration & data**: GTAP social accounting matrices; IO/ICIO for TiVA; national accounts and BoP for macro models.
+- **Dynamics**: Many CGE runs are **comparative-static**; DSGE/GIMF offer intertemporal expectations; GPM is stock–flow consistent with adjustment dynamics.
+- **Distributional detail**: Limited in standard CGE/DSGE; distributional incidence requires extensions or microsimulation linkages.
+- **Climate/trade**: CBAM and embodied carbon are increasingly integrated in OECD/WB CGE workflows; macro models treat carbon via shocks/taxes with simplified abatement.
+
+## 6. References & pointers (quick, non-exhaustive)
+
+- WB CGE (GTAP lineage), WITS/SMART (partial equilibrium)  
+- IMF **GIMF**, EBA-lite external-sector frameworks  
+- OECD **METRO**, **ICIO/TiVA**  
+- UNCTAD **Global Policy Model (GPM)**; **TRAINS**  
+- WTO **trade forecasts**; CGE **partner** studies
+
+> If you want, I can generate versions of this page that are **institution-specific** (one per file) or a longer annotated version with citations.

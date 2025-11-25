@@ -1,0 +1,52 @@
+---
+title: "Climate policies exclusively centered in the Global North harm the economy of the Global South"
+subtitle: "Policy lessons of a two‑region input‑output ecological macroeconomic model"
+author: "Oriol Vallès Codina"
+affiliation: "Net Zero Industrial Policy Lab, Johns Hopkins University"
+date: today
+# Tell Quarto where to look for images used by Markdown ![]()
+resource-path: ["../figures", "figures"]
+
+format:
+  beamer:
+    theme: metropolis
+    aspectratio: 169
+    slide-level: 2
+    number-sections: false
+    toc: false
+    keep-tex: false
+    pdf-engine: xelatex
+    # Reduce file size by embedding only used fonts
+    pdf-engine-opt: ["-shell-escape"]
+fontsize: 10pt
+mainfont: "Latin Modern Roman"
+monofont: "Latin Modern Mono"
+---
+
+# Introduction
+
+## Outline
+
+- ECO‑MRIO‑SFC modeling to understand **climate policy** distributional effects
+- Trade wars, GVC fragmentation, and ecological unequal exchange
+- Our model: cooperative policies dominate competitive ones
+
+# Methods
+
+## Two‑region ECO‑MRIO‑SFC
+
+- Linkages, leakages, and rebound
+- Calibration notes…
+
+# Results
+
+## Key figure (example)
+
+![](dorninger.png){fig-align="center" width=80%}
+
+# Conclusion
+
+## Takeaways
+
+- Coordination > autarky
+- Sensitivity checks …

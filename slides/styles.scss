@@ -1,0 +1,110 @@
+/*-- scss:defaults --*/
+/* You can leave this empty or set theme variables here if needed. */
+
+/*-- scss:rules --*/
+/* Metropolis-inspired Reveal.js theme (modern Beamer look) */
+
+/* Typography and palette */
+:root {
+  --font-sans: "Inter", "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Courier New", monospace;
+  --accent: #365cf6;
+  /* main blue accent */
+  --fg: #1a1a1a;
+  /* text color */
+  --muted: #6b7280;
+  /* subtle gray */
+}
+
+/* Base text styling */
+.reveal {
+  font-family: var(--font-sans);
+  font-size: 32px;
+  line-height: 1.35;
+}
+
+.reveal h1,
+.reveal h2,
+.reveal h3,
+.reveal h4 {
+  font-weight: 700;
+  letter-spacing: -0.015em;
+}
+
+.reveal h1 {
+  font-size: 2.2em;
+}
+
+.reveal h2 {
+  font-size: 1.7em;
+  margin-top: 0.4em;
+}
+
+.reveal h3 {
+  font-size: 1.35em;
+  color: var(--accent);
+}
+
+.reveal p,
+.reveal li {
+  color: var(--fg);
+}
+
+.reveal em {
+  color: var(--accent);
+}
+
+/* Title slide subtitle */
+.title-slide-extra {
+  margin-top: 0.5rem;
+  color: var(--muted);
+}
+
+/* Footer bar */
+.q-footer {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.55em;
+  color: var(--muted);
+  border-top: 1px solid rgba(0, 0, 0, .08);
+  padding-top: 6px;
+}
+
+/* Two-column layout helper */
+.columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+}
+
+/* Callouts */
+.callout-note {
+  border-left: 4px solid var(--accent);
+  padding-left: 1rem;
+}
+
+/* Code block */
+.reveal pre code {
+  font-family: var(--font-mono);
+  font-size: 0.8em;
+}
+
+/* Highlighted fragment */
+.fragment.highlight-current-blue.current-fragment {
+  outline: 3px solid var(--accent);
+  border-radius: 8px;
+}
+
+/* Dark mode */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --fg: #e5e7eb;
+    --muted: #9ca3af;
+  }
+
+  .q-footer {
+    border-top-color: rgba(255, 255, 255, .12);
+  }
+}

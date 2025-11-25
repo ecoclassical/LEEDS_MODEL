@@ -1,0 +1,73 @@
+---
+title: "The Energy–Value Hamiltonian: From Utility Fields to Value Potentials"
+author: "Oriol Vallès Codina"
+format: html
+bibliography: references.bib
+execute:
+  echo: false
+  warning: false
+---
+
+## 1. Introduction: The Physics–Economics Analogy
+
+Since the late nineteenth century, economists have repeatedly attempted to construct a scientific analogue to the conservation laws of physics. As Philip Mirowski (1989) showed in *More Heat than Light*, marginalist economics inherited from classical mechanics the ambition to identify an invariant quantity—an “economic energy”—that would remain constant through transformation. Where physicists defined energy as a conserved magnitude linking kinetic and potential forms, economists sought to define a quant...
+
+Yet the two great research programs that emerged diverged profoundly. Classical political economy treated *value* as conserved in exchange and created in production, an ontology grounded in labor. Neoclassical economics, conversely, reinterpreted invariance as *utility*, an internalized and psychological potential whose conservation existed only in formal terms. This document reconstructs the neoclassical “energy metaphor,” examines its mathematical core in the integrability framework, and contrasts it ...
+
+---
+
+## 2. The Neoclassical Hamiltonian and the Integrability Problem
+
+### 2.1 From mechanics to microeconomics
+
+In classical mechanics, the Hamiltonian $H(q, p) = T(p) + V(q)$ defines the total energy of a system, with the equations of motion:
+$$
+\dot{q}_i = \frac{\partial H}{\partial p_i}, \qquad
+\dot{p}_i = -\frac{\partial H}{\partial q_i}.
+$$
+
+Mirowski (1989) demonstrated that early neoclassical theorists such as Jevons, Walras, and Pareto explicitly modeled the consumer as a dynamical system in which prices \(p_i\) and quantities \(x_i\) functioned as conjugate variables. The fundamental differential relation $dU = \sum_i p_i dx_i$ implied a potential function \(U(x)\) analogous to mechanical energy, with demand as its gradient and prices as generalized forces.
+
+### 2.2 Integrability as conservation of the expenditure field
+
+The integrability condition requires that the matrix of substitution effects—the Slutsky matrix—be symmetric and negative semi-definite. This ensures that compensated demand forms a conservative vector field, permitting the existence of a scalar potential \(U(x)\). In this setting, the *budget constraint* plays the role of an isochrone or energy surface: total expenditure \(E = \sum_i p_i x_i\) is fixed, and consumers trace along the contour of constant “energy.”
+
+Wade Hands (1993) clarified Mirowski’s argument by showing that this analogy is mathematically coherent only under compensated (Hicksian) variation. Without the budget constraint, utility cannot act as a conserved potential. Thus, the apparent conservation of utility derives from the accounting identity of expenditure, not from an underlying empirical invariant.
+
+---
+
+## 3. Afriat, Revealed Preference, and Empirical Falsification
+
+Afriat’s Theorem (1967) introduced the first empirical test for whether observed demand data can be rationalized by a concave utility function. The theorem states that a dataset \((p_t, x_t)\) satisfies the *Generalized Axiom of Revealed Preference (GARP)* if and only if there exists a utility function \(U(x)\) consistent with rational behavior.
+
+The *Afriat Efficiency Index* quantifies deviations from perfect rationality, effectively measuring the “friction” within the consumer’s field of choice. When the index equals one, behavior is consistent with an exact conservative system; values below one correspond to violations of conservation—dissipation, noise, or bounded rationality. This provides a measurable counterpart to Mirowski’s metaphor: neoclassical mechanics survives empirically only insofar as expenditure is conserved and preferences are int...
+
+However, the aggregation problem, formalized by the Sonnenschein–Mantel–Debreu theorem, annihilated the prospect of macroeconomic conservation. Any smooth, continuous aggregate excess demand function could emerge from microfoundations. The field of preferences lost its integrable structure, and with it, any claim to an energy-like invariant at the system level.
+
+---
+
+## 4. The 'As If' Methodology and the Loss of Ontology
+
+Milton Friedman’s *The Methodology of Positive Economics* (1953) completed the transition from physics to fiction. By declaring that the realism of assumptions was irrelevant—models were valid if predictions worked—Friedman severed the link between invariance and ontology. Economic models now described agents acting *as if* they optimized, without the requirement that optimization correspond to any measurable conservation law.
+
+Neil De Marchi and Mark Blaug later showed that this methodological turn replaced causal representation with instrumental heuristics. Mirowski, in turn, saw this as the final stage of “energy without substance”: economics retained the formalism of conservation while abandoning its empirical content. Wade Hands (1993) called this the “metaphor of potential energy without a field.”
+
+---
+
+## 5. The Classical Response: Value as the True Invariant
+
+In contrast, classical and Sraffian economics preserve a genuine conservation law. Exchange redistributes value, but production generates it. The core relation:
+$$
+p^\\top x = p^\\top A x + wL
+$$
+expresses that total value equals the value of inputs plus the new value created by labor. This is a continuity equation of value analogous to the first law of thermodynamics.
+
+Kurz, Shiozawa, and Shaikh have all argued that such conservation is not metaphorical but accounting-based: value is conserved because double-entry logic enforces it. Yet, the existence of a surplus $(I - A) x > 0$ allows expansion, linking conservation to growth. This defines the “value Hamiltonian”: a system in which total value functions as potential energy, and profit as kinetic transformation.
+
+---
+
+## 6. Conclusion: The Limits of the Energy Metaphor
+
+The neoclassical program achieved formal symmetry with mechanics but failed to produce an empirically grounded conservation law. Its Hamiltonian—total utility or expenditure—was tautological, lacking an observable counterpart to energy. By contrast, the classical system retains a measurable invariant grounded in labor and reproduction. The Mirowskian energy metaphor therefore finds its genuine realization not in utility theory, but in the conservation of value within production and exchange.
+
+Restoring economics as a science of invariants requires reuniting its analytical form with a material ontology. The *Energy–Value Hamiltonian* represents a synthesis of this endeavor: a theory in which labor, production, and exchange generate a conserved magnitude—*value*—that fulfills the long-standing search for an economic equivalent of energy.

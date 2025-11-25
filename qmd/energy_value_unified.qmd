@@ -1,0 +1,157 @@
+---
+title: "From Energy to Value: Economic Invariants, the 'As If' Methodology, and the Hamiltonian Structure of Reproduction"
+author: "Oriol Vallès Codina"
+format: html
+bibliography: references.bib
+execute:
+  echo: false
+  warning: false
+---
+
+## 1. Introduction: From Energy to Value
+
+Philip Mirowski’s *More Heat than Light* (1989) famously argued that both nineteenth-century physics and political economy shared a scientific ambition: to discover invariant magnitudes capable of expressing transformation without loss. In physics, this pursuit culminated in the principle of energy conservation. In economics, two competing programs emerged. Classical political economy located invariance in *value*, conserved in exchange but created in production through labor. Neoclassical economics substituted *utility* as its scalar invariant, transforming the material ontology of labor into a formal psychology of preference.
+
+This unified study revisits that bifurcation and its consequences. It argues that classical political economy, when reformulated in the Hamiltonian framework of Flaschel and Semmler (1987), provides a rigorous realization of Mirowski’s thesis: economics can possess a conserved quantity analogous to energy, but only when grounded in the labor process and value reproduction. The paper then integrates a methodological critique—centered on Friedman’s *as if* defense, the integrability debates, and the collapse of empirical invariants in neoclassical economics—to show how the discipline’s epistemic foundations fractured into instrumental heuristics devoid of empirical conservation.
+
+---
+
+## 2. The Neoclassical Framework: Integrability, Aggregation, and the Loss of Invariance
+
+### 2.1 Integrability and the geometry of choice
+
+The neoclassical paradigm built its formal core around constrained optimization. Utility \(U(x)\) acted as a scalar potential from which behavior was derived. The *Slutsky symmetry condition* guaranteed that compensated substitution effects formed a conservative field: path-independent, integrable, and consistent with a potential function. Afriat’s Theorem (1967) later formalized this intuition, demonstrating that observed behavior satisfies the *Generalized Axiom of Revealed Preference* (GARP) if and only if it can be rationalized by such a function.
+
+### 2.2 Afriat’s index and the physics analogy
+
+The *Afriat Efficiency Index* quantified how far real-world data deviate from an integrable system—an empirical measure of friction within the field of preferences. This index functioned as an economic analog to dissipation in mechanics: perfect utility maximization implied a frictionless conservative system, while small violations corresponded to energy loss.
+
+Yet, as Wong (1978) and Hands (1985, 1997) argued, this was conservation in name only. The invariant quantity was not utility but the *budget constraint*—a tautological identity ensuring income equals expenditure. No empirical equivalent of potential energy existed. The neoclassical system’s only conservation law was accounting, and its utility field was a formal metaphor without measurable content.
+
+### 2.3 Aggregation and the SMD collapse
+
+The Sonnenschein–Mantel–Debreu theorem (1972–1974) extinguished hopes of macro-level invariance. Even if individual preferences were well-behaved, the aggregate excess-demand function could take any shape. The integrable microfield dissolved upon aggregation. This eliminated the possibility of a global energy-like conservation law. As Mirowski later observed, economics retained the *mathematical form* of mechanics while abandoning its empirical ontology.
+
+---
+
+## 3. Methodological Retreat: Friedman, Hands, and De Marchi
+
+### 3.1 Friedman’s *as if* defense
+
+Friedman’s *The Methodology of Positive Economics* (1953) provided the intellectual justification for abandoning empirical conservation. He claimed that realism of assumptions was irrelevant so long as predictions worked—economic agents act *as if* they optimize. This shift redefined scientific success as predictive adequacy, not ontological truth. In effect, economics became a technology of forecasting rather than a science of invariants.
+
+### 3.2 Hands, De Marchi, and methodological instrumentalism
+
+Wade Hands and Neil De Marchi later revealed how this instrumentalism turned economics into a hermeneutic formalism. Once the *as if* principle replaced empirical verification, models became heuristic devices, not representations of causal structure. Economics persisted as a self-consistent symbolic system, but its relationship to reality weakened. As Hands (1993) observed, postwar methodology conflated mathematics with explanation, producing a discipline closer to theology than to physics.
+
+### 3.3 Mäki, Hoover, and the philosophy of measurement
+
+Uskali Mäki (1992, 2001) and Kevin Hoover (2001) argued that while abstraction is indispensable, realism demands representational adequacy: models must preserve causal structure. Unlike physics, where simplifications maintain empirical invariance, neoclassical abstraction erased the mechanisms it purported to describe. The *as if* defense thus institutionalized a form of methodological nominalism.
+
+---
+
+## 4. Classical Political Economy: Conservation and the Labor Source Term
+
+### 4.1 The continuity equation of value
+
+In the classical view, exchange conserves value, but production—mediated by labor—creates it. The corresponding conservation law is:
+
+$$
+\frac{dV}{dt} = L_w - D,
+$$
+
+where \(V\) is total value, \(L_w\) value produced by living labor, and \(D\) depreciation. This parallels the first law of thermodynamics, with labor as the energy source and waste as entropy. Marx’s formulation of value circulation anticipated the modern notion of an open, dissipative system with endogenous generation.
+
+### 4.2 Sraffa and the algebra of reproduction
+
+Sraffa’s (1960) input–output equations:
+
+$$
+p^\top x = p^\top A x + wL,
+$$
+
+define a closed circuit of reproduction. The technical coefficients \(A\) encode material flows, while \(wL\) introduces new value. Kurz and Shiozawa interpret this as an accounting identity ensuring conservation. Shaikh (1984) likens the normalization of prices—\(\sum_i p_i x_i = \sum_i v_i x_i\)—to a gauge condition: a choice of potential reference. Sraffa’s system is therefore a static field of value, analogous to an electrostatic equilibrium.
+
+### 4.3 Stock–Flow Consistency and empirical closure
+
+Modern Stock–Flow Consistent (SFC) models generalize this logic. Every transaction is recorded as a counter-entry in another sector’s account. Conservation is guaranteed by design. Predictive power derives not from behavioral assumptions but from structural consistency. In this sense, SFC modeling represents the empirical completion of the classical program: economics as the study of measurable invariants rather than hypothetical utilities.
+
+---
+
+## 5. Dynamic Reproduction: The Flaschel–Semmler Hamiltonian
+
+Flaschel and Semmler (1987) introduced a dynamic system linking prices and quantities:
+
+$$
+\dot{y} = -\Delta_p M e^{z}, \qquad \dot{z} = \Delta_x M^\top e^{y},
+$$
+
+with \(y=\ln p\), \(z=\ln x\), and \(M=B-RA\) encoding profitability couplings. When the adjustment matrices \(\Delta_p, \Delta_x\) are diagonal and proportional, the system admits a Hamiltonian invariant:
+
+$$
+H(y,z) = \mathbf{1}^\top [\Delta_x M^\top e^{y} + \Delta_p M e^{z}],
+$$
+
+satisfying \(\dot{z}=\partial H/\partial y, \dot{y}=-\partial H/\partial z, \dot{H}=0\). This defines a *value potential* analogous to energy. Departures from proportionality introduce dissipation, corresponding to non-conservative shocks or financial leakages.
+
+The associated Lagrangian, \(L = p \cdot \dot{x} - H\), identifies \((p,x)\) as conjugate variables—precisely the mechanical duality of potential and momentum. The Hamiltonian framework thus extends classical reproduction into a full dynamical system governed by conservation of value potential.
+
+---
+
+## 6. From Sraffa to Jain–Krishna: Autocatalytic Value Networks
+
+The Jain–Krishna model (2002) of autocatalytic chemical networks provides an illuminating analogy:
+
+$$
+\dot{x}_i = \sum_j A_{ij} x_j - \phi x_i.
+$$
+
+If \(A\) is interpreted as Sraffa’s input matrix, the economy behaves as an autocatalytic network where each sector’s output fuels others. Column normalization (\(\sum_i A_{ij}=1\)) implies simple reproduction; \(\sum_i A_{ij}<1\) yields expanded reproduction. Profitability plays the role of fitness, and Hamiltonian balance describes the energy—or value—circulation of the system. This interpretation connects the FS model to self-organizing dynamics in biology and chemistry.
+
+---
+
+## 7. Value Potential, MELT, and the Energy Interpretation
+
+Define total value \(V=p^\top x\) and total labor \(L=l^\top x\). The **Monetary Equivalent of Labor Time (MELT)** is
+
+$$
+\mu = \frac{V}{L}.
+$$
+
+This is the economic analogue of an energy–work conversion factor. Decomposing the Hamiltonian:
+
+- Potential energy: \(T = x^\top \Delta_x M^\top e^{y}\)
+- Kinetic energy: \(K = p^\top \Delta_p M e^{z}\)
+
+Total energy \(E=H=K+T\). In simple reproduction, \(\dot{E}=0\); in expanded reproduction, \(\dot{E}>0\). The MELT links this to labor input, quantifying how efficiently human effort is converted into monetary value.
+
+---
+
+## 8. Simulations and Empirical Implications
+
+Using Sraffa’s three-commodity example (wheat, iron, pigs), numerical simulation with symplectic integration confirms theoretical results. Under simple reproduction, \(H\) remains constant, and relative shares oscillate around Sraffian proportions. Introducing a small growth rate \(g>0\) yields expanded reproduction: \(H\) and \(V\) increase smoothly. The equilibrium proportions—the “standard commodity”—act as the gravitational centers of the value field. This demonstrates that value conservation persists as a structural property even during accumulation.
+
+---
+
+## 9. Discussion: From 'As If' to Empirical Conservation
+
+Reconsidered through Mirowski’s lens, the classical tradition—not the neoclassical—fulfills the nineteenth-century scientific project. The analogy becomes precise:
+
+| Mechanics | Classical Political Economy |
+|------------|------------------------------|
+| Energy conservation | Value conservation in exchange |
+| Potential energy | Composition of the capital stock |
+| Work | Productive labor creating new value |
+| Dissipation | Financial leakages and unproductive expenditure |
+| Hamiltonian invariant | Simple reproduction equilibrium |
+| Energy source term | Expanded reproduction (surplus) |
+
+Neoclassical economics, deprived of invariants, survives only as an *as if* heuristic. Its conservation laws are rhetorical. Classical political economy, by contrast, produces measurable invariants—value, profit, and labor—that define the empirical substrate of reproduction.
+
+---
+
+## 10. Conclusion: Toward a Thermodynamics of Value
+
+By uniting Mirowski’s historical analysis with the mathematical structure of Flaschel–Semmler dynamics and the methodological critique of Hands, Mäki, and De Marchi, this paper demonstrates that the only coherent energy analogue in economics is value itself. The economy is a dissipative–conservative system: it conserves value in exchange, generates it through labor, and dissipates it through finance and entropy.
+
+The *as if* methodology, once a pragmatic defense, now appears as the symptom of a lost ontology. Restoring economics as a science of empirical conservation requires recovering its classical foundation: a Hamiltonian theory of social reproduction grounded in measurable flows of labor, energy, and value.
