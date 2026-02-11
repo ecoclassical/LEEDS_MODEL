@@ -1,0 +1,494 @@
+---
+title: "Effective climate action can only be global in scope"
+subtitle: "Insights from a Core-Periphery SOCIO-ECO-MRIO-SFC Model"
+author:
+  - name: "Oriol Vallès Codina"
+    affiliation: "Johns Hopkins University, Net Zero Industrial Policy Lab, Department of Political Science"
+    email: 
+      - "oriolvallescodina@gmail.com"
+date: "`r Sys.Date()`"
+format:
+  html:
+    toc: true
+    toc_float: true
+    self-contained: true
+    page-layout: full
+    css: fullwidth.css
+execute:
+  echo: false
+---
+
+# Initialization
+
+The initial values and variables are loaded from the file stored in variable `identif` in a different structure as before.
+
+```{r packages, warning = F, message = F}
+library(tidyverse)
+library(igraph)
+library(qgraph)
+library(visNetwork)
+library(scales)
+```
+
+```{r init, warning = FALSE, message = FALSE}
+project_root <- rprojroot::find_root(
+  rprojroot::is_rstudio_project | rprojroot::is_git_root
+)
+
+variable.table <<- read.csv(
+  file.path(project_root, "data", "Variable_Definitions.csv")
+)
+
+source(file.path(project_root, "functions", "auxiliary_flexible_nov25.R"))
+
+identif <- file.path(project_root, "data", "initial_state_2026.xlsx")
+initial <- load.new.init(identif)
+
+source(file.path(project_root, "functions", "run_model_2026.R"))
+source(file.path(project_root, "functions", "MVP_model_2026.R"))
+```
+
+# Baseline 
+
+```{r simulation, warning = F, message = F}
+# baseline <- run.model(
+#   initial,
+#   mvp.model,
+#   log_file = file.path(project_root, "logs", "baseline_run.log"),
+#   log_append = FALSE,
+#   print_final_state = FALSE
+# )
+
+# saveRDS(baseline, file = file.path(project_root, 'data', 'baseline_feb10.RDS'))
+baseline <- readRDS(
+  file = file.path(project_root, 'data', 'baseline_feb10.RDS')
+)
+
+```
+
+## Calibration
+
+Target values are loaded in format long (`target.set`) and wide (`target.table.0`). Units are divided by 10,000 for convenience.
+
+```{r calibration}
+#### LOAD TARGET VALUES ####
+
+target.list <- load.target(file.path(
+  project_root,
+  'data',
+  'target_values.xlsx'
+))
+target.table <- target.list$wide
+target.set <- target.list$long
+target.vars <- target.set$var.label
+target.set$target <- baseline$simulation[
+  target.set$var,
+  baseline$initial$pars['nPeriods', 'value']
+]
+target.set$ratio <- round(target.set$target / target.set$value, 2)
+
+compute.target(baseline)
+```
+
+## Visualization
+
+```{r variable_selection} 
+#| fig-width: 7
+#| fig-height: 4
+
+# Variable Selection
+selected.list <- list(
+  Macroeconomic = c('c', 'va', 'go', 'id', 'gdef', 'cab', 'tb'),
+  Social = c('n', 'nf', 'shp', 'shw'),
+  Debt.and.Wealth = c('lh', 'lf', 'v', 'k', 'b_s'),
+  Ecological = c('x_mat', 'land', 'mat', 'rec', 'emis', 'wa', 'water')
+)
+
+
+plot.selected.by_group(baseline, selected.list)
+```
+
+# Scenarios to Analyze
+
+| Domain      | Shift              | From | To | Mechanism                  | Conserved Quantity            |
+|-------------|--------------------|------|----|----------------------------|-------------------------------|
+| Household Demand   | Green Diet Shift         | 7    | 8  | Final demand reallocation  | Total food expenditure        |
+| Household Demand   | Green Energy Shift  | 31   | 32 | Final demand reallocation  | Energy service demand         |
+| Production  | Wood circularity   | 11   | 12 | Technical coefficient change | Total wood material input   |
+| Production  | Pulp circularity   | 13   | 14 | Technical coefficient change | Paper output                |
+| Production  | Plastics circularity | 17 | 18 | Technical coefficient change | Plastic product output      |
+| Production  | Metal circularity  | 26   | 27 | Technical coefficient change | Metal product output        |
+| Production  | Glass circularity  | 21   | 22 | Technical coefficient change | Glass product output        |
+| Production  | Cement circularity | 24   | 25 | Technical coefficient change | Cementitious output         |
+| Production  | Green Energy Shift  | 31   | 32 | Technical coefficient change | Energy service to production|
+| Production  | Construction reuse | 36   | 27 | Technical coefficient change | Construction output         |
+
+# Scenario analysis (automated)
+
+```{r scenario_loop}
+#| results: asis
+#| fig-width: 8
+#| fig-height: 4
+
+# ---- Scenario registry ----
+scenarios_tbl <- tibble::tribble(
+  ~shock, ~Domain,            ~Shift,                 ~From, ~To, ~Mechanism,                     ~Conserved_Quantity,
+  1L,     "Household Demand", "Green Diet Shift",      7L,   8L, "Final demand reallocation",     "Total food expenditure",
+  2L,     "Household Demand", "Green Energy Shift",   31L,  32L, "Final demand reallocation",     "Energy service demand",
+  3L,     "Production",       "Wood circularity",     11L,  12L, "Technical coefficient change",  "Total wood material input",
+  4L,     "Production",       "Pulp circularity",     13L,  14L, "Technical coefficient change",  "Paper output",
+  5L,     "Production",       "Plastics circularity", 17L,  18L, "Technical coefficient change",  "Plastic product output",
+  6L,     "Production",       "Metal circularity",    26L,  27L, "Technical coefficient change",  "Metal product output",
+  7L,     "Production",       "Glass circularity",    21L,  22L, "Technical coefficient change",  "Glass product output",
+  8L,     "Production",       "Cement circularity",   24L,  25L, "Technical coefficient change",  "Cementitious output",
+  9L,     "Production",       "Green Energy Shift",   31L,  32L, "Technical coefficient change",  "Energy service to production",
+  10L,    "Production",       "Construction reuse",   36L,  27L, "Technical coefficient change",  "Construction output"
+) %>%
+  mutate(
+    display_name = paste0("Scenario ", shock, ": ", Domain, " - ", Shift),
+    # Parameterize these as you implement new shocks.
+    shock_vars = case_when(
+      shock == 1L ~ "beta-7,beta-8",
+      shock == 2L ~ "beta-31,beta-32",
+      TRUE ~ NA_character_
+    ),
+    shock_sectors = case_when(
+      shock == 1L ~ "7,8",
+      shock == 2L ~ "31,32",
+      TRUE ~ NA_character_
+    ),
+    # Where the scenario run is stored (RDS). You can adopt a consistent naming scheme.
+    rds_file = case_when(
+      shock == 1L ~ file.path(project_root, "data", "shock_1_diet_shock.RDS"),
+      shock == 2L ~ file.path(project_root, "data", "shock_2_energy_shock.RDS"),
+      TRUE ~ file.path(project_root, "data", paste0("shock_", shock, "_run.RDS"))
+    ),
+    # Where the scenario summary table is stored.
+    table_file = case_when(
+      shock == 1L ~ file.path(project_root, "data", "diet_shock_table.csv"),
+      shock == 2L ~ file.path(project_root, "data", "energy_shock_table.csv"),
+      TRUE ~ file.path(project_root, "data", paste0("shock_", shock, "_table.csv"))
+    )
+  )
+
+# ---- Controls ----
+run_if_missing <- FALSE  # set TRUE if you want quarto render to run missing scenarios via run.model()
+
+# Time Period Selection (common to all scenarios)
+t.shock <- initial$pars["t.shock", "value"]
+t0 <- 55
+tf <- initial$pars["nPeriods", "value"]
+
+# Container to reuse later (e.g., comparison section)
+scenario_runs <- list()
+scenario_tables <- list()
+
+plot_scenario <- function(s) {
+  stopifnot(NROW(s) == 1L)
+
+  shock <- s$shock
+  shock.title <- s$display_name
+
+  cat("
+
+# ", shock.title, "
+
+", sep = "")
+
+  # Show the registry row so the doc is self-auditing
+  cat(
+    "- **Domain:** ", s$Domain, "
+",
+    "- **Mechanism:** ", s$Mechanism, "
+",
+    "- **From → To:** ", s$From, " → ", s$To, "
+",
+    "- **Conserved quantity:** ", s$Conserved_Quantity, "
+
+",
+    sep = ""
+  )
+
+  # Build initial shock
+  initial_shock <- initial
+  initial_shock$pars["shock", "value"] <- shock
+
+  # Load (or optionally run) the scenario
+  if (file.exists(s$rds_file)) {
+    shock.run <- readRDS(s$rds_file)
+  } else if (isTRUE(run_if_missing)) {
+    shock.run <- run.model(
+      initial_shock,
+      mvp.model,
+      log_file = file.path(project_root, "logs", paste0("shock_", shock, "_run.log")),
+      log_append = FALSE,
+      print_final_state = FALSE
+    )
+    saveRDS(shock.run, s$rds_file)
+  } else {
+    cat(
+      "**Not run**: missing cached scenario file `", s$rds_file, "`.
+
+",
+      "Set `run_if_missing <- TRUE` in the chunk (and parameterize `shock_vars`/`shock_sectors`) to run it during render.
+
+",
+      sep = ""
+    )
+    return(invisible(NULL))
+  }
+
+  # ---- Visualize shocked variables (if specified) ----
+  if (!is.na(s$shock_vars) && !is.na(s$shock_sectors)) {
+    shock.vars <- strsplit(s$shock_vars, ",", fixed = TRUE)[[1]]
+    shock.sectors <- as.integer(strsplit(s$shock_sectors, ",", fixed = TRUE)[[1]])
+
+    cat("## Visualize shocked variables
+
+")
+    print(view.shock(shock.run, shock.vars = shock.vars, shock.sectors = shock.sectors))
+  } else {
+    cat("## Visualize shocked variables
+
+")
+    cat("*Pending parameterization for this scenario.*
+
+")
+  }
+
+  # ---- Visualize impacts ----
+  cat("## Visualize impacts
+
+")
+  df <- shock.long.new(baseline, shock.run)
+
+  for (i in seq_along(selected.list)) {
+    if ("gdef" %in% selected.list[[i]]) {
+      print(view.vars(data = df, viz.vars = selected.list[[i]], var.label = names(selected.list)[i]))
+    } else {
+      print(view.scaled.vars(data = df, viz.vars = selected.list[[i]], var.label = names(selected.list)[i]))
+    }
+  }
+
+  # ---- Selected variables plot ----
+  cat("## Visualize selected variables
+
+")
+  selected <- c("n", "c", "shw", "va", "cab", "nf", "gdef", "tb", "go")
+
+  p.selected.vars <- dplyr::filter(df, variable %in% selected) %>%
+    ggplot(aes(x = time, y = value, color = area, linetype = scenario)) +
+    facet_wrap(~name, scales = "free") +
+    geom_line() +
+    geom_vline(
+      xintercept = initial$pars["t.shock", "value"],
+      linetype = "dashed",
+      linewidth = .4
+    ) +
+    labs(
+      title = shock.title,
+      subtitle = "Selected Indicators. Vertical dashed line indicates shock time"
+    ) +
+    theme(
+      plot.title = element_text(face = "bold"),
+      plot.subtitle = element_text(face = "italic", size = 10),
+      legend.title = element_text(face = "bold")
+    )
+
+  print(p.selected.vars)
+
+  # ---- Summary table + summary plots ----
+  cat("## Summary visualization
+
+")
+
+  shock.table <- shock.summary(
+    baseline,
+    shock.run = shock.run,
+    t_ = c(t.shock + 1, t.shock + 7, t.shock + 20),
+    t_names = c("Immediate", "Short.Term", "Long.Term")
+  )
+
+  write.csv(shock.table, s$table_file, row.names = FALSE)
+
+  # The helper script expects these filenames in the environment
+  diet_shock_table_1_filename <- file.path(project_root, "figures", paste0("shock_", shock, "_table_1.pdf"))
+  diet_shock_table_2_filename <- file.path(project_root, "figures", paste0("shock_", shock, "_table_2.pdf"))
+
+  df <<- read.csv(s$table_file)
+  source(file.path(project_root, "R", "scenario_analysis_2026.R"))
+
+  # Expose the scenario objects for later use (comparison, etc.)
+  scenario_runs[[as.character(shock)]] <<- shock.run
+  scenario_tables[[as.character(shock)]] <<- shock.table
+
+  # Backwards-compatibility for the existing comparison chunk
+  if (shock == 1L) diet.table <<- shock.table
+  if (shock == 2L) energy.table <<- shock.table
+
+  invisible(NULL)
+}
+
+# Run only scenarios with existing cached RDS (or those you choose to run)
+for (k in seq_len(nrow(scenarios_tbl))) {
+  plot_scenario(scenarios_tbl[k, , drop = FALSE])
+}
+
+```
+
+
+# Scenario Comparison
+
+```{r comparison} 
+#| fig-width: 10
+#| fig-height: 21
+#| fig-cap: "Comparison of Diet and Energy Transition Scenarios"
+
+selected.list <- list(
+  Macroeconomic = c('c', 'va', 'go', 'id', 'gdef', 'cab', 'tb'),
+  Social = c('n', 'nf', 'shp', 'shw'),
+  Debt.and.Wealth = c('lh', 'lf', 'v', 'k', 'b_s'),
+  Ecological = c('x_mat', 'land', 'mat', 'rec', 'emis', 'wa', 'water')
+)
+
+lookup <- stack(selected.list) |>
+  dplyr::rename(
+    Variable = values,
+    Name = ind
+  )
+
+scenario.tables <- list(diet = diet.table, energy = energy.table) %>%
+  bind_rows(.id = "scenario") %>%
+  mutate(
+    scenario = factor(
+      scenario,
+      levels = c("diet", "energy"),
+      labels = c('Household\nDiet Shift', 'Household\nEnergy Consumption Shift')
+    )
+  )
+
+df <- scenario.tables |>
+  dplyr::select(-Name) |> # drop old category column
+  dplyr::left_join(lookup, by = "Variable") %>%
+  filter(!is.na(Name))
+
+source(file.path(project_root, "R", "scenario_comparison_2026.R"))
+p.comparison
+```
+
+# Key Structural Findings from Scenario Comparison
+
+The scenario analysis reveals a clear macro-ecological success combined with persistent social and distributional tensions. The green transition improves environmental indicators and external balances but generates labour market contraction and rising inequality, particularly over time.
+
+## Macroeconomic Stabilization
+
+Across both Core and Periphery, the green transition produces systematic macroeconomic improvements, especially beyond the immediate adjustment phase.
+
+- Current account balance and trade balance improve in all time horizons  
+- Government deficit narrows significantly in the short and long term  
+- Value added and gross output recover after short-term adjustment costs  
+- The Core captures stronger and earlier gains than the Periphery  
+
+**Time dynamics:**  
+Short-term disruption → Medium-term stabilization → Long-term consolidation  
+
+These patterns are consistent with a structural reallocation process rather than a prolonged recessionary adjustment.
+
+---
+
+## Distributional Shift Toward Capital
+
+The transition generates a persistent and intensifying redistribution from labour to capital.
+
+| Indicator | Immediate | Short Term | Long Term | Interpretation |
+|----------|-----------|------------|-----------|----------------|
+| Wage share of income | ↓ | ↓↓ | ↓↓ | Labour loses income share |
+| Profit share of income | ↑ | ↑↑ | ↑↑ | Capital captures transition rents |
+| Worker disposable income | ↓ | ↓ | ↓ | Real labour income compression |
+| Capitalist disposable income | ↑ | ↑↑ | ↑↑ | Income polarization widens |
+
+The shift is not temporary; it strengthens over time, indicating a structural, capital-biased transition under existing institutional settings.
+
+---
+
+## Labour Market Contraction
+
+Employment effects are consistently negative, with no clear recovery in the long term.
+
+| Variable | Core | Periphery | Dynamics |
+|----------|------|-----------|----------|
+| Total employment | ↓ | slight ↓ | Persistent decline |
+| Female employment | ↓↓ | slight ↓ | Gendered impact |
+| Real consumption | ↓ | flat/slight ↓ | Demand compression |
+
+The results suggest a labour-saving restructuring rather than a short-term displacement followed by reabsorption. The stronger fall in female employment points to sectoral reallocation away from feminized sectors.
+
+---
+
+## Core–Periphery Asymmetry
+
+The macroeconomic benefits of the transition are unevenly distributed:
+
+- The Core experiences stronger improvements in trade balances and current account positions  
+- Financial variables and wealth indicators suggest capital re-accumulation in the Core  
+- The Periphery benefits less from value-added gains  
+
+This pattern indicates upstream green upgrading concentrated in core economies, with limited peripheral value capture.
+
+---
+
+## Strong and Immediate Ecological Gains
+
+Environmental improvements are large, immediate, and sustained across all horizons.
+
+| Indicator | Pattern |
+|----------|---------|
+| CO₂ emissions | Large decline |
+| Material extraction | Decline |
+| Land use | Decline |
+| Waste | Decline |
+| Water use | Decline |
+| Recycling | Increase |
+
+Unlike the social variables, ecological gains are front-loaded rather than delayed.
+
+---
+
+## Time Horizon Summary
+
+| Dimension | Immediate | Short Term | Long Term |
+|-----------|-----------|------------|-----------|
+| Ecology | Large gains | Maintained | Maintained |
+| Macroeconomic stability | Mixed | Improves | Consolidates |
+| Employment | Falls | Falls further | No recovery |
+| Inequality | Rises | Rises more | Structural shift |
+| Core–Periphery gap | Limited | Widening | Entrenched |
+
+---
+
+## Overall Interpretation
+
+The modeled green transition is:
+
+**Ecologically effective**  
+**Macroeconomically stabilizing**  
+**Socially regressive under current institutions**  
+
+Without complementary policies such as:
+
+- Wage protection and collective bargaining support  
+- Employment guarantees or green job programs  
+- Labour-absorbing industrial policy  
+- Gender-sensitive transition measures  
+
+the transition path risks becoming politically destabilizing despite ecological success.
+
+---
+
+## Executive Takeaway
+
+- The green transition delivers rapid ecological improvements and medium-term macroeconomic stabilization, particularly in external balances and fiscal positions. 
+- However, these gains are accompanied by persistent labour displacement, declining wage shares, rising profit shares, and falling worker incomes, with especially strong negative effects on female employment. 
+- Inequality widens over time, and the Core captures a disproportionate share of the macroeconomic benefits relative to the Periphery.
+- Without strong redistributive and labour-market institutions, the transition appears environmentally effective but socially and politically fragile.
+
