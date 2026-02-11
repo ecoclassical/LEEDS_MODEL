@@ -1,0 +1,208 @@
+---
+title: "ECO-MRIO-SFC Model: Flexible Version Documentation"
+author: "Oriol Vallès Codina"
+date: "`r Sys.Date()`"
+output:
+  # word_document: default
+  # keep_tex: true
+
+  # pdf_document:
+  #   toc: true
+  #   toc_depth: 3
+  #   number_sections: true
+  html_document:
+    toc: TRUE
+    toc_float: TRUE
+format:
+  html:
+    self-contained:
+      true
+---
+
+# Introduction
+
+This is the flexible version of the SOCIO-ECO-MRIO SFC model developed by Passarella et al. It has a different variable structure and grammar tailored to implement the more powerful Broyden solver, in addition to the simpler Gauss-Seidel solver that the old version already was able to use. The Broyden solver uses the Jacobian matrix $J$ numerically computed by `R` from the model in each iteration, which requires $J$ to be invertible and hence with determinant zero. 
+
+At the moment, my computation of the Jacobian returns a non-invertible matrix. This may well be due to the existence of redundant equations or variables that do not change over time (should be considered exogenous). An issue is that the state vector that is passed to the Jacobian computation includes the previous time period $\{y_{t-1}, y_t\}$ and this may yield problems: Jacobian is then of dimension $2n \times 2n$, where $n = 663$ is the current number of variables.
+
+# Initialization
+
+The initial values and variables are loaded from the file `initial_values_july10.xlsx` stored in variable `identif` in a different structure as before.
+
+```{r init, warning = FALSE, message = FALSE}
+# Load Auxiliary Functions
+directory <- '' # '' for the markdown file, 'flexible_/' for R
+source(paste0(directory, 'functions/auxiliary_flexible.R')) # load.new.init, auxiliary labeling functions, plotting function
+
+# Load Initial Values
+identif <- paste0(directory, 'data/initial_values_july26_jbf_test_without_manure.xlsx')
+initial <- load.new.init(identif)
+
+# Load Models
+source(paste0(directory, "functions/run_new_model.R")) # function run.new.model(initial.values, model.equations)
+source(paste0(directory, "functions/MVP_model.R")) # model equations
+```
+
+* `identif`, which saves the name of the Excel file for reference and documentation purposes: `r initial$identif`,
+* `countries`, the country labels that are taken from the $A$ matrix row names (left to the dot `.`): 
+`r initial$countries`
+* `sectors`, the industry labels that are taken from the $A$ matrix row names (right to the dot `.`): 
+`r initial$sectors`
+* `N`, the number of countries (a scalar), $N = `r initial$N`$,
+* `K`, the number of industries in each country (a vector), $K = `r initial$K`$, and
+
+Its dimension is the number of global variables `r nrow(initial$variables$global)` plus the number of aggregate variables `r nrow(initial$variables$aggregate)` times the number of countries `r initial$N` plus the number of industry variables `r nrow(initial$variables$industry) / initial$N` times the number of countries `r initial$N` times the number of industries `r unique(initial$K)`:
+
+```{r}
+nrow(initial$variables$global) + nrow(initial$variables$aggregate) * initial$N + nrow(initial$variables$industry) * unique(initial$K)
+```
+
+
+## $A$ Matrix
+
+Importantly, the column names of the $A$ matrix contained in `identif` determine the country and industry labels in the whole model, following the grammar `country_label.industry_label`:
+
+```{r A.matrix}
+kable(initial$A.matrix, booktabs = TRUE, digits = 4)
+```
+
+Circular economy matrix $B$ is computed from the $A$ matrix using parameters `more.input` and `less.input` to obtain the new coefficients from the old ones.
+
+
+# Run New Model Baseline
+
+Function `run.new.model` loads initial values `initial` as first argument and runs the model equations at time period $t$ of the second argument as in `mvp.model` (for instance stored in `MVP_model.R`), in this case using the Gauss-Seidel solver that checks convergence to a stable solution at each iteration:
+
+```{r}
+initial$parameters['shock', ] <- 0
+baseline <- run.new.model(initial, mvp.model)
+# saveRDS(baseline, paste0(directory, 'data/baseline.RDS'))
+baseline <- readRDS(paste0(directory, 'data/baseline.RDS'))
+```
+
+The old model run globally took ~13 secs, while the new model run globally took ~30 secs. However, run as a function, the old model takes ~1.8 min and the new model takes ~33 secs.
+
+Model equations are adapted, with some minor changes documented in the file `run.new.model`, from the file `Model_rev (JBF_Revised Feb_with public Investment)_adapted`. Now all industry-level and country-level variables are saved into a single vector `sim`. Parameters (scalars in the old code) are saved into a single vector `para`. In the old code, we could distinguish between demand-led and actual industry-level variables, which is no longer the case (all are actual).
+
+```{r}
+dim(baseline$simulation)
+```
+
+
+```{r}
+# Aggregate Nominal Income for Z1
+baseline$simulation['Z1_yn', ]
+
+# Employment of Industry 4, Area Z2
+baseline$simulation['Z2_n_j-4', ]
+```
+
+
+# Auxiliary Labeling Examples
+
+Country-level consumption `c` for both regions at time 10 is obtained using `z.lab`:
+
+```{r}
+baseline$simulation[z.lab('c'), 10]
+```
+
+Industry-level value-added `va_j` at time 40 is obtained using `zk.lab`:
+
+```{r}
+baseline$simulation[zk.lab('va_j'), 40]
+```
+
+which can be summed by country:
+
+```{r}
+zk.sum(baseline$simulation[zk.lab('va_j'), 40])
+```
+
+# Example Baseline Visualization
+
+```{r visual}
+selected <- c('va', 'n', 'nf', 'ineq', 'emis', 'mat')
+
+p.selected <- plot.vars(baseline, selected) 
+p.selected + ggtitle('Selected Indicators. Baseline')
+```
+
+# Shock Example
+
+## Simple Visualization 
+
+This is a simple visualization of shock 1.
+
+```{r}
+initial$parameters['shock', ] <- 1 # shock 1
+# shock.run <- run.new.model(initial, mvp.model)
+# saveRDS(shock.run, paste0(directory, 'data/shock.RDS'))
+shock.run <- readRDS(paste0(directory, 'data/shock.RDS'))
+shock.title <- paste0('Shock: Reduction in Consumption Propensities')
+
+df <- shock.long.new(baseline, shock.run)
+
+# Selected Vars to plot
+p.selected.vars <- filter(df, variable %in% selected) %>% 
+    ggplot(aes(x = time, y = value, color = area, linetype = scenario)) + facet_wrap(~ name, scales = 'free') + geom_line() + 
+    geom_vline(xintercept = initial$parameters['t.shock', ], linetype = 'dashed', linewidth = .4) +
+    labs(title = shock.title, subtitle = 'Selected Indicators. Vertical dashed line indicates shock time')
+
+p.selected.vars
+```
+
+## Scaled Visualization
+
+This is a scaled visualization of shock 1.
+
+```{r}
+# Variable Selection
+macro.vars <- c('c', 'va', 'go','id')
+external.vars <- c('cab', 'gdef', 'tb', 'nimp')
+social.vars <- c('n', 'nf', 'ineq', 'pa')
+
+# Time Period Selection
+t.shock <- initial$parameters['t.shock', ] # shock time period
+t0 <- 50 # initial time period for visualization
+tf <- initial$parameters['nPeriods', ] # final time period for visualization
+
+df <- shock.long.new(baseline, shock.run) %>% filter(time >= t0 & time <= tf)
+df$ref.value <- rep(filter(df, time == (t.shock - 1)) %>% select(value), times = tf - t0 + 1) %>% unlist
+df$norm.value <- df$value / df$ref.value
+
+# Macro Vars
+p.macro <- filter(df, variable %in% macro.vars) %>% ggplot(aes(x = time, y = norm.value, color = area, linetype = scenario)) + ylab('Normalized Value') +
+  facet_grid(name ~ area) + geom_line() + theme(strip.text.y.right = element_text(angle = 0)) +
+  geom_vline(xintercept = t.shock, linetype = 'dashed', linewidth = .4) +
+  labs(title = shock.title, subtitle = 'Selected Aggregate Macroeconomic Indicators. Vertical dashed line indicates shock time') + coord_cartesian(xlim = c(t0, tf))
+
+# Social Vars
+p.social <- filter(df, variable %in% social.vars) %>% ggplot(aes(x = time, y = norm.value, color = area, linetype = scenario)) + ylab('Normalized Value') +
+  facet_grid(name ~ area) + geom_line() + theme(strip.text.y.right = element_text(angle = 0)) +
+  geom_vline(xintercept = t.shock, linetype = 'dashed', linewidth = .4) +
+  labs(title = shock.title, subtitle = 'Selected Aggregate Social Indicators. Vertical dashed line indicates shock time') + coord_cartesian(xlim = c(t0, tf))
+
+# External Vars
+p.external <- filter(df, variable %in% external.vars) %>% ggplot(aes(x = time, y = value, color = area, linetype = scenario)) + ylab('Value') +
+  facet_grid(name ~ area, scales = 'free_y') + geom_line() + theme(strip.text.y.right = element_text(angle = 0)) +
+  geom_vline(xintercept = t.shock, linetype = 'dashed', linewidth = .4) +
+  labs(title = shock.title, subtitle = 'Balance of Payments and Government Balance Indicators. Vertical dashed line indicates shock time') + coord_cartesian(xlim = c(t0, tf))
+
+# Print Plots
+print(p.macro)
+print(p.social)
+print(p.external)
+```
+
+# Dynamical Analysis
+
+```{r}
+time.period <- 25
+sim <- baseline$simulation
+J <- rootSolve :: jacobian.full(y = sim[ , time.period], 
+                                 func = mvp.model, 
+                                 time = time.period, 
+                                 parms = para)
+```
+
+

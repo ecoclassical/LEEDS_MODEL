@@ -425,5 +425,26 @@
     "title": "Climate policies exclusively centered in the Global North harm the economy of the Global South",
     "section": "Outline",
     "text": "Outline\n\nMake explicit the military sector (military Keynesianism) and migration as a dynamic feedback\nGreen value chain upgrading from the NZIPL green tech dataset\nNZIPL net-zero value chain explorer"
+  },
+  {
+    "objectID": "basic_slides.html#agenda",
+    "href": "basic_slides.html#agenda",
+    "title": "NZIPL — Global Green Value Chain Explorer",
+    "section": "Agenda",
+    "text": "Agenda\n\nMotivation\n\nData & pipeline\n\nResults\n\nRoadmap"
+  },
+  {
+    "objectID": "basic_slides.html#motivation",
+    "href": "basic_slides.html#motivation",
+    "title": "NZIPL — Global Green Value Chain Explorer",
+    "section": "Motivation",
+    "text": "Motivation\n\n\n\nWhy a new explorer?\n\nAlign with Net Zero industrial policy\n\nTransparent pipeline (DuckDB + Arrow + Parquet)\n\n\n\n“Simplicity is the ultimate sophistication.”\n— Da Vinci"
+  },
+  {
+    "objectID": "basic_slides.html#data-pipeline",
+    "href": "basic_slides.html#data-pipeline",
+    "title": "NZIPL — Global Green Value Chain Explorer",
+    "section": "Data & pipeline",
+    "text": "Data & pipeline\n\n\n\n\n\n\nNote\n\n\nStack: R / Quarto / Arrow / DuckDB / Shiny modules\nSource of truth: partitioned Parquet\n\n\n\nPipeline sketch\nflowchart LR\n  A[Parquet Datasets] --&gt; B[Arrow / DuckDB]\n  B --&gt; C[Shiny Modules]\n  C --&gt; D[Explorer (Positron)]"
   }
 ]

@@ -1,0 +1,228 @@
+---
+title: "Effective climate action can only be global in scope"
+subtitle: "Insights from a Core-Periphery SOCIO-ECO-MRIO-SFC Model"
+author:
+  - name: "Oriol Vallès Codina"
+    affiliation: "Johns Hopkins University, Net Zero Industrial Policy Lab, Department of Political Science"
+    email: 
+      - "oriolvallescodina@gmail.com"
+date: "`r Sys.Date()`"
+format:
+  html:
+    toc: true
+    toc_float: true
+    self-contained: true
+    page-layout: full
+    css: fullwidth.css
+execute:
+  echo: false
+---
+
+# Initialization
+
+The initial values and variables are loaded from the file stored in variable `identif` in a different structure as before.
+
+```{r packages, warning = F, message = F}
+library(tidyverse)
+library(igraph)
+library(qgraph)
+library(visNetwork)
+library(scales)
+```
+
+```{r init, warning = FALSE, message = FALSE}
+project_root <- rprojroot::find_root(
+  rprojroot::is_rstudio_project | rprojroot::is_git_root
+)
+
+variable.table <<- read.csv(
+  file.path(project_root, "data", "Variable_Definitions.csv")
+)
+
+source(file.path(project_root, "functions", "auxiliary_flexible_nov25.R"))
+
+identif <- file.path(project_root, "data", "initial_state_2026.xlsx")
+initial <- load.new.init(identif)
+
+source(file.path(project_root, "functions", "run_model_2026.R"))
+source(file.path(project_root, "functions", "MVP_model_2026.R"))
+```
+
+# Baseline 
+
+## Simulation
+
+```{r simulation, warning = F, message = F}
+baseline <- run.model(
+  initial,
+  mvp.model,
+  log_file = file.path(project_root, "logs", "baseline_run.log"),
+  log_append = FALSE,
+  print_final_state = FALSE
+)
+
+saveRDS(baseline, file = file.path(project_root, 'data', 'baseline_feb10.RDS'))
+```
+
+## Calibration
+
+Target values are loaded in format long (`target.set`) and wide (`target.table.0`). Units are divided by 10,000 for convenience.
+
+```{r calibration}
+#### LOAD TARGET VALUES ####
+
+target.list <- load.target(file.path(
+  project_root,
+  'data',
+  'target_values.xlsx'
+))
+target.table <- target.list$wide
+target.set <- target.list$long
+target.vars <- target.set$var.label
+target.set$target <- baseline$simulation[
+  target.set$var,
+  baseline$initial$pars['nPeriods', 'value']
+]
+target.set$ratio <- round(target.set$target / target.set$value, 2)
+
+compute.target(baseline)
+```
+
+## Visualization
+
+```{r variable_selection} 
+# Variable Selection
+selected.list <- list(
+  Macroeconomic = c('c', 'rva', 'va', 'go', 'id', 'gdef'),
+  External = c('cab', 'tb'),
+  Social = c('n', 'nf', 'shp', 'shw'),
+  # Prices = c('pa', 'pid', 'pg', 'pim'),
+  Employment = c('n', 'nf'),
+  Inequality = c('ydw', 'ydc', 'shp', 'shw'),
+  Debt.and.Wealth = c('lh', 'lf', 'v', 'k', 'b_s'),
+  Ecological = c('x_mat', 'land', 'mat', 'rec', 'emis', 'wa', 'water')
+)
+```
+
+```{r plot_by_category}
+plot.selected.by_group(baseline, selected.list)
+```
+
+# Scenario Analysis
+
+| Domain      | Shift              | From | To | Mechanism                  | Conserved Quantity            |
+|-------------|--------------------|------|----|----------------------------|-------------------------------|
+| Household   | Diet shift         | 7    | 8  | Final demand reallocation  | Total food expenditure        |
+| Household   | Energy transition  | 31   | 32 | Final demand reallocation  | Energy service demand         |
+| Production  | Wood circularity   | 11   | 12 | Technical coefficient change | Total wood material input   |
+| Production  | Pulp circularity   | 13   | 14 | Technical coefficient change | Paper output                |
+| Production  | Plastics circularity | 17 | 18 | Technical coefficient change | Plastic product output      |
+| Production  | Metal circularity  | 26   | 27 | Technical coefficient change | Metal product output        |
+| Production  | Glass circularity  | 21   | 22 | Technical coefficient change | Glass product output        |
+| Production  | Cement circularity | 24   | 25 | Technical coefficient change | Cementitious output         |
+| Production  | Energy transition  | 31   | 32 | Technical coefficient change | Energy service to production|
+| Production  | Construction reuse | 36   | 27 | Technical coefficient change | Construction output         |
+
+## Diet Shift
+
+```{r shock.run}
+# Time Period Selection
+t.shock <- initial$pars['t.shock', 'value'] # shock time period
+t0 <- 55 # initial time period for visualization
+tf <- initial$pars['nPeriods', 'value'] # final time period for visualization
+
+# Shock Selection and Run
+initial_shock <- initial
+initial_shock$pars['shock', 'value'] <- 1
+
+diet.shock <- run.model(
+  initial_shock,
+  mvp.model,
+  log_file = file.path(project_root, "logs", "shock_1_run.log"),
+  log_append = FALSE,
+  print_final_state = FALSE
+)
+saveRDS(diet.shock, file = 'data/shock_1_diet_shock.RDS')
+# ple.shock <- readRDS(file = 'data/pleshock_aug14.RDS')
+
+shock.title <- 'Scenario: Diet Shift'
+```
+
+## Visualize Shocked Variables
+
+```{r shock.view}
+view.shock(
+  diet.shock,
+  shock.vars = c(
+    'delta',
+    'id0',
+    'iota_g-1',
+    'iota_g-46',
+    'zeta_dc-28',
+    'beta-28',
+    'beta-29',
+    'beta-41'
+  ),
+  shock.sectors = c(NA, NA, NA, 46, 28, 28, 29, 41)
+)
+```
+
+## Visualize Impacts
+
+```{r shock.visualize.scaled}
+
+# Load Baseline - Shock Data
+df <- shock.long.new(baseline, diet.shock)
+
+# Plot Selected List Variables (scaled only if gdef is not there)
+for (i in 1:length(selected.list)) {
+  if ('gdef' %in% selected.list[[i]]) {
+    print(view.vars(
+      data = df,
+      viz.vars = selected.list[[i]],
+      var.label = names(selected.list)[i]
+    ))
+  } else {
+    print(view.scaled.vars(
+      data = df,
+      viz.vars = selected.list[[i]],
+      var.label = names(selected.list)[i]
+    ))
+  }
+}
+
+# Print Some Scaled Variables Example
+# view.scaled.vars(data = shock.long.new(baseline, ple.shock),
+#                  viz.vars = c('cab', 'ydw', 'n', 'rva'),
+#                  var.label = 'Scaled')
+
+# Print Some Variables Example (not scaled)
+# view.vars(data = shock.long.new(baseline, ple.shock),
+#           viz.vars = c('cab', 'ydw', 'n', 'rva'),
+#           var.label = 'Not Scaled')
+```
+
+## Visualize Selected Variables Without Function
+
+```{r shock.visualize.selected.2}
+# Selected Vars to plot
+selected <- c('n', 'c', 'ineq', 'va', 'cab', 'nf', 'gdef', 'tb', 'go')
+
+p.selected.vars <- filter(df, variable %in% selected) %>%
+  ggplot(aes(x = time, y = value, color = area, linetype = scenario)) +
+  facet_wrap(~name, scales = 'free') +
+  geom_line() +
+  geom_vline(
+    xintercept = initial$pars['t.shock', 'value'],
+    linetype = 'dashed',
+    linewidth = .4
+  ) +
+  labs(
+    title = shock.title,
+    subtitle = 'Selected Indicators. Vertical dashed line indicates shock time'
+  )
+
+p.selected.vars
+```
+
+

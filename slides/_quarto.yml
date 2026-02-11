@@ -1,6 +1,6 @@
 project:
   type: website
-  output-dir: _site
+  output-dir: .
 
 # Copy the figures directory into the output site so the server can serve it
 resources:

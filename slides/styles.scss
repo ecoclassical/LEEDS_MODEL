@@ -108,3 +108,101 @@
     border-top-color: rgba(255, 255, 255, .12);
   }
 }
+
+/* Make DT usable inside reveal slides */
+.reveal .dataTables_wrapper {
+  font-size: 0.75em;
+}
+
+/* Ensure the DT scroll body can scroll */
+.reveal .dataTables_scrollBody {
+  overflow: auto !important;
+  max-height: 65vh !important;
+}
+
+/* If you still can't scroll inside the table, uncomment this */
+/*
+.reveal .slides section {
+  overflow: visible !important;
+}
+*/
+
+/* ---- Reveal.js PDF print mode fixes (robust) ---- */
+body.print-pdf {
+  /* Force a stable dark theme for PDF export */
+  --fg: #ffffff;
+  --muted: rgba(255, 255, 255, 0.75);
+  --accent: #9fd3ff;
+  /* optional: more visible in print */
+}
+
+/* Ensure the PDF keeps the dark background (Reveal uses these layers) */
+body.print-pdf .reveal-viewport,
+body.print-pdf .reveal {
+  background: #003b47 !important;
+}
+
+/* Reveal slide background layers */
+body.print-pdf .reveal .slide-background-content,
+body.print-pdf .reveal .slide-background {
+  background: #003b47 !important;
+}
+
+/* Now let your normal rules work via CSS variables */
+body.print-pdf .reveal p,
+body.print-pdf .reveal li,
+body.print-pdf .reveal {
+  color: var(--fg) !important;
+}
+
+/* Headings + footer */
+body.print-pdf .reveal h1,
+body.print-pdf .reveal h2,
+body.print-pdf .reveal h3,
+body.print-pdf .reveal h4,
+body.print-pdf .q-footer {
+  color: var(--fg) !important;
+}
+
+/* Links */
+body.print-pdf .reveal a {
+  color: var(--accent) !important;
+}
+
+/* Force Chrome to print backgrounds/colors as seen on screen */
+@media print {
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+}
+
+@media print {
+
+  body,
+  .reveal-viewport,
+  .reveal,
+  .reveal .slide-background,
+  .reveal .slide-background-content {
+    background: #003b47 !important;
+  }
+
+  .reveal .slides {
+    color: #ffffff !important;
+  }
+}
+
+@media print {
+
+  body,
+  .reveal,
+  .reveal-viewport,
+  .slide-background,
+  .slide-background-content {
+    background: white !important;
+  }
+
+  .reveal .slides {
+    color: black !important;
+  }
+}

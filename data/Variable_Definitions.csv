@@ -76,6 +76,8 @@ aggregate,ecological,wa,10Mt,Waste
 aggregate,ecological,emis,10t CO2 eq.,Annual CO2 Emissions
 aggregate,ecological,co2_cum,10t CO2 eq.,CO2 Concentration
 aggregate,ecological,temp,C,Atmospheric Temperature
+aggregate,ecological,land,ha,Land Used
+aggregate,ecological,water,l,Water Used
 aggregate,balance.of.payments,xr,EUR/USD,Exchange Rate
 aggregate,balance.of.payments,imp,10B.EUR,Real Final Imports
 aggregate,balance.of.payments,nimp,10B.EUR,Nominal Total Imports
@@ -106,3 +108,5 @@ industry,prices,p_t,EUR,Reproduction Prices (including Capital Depreciation)
 industry,prices,p,EUR,Market Prices
 industry,ecological,wa_j,10Mt,Waste
 industry,ecological,emis_j,10t CO2 eq.,Annual CO2 Emissions
+industry,ecological,land_j,ha,Land Used
+industry,ecological,water_j,l,Water Used

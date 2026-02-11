@@ -1,0 +1,377 @@
+---
+title: "ECO-MRIO-SFC Dynamical Analysis"
+author: "Oriol Vallès Codina"
+date: "`r Sys.Date()`"
+output:
+  # word_document: default
+  # keep_tex: true
+
+  # pdf_document:
+  #   toc: true
+  #   toc_depth: 3
+  #   number_sections: true
+  html_document:
+    toc: TRUE
+    toc_float: TRUE
+format:
+  html:
+    self-contained:
+      true
+---
+
+# Source of Singularity in a Jacobian Matrix
+
+Locating the source of singularity in a Jacobian matrix \( J \) involves identifying the specific variables or equations in your model that lead to the matrix being non-invertible. Here are several steps and approaches you can take to diagnose and address the singularity:
+
+### 1. Check Jacobian Calculation
+
+Ensure that the computation of the Jacobian matrix \( J \) is accurate and correctly reflects the partial derivatives of your model equations. Mistakes in numerical differentiation or coding errors can lead to incorrect Jacobian matrices.
+
+- **Numerical Differentiation**: Review how you're numerically computing the derivatives. Use methods that are stable and accurate, such as finite differences or symbolic differentiation if feasible.
+  
+- **Code Review**: Double-check the implementation of the function that computes \( J \) to ensure there are no logical errors or mistakes in indexing.
+
+### 2. Inspect Model Equations
+
+Examine the equations in your model that contribute to the Jacobian matrix \( J \). Look for potential issues such as:
+
+- **Redundant or Dependent Equations**: Check if there are equations that are linear combinations of others. Redundant equations can make the system overdetermined and the Jacobian singular.
+  
+- **Constraints**: If your model includes constraints or boundary conditions, ensure they are correctly handled in the Jacobian calculation.
+
+### 3. Analyze Variable Dependencies
+
+Investigate the dependencies among the variables in your model that affect \( J \):
+
+- **Variable Relationships**: Identify if there are strong linear dependencies among the variables. High correlation or linear relationships can lead to a singular Jacobian.
+  
+- **Parameter Sensitivity**: Assess how sensitive the model is to changes in parameters or initial conditions. Sensitivity analysis can highlight critical variables contributing to singularity.
+
+### 4. Use Diagnostic Tools
+
+Utilize tools and techniques to diagnose matrix singularity:
+
+- **Condition Number**: Compute and analyze the condition number of \( J \). A high condition number indicates that the matrix is close to being singular and can help pinpoint problematic areas.
+
+```{r svd}
+knitr::opts_chunk$set(echo = TRUE, fig.width = 9, fig.height = 10)
+
+source("functions/Corbyn_Model_July4.R")
+source('functions/auxiliary_july3.R')
+init <- load.new.init('data/initial_values_july10.xlsx')
+n <- nrow(init.table)
+n.e <- sum(init.table$dynamic == 'endogenous')
+simulation <- readRDS(file = 'data/simulation1.RDS')[init.table$label, ]
+variables <- rownames(simulation) 
+
+library(corrplot)
+zero.var.vars <- apply(simulation, 1, function(row) var(row) == 0)
+table(zero.var.vars)
+```
+
+
+```{r svd}
+sim.sim <- as.data.frame(t(simulation[!zero.var.vars, ]))
+head(sim.sim)
+
+dist_matrix <- dist(t(sim.sim))
+hc <- hclust(dist_matrix)
+plot(hc)
+
+library(dendextend)
+
+# Convert to a dendrogram
+dend <- as.dendrogram(hc)
+
+# Rotate the dendrogram
+rotated_dend <- rotate(dend)
+
+# Plot the dendrogram
+pdf('dendogram.pdf', width = 12, height = 40)
+def.par.mar <- par()$mar 
+par(mar = c(5.1, 4.1, 4.1, 5))
+plot(dend, main = "Dendrogram with Variable Names", horiz = TRUE, cex = 0.25)
+dev.off()
+par(mar = def.par.mar)
+
+
+# Cut the dendrogram to form clusters
+k <- 40
+clusters <- cutree(hc, k)
+cluster_df <- data.frame(variable = names(clusters), cluster = clusters)
+
+# Bind the cluster information to the data matrix
+sim.sim_with_clusters <- data.frame(t(sim.sim), cluster = clusters)
+
+# Calculate cluster centroids by aggregating the data based on cluster
+cluster_centroids <- aggregate(. ~ cluster, data = sim.sim_with_clusters, FUN = mean)
+
+library(cluster)
+
+# Find the closest variable to each centroid
+driving_vars <- character(k)
+
+# Calculate distances from each variable to the centroids and find the closest variable
+for (i in 1:k) {
+  cluster_vars <- rownames(sim.sim_with_clusters[sim.sim_with_clusters$cluster == i, ])
+  centroid <- cluster_centroids[i, -1]  # Exclude the cluster column
+  if(length(cluster_vars) > 1)
+  {
+  distances_to_centroid <- apply(t(sim.sim)[cluster_vars, ], 1, function(row) {
+    sum((row - centroid)^2)
+  })
+  closest_var <- cluster_vars[which.min(distances_to_centroid)]
+  driving_vars[i] <- closest_var
+  } else {driving_vars[i] <- cluster_vars}
+}
+driven_vars <- rownames(simulation)[!rownames(simulation) %in% driving_vars]
+```
+
+
+```{r svd}
+# Print driving variables
+print(driving_vars)
+
+sim.vars <- rownames(simulation)[!zero.var.vars]
+
+colnames(sim.sim) <- gsub("[-_]|_j", "", colnames(sim.sim))
+cor.sim <- cor(sim.sim)
+
+pdf('figures/correlation_simulation.pdf', width = 50, height = 50)
+corrplot(cor.sim)
+dev.off()
+
+one.cor <- as.data.frame(which(cor.sim == 1, arr.ind = T))
+one.cor <- one.cor[one.cor$row != one.cor$col, ]
+one.cor$row <- sim.vars[one.cor$row]
+one.cor$col <- sim.vars[one.cor$col]
+write.csv(one.cor, file = 'data/one_correlations_simulation.csv')
+
+cov_matrix <- cov(sim.sim)
+pca_result <- princomp(cov_matrix)
+
+# Examine loadings or eigenvalues to identify driving equations
+# print(pca_result$loadings)
+```
+
+
+```{r svd}
+time.period <- 25
+J <- rootSolve :: jacobian.full(y = c(simulation[driving_vars, time.period - 1], simulation[driving_vars, time.period]), 
+                                 func = model, 
+                                 time = time.period, 
+                                 parms = simulation[driven_vars, c(time.period - 1, time.period)])
+
+
+
+time.period <- 25
+J <- rootSolve :: jacobian.full(y = c(simulation[sim.vars, time.period - 1], simulation[sim.vars, time.period]), 
+                                 func = model, 
+                                 time = time.period, 
+                                 parms = simulation[zero.var.vars, c(time.period - 1, time.period)])
+J.vars <- c(paste0(sim.vars, '(t-1)'), sim.vars)
+J.na <- which(is.na(J), arr.ind = T)
+is.na.J <- as.data.frame(which(is.na(J), arr.ind = T))
+is.na.J$col <- J.vars[is.na.J$col]
+is.na.J$row <- J.vars[is.na.J$row]
+J0 <- rootSolve :: jacobian.full(y = c(simulation[init.table$dynamic == 'endogenous', time.period - 1],
+                                       simulation[init.table$dynamic == 'endogenous', time.period]), 
+                                 func = model, 
+                                 time = time.period, 
+                                 parms = simulation[init.table$dynamic == 'exogenous', c(time.period - 1, time.period)])
+```
+
+
+# The Whole Model including both time periods
+
+```{r all.g}
+g <- igraph :: graph_from_adjacency_matrix(abs(J0), mode = "directed", weighted = TRUE, diag = FALSE)
+node.names <- V(g)$name
+node.types <- setNames(init.table$type, init.table$label)[node.names]
+V(g)$color <- colorspace :: rainbow_hcl(10)[setNames(0 : 10, unique(node.types))[node.types]]
+V(g)$size <- degree(g) ^ .6
+V(g)$name[1 : n.e] <- paste0(V(g)$name[1 : n.e], '[-]')
+E(g)$color <- gray(.9)
+V(g)$frame.color <- NA
+V(g)$frame.color[grep('Z1', V(g)$name[1 : n.e])] <- 'darkred'
+V(g)$frame.color[grep('Z1', V(g)$name[(n.e + 1) : (2 * n.e)])] <- 'tomato'
+V(g)$frame.color[grep('Z2', V(g)$name[1 : n.e])] <- 'darkblue'
+V(g)$frame.color[grep('Z2', V(g)$name[(n.e + 1) : (2 * n.e)])] <- 'steelblue'
+V(g)$label <- substring(V(g)$name, 4)
+V(g)$label[1 : n.e] <- NA
+V(g)$label.font <- 2
+V(g)$label.color <- gray(.3, .8)
+V(g)$label.cex <- .75
+g.layout <- qgraph :: qgraph.layout.fruchtermanreingold(get.edgelist(g, names = FALSE), vcount = vcount(g), 
+                                                        repulse.rad = 2 ^ 3)
+par(mar = c(0,0,0,0))
+pdf('figures/model_network.pdf')
+plot(g, layout = g.layout, edge.arrow.size = .05)
+dev.off()
+```
+
+# The Whole Model including current time period
+
+```{r all.g}
+g1 <- igraph :: graph_from_adjacency_matrix(abs(J0[(n.e + 1) : (2 * n.e), (n.e + 1) : (2 * n.e)]), 
+                                           mode = "directed", weighted = TRUE, diag = FALSE)
+g1 <- delete_vertices(g1, which(degree(g1) < 2))
+
+node.names <- V(g1)$name
+node.types <- setNames(init.table$type, init.table$label)[node.names]
+V(g1)$color <- colorspace :: rainbow_hcl(10)[setNames(0 : 10, unique(node.types))[node.types]]
+V(g1)$size <- degree(g1) ^ .6
+E(g1)$color <- gray(0.8) # scales :: alpha('black', E(g1)$weight / max(E(g1)$weight) ^ .25)
+V(g1)$frame.color <- NA
+V(g1)$frame.color[grep('Z1', V(g1)$name)] <- 'tomato'
+V(g1)$frame.color[grep('Z2', V(g1)$name)] <- 'steelblue'
+V(g1)$label <- gsub("[-_]|_j", "", substring(V(g1)$name, 4))
+V(g1)$label.font <- 2
+V(g1)$label.color <- gray(.3, .8)
+V(g1)$label.cex <- .75
+g1.layout <- qgraph :: qgraph.layout.fruchtermanreingold(get.edgelist(g1, names = FALSE), vcount = vcount(g1), 
+                                                        repulse.rad = 75 ^ 3)
+layout_kk <- layout_with_kk(g1)
+par(mar = c(0,0,0,0))
+pdf('figures/model_network1.pdf')
+plot(g1, layout = g1.layout, edge.arrow.size = .05)
+dev.off()
+
+# df <- data.frame(node = node.names, area = substr(node.names, 1, 2), 
+#                  variable = substring(node.names, 4),
+#                  degree = c(degree(g1), degree(g1, mode = 'out'), degree(g1, mode = 'in')),
+#                  centrality = eigen_centrality(g1)$vector)
+df <- data.frame(node = node.names, area = substr(node.names, 1, 2), 
+                 variable = gsub("[-_]|_j", "", substring(node.names, 4)),
+                 degree = c(degree(g1), degree(g1, mode = 'out'), degree(g1, mode = 'in')),
+                 type = rep(c('all', 'out', 'in'), each = length(node.names)))
+pdf('figures/network_degree1.pdf', height = 14, width = 8)
+df[df$node != 'temp', ] %>% ggplot(aes(x = degree, y = reorder(variable, degree), fill = area)) + 
+  facet_grid(~ type, scales = 'free_x') + geom_bar(stat = 'identity', position = position_dodge()) 
+dev.off()
+
+```
+
+
+```{r svd}
+# V(g)$label.dist <- .25
+
+
+
+
+  g0 <- .fn(.x = .x0)
+  D0inv <- solve_armadillo(J0)
+  d0 <- -D0inv %*% g0
+  
+  
+# mod <- function (t = 0, y, parms = NULL,...)
+# {
+#  dy1<-  y[1] + 2*y[2]
+#  dy2<-3*y[1] + 4*y[2] + 5*y[3]
+#  dy3<-         6*y[2] + 7*y[3] + 8*y[4]
+#  dy4<-                  9*y[3] +10*y[4]
+#  return(as.list(c(dy1, dy2, dy3, dy4)))
+# }
+# 
+# jacobian.full(y = c(1, 2, 3, 4), func = mod)
+```
+
+  ```{r kappa}
+  kappa_J <- cond(J)
+  print(kappa_J)
+  ```
+
+- **Singular Value Decomposition (SVD)**: Perform SVD on \( J \) to understand its eigenstructure and identify variables or equations contributing most to singularity.
+
+```{r svd}
+svd_J <- svd(J0)
+singular_values <- svd_J$d
+
+# Identify exogenous variables based on singular values
+exogenous_indices <- which(singular_values < threshold) 
+plot(density(svd_J$d))
+```
+
+### 5. Test with Simplified Scenarios
+
+Simplify your model or test with smaller, controlled scenarios to isolate the source of singularity:
+
+- **Reduced Variables**: Temporarily reduce the number of variables or equations in your model to identify which subset causes singularity.
+  
+- **Step-by-Step Analysis**: Introduce variables and equations incrementally to identify when singularity occurs.
+
+### 6. Consult Literature and Experts
+
+Refer to literature on numerical methods or consult with experts in your field for insights into common causes of Jacobian singularity in similar models.
+
+### Conclusion
+
+Locating the source of singularity in a Jacobian matrix involves a systematic approach of checking calculations, analyzing model equations, understanding variable dependencies, and using diagnostic tools. By following these steps, you can identify and address the specific issues causing singularity, thereby improving the stability and reliability of your model computations in R or any other programming environment.
+
+# Identifying independent or driving equations from dependent equations in a large model
+Identifying independent or driving equations from dependent equations in a large model can be challenging but important for understanding the underlying dynamics and improving numerical stability. Here are some approaches and techniques you can consider to distinguish driving equations from dependent ones in your model:
+
+### 1. Singular Value Decomposition (SVD)
+
+SVD can help decompose the Jacobian matrix \( J \) into its singular values and vectors. The singular values provide information about the variability and importance of each equation or variable in the model. Large singular values correspond to equations that have significant influence and are less dependent on others, whereas small singular values indicate dependency.
+
+```r
+# Compute SVD of the Jacobian matrix J
+svd_J <- svd(J)
+
+# Analyze singular values
+singular_values <- svd_J$d
+```
+
+- **Interpretation**: 
+  - **Large Singular Values**: Correspond to equations that are less dependent and have a stronger impact on the overall model behavior.
+  - **Small Singular Values**: Indicate equations that are more dependent on others and have less influence.
+
+### 2. Principal Component Analysis (PCA)
+
+PCA can be applied to analyze the covariance matrix of the variables in your model. It helps identify linear combinations of variables that explain the maximum variance, which can correspond to independent or driving equations.
+
+```r
+# Example of PCA on the covariance matrix of variables
+cov_matrix <- cov(variables)
+pca_result <- princomp(cov_matrix)
+
+# Examine loadings or eigenvalues to identify driving equations
+print(pca_result$loadings)
+```
+
+- **Interpretation**: 
+  - **High Loadings**: Variables with high loadings on principal components indicate they contribute significantly to the variance and are less dependent.
+  - **Low Loadings**: Variables with low loadings are more dependent and contribute less to variance independently.
+
+### 3. Sensitivity Analysis
+
+Perform sensitivity analysis by perturbing parameters or initial conditions and observing the response of the model equations. Equations that exhibit significant changes in output relative to small changes in input parameters are likely to be driving equations.
+
+- **Numerical Perturbation**: Vary parameters or initial conditions within a small range and observe the resulting changes in model output or solution trajectories.
+
+### 4. Correlation Analysis
+
+Examine correlations among variables in your model. Variables that are strongly correlated with many others may be dependent, whereas those with weaker correlations may be more independent.
+
+```r
+# Compute correlation matrix
+cor_matrix <- cor(variables)
+
+# Analyze correlations to identify dependencies
+print(cor_matrix)
+```
+
+- **Interpretation**: 
+  - **High Correlations**: Variables with high absolute correlations are likely dependent on each other.
+  - **Low Correlations**: Variables with low correlations are less dependent and may be driving variables.
+
+### 5. Model Simplification and Testing
+
+Temporarily simplify your model by removing subsets of equations and observing the impact on model behavior. This step-by-step approach can help isolate the core driving equations.
+
+- **Incremental Testing**: Introduce equations back into the model one at a time and monitor changes in model output to identify which equations contribute most significantly.
+
+### Conclusion
+
+By applying these numerical techniques and analytical approaches, you can gain insights into the structure of your model and distinguish driving equations from dependent ones. This understanding is crucial for improving the stability, efficiency, and interpretability of your model simulations and computations.

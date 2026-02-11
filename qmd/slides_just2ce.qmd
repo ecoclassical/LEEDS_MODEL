@@ -1,0 +1,471 @@
+---
+title: "Climate policies exclusively centered in the Global North harm the economy of the Global South"
+subtitle: "Policy lessons of a two-region input-output ecological macroeconomic model"
+author: "Oriol Vallès Codina"
+affiliation: "Net Zero Industrial Policy Lab, Johns Hopkins University"
+email: "oriolvallescodina@gmail.com"
+date: today
+format:
+  revealjs:
+    self-contained: true
+    embed-resources: true
+    slide-number: true
+    incremental: false
+execute:
+  freeze: auto
+css: styles.scss
+resource-path: ["../figures", "figures", "."]
+---
+
+<!-- ::: {.center .title-slide-extra}
+**Clean, minimal, readable.**  
+Metropolis-inspired typographic scale and spacing.
+::: -->
+
+# Introduction
+
+## Outline
+
+- ECO-MRIO-SFC modeling as a tool to understand the very **complex impact of (carbon) taxes and tariffs on global value chains** from a socio-economic perspective: ecological, macroeconomic and distributional implications for class, gender, race / region
+- Trade wars and global value chain fragmentation/regionalization
+- **Challenge** how to overcome ecological unequal exchange
+- Current model shows ecological and economic impacts are best in cooperative models
+- Implications: competition vs cooperation in trade (Blecker 2025)
+
+---
+
+## Outline
+
+- Make explicit the military sector (military Keynesianism) and migration as a dynamic feedback 
+- **Green value chain upgrading** from the NZIPL green tech dataset
+- NZIPL net-zero value chain explorer
+
+---
+
+## Motivation: Exchange is Unequal
+
+![](figures/dorninger.png){width=100%}
+
+---
+
+## Starting Point: the JUST2CE project
+
+- **JUST2CE** = A Just Transition to the Circular Economy  
+- EU-funded project proposing an alternative way of looking at CE  
+- Most projects have focused on *how* to produce circularity. JUST2CE focuses on *what* (democracy, participation, gender, global justice)  
+- Two milestones / WP5 deliverables:  
+  - **Systematic review** of macro models assessing CE transition (**Fevereiro et al 2025**)
+  - **Formal model(s)** to simulate & compare CE policies and transition scenarios (**Vallès Codina et al., 2026?**)
+
+---
+
+## Systematic Literature Review
+
+![](../figures/fevereiro_paper.png){width=100%}
+
+---
+
+## Systematic Literature Review (Simplified)
+
+![](../figures/table_simplified_june9.png){width=100%}
+
+---
+
+## Citation Network of Ecological Macroeconomics
+
+![](../figures/network2.png){width=110%}
+
+---
+
+## Main Gaps Identified
+
+- **Modelling of Rebound Effects** — limited treatment of demand/impact changes via prices, jobs, income  
+- **Transitional Dynamics** — IO analysis typically static  
+- **Limited Socio-Economic Coverage** — often only employment considered  
+- **Technology Innovation & Diffusion; Demand Assumptions** — low-labor-cost tech may be preferred  
+- **North–South / Core–Periphery Ecological Unequal Exchange** (Dorninger 2021, Hickel)
+
+---
+
+# ECO–MRIO–SFC Modeling
+
+## The Model: Basic Features
+
+Main tools in (theory-to-data) **macroeconomics**:
+
+1) **DSGE (and growth) models** — *Pros*: mainstream, simple story. *Cons*: “small”, unique optimal equilibrium  
+2) **CGE models (and IAMs)** — *Pros*: many variables, cross-industry links. *Cons*: unique optimal equilibrium, no finance
+
+Cross-breeding two alternatives *(Hardt & O’Neill 2017)*:
+
+- **Leontief IO Models** — *Pros*: many variables, cross-industry links. *Cons*: static, no finance  
+- **SFC Models** — *Pros*: dynamics, finance. *Cons*: homogeneous output
+
+---
+
+## Theoretical Antedecents
+
+- Increasing use of IO–SFC models; yet none focuses on CE:  
+- *Berg, Hartley & Richters (2015)*. A stock-flow consistent input-output model with applications to energy price shocks, interest rates, and heat emissions. 
+- **Other contributions** _Naqvi (2015)_; _Naqvi and Stockhammer (2018)_; Valdecantos & Valentini (2017); Nieto et al (2019); Jackson & Jackson (2021); Cordier et al. (2015); Jackson et al. (2014)
+- MEDEAS, Eurogreen, REAL, ToBe... increasingly very sophisticated one-region models
+  
+---
+
+## ECO–MRIO–SFC Model
+
+a) Two-country macro frame from standard SFC models *(Godley & Lavoie 2007)*:  
+- **Six sectors**: households, production firms, government, commercial banks, central bank  
+- **Four assets**: cash, bank deposits, shares, government bills (+ advances)  
+- Only **loans to firms** (no personal loans)  
+- **Fixed capital**, no inventories
+
+b) Flexible IO structure: **currently 50+ industries**
+c) Identification: calibration to target final demand components  
+d) Solution: numerical simulations (*R*), 100 periods, 100 iterations
+
+---
+
+## Final Demand and Gross Output: Constant Sector Shares
+
+Let us consider a $3\times 3$ production. The **final demand** vector is:
+
+$$
+\mathbf{d}
+= \begin{bmatrix} \beta_1 \\ \beta_2 \\ \beta_3 \end{bmatrix} c
++ \begin{bmatrix} \iota_1 \\ \iota_2 \\ \iota_3 \end{bmatrix} i_d
++ \begin{bmatrix} \sigma_1 \\ \sigma_2 \\ \sigma_3 \end{bmatrix} gov
++ \begin{bmatrix} \eta_1 \\ \eta_2 \\ \eta_3 \end{bmatrix} exp
+$$
+
+The **gross output** vector is:
+
+$$
+\mathbf{x} = \mathbf{A} \mathbf{x} + \mathbf{d} = (\mathbf{I}-\mathbf{A})^{-1}\mathbf{d}, \quad
+\mathbf{A} = \begin{bmatrix}
+a_{11} & a_{12} & a_{13} \\
+a_{21} & a_{22} & a_{23} \\
+a_{31} & a_{32} & a_{33}
+\end{bmatrix}
+$$
+
+---
+
+## Classical Approach to Prices
+
+For $i = 1, ..., KN$ commodities where there are $K$ regions and $N$ products per region:
+
+$$p = w l + p A (1 + \mu_i) (1 + \kappa_i \delta_i)$$
+
+Isolating prices,
+$$
+p = w l [I - (1 + \mu) (1 + \kappa \delta) A]^{-1} = w l B = w v
+$$
+
+where $v \equiv l B$ and the augmented Leontief matrix is 
+
+$$B \equiv [I - (1 + \mu) (1 + \kappa \delta) A]^{-1}$$
+
+
+under uniform profitability rate $\mu$ and hence different markups. 
+
+---
+
+## Carbon Taxation
+
+Carbon taxes are internalized as a production cost for all commodities:
+
+$$p' = p (1 + \tau)$$
+
+where $p = w l B$ is the price before tax, $p'$ is the price with tax, and $\tau$ is the product of emission intensity times the carbon price. In scalar notation, we write $p_i = w \sum_j l_j b_{ji}$ so that adding the carbon price yields:
+
+$$p'_i = w (1 + \tau_i) \sum_j l_j b_{ji}$$
+
+---
+
+## (Carbon) Tariffs 1
+
+We need to exploit the $KN \times KN$ dimensionality of global matrix of input-output coefficients $A$ and thus the augmented Leontief matrix $B$. For $K = N = 2$, 2 products and 2 regions, labeled 1 to 4:
+
+$$p = w (l_1, l_2, l_3, l_4) \begin{pmatrix} b_{11} & b_{12} & b_{13} & b_{14} \\ b_{21} & b_{22} & b_{23} & b_{24} \\ b_{31} & b_{32} & b_{33} & b_{34} \\ b_{41} & b_{42} & b_{43} & b_{44} \end{pmatrix}$$
+
+---
+
+## (Carbon) Tariffs 2
+
+In the carbon taxation case, we defined $1 + \tau$ as a $KN$-vector, but it can also be thought of a diagonal matrix with zeros in the off-diagonal. For the tariffs case, operate precisely on the off-diagonal matrices that refer to interregional trade. If region 1 imposes a tariff $(\tau_3, \tau_4)$ on products 1 and 2 of region 2, we multiply coefficients $b_{ij}$ by $(1 + \tau_i)$ for $i = 3,4$ and $j = 1,2$:
+
+$$p' = w (l_1, l_2, l_3, l_4) \begin{pmatrix} b_{11} & b_{12} & b_{13} & b_{14} \\ b_{21} & b_{22} & b_{23} & b_{24} \\ b_{31}(1 + \tau_3) & b_{32}(1 + \tau_3) & b_{33} & b_{34} \\ b_{41}(1 + \tau_4) & b_{42}(1 + \tau_4) & b_{43} & b_{44} \end{pmatrix}$$
+
+---
+
+## Ecological Unequal Exchange: EU (red) vs RoW (green)
+
+::: {.columns}
+
+::: {.column width="45%"}
+**Table of Industries**
+
+<div style="height:480px; overflow-y:auto; font-size:0.4em;">
+
+<table style="width:100%; border-collapse:collapse;">
+  <thead>
+    <tr>
+      <th style="width:6%; text-align:center;">#</th>
+      <th style="width:94%; text-align:left;">Industry</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td style="text-align:center;">1</td><td>Agriculture</td></tr>
+    <tr><td style="text-align:center;">2</td><td>Animal Farming</td></tr>
+    <tr><td style="text-align:center;">3</td><td>Forestry, logging and related service activities (02)</td></tr>
+    <tr><td style="text-align:center;">4</td><td>Fishing, operating of fish hatcheries and fish farms; service activities incidental to fishing (05)</td></tr>
+    <tr><td style="text-align:center;">5</td><td>Extraction of Fossil-Fuels</td></tr>
+    <tr><td style="text-align:center;">6</td><td>Mining & Quarrying of raw materials</td></tr>
+    <tr><td style="text-align:center;">7</td><td>Processing of meat</td></tr>
+    <tr><td style="text-align:center;">8</td><td>Processing of other food & beverage</td></tr>
+    <tr><td style="text-align:center;">9</td><td>Manufacture of tobacco products (16)</td></tr>
+    <tr><td style="text-align:center;">10</td><td>Manufacture of textiles</td></tr>
+    <tr><td style="text-align:center;">11</td><td>Manufacture of wood and of products of wood and cork, except furniture; manufacture of articles of straw and plaiting materials (20)</td></tr>
+    <tr><td style="text-align:center;">12</td><td>Re-processing of secondary wood material into new wood material</td></tr>
+    <tr><td style="text-align:center;">13</td><td>Pulp</td></tr>
+    <tr><td style="text-align:center;">14</td><td>Re-processing of secondary paper into new pulp</td></tr>
+    <tr><td style="text-align:center;">15</td><td>Paper</td></tr>
+    <tr><td style="text-align:center;">16</td><td>Processing of Fossil Fuels</td></tr>
+    <tr><td style="text-align:center;">17</td><td>Plastics, basic</td></tr>
+    <tr><td style="text-align:center;">18</td><td>Re-processing of secondary plastic into new plastic</td></tr>
+    <tr><td style="text-align:center;">19</td><td>Manufacture of Chemicals</td></tr>
+    <tr><td style="text-align:center;">20</td><td>Manufacture of rubber and plastic products (25)</td></tr>
+    <tr><td style="text-align:center;">21</td><td>Manufacture of glass and glass products</td></tr>
+    <tr><td style="text-align:center;">22</td><td>Re-processing of secondary glass into new glass</td></tr>
+    <tr><td style="text-align:center;">23</td><td>Manufacture of other non-metallic mineral products</td></tr>
+    <tr><td style="text-align:center;">24</td><td>Manufacture of cement, lime and plaster</td></tr>
+    <tr><td style="text-align:center;">25</td><td>Re-processing of ash into clinker</td></tr>
+    <tr><td style="text-align:center;">26</td><td>Manufacture of Metals</td></tr>
+    <tr><td style="text-align:center;">27</td><td>Re-processing of Metals</td></tr>
+    <tr><td style="text-align:center;">28</td><td>Manufacture of durable goods</td></tr>
+    <tr><td style="text-align:center;">29</td><td>Manufacture of furniture; manufacturing n.e.c. (36)</td></tr>
+    <tr><td style="text-align:center;">30</td><td>Recycling</td></tr>
+    <tr><td style="text-align:center;">31</td><td>Production of electricity by fossil fuels</td></tr>
+    <tr><td style="text-align:center;">32</td><td>Production of electricity by renewable energy</td></tr>
+    <tr><td style="text-align:center;">33</td><td>Transmission & Distribution</td></tr>
+    <tr><td style="text-align:center;">34</td><td>Manufacture of gas; distribution of gaseous fuels through mains</td></tr>
+    <tr><td style="text-align:center;">35</td><td>Water</td></tr>
+    <tr><td style="text-align:center;">36</td><td>Construction (45)</td></tr>
+    <tr><td style="text-align:center;">37</td><td>Re-processing of secondary construction material into aggregates</td></tr>
+    <tr><td style="text-align:center;">38</td><td>Sale, maintenance, repair of motor vehicles, motor vehicle parts, motorcycles, motorcycle parts and accessories</td></tr>
+    <tr><td style="text-align:center;">39</td><td>Retail sale of automotive fuel</td></tr>
+    <tr><td style="text-align:center;">40</td><td>Retail & Wholesale trade</td></tr>
+    <tr><td style="text-align:center;">41</td><td>Leisure Services</td></tr>
+    <tr><td style="text-align:center;">42</td><td>Transport</td></tr>
+    <tr><td style="text-align:center;">43</td><td>KIBS</td></tr>
+    <tr><td style="text-align:center;">44</td><td>Real estate activities (70)</td></tr>
+    <tr><td style="text-align:center;">45</td><td>Renting of machinery and equipment without operator and of personal and household goods (71)</td></tr>
+    <tr><td style="text-align:center;">46</td><td>Research and development (73)</td></tr>
+    <tr><td style="text-align:center;">47</td><td>Public administration and defence; compulsory social security (75)</td></tr>
+    <tr><td style="text-align:center;">48</td><td>Education (80)</td></tr>
+    <tr><td style="text-align:center;">49</td><td>Health and social work (85)</td></tr>
+    <tr><td style="text-align:center;">50</td><td>Incineration of Waste</td></tr>
+    <tr><td style="text-align:center;">51</td><td>Biogas & Composting</td></tr>
+    <tr><td style="text-align:center;">52</td><td>Waste water</td></tr>
+    <tr><td style="text-align:center;">53</td><td>Landfill of Waste</td></tr>
+    <tr><td style="text-align:center;">54</td><td>Other Services</td></tr>
+  </tbody>
+</table>
+
+</div>
+:::
+
+::: {.column width="55%"}
+![](figures/2-country-IO.png){width=85%}
+:::
+
+:::
+
+---
+
+## Modeling Circular Economy Interventions 1: Product Lifetime Extension
+
+![](../figures/Modeling_blueprint_1.jpg){width=100%}
+
+---
+
+## Modeling Circular Economy Interventions 2: Resource Efficiency
+
+![](../figures/Modeling_blueprint_2.jpg){width=100%}
+
+---
+
+# Results 
+
+## Balance Sheet
+
+![](../figures/BS_over_time_baseline.png){width=100%}
+
+---
+
+## Transaction-Flow Matrix
+
+![](../figures/TFM_over_time_baseline.png){width=100%}
+
+---
+
+## Multi-Region Input–Output
+
+![](../figures/MRIO_over_time_baseline.png){width=100%}
+
+---
+
+## Calibration
+
+![](../figures/variable_plots_feb27-1.png){width=80%}
+
+---
+
+## Shocks
+
+<div style="max-height:480px; overflow-y:auto; font-size:0.7em; width:60%;">
+
+<table style="width:100%; border-collapse:collapse;">
+  <thead>
+    <tr>
+      <th style="text-align:left;"><b>Shock</b></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td>Reduction in Consumption Level</td></tr>
+    <tr><td>Change in Consumption Composition towards Services</td></tr>
+    <tr><td>Product Life Time Extension</td></tr>
+    <tr><td>Higher Recycling Rate</td></tr>
+    <tr><td>Higher Propensity to Consume Green</td></tr>
+    <tr><td>Lower Extraction (or Conversion) Rate of Matter</td></tr>
+    <tr><td>Lower Discarding Rate of Socio-Economic Stock</td></tr>
+    <tr><td>Higher Renewable Energy Share</td></tr>
+    <tr><td>Higher Govt Spending towards Efficiency</td></tr>
+    <tr><td>More Selective Govt Spending towards Recycling Efficiency</td></tr>
+    <tr><td>More Progressive Taxation</td></tr>
+  </tbody>
+</table>
+
+</div>
+
+---
+
+## Scenario: Reduction in Consumption Level
+
+::: {.columns style="gap: 5px;"}
+
+::: {.column width="50%"}
+**Top half**
+![](figures/shock1_top.png){width=100%}
+:::
+
+::: {.column width="50%"}
+**Bottom half**
+![](figures/shock1_bottom.png){width=100%}
+:::
+
+:::
+
+---
+
+## Scenario: Product Lifetime Extension
+
+![](../figures/ple_scenario.png){width=85%}
+
+--- 
+
+## Impact: Product Lifetime Extension
+
+::: {.columns style="gap: 1px;"}
+
+::: {.column width="33%"}
+**External Indicators**
+![](figures/ple_scenario_external.png){width=100%}
+:::
+
+::: {.column width="33%"}
+**Social Indicators**
+![](figures/ple_scenario_social.png){width=100%}
+:::
+
+::: {.column width="33%"}
+**Ecological Indicators**
+![](figures/ple_scenario_ecological.png){width=100%}
+:::
+
+:::
+
+---
+
+## Government-led CE Transition
+
+![](../figures/shockce.png){width=80%}
+
+---
+
+## Scenario Summary: Change by Shock, Difference
+
+::: {.columns style="gap: 18px;"}
+
+::: {.column width="50%"}
+**Top half**
+![](figures/byshock_top.png){width=100%}
+:::
+
+::: {.column width="50%"}
+**Bottom half**
+![](figures/byshock_bottom.png){width=100%}
+:::
+
+:::
+---
+
+## Scenario Summary: Change by Shock, Percent
+
+::: {.columns style="gap: 5px;"}
+
+::: {.column width="50%"}
+**Top half**
+![](figures/byshock2_top.png){width=100%}
+:::
+
+::: {.column width="50%"}
+**Bottom half**
+![](figures/byshock2_bottom.png){width=100%}
+:::
+
+:::
+
+---
+
+## Future Work
+
+- Make explicit the military sector (military Keynesianism) and migration as a dynamic feedback 
+- **Green value chain upgrading** from the NZIPL green tech dataset
+- NZIPL Net-Zero Value Chain Explorer
+
+---
+
+# Net-Zero Value Chain Explorer
+
+## Sankey Diagram, Solar 2020
+
+---
+
+## Thank you!
+
+oriolvallescodina@gmail.com
+
+ovalles1@jh.edu
+
+::: {.notes}
+If you want the title slide background elsewhere too, add `data-background-image: ../figures/tsunami.jpeg` to specific slides using fenced div attributes.
+:::
+
+---
+
+## References
+
+::: {#refs}
+:::

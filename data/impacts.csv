@@ -1,0 +1,437 @@
+"region","sector","impact","total_value","output","unit","value"
+"EU","Agriculture","Emissions",124503242528.53,254900,"ton GHG per million USD output",2.04733623657704e-06
+"EU","Agriculture","Extraction",1023570.34279991,254900,"ton per million USD output",0.249030271141638
+"EU","Agriculture","Land",1001476.19054197,254900,"ha per million USD output",0.254524273674501
+"EU","Agriculture","Water",468116.136119554,254900,"ton per million USD output",0.544522994043726
+"EU","Animal Farming","Emissions",367433901824.021,285268,"ton GHG per million USD output",7.76379094536102e-07
+"EU","Animal Farming","Extraction",932504.454433275,285268,"ton per million USD output",0.305915964952007
+"EU","Animal Farming","Land",516386.202680502,285268,"ha per million USD output",0.552431491235061
+"EU","Animal Farming","Water",2374.87803787802,285268,"ton per million USD output",120.119010513437
+"EU","Biogas & Composting","Emissions",6218421860.90086,158827,"ton GHG per million USD output",2.55413678185209e-05
+"EU","Biogas & Composting","Extraction",358.763360291,158827,"ton per million USD output",442.706858000138
+"EU","Biogas & Composting","Land",27.989424081,158827,"ha per million USD output",5674.53619411255
+"EU","Biogas & Composting","Water",2.77528159746,158827,"ton per million USD output",57229.1475378073
+"EU","Construction (45)","Emissions",31609437689.329,31956,"ton GHG per million USD output",1.01096388724397e-06
+"EU","Construction (45)","Extraction",80668.733168272,31956,"ton per million USD output",0.396138612135398
+"EU","Construction (45)","Land",1611.547842621,31956,"ha per million USD output",19.8293833759395
+"EU","Construction (45)","Water",86.97467412,31956,"ton per million USD output",367.417300764012
+"EU","Education (80)","Emissions",9476387186.6118,31892,"ton GHG per million USD output",3.36541757654825e-06
+"EU","Education (80)","Extraction",135.446626037,31892,"ton per million USD output",235.45806147499
+"EU","Education (80)","Land",472.005063055,31892,"ha per million USD output",67.5670718309304
+"EU","Education (80)","Water",29.177236936,31892,"ton per million USD output",1093.04387080774
+"EU","Extraction of Fossil-Fuels","Emissions",157315330251.879,158115,"ton GHG per million USD output",1.0050832283595e-06
+"EU","Extraction of Fossil-Fuels","Extraction",3662051.51807245,158115,"ton per million USD output",0.0431766181386834
+"EU","Extraction of Fossil-Fuels","Land",1.745375517,158115,"ha per million USD output",90590.8204050968
+"EU","Extraction of Fossil-Fuels","Water",17.529475739,158115,"ton per million USD output",9019.95030280466
+"EU","Fishing, operating of fish hatcheries and fish farms; service activities incidental to fishing (05)","Emissions",4043804147.05795,31542,"ton GHG per million USD output",7.80008102591918e-06
+"EU","Fishing, operating of fish hatcheries and fish farms; service activities incidental to fishing (05)","Extraction",256.940940583,31542,"ton per million USD output",122.759728085493
+"EU","Fishing, operating of fish hatcheries and fish farms; service activities incidental to fishing (05)","Land",210.116169272,31542,"ha per million USD output",150.11695724934
+"EU","Fishing, operating of fish hatcheries and fish farms; service activities incidental to fishing (05)","Water",100.727410647,31542,"ton per million USD output",313.142170511453
+"EU","Forestry, logging and related service activities (02)","Emissions",8124000208.69591,31515,"ton GHG per million USD output",3.8792465768608e-06
+"EU","Forestry, logging and related service activities (02)","Extraction",309557.086771164,31515,"ton per million USD output",0.101806746951644
+"EU","Forestry, logging and related service activities (02)","Land",1269107.71367517,31515,"ha per million USD output",0.0248324075729842
+"EU","Forestry, logging and related service activities (02)","Water",2739.208831587,31515,"ton per million USD output",11.5051469010274
+"EU","Health and social work (85)","Emissions",16946694763.26,31919,"ton GHG per million USD output",1.88349412353845e-06
+"EU","Health and social work (85)","Extraction",65.237928337,31919,"ton per million USD output",489.270594785227
+"EU","Health and social work (85)","Land",129.749285963,31919,"ha per million USD output",246.005207374337
+"EU","Health and social work (85)","Water",159.776506537,31919,"ton per million USD output",199.772799467288
+"EU","Incineration of Waste","Emissions",14472132159.4477,222777,"ton GHG per million USD output",1.5393516141612e-05
+"EU","Incineration of Waste","Extraction",400.720512553,222777,"ton per million USD output",555.941093658227
+"EU","Incineration of Waste","Land",63.458094844,222777,"ha per million USD output",3510.61595132435
+"EU","Incineration of Waste","Water",9.9978386312816,222777,"ton per million USD output",22282.5160733208
+"EU","KIBS","Emissions",65670010670.3807,190272,"ton GHG per million USD output",2.8973956004825e-06
+"EU","KIBS","Extraction",3110.391590472,190272,"ton per million USD output",61.1730048984367
+"EU","KIBS","Land",1015.526979215,190272,"ha per million USD output",187.362821366971
+"EU","KIBS","Water",349.41241505,190272,"ton per million USD output",544.548481406342
+"EU","Landfill of Waste","Emissions",197681489591.467,190113,"ton GHG per million USD output",9.61713716306427e-07
+"EU","Landfill of Waste","Extraction",1044.648818378,190113,"ton per million USD output",181.987474312357
+"EU","Landfill of Waste","Land",93.052618449,190113,"ha per million USD output",2043.06985841776
+"EU","Landfill of Waste","Water",11.2567095137,190113,"ton per million USD output",16888.8607961876
+"EU","Leisure Services","Emissions",18551062431.2622,63569,"ton GHG per million USD output",3.42670400876198e-06
+"EU","Leisure Services","Extraction",1104.153420853,63569,"ton per million USD output",57.5726151814035
+"EU","Leisure Services","Land",4662.649864909,63569,"ha per million USD output",13.6336636551715
+"EU","Leisure Services","Water",76.267307545,63569,"ton per million USD output",833.502611357984
+"EU","Manufacture of Chemicals","Emissions",36456090479.0467,94923,"ton GHG per million USD output",2.60376246472609e-06
+"EU","Manufacture of Chemicals","Extraction",7569.0348301973,94923,"ton per million USD output",12.5409648825101
+"EU","Manufacture of Chemicals","Land",60.160193985,94923,"ha per million USD output",1577.83733250042
+"EU","Manufacture of Chemicals","Water",996.199462252,94923,"ton per million USD output",95.2851347514461
+"EU","Manufacture of Metals","Emissions",75737520299.3965,222019,"ton GHG per million USD output",2.93142684263151e-06
+"EU","Manufacture of Metals","Extraction",15127.077036873,222019,"ton per million USD output",14.6769266434499
+"EU","Manufacture of Metals","Land",0,222019,"ha per million USD output",Inf
+"EU","Manufacture of Metals","Water",449.49637186471,222019,"ton per million USD output",493.928347138747
+"EU","Manufacture of cement, lime and plaster","Emissions",120266472438.408,31474,"ton GHG per million USD output",2.61702196479727e-07
+"EU","Manufacture of cement, lime and plaster","Extraction",97618.91631571,31474,"ton per million USD output",0.322417019035632
+"EU","Manufacture of cement, lime and plaster","Land",2.194606304,31474,"ha per million USD output",14341.5244650641
+"EU","Manufacture of cement, lime and plaster","Water",124.683619487,31474,"ton per million USD output",252.43091377598
+"EU","Manufacture of durable goods","Emissions",59848853663.5248,253180,"ton GHG per million USD output",4.23032329780949e-06
+"EU","Manufacture of durable goods","Extraction",14269.29873568,253180,"ton per million USD output",17.7429882638122
+"EU","Manufacture of durable goods","Land",905.884626693,253180,"ha per million USD output",279.483714084268
+"EU","Manufacture of durable goods","Water",467.090502154,253180,"ton per million USD output",542.036283830336
+"EU","Manufacture of furniture; manufacturing n.e.c. (36)","Emissions",15068394273.929,31416,"ton GHG per million USD output",2.08489368069929e-06
+"EU","Manufacture of furniture; manufacturing n.e.c. (36)","Extraction",2676.68368576,31416,"ton per million USD output",11.7369116743729
+"EU","Manufacture of furniture; manufacturing n.e.c. (36)","Land",9257.677174265,31416,"ha per million USD output",3.3935078323245
+"EU","Manufacture of furniture; manufacturing n.e.c. (36)","Water",181.199397007,31416,"ton per million USD output",173.378060407046
+"EU","Manufacture of gas; distribution of gaseous fuels through mains","Emissions",58840338195.9781,31875,"ton GHG per million USD output",5.41720203813831e-07
+"EU","Manufacture of gas; distribution of gaseous fuels through mains","Extraction",25625.438136187,31875,"ton per million USD output",1.24388117114718
+"EU","Manufacture of gas; distribution of gaseous fuels through mains","Land",3.216296729,31875,"ha per million USD output",9910.46619318313
+"EU","Manufacture of gas; distribution of gaseous fuels through mains","Water",9.955570501,31875,"ton per million USD output",3201.72510423167
+"EU","Manufacture of glass and glass products","Emissions",11053687013.8495,31722,"ton GHG per million USD output",2.86981167100665e-06
+"EU","Manufacture of glass and glass products","Extraction",27582.864073924,31722,"ton per million USD output",1.15006186141449
+"EU","Manufacture of glass and glass products","Land",0.135359224,31722,"ha per million USD output",234354.180399261
+"EU","Manufacture of glass and glass products","Water",20.059328667,31722,"ton per million USD output",1581.40885602949
+"EU","Manufacture of other non-metallic mineral products","Emissions",48658726235.588,94395,"ton GHG per million USD output",1.93993980736309e-06
+"EU","Manufacture of other non-metallic mineral products","Extraction",88616.7591369385,94395,"ton per million USD output",1.06520483167447
+"EU","Manufacture of other non-metallic mineral products","Land",0.515632924,94395,"ha per million USD output",183066.277590917
+"EU","Manufacture of other non-metallic mineral products","Water",122.507894989,94395,"ton per million USD output",770.521769298834
+"EU","Manufacture of rubber and plastic products (25)","Emissions",3740936091.4222,31695,"ton GHG per million USD output",8.47247833842316e-06
+"EU","Manufacture of rubber and plastic products (25)","Extraction",428.789393067,31695,"ton per million USD output",73.9174068026621
+"EU","Manufacture of rubber and plastic products (25)","Land",5.962085086,31695,"ha per million USD output",5316.09320276648
+"EU","Manufacture of rubber and plastic products (25)","Water",50.529702142,31695,"ton per million USD output",627.254835402152
+"EU","Manufacture of textiles","Emissions",8421193857.64975,94857,"ton GHG per million USD output",1.12640798446686e-05
+"EU","Manufacture of textiles","Extraction",117.879287037,94857,"ton per million USD output",804.696078372329
+"EU","Manufacture of textiles","Land",185.66445427,94857,"ha per million USD output",510.905549330706
+"EU","Manufacture of textiles","Water",464.608597486,94857,"ton per million USD output",204.165399678938
+"EU","Manufacture of tobacco products (16)","Emissions",4411405375.25548,31565,"ton GHG per million USD output",7.15531612149155e-06
+"EU","Manufacture of tobacco products (16)","Extraction",2.126493866,31565,"ton per million USD output",14843.6826010576
+"EU","Manufacture of tobacco products (16)","Land",1.003716681,31565,"ha per million USD output",31448.1173796493
+"EU","Manufacture of tobacco products (16)","Water",3.70612584,31565,"ton per million USD output",8516.98009261337
+"EU","Manufacture of wood and of products of wood and cork, except furniture; manufacture of articles of straw and plaiting materials (20)","Emissions",5857216997.03,31673,"ton GHG per million USD output",5.40751691734493e-06
+"EU","Manufacture of wood and of products of wood and cork, except furniture; manufacture of articles of straw and plaiting materials (20)","Extraction",2552.432560459,31673,"ton per million USD output",12.4089468574654
+"EU","Manufacture of wood and of products of wood and cork, except furniture; manufacture of articles of straw and plaiting materials (20)","Land",9355.81146358,31673,"ha per million USD output",3.38538245702103
+"EU","Manufacture of wood and of products of wood and cork, except furniture; manufacture of articles of straw and plaiting materials (20)","Water",29.849502498,31673,"ton per million USD output",1061.08971170029
+"EU","Mining & Quarrying of raw materials","Emissions",58461229861.6354,315784,"ton GHG per million USD output",5.40159693436813e-06
+"EU","Mining & Quarrying of raw materials","Extraction",3411602.56369225,315784,"ton per million USD output",0.092561778256562
+"EU","Mining & Quarrying of raw materials","Land",1.510429971,315784,"ha per million USD output",209068.944646888
+"EU","Mining & Quarrying of raw materials","Water",15.18919620623,315784,"ton per million USD output",20790.0402175645
+"EU","Other Services","Emissions",7439816430.27743,127363,"ton GHG per million USD output",1.71191051813695e-05
+"EU","Other Services","Extraction",470.728688442,127363,"ton per million USD output",270.56562118944
+"EU","Other Services","Land",1489.377699207,127363,"ha per million USD output",85.5142386433023
+"EU","Other Services","Water",79.509199215,127363,"ton per million USD output",1601.86495723091
+"EU","Paper","Emissions",22595265729.0425,63589,"ton GHG per million USD output",2.81426210085534e-06
+"EU","Paper","Extraction",799.835515853,63589,"ton per million USD output",79.5025961458892
+"EU","Paper","Land",2422.187328562,63589,"ha per million USD output",26.2527176367285
+"EU","Paper","Water",349.479559086,63589,"ton per million USD output",181.953417150649
+"EU","Plastics, basic","Emissions",38970498696.6549,31560,"ton GHG per million USD output",8.09843370126259e-07
+"EU","Plastics, basic","Extraction",40276.040954695,31560,"ton per million USD output",0.783592410075773
+"EU","Plastics, basic","Land",2.189098275,31560,"ha per million USD output",14416.8950112575
+"EU","Plastics, basic","Water",233.854687414,31560,"ton per million USD output",134.955601484816
+"EU","Processing of Fossil Fuels","Emissions",138418730836.308,95230,"ton GHG per million USD output",6.87984923894566e-07
+"EU","Processing of Fossil Fuels","Extraction",1695.661335584,95230,"ton per million USD output",56.1609786114525
+"EU","Processing of Fossil Fuels","Land",0,95230,"ha per million USD output",Inf
+"EU","Processing of Fossil Fuels","Water",33.7209800769,95230,"ton per million USD output",2824.05789460537
+"EU","Processing of meat","Emissions",17989972935.8889,219904,"ton GHG per million USD output",1.22236982114245e-05
+"EU","Processing of meat","Extraction",2330.376043026,219904,"ton per million USD output",94.3641695331085
+"EU","Processing of meat","Land",178.307925454,219904,"ha per million USD output",1233.28225282241
+"EU","Processing of meat","Water",1409.642163032,219904,"ton per million USD output",155.999874129054
+"EU","Processing of other food&beverage","Emissions",29345313970.6605,125882,"ton GHG per million USD output",4.28967978076012e-06
+"EU","Processing of other food&beverage","Extraction",1894.503351189,125882,"ton per million USD output",66.4459104392694
+"EU","Processing of other food&beverage","Land",164.161199466,125882,"ha per million USD output",766.819445822043
+"EU","Processing of other food&beverage","Water",1068.935894502,125882,"ton per million USD output",117.763844069102
+"EU","Production of electricity by fossil fuels","Emissions",612665544424.268,126204,"ton GHG per million USD output",2.05991672207707e-07
+"EU","Production of electricity by fossil fuels","Extraction",34462.471921786,126204,"ton per million USD output",3.66207044829591
+"EU","Production of electricity by fossil fuels","Land",8.670685912,126204,"ha per million USD output",14555.2498707556
+"EU","Production of electricity by fossil fuels","Water",2295.87250696278,126204,"ton per million USD output",54.9699513440996
+"EU","Production of electricity by renewable energy","Emissions",40535516625.5084,253542,"ton GHG per million USD output",6.25481111644324e-06
+"EU","Production of electricity by renewable energy","Extraction",1442.3512690341,253542,"ton per million USD output",175.783809009153
+"EU","Production of electricity by renewable energy","Land",2.471191971,253542,"ha per million USD output",102599.070802824
+"EU","Production of electricity by renewable energy","Water",192.524652686753,253542,"ton per million USD output",1316.93264453008
+"EU","Public administration and defence; compulsory social security (75)","Emissions",17245105789.29,31865,"ton GHG per million USD output",1.84777063065566e-06
+"EU","Public administration and defence; compulsory social security (75)","Extraction",4525.2176256,31865,"ton per million USD output",7.04165028875821
+"EU","Public administration and defence; compulsory social security (75)","Land",6679.578351091,31865,"ha per million USD output",4.77051070069346
+"EU","Public administration and defence; compulsory social security (75)","Water",650.596194123,31865,"ton per million USD output",48.9781530968742
+"EU","Pulp","Emissions",5131637646.3353,31727,"ton GHG per million USD output",6.1826267142337e-06
+"EU","Pulp","Extraction",177.97080873,31727,"ton per million USD output",178.270808715227
+"EU","Pulp","Land",835.620707957,31727,"ha per million USD output",37.9681830499019
+"EU","Pulp","Water",267.772817671,31727,"ton per million USD output",118.484767333559
+"EU","Re-processing of Metals","Emissions",47644443187.3468,190302,"ton GHG per million USD output",3.99421185911854e-06
+"EU","Re-processing of Metals","Extraction",4974.969376281,190302,"ton per million USD output",38.2518937518081
+"EU","Re-processing of Metals","Land",0,190302,"ha per million USD output",Inf
+"EU","Re-processing of Metals","Water",238.70697594,190302,"ton per million USD output",797.220103227453
+"EU","Re-processing of ash into clinker","Emissions",31130222577.89,31501,"ton GHG per million USD output",1.01191052910664e-06
+"EU","Re-processing of ash into clinker","Extraction",19007.586709758,31501,"ton per million USD output",1.65728561342447
+"EU","Re-processing of ash into clinker","Land",0.059719368,31501,"ha per million USD output",527483.813961327
+"EU","Re-processing of ash into clinker","Water",29.237993895,31501,"ton per million USD output",1077.39949988111
+"EU","Re-processing of secondary construction material into aggregates","Emissions",8846229045.78039,31983,"ton GHG per million USD output",3.6154388309961e-06
+"EU","Re-processing of secondary construction material into aggregates","Extraction",237.013647434,31983,"ton per million USD output",134.941596596905
+"EU","Re-processing of secondary construction material into aggregates","Land",2.670725504,31983,"ha per million USD output",11975.3976783082
+"EU","Re-processing of secondary construction material into aggregates","Water",0.085304396,31983,"ton per million USD output",374927.922823579
+"EU","Re-processing of secondary glass into new glass","Emissions",5483363751.48785,31393,"ton GHG per million USD output",5.72513541372882e-06
+"EU","Re-processing of secondary glass into new glass","Extraction",11728.5371288717,31393,"ton per million USD output",2.67663389347347
+"EU","Re-processing of secondary glass into new glass","Land",0.070773579,31393,"ha per million USD output",443569.485160557
+"EU","Re-processing of secondary glass into new glass","Water",8.620385393,31393,"ton per million USD output",3641.71653224368
+"EU","Re-processing of secondary paper into new pulp","Emissions",2447765387.8861,31754,"ton GHG per million USD output",1.29726485051016e-05
+"EU","Re-processing of secondary paper into new pulp","Extraction",36.181222694,31754,"ton per million USD output",877.63755991767
+"EU","Re-processing of secondary paper into new pulp","Land",169.901049838,31754,"ha per million USD output",186.897020532112
+"EU","Re-processing of secondary paper into new pulp","Water",205.296882822,31754,"ton per million USD output",154.673561349355
+"EU","Re-processing of secondary plastic into new plastic","Emissions",9574465119.8553,31587,"ton GHG per million USD output",3.29908768840733e-06
+"EU","Re-processing of secondary plastic into new plastic","Extraction",12028.117704476,31587,"ton per million USD output",2.62609668246309
+"EU","Re-processing of secondary plastic into new plastic","Land",2.491948027,31587,"ha per million USD output",12675.6255177709
+"EU","Re-processing of secondary plastic into new plastic","Water",104.732754821,31587,"ton per million USD output",301.596191697485
+"EU","Re-processing of secondary wood material into new wood material","Emissions",3058256549.8614,31700,"ton GHG per million USD output",1.03653828523433e-05
+"EU","Re-processing of secondary wood material into new wood material","Extraction",517.968576286,31700,"ton per million USD output",61.2006238434368
+"EU","Re-processing of secondary wood material into new wood material","Land",1429.718072477,31700,"ha per million USD output",22.1722034646169
+"EU","Re-processing of secondary wood material into new wood material","Water",3.671562754,31700,"ton per million USD output",8633.92569430123
+"EU","Real estate activities (70)","Emissions",15715309455.0925,31730,"ton GHG per million USD output",2.01905028282583e-06
+"EU","Real estate activities (70)","Extraction",2240.283720645,31730,"ton per million USD output",14.1633846229372
+"EU","Real estate activities (70)","Land",98.60970226,31730,"ha per million USD output",321.773611245056
+"EU","Real estate activities (70)","Water",15.231857884,31730,"ton per million USD output",2083.13393163484
+"EU","Recycling","Emissions",35005370529.6035,62913,"ton GHG per million USD output",1.79723851078209e-06
+"EU","Recycling","Extraction",5713.272625093,62913,"ton per million USD output",11.0117272758318
+"EU","Recycling","Land",23.69315379,62913,"ha per million USD output",2655.32400446213
+"EU","Recycling","Water",16.155184318,62913,"ton per million USD output",3894.29168752366
+"EU","Renting of machinery and equipment without operator and of personal and household goods (71)","Emissions",4547716087.56,31757,"ton GHG per million USD output",6.9830656506613e-06
+"EU","Renting of machinery and equipment without operator and of personal and household goods (71)","Extraction",515.852329772,31757,"ton per million USD output",61.5621916722489
+"EU","Renting of machinery and equipment without operator and of personal and household goods (71)","Land",2.689888667,31757,"ha per million USD output",11806.0648344298
+"EU","Renting of machinery and equipment without operator and of personal and household goods (71)","Water",2.420348122,31757,"ton per million USD output",13120.839812811
+"EU","Research and development (73)","Emissions",2597998431.61586,31811,"ton GHG per million USD output",1.22444261755057e-05
+"EU","Research and development (73)","Extraction",212.916402986,31811,"ton per million USD output",149.406055869221
+"EU","Research and development (73)","Land",31.104776939,31811,"ha per million USD output",1022.7046495908
+"EU","Research and development (73)","Water",68.730928199,31811,"ton per million USD output",462.833848364394
+"EU","Retail & Wholesale trade","Emissions",21243552141.8533,63443,"ton GHG per million USD output",2.98645911834146e-06
+"EU","Retail & Wholesale trade","Extraction",40147.73481376,63443,"ton per million USD output",1.5802385936418
+"EU","Retail & Wholesale trade","Land",10414.672715711,63443,"ha per million USD output",6.09169406776397
+"EU","Retail & Wholesale trade","Water",10876.7767170122,63443,"ton per million USD output",5.83288612524056
+"EU","Retail sale of automotive fuel","Emissions",1902787544.44076,31681,"ton GHG per million USD output",1.66497831523862e-05
+"EU","Retail sale of automotive fuel","Extraction",11.094596065,31681,"ton per million USD output",2855.53433530976
+"EU","Retail sale of automotive fuel","Land",1.784351014,31681,"ha per million USD output",17754.9146728593
+"EU","Retail sale of automotive fuel","Water",3.427345149,31681,"ton per million USD output",9243.5977769101
+"EU","Sale, maintenance, repair of motor vehicles, motor vehicles parts, motorcycles, motor cycles parts and accessoiries","Emissions",10375652731.832,31654,"ton GHG per million USD output",3.05079601429673e-06
+"EU","Sale, maintenance, repair of motor vehicles, motor vehicles parts, motorcycles, motor cycles parts and accessoiries","Extraction",28.659380813,31654,"ton per million USD output",1104.49001695255
+"EU","Sale, maintenance, repair of motor vehicles, motor vehicles parts, motorcycles, motor cycles parts and accessoiries","Land",4.537031012,31654,"ha per million USD output",6976.80926497489
+"EU","Sale, maintenance, repair of motor vehicles, motor vehicles parts, motorcycles, motor cycles parts and accessoiries","Water",9.841203556,31654,"ton per million USD output",3216.47650309003
+"EU","Transmission & Distribution","Emissions",22959037143.8547,63669,"ton GHG per million USD output",2.77315636544635e-06
+"EU","Transmission & Distribution","Extraction",33793.581421722,63669,"ton per million USD output",1.88405600476174
+"EU","Transmission & Distribution","Land",11.5901761,63669,"ha per million USD output",5493.35915612188
+"EU","Transmission & Distribution","Water",7.1493868281,63669,"ton per million USD output",8905.51896699097
+"EU","Transport","Emissions",491591985442.606,221666,"ton GHG per million USD output",4.50914592922874e-07
+"EU","Transport","Extraction",35420.808432214,221666,"ton per million USD output",6.25807286200736
+"EU","Transport","Land",1024.746630705,221666,"ha per million USD output",216.312982505246
+"EU","Transport","Water",74.5964106476,221666,"ton per million USD output",2971.53707632355
+"EU","Waste water","Emissions",25216204825.691,63155,"ton GHG per million USD output",2.50454025245131e-06
+"EU","Waste water","Extraction",426.70513839,63155,"ton per million USD output",148.006185813206
+"EU","Waste water","Land",25.433858689,63155,"ha per million USD output",2483.10729300836
+"EU","Waste water","Water",3.663774825,63155,"ton per million USD output",17237.6859978015
+"EU","Water","Emissions",457237361006.636,63831,"ton GHG per million USD output",1.39601453082207e-07
+"EU","Water","Extraction",41661.141259884,63831,"ton per million USD output",1.53214717767378
+"EU","Water","Land",45.90338019,63831,"ha per million USD output",1390.55119112787
+"EU","Water","Water",36.561001832,63831,"ton per million USD output",1745.87666643565
+"RoW","Agriculture","Emissions",2013493035617.62,206064,"ton GHG per million USD output",1.02341550904243e-07
+"RoW","Agriculture","Extraction",11796175.2334573,206064,"ton per million USD output",0.0174687130295881
+"RoW","Agriculture","Land",14192000.6622728,206064,"ha per million USD output",0.0145197287474619
+"RoW","Agriculture","Water",7753246.83031896,206064,"ton per million USD output",0.0265777685800212
+"RoW","Animal Farming","Emissions",3916123408380.88,233505,"ton GHG per million USD output",5.9626568330374e-08
+"RoW","Animal Farming","Extraction",10634411.1603527,233505,"ton per million USD output",0.0219574921901229
+"RoW","Animal Farming","Land",22868142.0220066,233505,"ha per million USD output",0.0102109301129621
+"RoW","Animal Farming","Water",82208.244247103,233505,"ton per million USD output",2.84040855194677
+"RoW","Biogas & Composting","Emissions",19790787537.2527,128615,"ton GHG per million USD output",6.4987307734927e-06
+"RoW","Biogas & Composting","Extraction",75.516177072,128615,"ton per million USD output",1703.1450079547
+"RoW","Biogas & Composting","Land",8.828669505,128615,"ha per million USD output",14567.8802368987
+"RoW","Biogas & Composting","Water",0.920733665,128615,"ton per million USD output",139687.517562421
+"RoW","Construction (45)","Emissions",207179921263.7,25665,"ton GHG per million USD output",1.2387783450952e-07
+"RoW","Construction (45)","Extraction",118853.74173537,25665,"ton per million USD output",0.215937669485775
+"RoW","Construction (45)","Land",23645.01077229,25665,"ha per million USD output",1.08542982903088
+"RoW","Construction (45)","Water",242.597857686,25665,"ton per million USD output",105.792360430564
+"RoW","Education (80)","Emissions",43911737803.93,25837,"ton GHG per million USD output",5.88384821283198e-07
+"RoW","Education (80)","Extraction",2238.267571808,25837,"ton per million USD output",11.5433026531005
+"RoW","Education (80)","Land",1222.524097163,25837,"ha per million USD output",21.1341437440436
+"RoW","Education (80)","Water",59.686683616,25837,"ton per million USD output",432.877124924963
+"RoW","Extraction of Fossil-Fuels","Emissions",4083000469947.56,130715,"ton GHG per million USD output",3.20144464743789e-08
+"RoW","Extraction of Fossil-Fuels","Extraction",28914107.0503077,130715,"ton per million USD output",0.00452080362615276
+"RoW","Extraction of Fossil-Fuels","Land",4703.078986068,130715,"ha per million USD output",27.7934945143849
+"RoW","Extraction of Fossil-Fuels","Water",431.892248033,130715,"ton per million USD output",302.656508875363
+"RoW","Fishing, operating of fish hatcheries and fish farms; service activities incidental to fishing (05)","Emissions",18194292069.943,26077,"ton GHG per million USD output",1.43325169782666e-06
+"RoW","Fishing, operating of fish hatcheries and fish farms; service activities incidental to fishing (05)","Extraction",6516.932644791,26077,"ton per million USD output",4.00142235946591
+"RoW","Fishing, operating of fish hatcheries and fish farms; service activities incidental to fishing (05)","Land",18287.634018849,26077,"ha per million USD output",1.42593623500572
+"RoW","Fishing, operating of fish hatcheries and fish farms; service activities incidental to fishing (05)","Water",3332.297874458,26077,"ton per million USD output",7.82553090462882
+"RoW","Forestry, logging and related service activities (02)","Emissions",32219782088.04,26055,"ton GHG per million USD output",8.08664687079669e-07
+"RoW","Forestry, logging and related service activities (02)","Extraction",2491510.60971267,26055,"ton per million USD output",0.0104575111574599
+"RoW","Forestry, logging and related service activities (02)","Land",20180609.0727,26055,"ha per million USD output",0.00129109086381574
+"RoW","Forestry, logging and related service activities (02)","Water",436.830212156,26055,"ton per million USD output",59.6455997661061
+"RoW","Health and social work (85)","Emissions",116049434803.74,25859,"ton GHG per million USD output",2.22827453177451e-07
+"RoW","Health and social work (85)","Extraction",1365.644354318,25859,"ton per million USD output",18.935383812218
+"RoW","Health and social work (85)","Land",1394.300564739,25859,"ha per million USD output",18.5462163997908
+"RoW","Health and social work (85)","Water",48.440562843,25859,"ton per million USD output",533.829470227487
+"RoW","Incineration of Waste","Emissions",82756539463.1818,179137,"ton GHG per million USD output",2.16462651969271e-06
+"RoW","Incineration of Waste","Extraction",81.425069246,179137,"ton per million USD output",2200.02269152261
+"RoW","Incineration of Waste","Land",37.135810402,179137,"ha per million USD output",4823.83440837344
+"RoW","Incineration of Waste","Water",3.860933721,179137,"ton per million USD output",46397.3258659314
+"RoW","KIBS","Emissions",246137029392.313,155566,"ton GHG per million USD output",6.32030054088475e-07
+"RoW","KIBS","Extraction",2541.483191536,155566,"ton per million USD output",61.2107136958795
+"RoW","KIBS","Land",908.741785925,155566,"ha per million USD output",171.188342397671
+"RoW","KIBS","Water",35.7033211396,155566,"ton per million USD output",4357.18569126208
+"RoW","Landfill of Waste","Emissions",1444940674679.87,154975,"ton GHG per million USD output",1.07253538304841e-07
+"RoW","Landfill of Waste","Extraction",17168.1461537629,154975,"ton per million USD output",9.02689193183695
+"RoW","Landfill of Waste","Land",11114.091139857,154975,"ha per million USD output",13.9440101803947
+"RoW","Landfill of Waste","Water",271.028000325,154975,"ton per million USD output",571.804388528726
+"RoW","Leisure Services","Emissions",93856570325.22,51431,"ton GHG per million USD output",5.4797442333326e-07
+"RoW","Leisure Services","Extraction",4145.538672855,51431,"ton per million USD output",12.4063491041032
+"RoW","Leisure Services","Land",5155.1966956,51431,"ha per million USD output",9.97653494849125
+"RoW","Leisure Services","Water",65.219606439,51431,"ton per million USD output",788.581882169183
+"RoW","Manufacture of Chemicals","Emissions",1062925059361.68,77883,"ton GHG per million USD output",7.32723340314988e-08
+"RoW","Manufacture of Chemicals","Extraction",58045.6865893059,77883,"ton per million USD output",1.34175344588566
+"RoW","Manufacture of Chemicals","Land",966.456665869,77883,"ha per million USD output",80.5861273976218
+"RoW","Manufacture of Chemicals","Water",4852.243717335,77883,"ton per million USD output",16.050925002336
+"RoW","Manufacture of Metals","Emissions",1805463398864.05,181343,"ton GHG per million USD output",1.00441249661497e-07
+"RoW","Manufacture of Metals","Extraction",41667.417362066,181343,"ton per million USD output",4.35215358859977
+"RoW","Manufacture of Metals","Land",1347.50847445,181343,"ha per million USD output",134.576519137675
+"RoW","Manufacture of Metals","Water",19278.1483690386,181343,"ton per million USD output",9.4066606672269
+"RoW","Manufacture of cement, lime and plaster","Emissions",1982701241622,26115,"ton GHG per million USD output",1.31714246462245e-08
+"RoW","Manufacture of cement, lime and plaster","Extraction",36780.225884984,26115,"ton per million USD output",0.710028265776959
+"RoW","Manufacture of cement, lime and plaster","Land",519.242717598,26115,"ha per million USD output",50.2943981974502
+"RoW","Manufacture of cement, lime and plaster","Water",1415.119340963,26115,"ton per million USD output",18.4542739570138
+"RoW","Manufacture of durable goods","Emissions",603889690902.302,206656,"ton GHG per million USD output",3.42208193173864e-07
+"RoW","Manufacture of durable goods","Extraction",32908.2280132086,206656,"ton per million USD output",6.27976686915664
+"RoW","Manufacture of durable goods","Land",10066.581415585,206656,"ha per million USD output",20.5289155740654
+"RoW","Manufacture of durable goods","Water",14156.442313985,206656,"ton per million USD output",14.5980180200958
+"RoW","Manufacture of furniture; manufacturing n.e.c. (36)","Emissions",188117565690.21,25931,"ton GHG per million USD output",1.37844649992457e-07
+"RoW","Manufacture of furniture; manufacturing n.e.c. (36)","Extraction",7361.393527485,25931,"ton per million USD output",3.52256674000408
+"RoW","Manufacture of furniture; manufacturing n.e.c. (36)","Land",2801.984917348,25931,"ha per million USD output",9.25451091454945
+"RoW","Manufacture of furniture; manufacturing n.e.c. (36)","Water",2343.448862099,25931,"ton per million USD output",11.0653150659212
+"RoW","Manufacture of gas; distribution of gaseous fuels through mains","Emissions",381405753530.253,25599,"ton GHG per million USD output",6.71174982628297e-08
+"RoW","Manufacture of gas; distribution of gaseous fuels through mains","Extraction",7326.02405277192,25599,"ton per million USD output",3.49425552190403
+"RoW","Manufacture of gas; distribution of gaseous fuels through mains","Land",786.613571279,25599,"ha per million USD output",32.5432981767364
+"RoW","Manufacture of gas; distribution of gaseous fuels through mains","Water",99.948527662,25599,"ton per million USD output",256.121831895005
+"RoW","Manufacture of glass and glass products","Emissions",82685748854.93,26027,"ton GHG per million USD output",3.1477008263738e-07
+"RoW","Manufacture of glass and glass products","Extraction",8438.02103204051,26027,"ton per million USD output",3.08449100816072
+"RoW","Manufacture of glass and glass products","Land",776.913154302,26027,"ha per million USD output",33.5005268682616
+"RoW","Manufacture of glass and glass products","Water",114.74816676,26027,"ton per million USD output",226.818438454328
+"RoW","Manufacture of other non-metallic mineral products","Emissions",547910694237.75,78323,"ton GHG per million USD output",1.42948478326313e-07
+"RoW","Manufacture of other non-metallic mineral products","Extraction",33178.2173700778,78323,"ton per million USD output",2.36067535293914
+"RoW","Manufacture of other non-metallic mineral products","Land",1483.958418809,78323,"ha per million USD output",52.7797807588576
+"RoW","Manufacture of other non-metallic mineral products","Water",708.616794423,78323,"ton per million USD output",110.529415357387
+"RoW","Manufacture of rubber and plastic products (25)","Emissions",72882551011.516,26005,"ton GHG per million USD output",3.56806939920243e-07
+"RoW","Manufacture of rubber and plastic products (25)","Extraction",4589.169544117,26005,"ton per million USD output",5.66660258463029
+"RoW","Manufacture of rubber and plastic products (25)","Land",3880.10610609,26005,"ha per million USD output",6.70213630477373
+"RoW","Manufacture of rubber and plastic products (25)","Water",635.378494369,26005,"ton per million USD output",40.9283603874975
+"RoW","Manufacture of textiles","Emissions",331328979678.718,78018,"ton GHG per million USD output",2.3546989483278e-07
+"RoW","Manufacture of textiles","Extraction",5398.66691546187,78018,"ton per million USD output",14.4513453453769
+"RoW","Manufacture of textiles","Land",27007.827674114,78018,"ha per million USD output",2.88871807615899
+"RoW","Manufacture of textiles","Water",3692.095969949,78018,"ton per million USD output",21.1310866876187
+"RoW","Manufacture of tobacco products (16)","Emissions",133043784712.237,25962,"ton GHG per million USD output",1.95138766205078e-07
+"RoW","Manufacture of tobacco products (16)","Extraction",103.631571881661,25962,"ton per million USD output",250.522109513562
+"RoW","Manufacture of tobacco products (16)","Land",37.305300637,25962,"ha per million USD output",695.933273735649
+"RoW","Manufacture of tobacco products (16)","Water",6.375419331,25962,"ton per million USD output",4072.20272927958
+"RoW","Manufacture of wood and of products of wood and cork, except furniture; manufacture of articles of straw and plaiting materials (20)","Emissions",131736135391.86,26050,"ton GHG per million USD output",1.97743769562635e-07
+"RoW","Manufacture of wood and of products of wood and cork, except furniture; manufacture of articles of straw and plaiting materials (20)","Extraction",5967.34109750182,26050,"ton per million USD output",4.36542834980652
+"RoW","Manufacture of wood and of products of wood and cork, except furniture; manufacture of articles of straw and plaiting materials (20)","Land",43002.344395867,26050,"ha per million USD output",0.605780925807005
+"RoW","Manufacture of wood and of products of wood and cork, except furniture; manufacture of articles of straw and plaiting materials (20)","Water",79.587161856,26050,"ton per million USD output",327.314096802864
+"RoW","Mining & Quarrying of raw materials","Emissions",478298701212.724,259520,"ton GHG per million USD output",5.42589807043148e-07
+"RoW","Mining & Quarrying of raw materials","Extraction",47760821.3652229,259520,"ton per million USD output",0.00543374239767513
+"RoW","Mining & Quarrying of raw materials","Land",11475.380291776,259520,"ha per million USD output",22.61537251066
+"RoW","Mining & Quarrying of raw materials","Water",689.598237815,259520,"ton per million USD output",376.335068404891
+"RoW","Other Services","Emissions",63358245445.7208,102646,"ton GHG per million USD output",1.62008905514811e-06
+"RoW","Other Services","Extraction",4988.910547547,102646,"ton per million USD output",20.5748327258483
+"RoW","Other Services","Land",4007.481551056,102646,"ha per million USD output",25.6135926497159
+"RoW","Other Services","Water",302.174695178,102646,"ton per million USD output",339.690919319154
+"RoW","Paper","Emissions",233725937513.05,51592,"ton GHG per million USD output",2.20737161433439e-07
+"RoW","Paper","Extraction",5824.8570031474,51592,"ton per million USD output",8.85721314224929
+"RoW","Paper","Land",4721.74322612,51592,"ha per million USD output",10.9264730268687
+"RoW","Paper","Water",3614.859810017,51592,"ton per million USD output",14.2721993967886
+"RoW","Plastics, basic","Emissions",44404936901.46,25895,"ton GHG per million USD output",5.83155878758801e-07
+"RoW","Plastics, basic","Extraction",6199.81877291301,25895,"ton per million USD output",4.17673498992183
+"RoW","Plastics, basic","Land",315.942650356,25895,"ha per million USD output",81.9610773373644
+"RoW","Plastics, basic","Water",10687.831531875,25895,"ton per million USD output",2.42284881856265
+"RoW","Processing of Fossil Fuels","Emissions",895316231242.327,77553,"ton GHG per million USD output",8.66207908376559e-08
+"RoW","Processing of Fossil Fuels","Extraction",19140.471661784,77553,"ton per million USD output",4.05178103081142
+"RoW","Processing of Fossil Fuels","Land",3142.527958958,77553,"ha per million USD output",24.6785393838517
+"RoW","Processing of Fossil Fuels","Water",312.581579789,77553,"ton per million USD output",248.104830912782
+"RoW","Processing of meat","Emissions",150722423679.044,182708,"ton GHG per million USD output",1.21221511398376e-06
+"RoW","Processing of meat","Extraction",76690.0627840267,182708,"ton per million USD output",2.38242079048154
+"RoW","Processing of meat","Land",54660.382433168,182708,"ha per million USD output",3.34260376285133
+"RoW","Processing of meat","Water",22155.9531134044,182708,"ton per million USD output",8.24645182560263
+"RoW","Processing of other food&beverage","Emissions",142533413741.388,104599,"ton GHG per million USD output",7.33855993863893e-07
+"RoW","Processing of other food&beverage","Extraction",255558.427273274,104599,"ton per million USD output",0.409295835461337
+"RoW","Processing of other food&beverage","Land",13260.092780674,104599,"ha per million USD output",7.88825551450503
+"RoW","Processing of other food&beverage","Water",5263.82672421,104599,"ton per million USD output",19.8712848048201
+"RoW","Production of electricity by fossil fuels","Emissions",9563414838491.79,103811,"ton GHG per million USD output",1.08550137950903e-08
+"RoW","Production of electricity by fossil fuels","Extraction",21148.8453880483,103811,"ton per million USD output",4.90858948066574
+"RoW","Production of electricity by fossil fuels","Land",15874.15905267,103811,"ha per million USD output",6.53962201434155
+"RoW","Production of electricity by fossil fuels","Water",13136.857286241,103811,"ton per million USD output",7.90227051554616
+"RoW","Production of electricity by renewable energy","Emissions",171569659252.088,207134,"ton GHG per million USD output",1.20728805374415e-06
+"RoW","Production of electricity by renewable energy","Extraction",8044.54471784102,207134,"ton per million USD output",25.7483807058245
+"RoW","Production of electricity by renewable energy","Land",9305.814650367,207134,"ha per million USD output",22.2585563738722
+"RoW","Production of electricity by renewable energy","Water",152.563928605,207134,"ton per million USD output",1357.68659010012
+"RoW","Public administration and defence; compulsory social security (75)","Emissions",182410931044.4,25815,"ton GHG per million USD output",1.41521124047749e-07
+"RoW","Public administration and defence; compulsory social security (75)","Extraction",21765.420137828,25815,"ton per million USD output",1.18605567163548
+"RoW","Public administration and defence; compulsory social security (75)","Land",15895.19433833,25815,"ha per million USD output",1.62407577098628
+"RoW","Public administration and defence; compulsory social security (75)","Water",907.019101248,25815,"ton per million USD output",28.4613631228716
+"RoW","Pulp","Emissions",18839926659.06,25741,"ton GHG per million USD output",1.3663004355498e-06
+"RoW","Pulp","Extraction",1773.182968076,25741,"ton per million USD output",14.5168324213775
+"RoW","Pulp","Land",3124.23272868,25741,"ha per million USD output",8.23914293058304
+"RoW","Pulp","Water",3409.300934317,25741,"ton per million USD output",7.55022818340816
+"RoW","Re-processing of Metals","Emissions",351261528082.535,155742,"ton GHG per million USD output",4.43379042533248e-07
+"RoW","Re-processing of Metals","Extraction",9234.719015878,155742,"ton per million USD output",16.8648336492123
+"RoW","Re-processing of Metals","Land",21.450850177,155742,"ha per million USD output",7260.41153217272
+"RoW","Re-processing of Metals","Water",302.41228863815,155742,"ton per million USD output",514.99891324308
+"RoW","Re-processing of ash into clinker","Emissions",75957771529.9332,26137,"ton GHG per million USD output",3.44099089185364e-07
+"RoW","Re-processing of ash into clinker","Extraction",225.323586868,26137,"ton per million USD output",115.997620858537
+"RoW","Re-processing of ash into clinker","Land",0,26137,"ha per million USD output",Inf
+"RoW","Re-processing of ash into clinker","Water",10.175690311,26137,"ton per million USD output",2568.57266693206
+"RoW","Re-processing of secondary construction material into aggregates","Emissions",49609535211.406,25687,"ton GHG per million USD output",5.17783524690112e-07
+"RoW","Re-processing of secondary construction material into aggregates","Extraction",0.639141824,25687,"ton per million USD output",40189.8280404194
+"RoW","Re-processing of secondary construction material into aggregates","Land",0,25687,"ha per million USD output",Inf
+"RoW","Re-processing of secondary construction material into aggregates","Water",1.59e-05,25687,"ton per million USD output",1615534591.19497
+"RoW","Re-processing of secondary glass into new glass","Emissions",21801004586.973,26049,"ton GHG per million USD output",1.19485319569013e-06
+"RoW","Re-processing of secondary glass into new glass","Extraction",231.441902249,26049,"ton per million USD output",112.550924214124
+"RoW","Re-processing of secondary glass into new glass","Land",0,26049,"ha per million USD output",Inf
+"RoW","Re-processing of secondary glass into new glass","Water",2.522158599,26049,"ton per million USD output",10328.0578827708
+"RoW","Re-processing of secondary paper into new pulp","Emissions",9604700750.831,25763,"ton GHG per million USD output",2.68233239830725e-06
+"RoW","Re-processing of secondary paper into new pulp","Extraction",0.014368918,25763,"ton per million USD output",1792967.29231804
+"RoW","Re-processing of secondary paper into new pulp","Land",0.099424905,25763,"ha per million USD output",259120.187240813
+"RoW","Re-processing of secondary paper into new pulp","Water",114.136134295,25763,"ton per million USD output",225.721680159695
+"RoW","Re-processing of secondary plastic into new plastic","Emissions",45806284372.204,25917,"ton GHG per million USD output",5.65795727708639e-07
+"RoW","Re-processing of secondary plastic into new plastic","Extraction",7.824746468,25917,"ton per million USD output",3312.18399292423
+"RoW","Re-processing of secondary plastic into new plastic","Land",0,25917,"ha per million USD output",Inf
+"RoW","Re-processing of secondary plastic into new plastic","Water",36.379095421,25917,"ton per million USD output",712.414635385334
+"RoW","Re-processing of secondary wood material into new wood material","Emissions",14160638707.764,26072,"ton GHG per million USD output",1.84115988961043e-06
+"RoW","Re-processing of secondary wood material into new wood material","Extraction",517.47170667,26072,"ton per million USD output",50.3834309469339
+"RoW","Re-processing of secondary wood material into new wood material","Land",8161.66786,26072,"ha per million USD output",3.19444511185977
+"RoW","Re-processing of secondary wood material into new wood material","Water",0.576234205,26072,"ton per million USD output",45245.491804847
+"RoW","Real estate activities (70)","Emissions",63895972934.66,25705,"ton GHG per million USD output",4.02294523729781e-07
+"RoW","Real estate activities (70)","Extraction",279.773159389,25705,"ton per million USD output",91.8780059393026
+"RoW","Real estate activities (70)","Land",562.474086807,25705,"ha per million USD output",45.6998830753604
+"RoW","Real estate activities (70)","Water",6.158495199,25705,"ton per million USD output",4173.90923746663
+"RoW","Recycling","Emissions",106417503131.298,51928,"ton GHG per million USD output",4.87964841046224e-07
+"RoW","Recycling","Extraction",3817.31722949841,51928,"ton per million USD output",13.6032707993785
+"RoW","Recycling","Land",1694.845398052,51928,"ha per million USD output",30.6387827820073
+"RoW","Recycling","Water",17.487278503,51928,"ton per million USD output",2969.4729223356
+"RoW","Renting of machinery and equipment without operator and of personal and household goods (71)","Emissions",18604568344.235,25727,"ton GHG per million USD output",1.38283240567482e-06
+"RoW","Renting of machinery and equipment without operator and of personal and household goods (71)","Extraction",1145.2574874731,25727,"ton per million USD output",22.4639439439633
+"RoW","Renting of machinery and equipment without operator and of personal and household goods (71)","Land",0.943443149,25727,"ha per million USD output",27269.2636829991
+"RoW","Renting of machinery and equipment without operator and of personal and household goods (71)","Water",4.247037859,25727,"ton per million USD output",6057.63378009012
+"RoW","Research and development (73)","Emissions",30771290795.3048,25771,"ton GHG per million USD output",8.37501428569653e-07
+"RoW","Research and development (73)","Extraction",3583.855279328,25771,"ton per million USD output",7.19085956083368
+"RoW","Research and development (73)","Land",1357.89065426,25771,"ha per million USD output",18.9787004713161
+"RoW","Research and development (73)","Water",119.077534847,25771,"ton per million USD output",216.422014724377
+"RoW","Retail & Wholesale trade","Emissions",107673780713.131,51528,"ton GHG per million USD output",4.7855661479263e-07
+"RoW","Retail & Wholesale trade","Extraction",100497.955711617,51528,"ton per million USD output",0.512726847378485
+"RoW","Retail & Wholesale trade","Land",14756.872682049,51528,"ha per million USD output",3.49179674516547
+"RoW","Retail & Wholesale trade","Water",2804.567732998,51528,"ton per million USD output",18.3728848455794
+"RoW","Retail sale of automotive fuel","Emissions",26131561538.9463,25731,"ton GHG per million USD output",9.84671350835682e-07
+"RoW","Retail sale of automotive fuel","Extraction",4032.892991845,25731,"ton per million USD output",6.38028334796664
+"RoW","Retail sale of automotive fuel","Land",2944.387776774,25731,"ha per million USD output",8.73899837615547
+"RoW","Retail sale of automotive fuel","Water",29.847613412,25731,"ton per million USD output",862.07897579024
+"RoW","Sale, maintenance, repair of motor vehicles, motor vehicles parts, motorcycles, motor cycles parts and accessoiries","Emissions",18582386749.59,25709,"ton GHG per million USD output",1.38351441859681e-06
+"RoW","Sale, maintenance, repair of motor vehicles, motor vehicles parts, motorcycles, motor cycles parts and accessoiries","Extraction",10489.043017104,25709,"ton per million USD output",2.45103389871483
+"RoW","Sale, maintenance, repair of motor vehicles, motor vehicles parts, motorcycles, motor cycles parts and accessoiries","Land",3301.850162977,25709,"ha per million USD output",7.78624066236257
+"RoW","Sale, maintenance, repair of motor vehicles, motor vehicles parts, motorcycles, motor cycles parts and accessoiries","Water",145.179564624,25709,"ton per million USD output",177.084151385793
+"RoW","Transmission & Distribution","Emissions",46210112278.3961,51485,"ton GHG per million USD output",1.11415007368571e-06
+"RoW","Transmission & Distribution","Extraction",12870.5642544027,51485,"ton per million USD output",4.00021312060101
+"RoW","Transmission & Distribution","Land",9779.74934883,51485,"ha per million USD output",5.26444985076835
+"RoW","Transmission & Distribution","Water",28.851998647,51485,"ton per million USD output",1784.45176813958
+"RoW","Transport","Emissions",1807700959463.43,181195,"ton GHG per million USD output",1.00235052181298e-07
+"RoW","Transport","Extraction",97299.7049872348,181195,"ton per million USD output",1.86223586211049
+"RoW","Transport","Land",27015.049911453,181195,"ha per million USD output",6.70718731203168
+"RoW","Transport","Water",537.741923211,181195,"ton per million USD output",336.955316628536
+"RoW","Waste water","Emissions",605620678271.514,51600,"ton GHG per million USD output",8.52018463888489e-08
+"RoW","Waste water","Extraction",46.167355404,51600,"ton per million USD output",1117.67285668543
+"RoW","Waste water","Land",16.985684384,51600,"ha per million USD output",3037.85227803983
+"RoW","Waste water","Water",1.45350014,51600,"ton per million USD output",35500.51257649
+"RoW","Water","Emissions",1385128972557.6,51264,"ton GHG per million USD output",3.70102719787476e-08
+"RoW","Water","Extraction",4699.8318247681,51264,"ton per million USD output",10.9076243387772
+"RoW","Water","Land",2429.440958239,51264,"ha per million USD output",21.1011507919744
+"RoW","Water","Water",22.229995496,51264,"ton per million USD output",2306.07334172534
+"Total","Total","Emissions",4.00226e+13,1188,"ton GHG per million USD output",2.96832289756288e-11
+"Total","Total","Extraction",112667286.3639,1188,"ton per million USD output",1.05443207016003e-05
+"Total","Total","Land",60447841.73,1188,"ha per million USD output",1.96533071487712e-05
+"Total","Total","Water",8447877.325,1188,"ton per million USD output",0.000140627042071779

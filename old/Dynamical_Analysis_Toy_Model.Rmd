@@ -1,0 +1,81 @@
+---
+title: "ECO-MRIO-SFC Dynamical Analysis"
+author: "Oriol Vallès Codina"
+date: "`r Sys.Date()`"
+output:
+  # word_document: default
+  # keep_tex: true
+
+  # pdf_document:
+  #   toc: true
+  #   toc_depth: 3
+  #   number_sections: true
+  html_document:
+    toc: TRUE
+    toc_float: TRUE
+format:
+  html:
+    self-contained:
+      true
+---
+
+# Toy Model
+
+```{r}
+toy.model <- function (t, y, parms) {
+  
+  sim <- array(y, dim = c(length(sim.labels), 2), dimnames = list(sim.labels, NULL))
+  
+  i <- 2
+  sim['TXs', i] <- sim['TXd', i]  # Tax receipts equal tax demand
+  sim['YD', i] <- parms['w'] * sim['Ns', i] - sim['TXs', i]
+  sim['Cd', i] <- parms['alpha1'] * (sim['Cd', i] + parms['g0'] - sim['TXd', i]) + parms['alpha2'] * sim['Hh', i - 1]  # Consumption demand
+  sim['Hh', i] <- parms['g0'] - sim['TXd', i] + sim['Hh', i - 1]  # Household wealth accumulation
+  sim['Ns', i] <- sim['Nd', i]  # Supply of labor equals demand for labor
+  sim['Nd', i] <- sim['Y', i] / parms['w']  # Labor demand
+  sim['Cs', i] <- sim['Cd', i]  # Consumption supply
+  sim['Gs', i] <- parms['g0']  # Government spending
+  sim['Y', i] <- sim['Cd', i] + parms['g0']  # Total output
+  sim['TXd', i] <- parms['theta'] * (sim['Cd', i] + parms['g0'])  # Tax demand
+  sim['Hs', i] <- parms['g0'] - sim['TXd', i] + sim['Hs', i - 1]  # Household savings
+  
+  return(as.list(c(sim[, 1], sim[, 2])))
+}
+
+# Initialize parameters
+T <- 40  # Number of time periods
+
+# External parameters
+
+
+# Initialize matrices to store results
+#sim.labels <- c("Cd", "Hh", "TXd")  # Row names
+params <- setNames(c(0.6, 0.4, 0.2, 20, 1), c('alpha1', 'alpha2', 'theta', 'g0', 'w'))
+sim.labels <- c("TXs", "YD", "Cd", "Hh", "Ns", "Nd", "Cs", "Gs", "Y", "TXd", "Hs")  # Row names
+n <- length(sim.labels)
+sim <- array(0, dim = c(length(sim.labels), 40), dimnames = list(sim.labels, NULL))  # 8 variables
+
+# Time loop for simulation
+for (t in 2:(T - 1)) {
+  # Define equations
+  for (iter in 1 : 100)
+  {
+    sim[ , t] <- unlist(toy.model(t, c(sim[, t - 1], sim[ , t]), params))[1 : n + n]
+  }
+}
+```
+
+# Jacobian
+
+```{r}
+J <- rootSolve :: jacobian.full(y = c(sim[, time.period - 1], sim[, time.period]), 
+                                func = toy.model, 
+                                time = time.period,
+                                parms = params)
+dimnames(J)[[2]][1 : n] <- paste0(dimnames(J)[[2]][1 : n], '_')
+dimnames(J)[[1]] <- dimnames(J)
+J.abs <- abs(J)
+g <- igraph :: graph_from_adjacency_matrix(round(J.abs, 2), mode = 'directed', weighted = T)
+plot(g)
+```
+

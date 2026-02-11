@@ -1,0 +1,55 @@
+sector_code,label
+1,Agriculture
+2,Animal<br>Farming
+3,"Forestry,<br>Logging"
+4,Fishing
+5,Fossil-Fuel<br>Extraction
+6,Mining
+7,Meat
+8,Other<br>Food
+9,Tobacco
+10,Textiles
+11,Wood
+12,Wood<br>Re-processing
+13,Pulp
+14,Pulp<br>Re-processing
+15,Paper
+16,Fossil-Fuel<br>Processing
+17,Plastics
+18,Plastics<br>Re-processing
+19,Chemicals
+20,"Rubber, Plastic<br>Products"
+21,Glass
+22,Glass<br>Re-processing
+23,Other Non-metallic<br>Mineral Products
+24,Cement
+25,Clinker<br>Re-processing
+26,Metals
+27,Metals<br>Re-processing
+28,Durable<br>Goods
+29,Furniture
+30,Recycling
+31,Fossil-Fuel<br>Electricity
+32,Renewable<br>Electricity
+33,"Energy Transmission,<br>Distribution"
+34,Gas
+35,Water
+36,Construction
+37,Construction<br>Re-processing
+38,"Vehicle Sale,<br>Maintenance,  Repair"
+39,Vehicle<br>Fuel Sale
+40,"Retail, Wholesale<br>Trade"
+41,Leisure
+42,Transport
+43,Professional<br>Services
+44,Real<br>Estate
+45,"Machine, Equipment<br>Renting"
+46,R&D
+47,"Public Administration,<br>Defence"
+48,Education
+49,"Health,<br>Social Work"
+50,Waste<br>Incineration
+51,"Biogas,<br>Composting"
+52,Waste<br>Water
+53,Waste<br>Landfill
+54,Other<br>Services
