@@ -1,36 +1,64 @@
 ### SCENARIOS
 
-# 1) reduction in consumption level: reduction of propensities to consume?
+# 1) rho in consumption level: rho of propensities to consume?
 # 2) change in consumption composition (e.g. higher share of services)
 # increase consumption share of services, decrease consumption share of manufacturing; increase final investment of manufacturing
 # 3) extension of products lifetime by increasing the share of durable goods
 # reduce depreciation rate delta for firms; reduce Percentage of durable consumption goods discarded zeta_dc for households
 
 shock <- para['shock']
-reduction <- para['reduction']
+rho <- para['rho']
 nPeriods <- para['nPeriods']
 t.shock <- para['t.shock']
 
 # Household Diet Shift
 if (shock == 1 && i == 2) {
-  sim['Z1_beta-7', para['t.shock']:nPeriods] <- reduction *
-    sim['Z1_beta-7', para['t.shock']:nPeriods]
+  m <- sim['Z1_beta-7', para['t.shock']] + sim['Z1_beta-8', para['t.shock']]
 
-  sim['Z1_beta-8', para['t.shock']:nPeriods] <- sim[
-    'Z1_beta-8',
-    para['t.shock']:nPeriods
-  ] +
-    (1 - reduction) * sim['Z1_beta-7', para['t.shock']:nPeriods]
+  sim['Z1_beta-7', para['t.shock']:nPeriods] <- m * rho
+  sim['Z1_beta-8', para['t.shock']:nPeriods] <- (1 - rho) * m
 }
 
 # Household Energy Transition
 if (shock == 2 && i == 2) {
-  sim['Z1_beta-31', para['t.shock']:nPeriods] <- reduction *
-    sim['Z1_beta-31', para['t.shock']:nPeriods]
+  m <- sim['Z1_beta-31', para['t.shock']] + sim['Z1_beta-32', para['t.shock']]
 
-  sim['Z1_beta-32', para['t.shock']:nPeriods] <- sim[
-    'Z1_beta-32',
-    para['t.shock']:nPeriods
-  ] +
-    (1 - reduction) * sim['Z1_beta-31', para['t.shock']:nPeriods]
+  sim['Z1_beta-31', para['t.shock']:nPeriods] <- m * rho
+  sim['Z1_beta-32', para['t.shock']:nPeriods] <- (1 - rho) * m
+}
+
+# Production - Wood
+if (shock == 3 && i == 2) {
+  m <- sim['Z1_beta-11', para['t.shock']] + sim['Z1_beta-12', para['t.shock']]
+
+  sim['Z1_beta-11', para['t.shock']:nPeriods] <- m * rho
+  sim['Z1_beta-12', para['t.shock']:nPeriods] <- (1 - rho) * m
+
+  m <- B.t[3, 11] + B.t[12, 11]
+  B.t[3, 11] <- rho * m
+  B.t[12, 11] <- (1 - rho) * m
+}
+
+# Production - Wood
+if (shock == 3 && i == 2) {
+  m <- sim['Z1_beta-11', para['t.shock']] + sim['Z1_beta-12', para['t.shock']]
+
+  sim['Z1_beta-11', para['t.shock']:nPeriods] <- m * rho
+  sim['Z1_beta-12', para['t.shock']:nPeriods] <- (1 - rho) * m
+
+  m <- B.t[3, 11] + B.t[12, 11]
+  B.t[3, 11] <- rho * m
+  B.t[12, 11] <- (1 - rho) * m
+}
+
+# Production - Pulp
+if (shock == 4 && i == 2) {
+  m <- sim['Z1_beta-11', para['t.shock']] + sim['Z1_beta-12', para['t.shock']]
+
+  sim['Z1_beta-11', para['t.shock']:nPeriods] <- m * rho
+  sim['Z1_beta-12', para['t.shock']:nPeriods] <- (1 - rho) * m
+
+  m <- B.t[3, 11] + B.t[12, 11]
+  B.t[3, 11] <- rho * m
+  B.t[12, 11] <- (1 - rho) * m
 }

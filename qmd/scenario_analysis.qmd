@@ -38,6 +38,10 @@ project_root <- rprojroot::find_root(
 variable.table <<- read.csv(
   file.path(project_root, "data", "Variable_Definitions.csv")
 )
+sector_list <- read.csv(
+  file.path(project_root, 'data', 'sector_list.csv'),
+  stringsAsFactors = FALSE
+)
 
 source(file.path(project_root, "functions", "auxiliary_flexible_nov25.R"))
 
@@ -108,6 +112,8 @@ selected.list <- list(
 plot.selected.by_group(baseline, selected.list)
 ```
 
+___
+
 # Scenarios to Analyze
 
 | Domain      | Shift              | From | To | Mechanism                  | Conserved Quantity            |
@@ -122,6 +128,8 @@ plot.selected.by_group(baseline, selected.list)
 | Production  | Cement circularity | 24   | 25 | Technical coefficient change | Cementitious output         |
 | Production  | Green Energy Shift  | 31   | 32 | Technical coefficient change | Energy service to production|
 | Production  | Construction reuse | 36   | 27 | Technical coefficient change | Construction output         |
+
+___
 
 # Scenario 1: Household Demand - Green Diet Shift
 
@@ -276,6 +284,8 @@ df <- diet.table <- read.csv(diet_shock_table_filename)
 source(file.path(project_root, 'R', 'scenario_analysis_2026.R'))
 ```
 
+___
+
 # Scenario 2: Household Demand - Green Energy Shift
 
 ```{r shock.run.2}
@@ -429,6 +439,60 @@ df <- energy.table <- read.csv(energy_shock_table_filename)
 source(file.path(project_root, 'R', 'scenario_analysis_2026.R'))
 ```
 
+___
+
+___
+
+# Scenario 3: Production - Green Energy Shift
+
+```{r shock.run.2}
+# Time Period Selection
+t.shock <- initial$pars['t.shock', 'value'] # shock time period
+t0 <- 55 # initial time period for visualization
+tf <- initial$pars['nPeriods', 'value'] # final time period for visualization
+
+# Shock Selection and Run
+initial_shock <- initial
+initial_shock$pars['shock', 'value'] <- 3
+
+
+energy.shock <- run.model(
+  initial_shock,
+  mvp.model,
+  log_file = file.path(project_root, "logs", "shock_3_run.log"),
+  log_append = FALSE,
+  print_final_state = FALSE
+)
+saveRDS(
+  energy.shock,
+  file = file.path(project_root, 'data', 'shock_3_energy_shock.RDS')
+)
+
+energy.shock <- readRDS(
+  file = file.path(project_root, 'data', 'shock_2_energy_shock.RDS')
+)
+shock.title <- 'Scenario 2: Household Demand - Green Energy Shift'
+```
+
+## Visualize Shocked Variables
+
+```{r shock.view.2}
+#| fig-width: 6
+#| fig-height: 2
+
+view.shock(
+  energy.shock,
+  shock.vars = c(
+    'beta-31',
+    'beta-32'
+  ),
+  shock.sectors = c(31, 32)
+)
+```
+
+
+___
+
 # Scenario Comparison
 
 ```{r comparison} 
@@ -467,6 +531,8 @@ df <- scenario.tables |>
 source(file.path(project_root, "R", "scenario_comparison_2026.R"))
 p.comparison
 ```
+
+___
 
 # Key Structural Findings from Scenario Comparison
 
