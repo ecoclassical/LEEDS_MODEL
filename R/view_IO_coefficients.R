@@ -2,9 +2,6 @@ initial <- load.new.init(
   identif = 'data/initial_state_2026_uniform_B_coefficients_PLE_CE .xlsx'
 )
 
-df <- initial$B.matrix
-which(initial$B.matrix == 1.5, arr.ind = TRUE)
-
 idx <- which(initial$B.matrix == 1.5, arr.ind = TRUE)
 
 targeted_sectors <- data.frame(
@@ -80,25 +77,7 @@ A <- initial$A.matrix %>%
   rename(output_label = label)
 
 
-# sct <- dimnames(initial$A.matrix)[[1]] %>%
-#   grep("EU\\.", ., value = T) %>%
-#   stringr::str_remove("^EU\\.")
-
-# sct_index <- tibble::tibble(
-#   sector = sct,
-#   sector_num = seq_along(sct)
-# ) %>%
-#   left_join(sector_list, by = c("sector_num" = "sector_code")) %>%
-#   mutate(label = gsub("<br>", " ", label))
-
-# A <- A %>%
-#   left_join(sct_index, by = c("input_sector" = "sector")) %>%
-#   rename(input_num = sector_num, input_label = label) %>%
-#   left_join(sct_index, by = c("output_sector" = "sector")) %>%
-#   rename(output_num = sector_num, output_label = label) %>%
-#   filter(is.na(input_num) | is.na(output_num)) %>%
-#   pull(output_sector) %>%
-#   unique
+# ---- prepare A ----
 
 lvl <- sector_list %>%
   mutate(label = gsub("<br>", " ", label)) %>%
@@ -122,6 +101,8 @@ A_filtered <- A %>%
   )
 
 
+# ---- plot ----
+
 p <- A_filtered %>%
   ggplot(aes(y = output_label, x = value, fill = endpoint)) +
   facet_grid(~ facet_lab + output_region) +
@@ -130,15 +111,15 @@ p <- A_filtered %>%
     x = '',
     y = '',
     fill = 'Target EU Sector',
-    title = 'Input-Output Coefficients of Targeted EU Sectors by Scenario and Region',
-    subtitle = 'Only Production Shifts operating on IO coefficients are shown'
+    title = 'Input Incidence of Targeted EU Sectors by Scenario and Region',
+    subtitle = "In which sectors' production recipes does this input appear?"
   ) +
   theme(
-    plot.title = element_text(face = 'bold', size = 14),
+    plot.title = element_text(face = 'bold', size = 18),
     plot.subtitle = element_text(face = 'italic'),
     legend.title = element_text(face = 'bold'),
-    legend.position = 'top',
-    axis.text.x = element_text(size = 6)
+    legend.position = 'bottom',
+    axis.text.x = element_text(size = 8)
   )
 
 p
@@ -152,32 +133,49 @@ ggsave(
   bg = "white"
 )
 
-# na_out <- A_filtered %>%
-#   filter(is.na(output_label)) %>%
-#   group_by(output_num) %>%
-#   summarise(
-#     n = n(),
-#     total_value = sum(value, na.rm = TRUE),
-#     .groups = "drop"
-#   ) %>%
-#   arrange(desc(total_value))
+#---- plot A2 ----
 
-# na_out
+A2 <- A %>%
+  filter(output_num %in% sc$from & output_region == 'EU') %>%
+  left_join(
+    sc,
+    by = c("output_num" = "from"),
+    relationship = 'many-to-many'
+  ) %>%
+  filter(domain == 'Production') %>%
+  mutate(
+    input_label = factor(input_label, levels = lvl),
+    shock = as.integer(shock),
+    facet_lab = paste0("Shock ", shock, "\n", shift, "\n", output_region),
+    facet_lab = factor(facet_lab, levels = unique(facet_lab[order(shock)]))
+  )
 
-# sector_list %>%
-#   semi_join(na_out, by = c("sector_code" = "output_num")) %>%
-#   distinct(sector_code, label)
+p2 <- A2 %>%
+  ggplot(aes(y = input_label, x = value, fill = input_region)) +
+  facet_grid(~facet_lab) +
+  geom_bar(stat = 'identity', position = 'dodge') +
+  labs(
+    x = '',
+    y = '',
+    fill = 'Target EU Sector',
+    title = 'Backward Linkages (Column Coefficients) of Targeted EU Manufacturing Sectors',
+    subtitle = 'From which supplying sectors does this sector obtain its inputs?'
+  ) +
+  theme(
+    plot.title = element_text(face = 'bold', size = 18),
+    plot.subtitle = element_text(face = 'italic'),
+    legend.title = element_text(face = 'bold'),
+    legend.position = 'bottom',
+    axis.text.x = element_text(size = 8)
+  )
 
-# A_plot <- A_filtered %>%
-#   group_by(shock, shift, output_label) %>%
-#   mutate(total_sector = sum(abs(value), na.rm = TRUE)) %>%
-#   ungroup() %>%
-#   group_by(shock, shift) %>%
-#   mutate(panel_total = sum(abs(value), na.rm = TRUE)) %>%
-#   ungroup() %>%
-#   filter(total_sector / panel_total > 0.002)   # 0.2% contribution threshold
+p2
 
-# A_plot %>%
-#   ggplot(aes(y = output_label, x = value, fill = endpoint)) +
-#   facet_grid(~ output_region + paste0('Shock ', shock, '\n', shift)) +
-#   geom_bar(stat = 'identity', position = 'dodge')
+ggsave(
+  filename = "io_shock_coefficients2.png",
+  plot = p2,
+  width = 20, # inches — increase if still cramped
+  height = 12,
+  dpi = 300,
+  bg = "white"
+)

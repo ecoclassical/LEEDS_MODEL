@@ -1,0 +1,355 @@
+---
+title: "Scenario Design and Analysis"
+subtitle: "Insights from a Core-Periphery SOCIO-ECO-MRIO-SFC Model"
+author:
+  - name: "Oriol Vallès Codina"
+    affiliation: "Johns Hopkins University, Net Zero Industrial Policy Lab, Department of Political Science"
+    email: 
+      - "oriolvallescodina@gmail.com"
+date: "`r Sys.Date()`"
+format:
+  html:
+    toc: true
+    toc_float: true
+    self-contained: true
+    page-layout: full
+    css: fullwidth.css
+execute:
+  echo: false
+---
+
+# Initialization
+
+The initial values and variables are loaded from the file stored in variable `identif` in a different structure as before.
+
+```{r packages, warning = F, message = F}
+library(tidyverse)
+library(igraph)
+library(qgraph)
+library(visNetwork)
+library(scales)
+```
+
+```{r init, warning = FALSE, message = FALSE}
+project_root <- rprojroot::find_root(
+  rprojroot::is_rstudio_project | rprojroot::is_git_root
+)
+
+variable.table <<- read.csv(
+  file.path(project_root, "data", "Variable_Definitions.csv")
+)
+
+# Analysis and Plotting Utils
+source(file.path(project_root, "functions", "utils.R"))
+
+identif <- file.path(project_root, "data", "initial_state_2026.xlsx")
+initial <- load.new.init(identif)
+
+source(file.path(project_root, "functions", "run_model_2026.R"))
+source(file.path(project_root, "functions", "MVP_model_2026.R"))
+```
+
+# Baseline 
+
+```{r simulation, warning = F, message = F}
+# baseline <- run.model(
+#   initial,
+#   mvp.model,
+#   log_file = file.path(project_root, "logs", "baseline_run.log"),
+#   log_append = FALSE,
+#   print_final_state = FALSE
+# )
+
+# saveRDS(baseline, file = file.path(project_root, 'data', 'baseline_feb10.RDS'))
+baseline <- readRDS(
+  file = file.path(project_root, 'data', 'baseline_feb10.RDS')
+)
+
+```
+
+## Calibration
+
+Target values are loaded in format long (`target.set`) and wide (`target.table.0`). Units are divided by 10,000 for convenience.
+
+```{r calibration}
+#### LOAD TARGET VALUES ####
+
+target.list <- load.target(file.path(
+  project_root,
+  'data',
+  'target_values.xlsx'
+))
+target.table <- target.list$wide
+target.set <- target.list$long
+target.vars <- target.set$var.label
+target.set$target <- baseline$simulation[
+  target.set$var,
+  baseline$initial$pars['nPeriods', 'value']
+]
+target.set$ratio <- round(target.set$target / target.set$value, 2)
+
+compute.target(baseline)
+```
+
+## Visualization
+
+```{r variable_selection} 
+#| fig-width: 7
+#| fig-height: 4
+
+# Variable Selection
+selected.list <- list(
+  Macroeconomic = c('c', 'va', 'go', 'id', 'gdef', 'cab', 'tb'),
+  Social = c('n', 'nf', 'shp', 'shw'),
+  Debt.and.Wealth = c('lh', 'lf', 'v', 'k', 'b_s'),
+  Ecological = c('x_mat', 'land', 'mat', 'rec', 'emis', 'wa', 'water')
+)
+
+
+plot.selected.by_group(baseline, selected.list)
+```
+
+# Scenarios to Analyze
+
+| Domain      | Shift              | From | To | Mechanism                  | Conserved Quantity            |
+|-------------|--------------------|------|----|----------------------------|-------------------------------|
+| Household Demand   | Diet         | 7    | 8  | Final demand reallocation  | Total food expenditure        |
+| Household Demand   | Energy  | 31   | 32 | Final demand reallocation  | Energy service demand         |
+| Production  | Wood   | 11   | 12 | Technical coefficient change | Total wood material input   |
+| Production  | Pulp   | 13   | 14 | Technical coefficient change | Paper output                |
+| Production  | Plastics | 17 | 18 | Technical coefficient change | Plastic product output      |
+| Production  | Metal  | 26   | 27 | Technical coefficient change | Metal product output        |
+| Production  | Glass  | 21   | 22 | Technical coefficient change | Glass product output        |
+| Production  | Cement | 24   | 25 | Technical coefficient change | Cementitious output         |
+| Production  | Energy  | 31   | 32 | Technical coefficient change | Energy service to production|
+| Production  | Construction | 36   | 27 | Technical coefficient change | Construction output         |
+
+```{r scenario.table}
+# ---- Scenario registry ----
+scenarios_tbl <- tibble::tribble(
+  ~shock , ~Domain            , ~Shift         , ~From , ~To , ~Mechanism                     , ~Conserved_Quantity            ,
+   1L    , "Household Demand" , "Diet"         ,  7L   ,  8L , "Final demand reallocation"    , "Total food expenditure"       ,
+   2L    , "Household Demand" , "Energy"       , 31L   , 32L , "Final demand reallocation"    , "Energy service demand"        ,
+   3L    , "Production"       , "Wood"         , 11L   , 12L , "Technical coefficient change" , "Total wood material input"    ,
+   4L    , "Production"       , "Pulp"         , 13L   , 14L , "Technical coefficient change" , "Paper output"                 ,
+   5L    , "Production"       , "Plastics"     , 17L   , 18L , "Technical coefficient change" , "Plastic product output"       ,
+   6L    , "Production"       , "Metal"        , 26L   , 27L , "Technical coefficient change" , "Metal product output"         ,
+   7L    , "Production"       , "Glass"        , 21L   , 22L , "Technical coefficient change" , "Glass product output"         ,
+   8L    , "Production"       , "Cement"       , 24L   , 25L , "Technical coefficient change" , "Cementitious output"          ,
+   9L    , "Production"       , "Energy"       , 31L   , 32L , "Technical coefficient change" , "Energy service to production" ,
+  10L    , "Production"       , "Construction" , 36L   , 27L , "Technical coefficient change" , "Construction output"
+) %>%
+  mutate(
+    display_name = paste0("Scenario ", shock, ": ", Domain, " - ", Shift),
+    # Parameterize these as you implement new shocks.
+    shock_vars = case_when(
+      shock == 1L ~ "beta-7,beta-8",
+      shock == 2L ~ "beta-31,beta-32",
+      TRUE ~ NA_character_
+    ),
+    shock_sectors = case_when(
+      shock == 1L ~ "7,8",
+      shock == 2L ~ "31,32",
+      TRUE ~ NA_character_
+    ),
+    # Where the scenario run is stored (RDS). You can adopt a consistent naming scheme.
+    rds_file = file.path(
+      project_root,
+      "data",
+      paste0("shock_", shock, "_run.RDS")
+    ),
+    # Where the scenario summary table is stored.
+    table_file = file.path(
+      project_root,
+      "data",
+      "shock_tables",
+      paste0("shock_", shock, "_table.csv")
+    )
+  )
+```
+
+# Household Consumption
+
+Household interventions operate by reallocating expenditure shares across sectors while preserving total expenditure.
+
+$$
+\sum_j s_j = 1, \quad \sum_j \Delta s_j = 0
+$$
+
+$$
+y'_j = y (s_j + \Delta s_j)
+$$
+
+## Diet Shift
+
+This scenario represents a gradual change in consumption patterns in which households reduce their purchases of animal‑based food products and substitute them with plant‑based alternatives. The total amount of food expenditure remains constant, but its composition shifts across sectors, allowing us to observe how the production system reorganizes when dietary preferences move toward lower‑impact supply chains.
+
+## Energy Shift
+
+This scenario captures a transition in final energy demand where fossil‑fuel based energy carriers are progressively replaced by renewable energy sources. The objective is not to reduce the level of energy services consumed but to alter the technological and industrial composition of the sectors delivering those services, thereby revealing structural bottlenecks and adjustment pressures across the economy.
+
+# Industrial Intermediate Production: Circular Substitution
+
+For material pair (i, i') and using sector j:
+
+$$
+m_j = a_{ij} + a_{i'j}
+$$
+
+Conservation:
+
+$$
+m'_j = m_j
+$$
+
+Transformation:
+
+$$
+a'_{ij} = (1-\rho)a_{ij}
+$$
+
+$$
+a'_{i'j} = a_{i'j} + \rho a_{ij}
+$$
+
+# Input-Output Analysis
+
+## Descriptive
+
+In the following figures we present a set of complementary indicators that help interpret the structural consequences of each intervention. Backward linkages describe how strongly a sector depends on upstream suppliers across the production network. Input incidence captures the distribution of intermediate inputs required throughout the supply chain. Total requirements combine both direct and indirect effects to show the full economy‑wide material and production consequences of the change.
+
+## Plots
+
+(Insert plots here)
+
+## Analytical Interpretation
+
+Changes propagate through the Leontief inverse:
+
+$$
+x = (I-A)^{-1}y
+$$
+
+and gains:
+
+$$
+Gain_j = (m_j - m'_j)/m_j
+$$
+
+
+# Household Shock Visualization (Focused on Shocked Variables)
+
+The following subsections reproduce only the `view.shock` visualizations for the first two household scenarios in order to isolate the variables directly modified by the intervention.
+
+## Scenario 1: Diet Shift
+
+___
+
+# Scenario 1: Household Demand - Green Diet Shift
+
+```{r shock.run}
+# Time Period Selection
+t.shock <- initial$pars['t.shock', 'value'] # shock time period
+t0 <- 55 # initial time period for visualization
+tf <- initial$pars['nPeriods', 'value'] # final time period for visualization
+
+# Shock Selection and Run
+initial_shock <- initial
+initial_shock$pars['shock', 'value'] <- 1
+
+# diet.shock <- run.model(
+#   initial_shock,
+#   mvp.model,
+#   log_file = file.path(project_root, "logs", "shock_1_run.log"),
+#   log_append = FALSE,
+#   print_final_state = FALSE
+# )
+# saveRDS(
+#   diet.shock,
+#   file = file.path(project_root, 'data', 'shock_1_diet_shock.RDS')
+# )
+
+diet.shock <- readRDS(
+  file = file.path(project_root, 'data', 'shock_1_diet_shock.RDS')
+)
+shock.title <- 'Scenario 1: Household Demand - Green Diet Shift'
+```
+
+## Visualize Shocked Variables
+
+```{r shock.view}
+#| fig-width: 6
+#| fig-height: 2
+
+view.shock(
+  diet.shock,
+  shock.vars = c(
+    'beta-7',
+    'beta-8'
+  ),
+  shock.sectors = c(7, 8),
+  shock.title = shock.title
+)
+```
+___
+
+# Scenario 2: Household Demand - Green Energy Shift
+
+```{r shock.run.2}
+# Time Period Selection
+t.shock <- initial$pars['t.shock', 'value'] # shock time period
+t0 <- 55 # initial time period for visualization
+tf <- initial$pars['nPeriods', 'value'] # final time period for visualization
+
+# Shock Selection and Run
+initial_shock <- initial
+initial_shock$pars['shock', 'value'] <- 2
+
+# energy.shock <- run.model(
+#   initial_shock,
+#   mvp.model,
+#   log_file = file.path(project_root, "logs", "shock_2_run.log"),
+#   log_append = FALSE,
+#   print_final_state = FALSE
+# )
+# saveRDS(
+#   energy.shock,
+#   file = file.path(project_root, 'data', 'shock_2_energy_shock.RDS')
+# )
+
+energy.shock <- readRDS(
+  file = file.path(project_root, 'data', 'shock_2_energy_shock.RDS')
+)
+shock.title <- 'Scenario 2: Household Demand - Green Energy Shift'
+```
+
+## Visualize Shocked Variables
+
+```{r shock.view.2}
+#| fig-width: 6
+#| fig-height: 2
+
+view.shock(
+  energy.shock,
+  shock.vars = c(
+    'beta-31',
+    'beta-32'
+  ),
+  shock.sectors = c(31, 32),
+  shock.title = shock.title
+)
+```
+
+
+# Implementation Refinements
+
+To align the scenario system with the circular substitution framework discussed above, the following modifications are recommended:
+
+1. Replace discrete coefficient rewrites with a continuous adoption parameter `rho`.
+2. Apply substitution using conservation of material bundles:
+   a_ij -> (1-rho)a_ij
+   a_i'j -> a_i'j + rho a_ij
+3. Ensure substitution is applied across all sectors j (economy-wide adoption).
+4. Store the conserved material bundle m_j = a_ij + a_i'j for diagnostics.
+5. Decompose impacts into brown (removal) and clean (addition) components sequentially.
+
