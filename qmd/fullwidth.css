@@ -1,0 +1,99 @@
+/* =========================================================
+   FULL WIDTH QUARTO LAYOUT — LEFT TOC + WIDE BODY
+   ========================================================= */
+
+/* ---- Layout knobs you can tune ---- */
+:root {
+  --toc-col: 260px;
+  /* width of left TOC column */
+  --gap: 16px;
+  /* gap between TOC and content */
+
+  --pad-left: 22px;
+  /* text margin left */
+  --pad-right: 80px;
+  /* text margin right (increase for readability) */
+}
+
+/* ---- Remove Quarto max width restrictions ---- */
+#quarto-document-content,
+main.content,
+.quarto-title-block,
+.page-columns .content,
+.page-columns .column-body,
+.page-columns .column-page {
+  max-width: none !important;
+}
+
+/* ---- ONLY modify the outer page grid ---- */
+#quarto-content.page-layout-full.page-columns {
+  display: grid !important;
+  grid-template-columns: var(--toc-col) minmax(0, 1fr) !important;
+  column-gap: var(--gap) !important;
+  align-items: start;
+}
+
+/* ---- Left sidebar (TOC) ---- */
+#quarto-margin-sidebar.sidebar.margin-sidebar {
+  grid-column: 1 !important;
+  width: var(--toc-col) !important;
+  max-width: var(--toc-col) !important;
+  padding: 0 10px !important;
+}
+
+/* ---- Main content column ---- */
+#quarto-document-content.content {
+  grid-column: 2 !important;
+}
+
+/* ---- Text readable margins ---- */
+main.content {
+  margin-left: 0 !important;
+  padding-left: var(--pad-left) !important;
+  padding-right: var(--pad-right) !important;
+  width: auto !important;
+}
+
+/* ---- Figures: use full available column width ---- */
+figure,
+.quarto-figure,
+.cell-output-display img,
+img.figure-img {
+  max-width: 100% !important;
+  height: auto;
+}
+
+/* ---- Tables ---- */
+table {
+  width: auto;
+  max-width: 100%;
+}
+
+/* ---- Code blocks should not overflow ---- */
+pre,
+code {
+  max-width: 100%;
+}
+
+/* ---- Responsive fallback ---- */
+@media (max-width: 992px) {
+
+  #quarto-content.page-layout-full.page-columns {
+    grid-template-columns: 1fr !important;
+  }
+
+  #quarto-margin-sidebar.sidebar.margin-sidebar {
+    width: auto !important;
+    max-width: none !important;
+    padding: 0 !important;
+  }
+
+  #quarto-document-content.content {
+    grid-column: 1 !important;
+  }
+
+  main.content {
+    padding-left: 0.75rem !important;
+    padding-right: 0.75rem !important;
+  }
+}

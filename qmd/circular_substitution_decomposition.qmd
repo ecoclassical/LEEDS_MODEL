@@ -1,0 +1,103 @@
+
+---
+title: "Circular Substitution Decomposition"
+format: html
+---
+
+# Circular Substitution and Realized Material Effects
+
+## From technological substitution to realized throughput
+
+The circular intervention modifies production recipes through a pairwise substitution between primary and secondary production within each using sector $j$.  
+For a material pair $i \rightarrow i'$:
+
+$$
+a'_{ij} = (1-\rho)a_{ij}, \qquad
+a'_{i'j} = a_{i'j} + \rho a_{ij}.
+$$
+
+This preserves the *direct input bundle* inside the sector:
+
+$$
+a'_{ij} + a'_{i'j} = a_{ij} + a_{i'j}.
+$$
+
+This is not a physical conservation law.  
+It represents **recipe-preserving technological substitution**: the sector maintains the same total direct input intensity while shifting its composition from primary to secondary production.
+
+However, economy-wide material use depends not on direct coefficients but on realized production:
+
+$$
+x(\rho) = (I - A(\rho))^{-1} y(\rho)
+$$
+
+and total throughput of a material or impact category $f$:
+
+$$
+M(\rho) = f^\top x(\rho) = f^\top (I - A(\rho))^{-1} y(\rho).
+$$
+
+Therefore circular substitution affects material use only through its effect on the Leontief inverse and final demand, not through the direct coefficients alone.
+
+## Decomposition of the effect of a circular substitution
+
+Let baseline values be:
+
+$$
+A_0 = A(\rho_0), \quad
+y_0 = y(\rho_0), \quad
+L_0 = (I-A_0)^{-1}.
+$$
+
+and the counterfactual after the intervention:
+
+$$
+A_1 = A(\rho_1), \quad
+y_1 = y(\rho_1), \quad
+L_1 = (I-A_1)^{-1}.
+$$
+
+Total change in throughput:
+
+$$
+\Delta M = f^\top L_1 y_1 - f^\top L_0 y_0.
+$$
+
+We separate this into two economically meaningful components:
+
+$$
+\Delta M =
+f^\top (L_1 - L_0)\, y_0
++
+f^\top L_1\, (y_1 - y_0)
+$$
+
+### Network propagation (structural effect)
+
+Measures the change in economy-wide indirect requirements caused solely by modifying production recipes while holding final demand fixed.
+
+### Demand / rebound effect
+
+Measures changes caused by adjustments in economic activity after the intervention.
+
+## Direct engineered substitution
+
+For small changes:
+
+$$
+\Delta L \approx L_0(\Delta A)L_0
+$$
+
+$$
+\Delta M_{direct} \approx
+f^\top L_0 (\Delta A_{CE}) x_0,
+\qquad x_0 = L_0 y_0
+$$
+
+## Interpretation
+
+Circular substitution operates through three channels:
+
+- Direct substitution
+- Network propagation
+- Rebound

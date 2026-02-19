@@ -1,0 +1,213 @@
+---
+title: "Policy Parameterization and Material Effects"
+format: html
+---
+
+# Policy Parameterization, Final Demand, and Material Effects
+
+## 1. Final Demand and Output Determination
+
+Final demand in real terms is defined sector-by-sector as:
+
+$$
+d_{k,i} =
+\beta_{k,i} c_i
++ \sigma_{k,i} g_i
++ \iota_{k,i} id_i
++ \iota_{g,k,i} id_{g,i}
++ e_{k,i}
+- m_{k,i}
+$$
+
+Stacking across sectors:
+
+$$
+\mathbf{d}_i =
+\boldsymbol{\beta}_i c_i
++ \boldsymbol{\sigma}_i g_i
++ \boldsymbol{\iota}_i id_i
++ \boldsymbol{\iota}_g{}_i id_{g,i}
++ \mathbf{e}_i
+- \mathbf{m}_i
+$$
+
+Real output is then determined by the input-output system:
+
+$$
+\mathbf{x}_i = (I - A_i)^{-1} \mathbf{d}_i.
+$$
+
+All policy interventions ultimately affect material throughput through their impact on either:
+1. the final demand vector $\mathbf{d}$, or  
+2. the technical coefficient matrix $A$.
+
+
+## 2. The Policy Parameter $\rho$
+
+All structural interventions are modeled as redistribution operators governed by a scalar intensity parameter $\rho \in [0,1]$.
+
+Two classes of interventions are distinguished:
+
+### I. Final Demand Reallocation
+
+For a donor sector $k$ and receiving sector $l$, a redistribution at intensity $\rho$ is defined as:
+
+$$
+d'_k = (1-\rho) d_k,
+$$
+
+$$
+d'_l = d_l + \rho d_k.
+$$
+
+Total expenditure is preserved automatically:
+
+$$
+\sum_j d'_j = \sum_j d_j.
+$$
+
+This operator is applied separately over:
+
+- Household consumption shares $\beta$
+- Government consumption shares $\sigma$
+- Private investment shares $\iota$
+- Public investment shares $\iota_g$
+
+Thus, for household consumption:
+
+$$
+\beta'_k = (1-\rho)\beta_k, \quad
+\beta'_l = \beta_l + \rho\beta_k.
+$$
+
+Analogous expressions apply for $\sigma$, $\iota$, and $\iota_g$.
+
+The redistribution preserves budget simplices but alters the composition of demand.
+
+
+### II. Intermediate Production (Circular Substitution)
+
+For a material pair $i \rightarrow i'$, circular substitution modifies production recipes:
+
+$$
+a'_{ij} = (1-\rho)a_{ij}, \quad
+a'_{i'j} = a_{i'j} + \rho a_{ij}.
+$$
+
+This preserves the direct input bundle inside sector $j$:
+
+$$
+a'_{ij} + a'_{i'j} = a_{ij} + a_{i'j}.
+$$
+
+This is recipe-preserving substitution, not physical material conservation.
+
+
+## 3. Material Throughput as a Function of $\rho$
+
+Let $f$ be a vector selecting a material or environmental category.
+
+Total material throughput:
+
+$$
+M(\rho) = f^\top (I - A(\rho))^{-1} \mathbf{d}(\rho).
+$$
+
+Primary and secondary components can be defined separately:
+
+$$
+M^{primary}(\rho) = f_p^\top x(\rho),
+$$
+
+$$
+M^{secondary}(\rho) = f_s^\top x(\rho).
+$$
+
+Material outcomes depend on both technology and demand.
+
+
+## 4. Decomposition of Material Change
+
+For a change from $\rho_0$ to $\rho_1$:
+
+$$
+\Delta M = f^\top L_1 d_1 - f^\top L_0 d_0.
+$$
+
+This can be decomposed as:
+
+$$
+\Delta M =
+f^\top (L_1 - L_0) d_0
++
+f^\top L_1 (d_1 - d_0).
+$$
+
+### Structural (Propagation) Effect
+
+$$
+f^\top (L_1 - L_0) d_0
+$$
+
+Captures changes due to technology or IO structure, holding demand fixed.
+
+### Demand / Rebound Effect
+
+$$
+f^\top L_1 (d_1 - d_0)
+$$
+
+Captures macroeconomic scaling or expenditure shifts.
+
+Total material change equals the sum of structural and rebound components.
+
+
+## 5. Direct Engineered Circular Effect
+
+For small changes:
+
+$$
+\Delta L \approx L_0 (\Delta A) L_0
+$$
+
+so:
+
+$$
+\Delta M_{direct} \approx
+f^\top L_0 (\Delta A_{CE}) x_0,
+\quad x_0 = L_0 d_0.
+$$
+
+This isolates the intended circular substitution mechanism prior to macro feedbacks.
+
+
+## 6. Constraint and Policy Evaluation
+
+Material conservation can be imposed as a constraint:
+
+$$
+M(\rho^*) = M(0).
+$$
+
+Solving for $\rho^*$ identifies the technological or demand shift required to maintain constant throughput.
+
+Three analytical modes are possible:
+
+1. Evaluation mode: compute $M(\rho)$.
+2. Constraint mode: solve for $\rho^*$ given material targets.
+3. Optimization mode: maximize welfare $W(\rho)$ subject to material costs.
+
+
+## 7. Materials Considered
+
+For household demand: food and energy.
+
+For firm demand and intermediate substitution: wood, pulp, paper, plastics, metal, glass, cement, rubber, and energy.
+
+For each material $M$, throughput is evaluated as:
+
+$$
+M(\rho) = f_M^\top (I - A(\rho))^{-1} d(\rho).
+$$
+
+Total, primary, and secondary components are reported, along with structural and rebound decompositions.
