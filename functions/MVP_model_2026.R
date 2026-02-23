@@ -1,11 +1,12 @@
-mvp.model <- function(t, y, parms, A.mat) {
+mvp.model <- function(t, y, parms, A.mat, B.mat) {
   # sim <- array(x[-1], dim = c(0.5 * length(x[-1]), 2), dimnames = list(names(x[1 + 1 : (0.5 * length(x))]), NULL))
   sim <- array(
     y,
     dim = c(0.5 * length(y), 2),
     dimnames = list(names(y)[1:(length(y) / 2)], NULL)
   )
-  A..t <- A.mat
+  B.t <- B.mat
+  A.t <- A.mat
   i <- 2
 
   #### MATRIX OF TECHNICAL COEFFICIENTS ####
@@ -15,7 +16,7 @@ mvp.model <- function(t, y, parms, A.mat) {
     ncol = K * N,
     nrow = K * N
   )
-  A <- A..t[,, i] <- A..t[,, i - 1] + foo * (B.t - A..t[,, i - 1])
+  A <- A.t[,, i] <- A.t[,, i - 1] + foo * (B.t - A.t[,, i - 1])
 
   A.xr.matrix <- cbind(
     rbind(
@@ -825,6 +826,6 @@ mvp.model <- function(t, y, parms, A.mat) {
       (sim['Z1_b_s', i] - sum(sim[z.lab('b_s_Z1'), i]) - sim['Z1_b_b', i]))^2 +
       sum(sim[z.lab('or'), i] - sim[z.lab('or'), i - 1])^2)
 
-  return(list(y = c(sim[, 1], sim[, 2]), A.matrix = A..t))
+  return(list(y = c(sim[, 1], sim[, 2]), A.matrix = A.t, B.matrix = B.t))
   # return(c(sim[, 1], sim[, 2]))
 }

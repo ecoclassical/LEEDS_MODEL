@@ -50,8 +50,6 @@ initial <- load.new.init(identif)
 
 source(file.path(root, "functions", "run_model_2026.R"))
 source(file.path(root, "functions", "MVP_model_2026.R"))
-
-source(file.path(root, 'R', 'scenario_analysis_2026.R'))
 ```
 
 ```{r filenames}
@@ -81,7 +79,7 @@ dir.create(dir_meta, showWarnings = FALSE, recursive = TRUE)
 # Filenames
 # -----------------------------
 
-baseline_filename <- file.path(shock_dir, 'baseline_2026.RDS')
+baseline_filename <- file.path(shock_dir, 'baseline_feb10.RDS')
 target_filename <- file.path(shock_dir, 'target_values.xlsx')
 scenario_filename <- file.path(shock_dir, 'scenarios.csv')
 
@@ -199,21 +197,21 @@ tf <- initial$pars['nPeriods', 'value'] # final time period for visualization
 initial_shock <- initial
 n_shock <- initial_shock$pars['shock', 'value'] <- 1
 
-# scenario <- scenario_list[[n_shock]] <- run.model(
-#   initial_shock,
-#   mvp.model,
-#   log_file = get_log_filename(n_shock),
-#   log_append = FALSE,
-#   print_final_state = FALSE
-# )
-# saveRDS(
-#   scenario,
-#   file = get_shock_filename(n_shock)
-# )
-
-scenario_list[[n_shock]] <- scenario <- readRDS(
+scenario <- scenario_list[[n_shock]] <- run.model(
+  initial_shock,
+  mvp.model,
+  log_file = get_log_filename(n_shock),
+  log_append = FALSE,
+  print_final_state = FALSE
+)
+saveRDS(
+  scenario,
   file = get_shock_filename(n_shock)
 )
+
+# scenario <- readRDS(
+#   file = get_shock_filename(n_shock)
+# )
 ```
 
 ## Visualize Shocked Variables
@@ -270,6 +268,13 @@ for (i in 1:length(selected.list)) {
 # view.vars(data = shock.long.new(baseline, ple.shock),
 #           viz.vars = c('cab', 'ydw', 'n', 'rva'),
 #           var.label = 'Not Scaled')
+```
+
+## Visualize Selected Variables
+
+```{r shock.visualize.selected.1}
+#| fig-width: 8
+#| fig-height: 4
 
 # Selected Vars to plot
 selected <- c('n', 'c', 'shw', 'va', 'cab', 'nf', 'gdef', 'tb', 'go')
@@ -310,13 +315,8 @@ scenario.table <- shock.summary(
 # kable(diet.table, booktabs = T)
 write.csv(scenario.table, get_table_filename(n_shock), row.names = FALSE)
 
-scenario.table <- read.csv(get_table_filename(n_shock))
-
-scenario_analysis_2026_plot(
-  shock_df = scenario.table,
-  shock_title = sc$display_name[n_shock],
-  variable.table = variable.table
-)
+df <- scenario <- read.csv(get_table_filename(n_shock))
+source(file.path(root, 'R', 'scenario_analysis_2026.R'))
 ```
 
 ___
@@ -331,22 +331,22 @@ tf <- initial$pars['nPeriods', 'value'] # final time period for visualization
 
 # Shock Selection and Run
 initial_shock <- initial
-n_shock <- initial_shock$pars['shock', 'value'] <- 2
+initial_shock$pars['shock', 'value'] <- 2
 
-# scenario <- scenario_list[[n_shock]] <- run.model(
+# energy.shock <- run.model(
 #   initial_shock,
 #   mvp.model,
-#   log_file = get_log_filename(n_shock),
+#   log_file = file.path(root, "logs", "shock_2_run.log"),
 #   log_append = FALSE,
 #   print_final_state = FALSE
 # )
 # saveRDS(
-#   scenario,
-#   file = get_shock_filename(n_shock)
+#   energy.shock,
+#   file = file.path(root, 'data', 'shock_2_energy_shock.RDS')
 # )
 
-scenario_list[[n_shock]] <- scenario <- readRDS(
-  file = get_shock_filename(n_shock)
+energy.shock <- readRDS(
+  file = file.path(root, sc$rds_file[n_shock])
 )
 ```
 
@@ -357,7 +357,7 @@ scenario_list[[n_shock]] <- scenario <- readRDS(
 #| fig-height: 2
 
 view.shock(
-  scenario,
+  energy.shock,
   shock.vars = c(
     'beta-31',
     'beta-32'
@@ -374,7 +374,7 @@ view.shock(
 #| fig-height: 4
 
 # Load Baseline - Shock Data
-df <- shock.long.new(baseline, scenario)
+df <- shock.long.new(baseline, energy.shock)
 
 # Plot Selected List Variables (scaled only if gdef is not there)
 for (i in 1:length(selected.list)) {
@@ -404,6 +404,13 @@ for (i in 1:length(selected.list)) {
 # view.vars(data = shock.long.new(baseline, ple.shock),
 #           viz.vars = c('cab', 'ydw', 'n', 'rva'),
 #           var.label = 'Not Scaled')
+```
+
+## Visualize Selected Variables
+
+```{r shock.visualize.selected.2}
+#| fig-width: 8
+#| fig-height: 4
 
 # Selected Vars to plot
 selected <- c('n', 'c', 'shw', 'va', 'cab', 'nf', 'gdef', 'tb', 'go')
@@ -430,34 +437,33 @@ p.selected.vars <- filter(df, variable %in% selected) %>%
 p.selected.vars
 ```
 
-```{r summary.table.2}
-#| fig-width: 10
-#| fig-height: 10
+## Summary Visualization
 
-scenario.table <- shock.summary(
+```{r summary.table.2}
+energy.table <- shock.summary(
   baseline,
-  shock.run = scenario,
+  shock.run = energy.shock,
   t_ = c(t.shock + 1, t.shock + 7, t.shock + 20),
   t_names = c('Immediate', 'Short.Term', 'Long.Term')
 )
 
 # kable(energy.table, booktabs = T)
-write.csv(scenario.table, get_table_filename(n_shock), row.names = FALSE)
+write.csv(energy.table, get_table_filename(n_shock), row.names = FALSE)
+```
 
-scenario.table <- read.csv(get_table_filename(n_shock))
+```{r summary_plot_2}
+#| fig-width: 10
+#| fig-height: 10
 
-scenario_analysis_2026_plot(
-  shock_df = scenario.table,
-  shock_title = sc$display_name[n_shock],
-  variable.table = variable.table
-)
+df <- energy.table <- read.csv(get_table_filename(n_shock))
+source(file.path(root, 'R', 'scenario_analysis_2026.R'))
 ```
 
 ___
 
-# Scenario 7: Production - Wood Shift
+# Scenario 3: Production - Wood Shift
 
-```{r shock.run.7}
+```{r shock.run.3}
 # Time Period Selection
 t.shock <- initial$pars['t.shock', 'value'] # shock time period
 t0 <- 55 # initial time period for visualization
@@ -465,23 +471,23 @@ tf <- initial$pars['nPeriods', 'value'] # final time period for visualization
 
 # Shock Selection and Run
 initial_shock <- initial
-n_shock <- initial_shock$pars['shock', 'value'] <- 7
+initial_shock$pars['shock', 'value'] <- 3
 
-scenario <- scenario_list[[n_shock]] <- run.model(
-  initial_shock,
-  mvp.model,
-  log_file = get_log_filename(n_shock),
-  log_append = FALSE,
-  print_final_state = FALSE
-)
-saveRDS(
-  scenario,
-  file = get_shock_filename(n_shock)
-)
-
-# scenario_list[[n_shock]] <- scenario <- readRDS(
-#   file = get_shock_filename(n_shock)
+# wood.shock <- run.model(
+#   initial_shock,
+#   mvp.model,
+#   log_file = file.path(root, "logs", "shock_3_run.log"),
+#   log_append = FALSE,
+#   print_final_state = FALSE
 # )
+# saveRDS(
+#   wood.shock,
+#   file = file.path(root, 'data', 'shock_runs', 'shock_3_run.RDS')
+# )
+
+wood.shock <- readRDS(
+  file = file.path(root, sc$rds_file[n_shock])
+)
 ```
 
 ## Visualize Shocked Variables
@@ -491,7 +497,7 @@ saveRDS(
 #| fig-height: 2
 
 view.shock(
-  scenario,
+  wood.shock,
   shock.vars = c(
     'beta-31',
     'beta-32'
@@ -508,7 +514,7 @@ view.shock(
 #| fig-height: 4
 
 # Load Baseline - Shock Data
-df <- shock.long.new(baseline, scenario)
+df <- shock.long.new(baseline, energy.shock)
 
 # Plot Selected List Variables (scaled only if gdef is not there)
 for (i in 1:length(selected.list)) {
@@ -528,6 +534,23 @@ for (i in 1:length(selected.list)) {
     ))
   }
 }
+
+# Print Some Scaled Variables Example
+# view.scaled.vars(data = shock.long.new(baseline, ple.shock),
+#                  viz.vars = c('cab', 'ydw', 'n', 'rva'),
+#                  var.label = 'Scaled')
+
+# Print Some Variables Example (not scaled)
+# view.vars(data = shock.long.new(baseline, ple.shock),
+#           viz.vars = c('cab', 'ydw', 'n', 'rva'),
+#           var.label = 'Not Scaled')
+```
+
+## Visualize Selected Variables
+
+```{r shock.visualize.selected.3}
+#| fig-width: 8
+#| fig-height: 4
 
 # Selected Vars to plot
 selected <- c('n', 'c', 'shw', 'va', 'cab', 'nf', 'gdef', 'tb', 'go')
@@ -557,27 +580,23 @@ p.selected.vars
 ## Summary Visualization
 
 ```{r summary.table.3}
-#| fig-width: 10
-#| fig-height: 10
-
-scenario.table <- shock.summary(
+shock_3_table <- shock.summary(
   baseline,
-  shock.run = scenario,
+  shock.run = wood.shock,
   t_ = c(t.shock + 1, t.shock + 7, t.shock + 20),
   t_names = c('Immediate', 'Short.Term', 'Long.Term')
 )
 
 # kable(shock_3_table, booktabs = T)
-write.csv(scenario.table, get_table_filename(n_shock), row.names = FALSE)
+write.csv(shock_3_table, get_table_filename(n_shock), row.names = FALSE)
+```
 
-scenario.table <- read.csv(get_table_filename(n_shock))
+```{r summary_plot_3}
+#| fig-width: 10
+#| fig-height: 10
 
-scenario_analysis_2026_plot(
-  shock_df = scenario.table,
-  shock_title = sc$display_name[n_shock],
-  variable.table = variable.table
-)
-
+df <- shock_3_table <- read.csv(get_table_filename(n_shock))
+source(file.path(root, 'R', 'scenario_analysis_2026.R'))
 ```
 
 ___
@@ -602,22 +621,16 @@ lookup <- stack(selected.list) |>
     Name = ind
   )
 
-scenario_tables_list <- lapply(scenario_list, function(x) {
-  shock.summary(
-    baseline,
-    shock.run = x,
-    t_ = c(t.shock + 1, t.shock + 7, t.shock + 20),
-    t_names = c('Immediate', 'Short.Term', 'Long.Term')
-  )
-})
-names(scenario_tables_list) <- c("diet", "energy", 'wood')
-
-scenario.tables <- scenario_tables_list %>%
+scenario.tables <- list(
+  diet = diet.table,
+  energy = energy.table,
+  wood = shock_3_table
+) %>%
   bind_rows(.id = "scenario") %>%
   mutate(
     scenario = factor(
       scenario,
-      levels = names(scenario_tables_list),
+      levels = c("diet", "energy", 'wood'),
       labels = c(
         'Final Demand\nHousehold Diet Shift',
         'Final Demand\nHousehold Consumption Energy Shift',
@@ -631,9 +644,7 @@ df <- scenario.tables |>
   dplyr::left_join(lookup, by = "Variable") %>%
   filter(!is.na(Name))
 
-
-source(file.path(root, 'R', 'scenario_comparison_2026.R'))
-
+source(file.path(root, "R", "scenario_comparison_2026.R"))
 p.comparison
 ```
 

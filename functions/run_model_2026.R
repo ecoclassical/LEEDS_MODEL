@@ -84,8 +84,16 @@ run.model <- function(
 
   .section("Initialization")
 
+  # Variables
+  n <- length(initial$vars$label)
+  sim <- array(
+    initial$vars$value,
+    dim = c(n, para["nPeriods"]),
+    dimnames = list(initial$vars$label, NULL)
+  )
+
   # Parameters
-  para <<- array(
+  para <- array(
     initial$pars$value,
     dim = length(initial$pars$value),
     dimnames = list(initial$pars$label)
@@ -98,30 +106,28 @@ run.model <- function(
     para["max.iterations"]
   ))
 
-  # A and B Matrices
-  .info("Building A.t and B.t matrices…")
-  A.t <<- array(
-    unlist(initial$A.matrix),
-    dim = c(K * N, K * N, para["nPeriods"])
-  )
-  B.t <<- array(
-    unlist(initial$B.matrix) * unlist(initial$A.matrix),
-    dim = c(K * N, K * N)
-  )
-
-  # Variables
-  n <- length(initial$vars$label)
-  sim <- array(
-    initial$vars$value,
-    dim = c(n, para["nPeriods"]),
-    dimnames = list(initial$vars$label, NULL)
-  )
-
   .info(sprintf(
     "State variable array 'sim' initialized: %d variables x %s periods",
     n,
     para["nPeriods"]
   ))
+
+  # A and B Matrices
+  .info("Building A.t and B.t matrices…")
+  A.t <- array(
+    unlist(initial$A.matrix),
+    dim = c(K * N, K * N, para["nPeriods"])
+  )
+  B.t <- array(
+    unlist(initial$B.matrix) * unlist(initial$A.matrix),
+    dim = c(K * N, K * N)
+  )
+
+  #### SCENARIOS ####
+  source(
+    file.path(root, "functions", "scenario_selection_2026.R"),
+    local = TRUE
+  )
 
   # ---------------------------
   # MARKUP DETERMINATION (t = 1)
@@ -177,12 +183,6 @@ run.model <- function(
       ))
     }
 
-    #### SCENARIOS ####
-    source(
-      file.path(project_root, "functions", "scenario_selection_2026.R"),
-      local = TRUE
-    )
-
     # Define iter for converging to simultaneous solution
     x.iter <- array(
       NA,
@@ -203,10 +203,12 @@ run.model <- function(
         t = i,
         y = c(sim[, i - 1], sim[, i]),
         parms = para,
-        A.mat = A.t[,, (i - 1):i]
+        A.mat = A.t[,, (i - 1):i],
+        B.mat = B.t
       )
 
       A.t[,, (i - 1):i] <- output$A.matrix
+
       x <- array(
         output$y,
         dim = c(n, 2),

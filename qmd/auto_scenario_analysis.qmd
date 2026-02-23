@@ -31,22 +31,22 @@ library(scales)
 ```
 
 ```{r init, warning = FALSE, message = FALSE}
-project_root <- rprojroot::find_root(
+root <- rprojroot::find_root(
   rprojroot::is_rstudio_project | rprojroot::is_git_root
 )
 
 variable.table <<- read.csv(
-  file.path(project_root, "data", "Variable_Definitions.csv")
+  file.path(root, "data", "Variable_Definitions.csv")
 )
 
 # Analysis and Plotting Utils
-source(file.path(project_root, "functions", "utils.R"))
+source(file.path(root, "functions", "utils.R"))
 
-identif <- file.path(project_root, "data", "initial_state_2026.xlsx")
+identif <- file.path(root, "data", "initial_state_2026.xlsx")
 initial <- load.new.init(identif)
 
-source(file.path(project_root, "functions", "run_model_2026.R"))
-source(file.path(project_root, "functions", "MVP_model_2026.R"))
+source(file.path(root, "functions", "run_model_2026.R"))
+source(file.path(root, "functions", "MVP_model_2026.R"))
 ```
 
 # Baseline 
@@ -55,14 +55,14 @@ source(file.path(project_root, "functions", "MVP_model_2026.R"))
 # baseline <- run.model(
 #   initial,
 #   mvp.model,
-#   log_file = file.path(project_root, "logs", "baseline_run.log"),
+#   log_file = file.path(root, "logs", "baseline_run.log"),
 #   log_append = FALSE,
 #   print_final_state = FALSE
 # )
 
-# saveRDS(baseline, file = file.path(project_root, 'data', 'baseline_feb10.RDS'))
+# saveRDS(baseline, file = file.path(root, 'data', 'baseline_feb10.RDS'))
 baseline <- readRDS(
-  file = file.path(project_root, 'data', 'baseline_feb10.RDS')
+  file = file.path(root, 'data', 'baseline_feb10.RDS')
 )
 
 ```
@@ -75,7 +75,7 @@ Target values are loaded in format long (`target.set`) and wide (`target.table.0
 #### LOAD TARGET VALUES ####
 
 target.list <- load.target(file.path(
-  project_root,
+  root,
   'data',
   'target_values.xlsx'
 ))
@@ -156,13 +156,13 @@ scenarios_tbl <- tibble::tribble(
     ),
     # Where the scenario run is stored (RDS). You can adopt a consistent naming scheme.
     rds_file = file.path(
-      project_root,
+      root,
       "data",
       paste0("shock_", shock, "_run.RDS")
     ),
     # Where the scenario summary table is stored.
     table_file = file.path(
-      project_root,
+      root,
       "data",
       "shock_tables",
       paste0("shock_", shock, "_table.csv")
@@ -192,13 +192,14 @@ tf <- initial$pars["nPeriods", "value"]
 # -----------------------------
 # Cache locations (under data/)
 # -----------------------------
-data_dir <- file.path(project_root, "data")
+shock_dir <- file.path(root, "data", 'scenarios')
 
-dir_runs <- file.path(data_dir, "shock_runs")
-dir_tables <- file.path(data_dir, "shock_tables")
-dir_long <- file.path(data_dir, "shock_long")
-dir_meta <- file.path(data_dir, "scenario_cache")
+dir_runs <- file.path(shock_dir, "shock_runs")
+dir_tables <- file.path(shock_dir, "shock_tables")
+dir_long <- file.path(shock_dir, "shock_long")
+dir_meta <- file.path(shock_dir, "scenario_cache")
 
+dir.create(shock_dir, showWarnings = FALSE, recursive = TRUE)
 dir.create(dir_runs, showWarnings = FALSE, recursive = TRUE)
 dir.create(dir_tables, showWarnings = FALSE, recursive = TRUE)
 dir.create(dir_meta, showWarnings = FALSE, recursive = TRUE)
@@ -230,72 +231,142 @@ shock_paths <- function(shock) {
 ```
 
 ```{r compute_scenarios}
-# ============================================================
-# (1) Compute layer: load/run + compute cached derivatives
-# ============================================================
-compute_scenario <- function(s) {
-  stopifnot(NROW(s) == 1L)
+compute_scenario <- function(
+  s,
+  cache_dir = shock_dir,
+  run_if_missing = TRUE,
+  cache_long_df = TRUE,
+  t_shock = NULL,
+  baseline = NULL
+) {
+  # ------------------------------------------------------------
+  # Purpose:
+  #   - Load cached artifacts if they exist (run/table/long)
+  #   - Otherwise, optionally run the scenario once and cache them
+  # ------------------------------------------------------------
 
   shock <- as.integer(s$shock[[1]])
-  p <- shock_paths(shock)
 
-  # ----- Load or run model -----
+  # --- Paths ---
+  dir.create(cache_dir, showWarnings = FALSE, recursive = TRUE)
+
+  p <- list(
+    run_rds = file.path(cache_dir, sprintf("shock_%d_run.rds", shock)),
+    table_rds = file.path(cache_dir, sprintf("shock_%d_table.rds", shock)),
+    long_rds = file.path(cache_dir, sprintf("shock_%d_long.rds", shock))
+  )
+
+  # --- Helper: cache status ---
+  have_run <- file.exists(p$run_rds)
+  have_table <- file.exists(p$table_rds)
+  have_long <- file.exists(p$long_rds)
+
+  # ------------------------------------------------------------
+  # (1) Run (cached or computed)
+  # ------------------------------------------------------------
   shock.run <- NULL
-  if (file.exists(p$run_rds)) {
-    shock.run <- readRDS(p$run_rds)
-  } else if (isTRUE(run_if_missing)) {
-    initial_shock <- initial
-    initial_shock$pars["shock", "value"] <- shock
 
-    shock.run <- run.model(
-      initial_shock,
-      mvp.model,
-      log_file = file.path(
-        project_root,
-        "logs",
-        paste0("shock_", shock, "_run.log")
-      ),
-      log_append = FALSE,
-      print_final_state = FALSE
-    )
-    saveRDS(shock.run, p$run_rds)
+  if (have_run) {
+    shock.run <- readRDS(p$run_rds)
   } else {
-    stop(
-      "Missing cached run for shock = ",
-      shock,
-      ". Expected: ",
-      p$run_rds,
-      "\nSet run_if_missing <- TRUE to run during render, or precompute the cache."
-    )
+    if (!isTRUE(run_if_missing)) {
+      stop(
+        sprintf(
+          "Missing cached run for shock = %d. Expected: %s",
+          shock,
+          p$run_rds
+        ),
+        call. = FALSE
+      )
+    }
+
+    # You MUST already have this function in your script:
+    # It should return the simulation run object for this scenario row `s`.
+    if (!exists("run_one_scenario", mode = "function")) {
+      stop(
+        "compute_scenario() needs a function run_one_scenario(s) in scope, but it was not found.",
+        call. = FALSE
+      )
+    }
+
+    shock.run <- run_one_scenario(s)
+    saveRDS(shock.run, p$run_rds)
   }
 
-  # ----- Summary table (cached) -----
+  # ------------------------------------------------------------
+  # (2) Summary table (cached or computed)
+  # ------------------------------------------------------------
   shock.table <- NULL
-  if (file.exists(p$table_rds)) {
+
+  if (have_table) {
     shock.table <- readRDS(p$table_rds)
   } else {
+    if (is.null(baseline)) {
+      stop(
+        "compute_scenario(): `baseline` must be provided to compute shock.table when cache is missing.",
+        call. = FALSE
+      )
+    }
+    if (is.null(t_shock)) {
+      stop(
+        "compute_scenario(): `t_shock` must be provided to compute shock.table when cache is missing.",
+        call. = FALSE
+      )
+    }
+    if (!exists("shock.summary", mode = "function")) {
+      stop(
+        "compute_scenario(): shock.summary() not found in scope.",
+        call. = FALSE
+      )
+    }
+
     shock.table <- shock.summary(
       baseline,
       shock.run = shock.run,
-      t_ = c(t.shock + 1, t.shock + 7, t.shock + 20),
+      t_ = c(t_shock + 1, t_shock + 7, t_shock + 20),
       t_names = c("Immediate", "Short.Term", "Long.Term")
     )
     saveRDS(shock.table, p$table_rds)
   }
 
-  # ----- Long df (optional cached) -----
+  # ------------------------------------------------------------
+  # (3) Long df (cached optional)
+  # ------------------------------------------------------------
   shock.long <- NULL
+
+  if (!exists("shock.long.new", mode = "function")) {
+    stop(
+      "compute_scenario(): shock.long.new() not found in scope.",
+      call. = FALSE
+    )
+  }
+
   if (isTRUE(cache_long_df)) {
-    if (file.exists(p$long_rds)) {
+    if (have_long) {
       shock.long <- readRDS(p$long_rds)
     } else {
+      if (is.null(baseline)) {
+        stop(
+          "compute_scenario(): `baseline` must be provided to compute shock.long when cache is missing.",
+          call. = FALSE
+        )
+      }
       shock.long <- shock.long.new(baseline, shock.run)
       saveRDS(shock.long, p$long_rds)
     }
   } else {
+    if (is.null(baseline)) {
+      stop(
+        "compute_scenario(): `baseline` must be provided to compute shock.long.",
+        call. = FALSE
+      )
+    }
     shock.long <- shock.long.new(baseline, shock.run)
   }
 
+  # ------------------------------------------------------------
+  # Return
+  # ------------------------------------------------------------
   list(
     shock = shock,
     paths = p,
@@ -413,19 +484,19 @@ render_scenario <- function(s, obj) {
 
   # Filenames expected by your script
   shock_table_1_filename <- file.path(
-    project_root,
+    root,
     "figures",
     paste0("shock_", shock, "_table_1.pdf")
   )
   shock_table_2_filename <- file.path(
-    project_root,
+    root,
     "figures",
     paste0("shock_", shock, "_table_2.pdf")
   )
 
   # Avoid locked binding for `df` by using a unique global name
   shock_df <<- obj$table
-  source(file.path(project_root, "R", "scenario_analysis_2026.R"))
+  source(file.path(root, "R", "scenario_analysis_2026.R"))
   rm(shock_df, envir = .GlobalEnv)
 
   invisible(NULL)
@@ -441,12 +512,18 @@ render_scenario <- function(s, obj) {
 # ============================================================
 
 scenarios <- seq_len(nrow(scenarios_tbl))
-scenarios <- 1:2
+scenarios <- 1:3
 
 # Compute/cache phase
 for (k in scenarios) {
   s <- scenarios_tbl[k, , drop = FALSE]
-  obj <- compute_scenario(s)
+  obj <- compute_scenario(
+    s,
+    run_if_missing = TRUE,
+    cache_long_df = TRUE,
+    t_shock = t.shock,
+    baseline = baseline
+  )
 
   scenario_runs[[as.character(obj$shock)]] <- obj$run
   scenario_tables[[as.character(obj$shock)]] <- obj$table
@@ -515,7 +592,7 @@ df <- scenario.tables |>
   dplyr::left_join(lookup, by = "Variable") %>%
   filter(!is.na(Name))
 
-source(file.path(project_root, "R", "scenario_comparison_2026.R"))
+source(file.path(root, "R", "scenario_comparison_2026.R"))
 p.comparison
 ```
 

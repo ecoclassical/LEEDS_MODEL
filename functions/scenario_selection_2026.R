@@ -10,9 +10,10 @@ shock <- para['shock']
 rho <- para['rho']
 nPeriods <- para['nPeriods']
 t.shock <- para['t.shock']
+demand.shocks <- 2
 
 # Household Diet Shift
-if (shock == 1 && i == 2) {
+if (shock == 1) {
   m <- sim['Z1_beta-7', para['t.shock']] + sim['Z1_beta-8', para['t.shock']]
 
   sim['Z1_beta-7', para['t.shock']:nPeriods] <- m * rho
@@ -20,7 +21,7 @@ if (shock == 1 && i == 2) {
 }
 
 # Household Energy Transition
-if (shock == 2 && i == 2) {
+if (shock == 2) {
   m <- sim['Z1_beta-31', para['t.shock']] + sim['Z1_beta-32', para['t.shock']]
 
   sim['Z1_beta-31', para['t.shock']:nPeriods] <- m * rho
@@ -28,37 +29,34 @@ if (shock == 2 && i == 2) {
 }
 
 # Production - Wood
-if (shock == 3 && i == 2) {
-  m <- sim['Z1_beta-11', para['t.shock']] + sim['Z1_beta-12', para['t.shock']]
+if (shock == 7) {
+  # m = initial$B.matrix[3, 11] + initial$B.matrix[12, 2
+  initial$pars[c('Z1_ce', 'Z2_ce'), 'value'] <- c(1, 0)
 
-  sim['Z1_beta-11', para['t.shock']:nPeriods] <- m * rho
-  sim['Z1_beta-12', para['t.shock']:nPeriods] <- (1 - rho) * m
-
-  m <- B.t[3, 11] + B.t[12, 11]
-  B.t[3, 11] <- rho * m
-  B.t[12, 11] <- (1 - rho) * m
+  initial$B.matrix[11, ] <- rho
+  initial$B.matrix[12, ] <- (1 - rho)
 }
 
-# Production - Wood
-if (shock == 3 && i == 2) {
-  m <- sim['Z1_beta-11', para['t.shock']] + sim['Z1_beta-12', para['t.shock']]
+# # Production - Wood
+# if (shock == 3 && i == 2) {
+#   m <- sim['Z1_beta-11', para['t.shock']] + sim['Z1_beta-12', para['t.shock']]
 
-  sim['Z1_beta-11', para['t.shock']:nPeriods] <- m * rho
-  sim['Z1_beta-12', para['t.shock']:nPeriods] <- (1 - rho) * m
+#   sim['Z1_beta-11', para['t.shock']:nPeriods] <- m * rho
+#   sim['Z1_beta-12', para['t.shock']:nPeriods] <- (1 - rho) * m
 
-  m <- B.t[3, 11] + B.t[12, 11]
-  B.t[3, 11] <- rho * m
-  B.t[12, 11] <- (1 - rho) * m
-}
+#   m <- B.t[3, 11] + B.t[12, 11]
+#   B.t[3, 11] <- rho * m
+#   B.t[12, 11] <- (1 - rho) * m
+# }
 
-# Production - Pulp
-if (shock == 4 && i == 2) {
-  m <- sim['Z1_beta-11', para['t.shock']] + sim['Z1_beta-12', para['t.shock']]
+# # Production - Pulp
+# if (shock == 4 && i == 2) {
+#   m <- sim['Z1_beta-11', para['t.shock']] + sim['Z1_beta-12', para['t.shock']]
 
-  sim['Z1_beta-11', para['t.shock']:nPeriods] <- m * rho
-  sim['Z1_beta-12', para['t.shock']:nPeriods] <- (1 - rho) * m
+#   sim['Z1_beta-11', para['t.shock']:nPeriods] <- m * rho
+#   sim['Z1_beta-12', para['t.shock']:nPeriods] <- (1 - rho) * m
 
-  m <- B.t[3, 11] + B.t[12, 11]
-  B.t[3, 11] <- rho * m
-  B.t[12, 11] <- (1 - rho) * m
-}
+#   m <- B.t[3, 11] + B.t[12, 11]
+#   B.t[3, 11] <- rho * m
+#   B.t[12, 11] <- (1 - rho) * m
+# }

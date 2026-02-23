@@ -437,7 +437,7 @@ $$
 \Big[(l_{12} + l_{22}) - (l_{11} + l_{21})\Big].
 $$
 
-which is the same as for final demand, but changing the sector-level share $\delta_1$ for the input-output coefficient $a_{1j}$ of a specific using sector $j$. 
+which interestingly is the same as for final demand above, but changing the sector-level share $\delta_1$ for the input-output coefficient $a_{1j}$ of a specific using sector $j$. 
 
 If the substitution occurs in multiple using sectors $j \in \mathcal{J}$, then the first-order effects sum:
 
