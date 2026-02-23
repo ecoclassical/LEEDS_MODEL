@@ -1,5 +1,5 @@
-# variable.table <<- read.csv('flexible_/data/Variable_Definitions.csv')
-# variable.table <<- read.csv(paste0(directory, 'data/Variable_Definitions.csv'))
+# variable_table <<- read.csv('flexible_/data/Variable_Definitions.csv')
+# variable_table <<- read.csv(paste0(directory, 'data/Variable_Definitions.csv'))
 # scenario.table <- read.csv(paste0(directory, 'data/Scenario_List.csv'), row.names = 1)
 # sectors <- c('Manufacturing', 'Agriculture', 'Services', 'Waste', 'Recycling')
 # countries <- c('EU', 'RoW')
@@ -79,17 +79,17 @@ plot.vars <- function(res, vars) {
   dt$area <- res$initial$countries[as.numeric(substr(dt$var, 2, 2))]
   dt$variable <- substring(dt$var, 4)
   dt <- dt %>% filter(variable %in% vars)
-  dt$unit <- setNames(variable.table$unit, variable.table$label)[dt$variable]
+  dt$unit <- setNames(variable_table$unit, variable_table$label)[dt$variable]
   dt$name <- ifelse(
     dt$unit == '',
     paste0(
-      setNames(variable.table$name, variable.table$label)[dt$variable],
+      setNames(variable_table$name, variable_table$label)[dt$variable],
       '\n(',
       dt$variable,
       ')'
     ),
     paste0(
-      setNames(variable.table$name, variable.table$label)[dt$variable],
+      setNames(variable_table$name, variable_table$label)[dt$variable],
       '\n(',
       dt$variable,
       ', in ',
@@ -97,7 +97,7 @@ plot.vars <- function(res, vars) {
       ')'
     )
   )
-  dt$type <- setNames(variable.table$type, variable.table$label)[dt$variable]
+  dt$type <- setNames(variable_table$type, variable_table$label)[dt$variable]
 
   print(
     dt %>%
@@ -124,17 +124,17 @@ shock.long.new <- function(baseline, scenario) {
   dt$region <- substr(dt$var, 1, 2)
   dt$area <- res$initial$countries[as.numeric(substr(dt$var, 2, 2))]
   dt$variable <- substring(dt$var, 4)
-  dt$unit <- setNames(variable.table$unit, variable.table$label)[dt$variable]
+  dt$unit <- setNames(variable_table$unit, variable_table$label)[dt$variable]
   dt$name <- ifelse(
     dt$unit == '',
     paste0(
-      setNames(variable.table$name, variable.table$label)[dt$variable],
+      setNames(variable_table$name, variable_table$label)[dt$variable],
       '\n(',
       dt$variable,
       ')'
     ),
     paste0(
-      setNames(variable.table$name, variable.table$label)[dt$variable],
+      setNames(variable_table$name, variable_table$label)[dt$variable],
       '\n(',
       dt$variable,
       ', in ',
@@ -142,7 +142,7 @@ shock.long.new <- function(baseline, scenario) {
       ')'
     )
   )
-  dt$type <- setNames(variable.table$type, variable.table$label)[dt$variable]
+  dt$type <- setNames(variable_table$type, variable_table$label)[dt$variable]
   dt$scenario <- 'baseline'
   dt$shock <- 0
   df <- dt
@@ -155,17 +155,17 @@ shock.long.new <- function(baseline, scenario) {
   dt$region <- substr(dt$var, 1, 2)
   dt$area <- res$initial$countries[as.numeric(substr(dt$var, 2, 2))]
   dt$variable <- substring(dt$var, 4)
-  dt$unit <- setNames(variable.table$unit, variable.table$label)[dt$variable]
+  dt$unit <- setNames(variable_table$unit, variable_table$label)[dt$variable]
   dt$name <- ifelse(
     dt$unit == '',
     paste0(
-      setNames(variable.table$name, variable.table$label)[dt$variable],
+      setNames(variable_table$name, variable_table$label)[dt$variable],
       '\n(',
       dt$variable,
       ')'
     ),
     paste0(
-      setNames(variable.table$name, variable.table$label)[dt$variable],
+      setNames(variable_table$name, variable_table$label)[dt$variable],
       '\n(',
       dt$variable,
       ', in ',
@@ -173,7 +173,7 @@ shock.long.new <- function(baseline, scenario) {
       ')'
     )
   )
-  dt$type <- setNames(variable.table$type, variable.table$label)[dt$variable]
+  dt$type <- setNames(variable_table$type, variable_table$label)[dt$variable]
   dt$scenario <- 'shock'
   dt$shock <- 1
 
@@ -210,13 +210,13 @@ load.target <- function(target.file) {
     value = unlist(target.table.0)
   )
   target.set$var <- paste0(target.set$area, '_', target.set$var)
-  target.set$type <- setNames(variable.table$type, variable.table$label)[
+  target.set$type <- setNames(variable_table$type, variable_table$label)[
     target.set$var.label
   ]
-  target.set$variable <- setNames(variable.table$name, variable.table$label)[
+  target.set$variable <- setNames(variable_table$name, variable_table$label)[
     target.set$var.label
   ]
-  target.set$unit <- setNames(variable.table$unit, variable.table$label)[
+  target.set$unit <- setNames(variable_table$unit, variable_table$label)[
     target.set$var.label
   ]
   target.set$name <- ifelse(
@@ -468,7 +468,7 @@ view.shock <- function(res, shock.vars, shock.sectors, shock.title) {
   df$region <- substr(df$var, 1, 2)
   df$area <- res$initial$countries[as.numeric(substr(df$var, 2, 2))]
   df$variable <- substring(df$var, 4)
-  # df$unit <- setNames(variable.table$unit, variable.table$label)[df$variable]
+  # df$unit <- setNames(variable_table$unit, variable_table$label)[df$variable]
   df$name <- setNames(
     res$initial$vars$name,
     res$initial$vars$label

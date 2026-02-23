@@ -16,6 +16,7 @@ format:
     css: fullwidth.css
 execute:
   echo: false
+  working-dir: ..
 ---
 
 # Initialization
@@ -30,80 +31,117 @@ library(visNetwork)
 library(scales)
 ```
 
-```{r init, warning = FALSE, message = FALSE}
-root <- rprojroot::find_root(
-  rprojroot::is_rstudio_project | rprojroot::is_git_root
+```{r init}
+# -----------------------------
+# Robust project root detection
+# -----------------------------
+qmd_in <- knitr::current_input()
+
+if (!is.null(qmd_in) && nzchar(qmd_in)) {
+  qmd_path <- normalizePath(qmd_in, winslash = "/")
+  root <- normalizePath(file.path(dirname(qmd_path), ".."), winslash = "/")
+  root_method <- "knitr::current_input()"
+} else {
+  # Fallback for interactive execution / sourcing
+  wd0 <- normalizePath(getwd(), winslash = "/")
+  root <- if (basename(wd0) == "qmd") {
+    normalizePath("..", winslash = "/")
+  } else {
+    wd0
+  }
+  root_method <- "getwd() fallback"
+}
+
+dir_data <- file.path(root, "data")
+
+cat("root_method:", root_method, "\n")
+cat("getwd():", normalizePath(getwd(), winslash = "/"), "\n")
+cat("root  :", root, "\n")
+cat("dir_data:", dir_data, "\n")
+cat(
+  "VarDef exists?:",
+  file.exists(file.path(dir_data, "Variable_Definitions.csv")),
+  "\n"
+)
+cat(
+  "initial exists?:",
+  file.exists(file.path(dir_data, "initial_state_2026.xlsx")),
+  "\n"
 )
 
-variable.table <<- read.csv(
-  file.path(root, "data", "Variable_Definitions.csv")
-)
-sector_list <- read.csv(
-  file.path(root, 'data', 'sector_list.csv'),
+# -----------------------------
+# Canonical directories
+# -----------------------------
+model_dir <- file.path(root, "model")
+functions_dir <- file.path(root, "functions") # keep only if you still use it
+utils_dir <- file.path(root, "utils")
+
+# -----------------------------
+# Core inputs
+# -----------------------------
+variable.table <- read.csv(
+  file.path(dir_data, "Variable_Definitions.csv"),
   stringsAsFactors = FALSE
 )
 
-source(file.path(root, "functions", "utils.R"))
+initial_filename <- file.path(dir_data, "initial_state_2026.xlsx")
+stopifnot(file.exists(initial_filename))
 
-identif <- file.path(root, "data", "initial_state_2026.xlsx")
-initial <- load.new.init(identif)
+sector_list <- read.csv(
+  file.path(dir_data, "sector_list.csv"),
+  stringsAsFactors = FALSE
+)
 
-source(file.path(root, "functions", "run_model_2026.R"))
-source(file.path(root, "functions", "MVP_model_2026.R"))
+# -----------------------------
+# Scenario workspace dirs
+# -----------------------------
+workspace_dir <- file.path(root, "output", "scenarios")
+dir.create(workspace_dir, showWarnings = FALSE, recursive = TRUE)
 
-source(file.path(root, 'R', 'scenario_analysis_2026.R'))
+dir_runs <- file.path(workspace_dir, "shock_runs")
+dir_tables <- file.path(workspace_dir, "shock_tables")
+dir_logs <- file.path(workspace_dir, "logs")
+dir_long <- file.path(workspace_dir, "shock_long")
+dir_cache <- file.path(workspace_dir, "scenario_cache")
+dir_rds <- file.path(workspace_dir, "rds_files")
+
+invisible(lapply(
+  list(dir_runs, dir_tables, dir_logs, dir_long, dir_cache, dir_rds),
+  dir.create,
+  showWarnings = FALSE,
+  recursive = TRUE
+))
+
+# -----------------------------
+# Source utilities + model code
+# -----------------------------
+source(file.path(utils_dir, "utils.R"), local = FALSE)
+
+# Load initial state
+initial <- load.init(initial_filename)
+
+# Model functions
+source(file.path(model_dir, "run_model_2026.R"), local = FALSE)
+source(file.path(model_dir, "MVP_model_2026.R"), local = FALSE)
+
+# Scenario analysis helpers
+source(file.path(utils_dir, "scenario_analysis_2026.R"), local = FALSE)
 ```
 
 ```{r filenames}
-# -----------------------------
-# FILENAMES
-# -----------------------------
-
-# -----------------------------
-# Directories
-# -----------------------------
-
-shock_dir <- file.path(root, "data", 'scenarios')
-
-dir_runs <- file.path(shock_dir, "shock_runs")
-dir_tables <- file.path(shock_dir, "shock_tables")
-dir_logs <- file.path(shock_dir, "logs")
-dir_long <- file.path(shock_dir, "shock_long")
-dir_meta <- file.path(shock_dir, "scenario_cache")
-
-dir.create(shock_dir, showWarnings = FALSE, recursive = TRUE)
-dir.create(dir_runs, showWarnings = FALSE, recursive = TRUE)
-dir.create(dir_tables, showWarnings = FALSE, recursive = TRUE)
-dir.create(dir_logs, showWarnings = FALSE, recursive = TRUE)
-dir.create(dir_meta, showWarnings = FALSE, recursive = TRUE)
-
-# -----------------------------
-# Filenames
-# -----------------------------
-
-baseline_filename <- file.path(shock_dir, 'baseline_2026.RDS')
-target_filename <- file.path(shock_dir, 'target_values.xlsx')
-scenario_filename <- file.path(shock_dir, 'scenarios.csv')
+# ---- Workspace filenames (generated / cached) ----
+baseline_filename <- file.path(workspace_dir, "baseline_2026.RDS")
+target_filename <- file.path(workspace_dir, "target_values.xlsx")
+scenario_filename <- file.path(workspace_dir, "scenarios.csv")
 
 get_shock_filename <- function(n) {
-  file.path(
-    dir_runs,
-    paste0('shock_', n, '_run.RDS')
-  )
+  file.path(dir_runs, paste0("shock_", n, "_run.RDS"))
 }
-
 get_table_filename <- function(n) {
-  file.path(
-    dir_tables,
-    paste0('shock_', n, '_table.csv')
-  )
+  file.path(dir_tables, paste0("shock_", n, "_table.csv"))
 }
-
 get_log_filename <- function(n) {
-  file.path(
-    dir_logs,
-    paste0('shock_', n, '_run.log')
-  )
+  file.path(dir_logs, paste0("shock_", n, "_run.log"))
 }
 ```
 
@@ -133,7 +171,7 @@ Target values are loaded in format long (`target.set`) and wide (`target.table.0
 ```{r calibration}
 #### LOAD TARGET VALUES ####
 
-target.list <- load.target(target_filename)
+target.list <- load.target(target_filename, variable.table)
 target.table <- target.list$wide
 target.set <- target.list$long
 target.vars <- target.set$var.label
@@ -467,43 +505,57 @@ tf <- initial$pars['nPeriods', 'value'] # final time period for visualization
 initial_shock <- initial
 n_shock <- initial_shock$pars['shock', 'value'] <- 7
 
-scenario <- scenario_list[[n_shock]] <- run.model(
-  initial_shock,
-  mvp.model,
-  log_file = get_log_filename(n_shock),
-  log_append = FALSE,
-  print_final_state = FALSE
-)
-saveRDS(
-  scenario,
-  file = get_shock_filename(n_shock)
-)
-
-# scenario_list[[n_shock]] <- scenario <- readRDS(
-#   file = get_shock_filename(n_shock)
-# )
+scenario <- run_or_load_shock(n_shock, initial_shock, mvp.model, force = FALSE)
 ```
 
-## Visualize Shocked Variables
+## Visualize Shocked Coefficients
 
-```{r shock.view.3}
+```{r shock.view.7}
 #| fig-width: 6
 #| fig-height: 2
 
-view.shock(
+pairs <- data.frame(
+  row = c(11, 12, 11, 12),
+  col = c(31, 31, 32, 32)
+)
+
+view.A(
   scenario,
-  shock.vars = c(
-    'beta-31',
-    'beta-32'
-  ),
-  shock.sectors = c(31, 32),
-  shock.title = sc$display_name[n_shock]
+  pairs,
+  title = "Wood coefficients into sectors 31 and 32"
+)
+```
+
+```{r frobenius}
+A <- scenario$A.matrix
+fro_vs_1 <- sapply(1:dim(A)[3], function(tt) {
+  sqrt(sum((A[,, tt] - A[,, 1])^2))
+})
+
+plot(
+  fro_vs_1,
+  type = "l",
+  main = "Distance of A_t from baseline",
+  ylab = "Frobenius norm",
+  xlab = "time"
+)
+abline(v = scenario$initial$pars["t.shock", "value"], lty = 2)
+```
+
+## Input-Output Heatmap
+
+
+```{r heatmap.7}
+view.A_row_heatmap(
+  scenario,
+  rows = c(11, 12),
+  title = "Evolution of Wood IO rows (11, 12)"
 )
 ```
 
 ## Visualize Impacts
 
-```{r shock.visualize.scaled.3}
+```{r shock.visualize.scaled.7}
 #| fig-width: 8
 #| fig-height: 4
 
@@ -556,7 +608,7 @@ p.selected.vars
 
 ## Summary Visualization
 
-```{r summary.table.3}
+```{r summary.table.7}
 #| fig-width: 10
 #| fig-height: 10
 
@@ -632,7 +684,7 @@ df <- scenario.tables |>
   filter(!is.na(Name))
 
 
-source(file.path(root, 'R', 'scenario_comparison_2026.R'))
+source(file.path(dir_utils, 'scenario_comparison_2026.R'))
 
 p.comparison
 ```

@@ -1,0 +1,295 @@
+---
+title: "ECO-MRIO-SFC Model: 54-Sector Version Documentation"
+author: "Oriol Vallès Codina"
+date: "`r Sys.Date()`"
+output:
+  # word_document: default
+  # keep_tex: true
+
+  # pdf_document:
+  #   toc: true
+  #   toc_depth: 3
+  #   number_sections: true
+  html_document:
+    toc: TRUE
+    toc_float: TRUE
+format:
+  html:
+    self-contained:
+      true
+---
+
+# Introduction
+
+This is the flexible version with 54 sectors of the SOCIO-ECO-MRIO SFC model developed by Passarella et al. It has a different variable structure and grammar tailored to implement the more powerful Broyden solver, in addition to the simpler Gauss-Seidel solver that the old version already was able to use. The Broyden solver uses the Jacobian matrix $J$ numerically computed by `R` from the model in each iteration, which requires $J$ to be invertible and hence with determinant zero. 
+
+At the moment, my computation of the Jacobian returns a non-invertible matrix. This may well be due to the existence of redundant equations or variables that do not change over time (should be considered exogenous). An issue is that the state vector that is passed to the Jacobian computation includes the previous time period $\{y_{t-1}, y_t\}$ and this may yield problems: Jacobian is then of dimension $2n \times 2n$, where $n = 663$ is the current number of variables.
+
+# Initialization
+
+The initial values and variables are loaded from the file stored in variable `identif` in a different structure as before.
+
+```{r init, warning = FALSE, message = FALSE}
+# Clear Environment
+rm(list = ls())
+
+# Load Auxiliary Functions
+directory <- '' # '' for the markdown file, 'flexible_/' for R
+source(paste0(directory, 'functions/auxiliary_flexible_jul31.R')) # load.new.init, auxiliary labeling functions, plotting function
+
+# Load Initial Values
+identif <- paste0(directory, 'data/initial_values_july29_jbf_test_general.xlsx')
+initial <- load.new.init.2(identif)
+
+# Load Models
+source(paste0(directory, "functions/run_new_model_jul31.R")) # function run.new.model(initial.values, model.equations)
+source(paste0(directory, "functions/MVP_model_jul31.R")) # model equations
+```
+
+## Contents of `initial`
+
+* `variables`, a list of global, aggregate (country-level), and industry-level variables that are saved in `initial` in the data frame `vars`, the initial state vector, (previously `init.table`)
+* `parameters`, a list of global and aggregate (country-level) parameters that are saved in `initial` in the data frame `pars`,
+* `identif`, which saves the name of the Excel file for reference and documentation purposes: `r initial$identif`,
+* `countries`, the country labels that are taken from the $A$ matrix row names (left to the dot `.`): 
+`r initial$countries`
+* `sectors`, the industry labels that are taken from the $A$ matrix row names (right to the dot `.`): 
+`r initial$sectors`
+* `N`, the number of countries (a scalar), $N = `r initial$N`$,
+* `K`, the number of industries in each country (a vector), $K = `r initial$K`$, and
+
+Its dimension is the number of global variables `r nrow(initial$variables$global)` plus the number of aggregate variables `r nrow(initial$variables$aggregate)` times the number of countries `r initial$N` plus the number of industry variables `r nrow(initial$variables$industry) / initial$N` times the number of countries `r initial$N` times the number of industries `r unique(initial$K)`:
+
+```{r}
+nrow(initial$variables$global) + nrow(initial$variables$aggregate) * initial$N + nrow(initial$variables$industry) * unique(initial$K)
+```
+
+## MRIO $A$ Matrix Visualization
+
+Importantly, the column names of the $A$ matrix contained in `identif` determine the country and industry labels in the whole model, following the grammar `country_label.industry_label`:
+
+```{r}
+library(igraph)
+library(qgraph)
+go <- rowSums(initial$A.matrix)
+g <- graph_from_adjacency_matrix(as.matrix(initial$A.matrix), 
+                                 mode = 'directed', weighted = TRUE,diag = F, add.colnames = T)
+
+# Graph Visualization
+e <- get.edgelist(g, names=FALSE)
+l <- qgraph.layout.fruchtermanreingold(e,vcount=vcount(g))
+V(g)$size <- 7.5 * go ^ 0.75
+V(g)$frame.color <- NA
+# V(g)$name <- apply(expand.grid(1 : unique(initial$K), initial$countries)[c(2,1)], 1, function(x) paste0(x, collapse = ""))
+V(g)$name <- rep(1 : unique(initial$K), times = 2)
+V(g)$color <- rep(scales :: hue_pal()(4)[c(1, 3)], each = unique(initial$K))
+E(g)$color <- alpha('black', E(g)$weight / max(E(g)$weight))
+
+par(mar = c(0,0,0,0))
+plot(g, edge.arrow.size = 0)
+# title("MRIO (EU, red; RoW, emerald)")
+```
+
+
+Circular economy matrix $B$ is computed from the $A$ matrix using parameters `more.input` and `less.input` to obtain the new coefficients from the old ones.
+
+
+# Run New Model Baseline
+
+Function `run.new.model` loads initial values `initial` as first argument and runs the model equations at time period $t$ of the second argument as in `mvp.model` (for instance stored in `MVP_model.R`), in this case using the Gauss-Seidel solver that checks convergence to a stable solution at each iteration:
+
+```{r run.baseline}
+initial$pars['shock', 'value'] <- 0
+#baseline <- run.new.model(initial, mvp.model)
+#saveRDS(baseline, paste0(directory, 'data/baseline54_jul31_jbf.RDS'))
+
+baseline <- readRDS(paste0(directory, 'data/baseline54_jul31_jbf.RDS'))
+```
+
+For 5 sectors, the old model run globally took ~13 secs, while the new model run globally took ~30 secs. However, run as a function, the old model takes ~1.8 min and the new model takes ~33 secs. For 54 sectors, the new model takes ~5 min.
+
+Model equations are adapted, with some minor changes documented in the file `run.new.model`, from the file `Model_rev (JBF_Revised Feb_with public Investment)_adapted`. Now all industry-level and country-level variables are saved into a single vector `sim`. Parameters (scalars in the old code) are saved into a single vector `para`. In the old code, we could distinguish between demand-led and actual industry-level variables, which is no longer the case (all are actual).
+
+```{r}
+dim(baseline$simulation)
+```
+
+
+# Example Baseline Visualization
+
+```{r visual}
+selected <- c('va', 'n', 'nf', 'ineq', 'emis', 'mat', 'gdef', 'b_s', 'yd')
+
+p.selected <- plot.vars(baseline, selected)
+p.selected + ggtitle('Selected Indicators. Baseline')
+```
+
+# Calibration
+
+## Load Targets
+
+Target values are loaded in format long (`target.set`) and wide (`target.table.0`). Units are divided by 10,000 for convenience.
+
+```{r target}
+#### LOAD TARGET VALUES ####
+target.file <- paste0(directory, 'data/target_values.xlsx')
+target.table.0 <- openxlsx :: read.xlsx(target.file, sheet = 'Target', rowNames = TRUE) / 10000
+target.set <- data.frame(region = rep(c('Z1', 'Z2'), times = dim(target.table.0)[2]),
+                         var.label = rep(c('c', 'id', 'g', 'rex', 'imp', NA, 'M_TOT_int', 'fd', 'va', 'go', 'gdef', NA, NA), each = 2),
+                         value = unlist(target.table.0))
+target.vars <- target.set$var.label[!is.na(target.set$var.label)]
+target.set$var[!is.na(target.set$var.label)] <- paste0(target.set$region[!is.na(target.set$var.label)], '_', target.set$var[!is.na(target.set$var.label)])
+target.set$type <- setNames(variable.table$type, variable.table$label)[target.set$var.label]
+target.set$variable <- paste0(setNames(variable.table$name, variable.table$label)[target.set$var.label], '\n(', target.set$var.label, ')')
+target.set$unit <- setNames(variable.table$unit, variable.table$label)[target.set$var.label]
+target.set$name <- ifelse(target.set$unit == '', 
+                    paste0(setNames(variable.table$name, variable.table$label)[target.set$var.label], '\n(', target.set$var.label,')'),
+                    paste0(setNames(variable.table$name, variable.table$label)[target.set$var.label], '\n(', target.set$var.label,', in ', target.set$unit, ')'))
+
+head(target.set)
+target.table.0
+```
+
+## Target Values
+
+```{r}
+target.set$target[!is.na(target.set$var)] <- baseline$simulation[target.set$var[!is.na(target.set$var)], 
+                                                                 baseline$initial$pars['nPeriods', 'value']]
+target.set$ratio <- round(target.set$target / target.set$value, 2)
+
+compute.target(baseline)
+```
+
+## GDEF Components
+
+```{r}
+sim <- baseline$simulation
+i <- 2 : baseline$initial$pars['nPeriods', 'value']
+gdef.terms <- list(GDEF = sim[z.lab('gdef'), i],
+                   GOVC = sim[z.lab('g'), i] * sim[z.lab('pg'), i],
+                   taxes_ = - sim[z.lab('t'), i], 
+                   interest = sim[z.lab('rb'), i-1] * sim[z.lab('b_s'), i-1], 
+                   CBprofits_ = - sim[z.lab('f_cb'), i],
+                   VATrev_ = - sim[z.lab('vat_rev'), i],
+                   TARrev_ = - sim[z.lab('tar_rev'), i],
+                   GOVI = sim[z.lab('id_g'), i] * sim[z.lab('pid'), i]) %>% lapply(t) %>% data.frame %>% t
+
+df <- melt(gdef.terms) %>% rename(variable = Var1, time = Var2)
+df$area <- stringr :: str_extract(df$variable, "Z[0-9]+")
+df$term <- sapply(strsplit(as.character(df$variable), split = '.', fixed = T), function (x) x[[1]])
+
+df %>% ggplot(aes(x = time, y = value, color = term)) + geom_line() + facet_grid(~ area)
+```
+
+## Select Instrument Variables
+
+We select instrument variables:
+
+```{r}
+instruments <- list(var.ind = c('kappa', 'vat', 'tar'),
+                    var.agg = c('theta_w', 'theta_c', 'mu_b', 'r_star'),
+                    par = c('alpha1', 'alpha2', 'alpha3', 'mu0', 'mu1', 'mu2'))
+instruments <- list(var.ind = 'tar',
+                    var.agg = 'gamma_A',
+                    par = c('mu0', 'mu1', 'mu2'))
+instruments <- list(var.ind = c('vat', 'tar'),
+                    var.agg = c('theta_w', 'theta_c', 'mu_m', 'mu_b', 'mu_l', 'mu_h', 'r_star'),
+                    par = c('alpha1', 'alpha2', 'alpha3', 'mu0', 'mu1', 'mu2'))
+```
+
+
+## Random Search Algorithm
+
+And start the random search algorithm that minimizes the goodness-of-fit (not run, but saved).
+
+```{r, eval = FALSE}
+identif <- paste0(directory, 'data/initial_values_july31_jbf.xlsx')
+initial <- load.new.init.2(identif)
+
+initial <- stable.sim$initial
+# initial$pars['Z2_alpha1', 'value'] <- 0.9 disabled
+# initial$vars[paste0('Z1_kappa-', 1 : K[2]), 'value'] <- 0.3
+# initial.i2correct <- initial disabled
+# initial$pars[paste0('Z1_mu', 0 : 2), 'value'] <- 1.5 * initial$pars[paste0('Z1_mu', 0 : 2), 'value'] 
+# initial$pars[paste0('Z2_mu', 0 : 2), 'value'] <- 0.9 * initial$pars[paste0('Z2_mu', 0 : 2), 'value'] 
+initial$pars[paste0('Z1_mu', 0 : 2), 'value'] <- 1.1 * initial$pars[paste0('Z1_mu', 0 : 2), 'value'] 
+initial$pars[paste0('Z2_mu', 0 : 2), 'value'] <- 1.1 * initial$pars[paste0('Z2_mu', 0 : 2), 'value'] 
+results <- run.new.model(initial, mvp.model) # initial run
+```
+
+
+```{r, eval = FALSE}
+std.dev <- .005
+# stable.sim <- universe[[3]]
+select.target.vars <- target.vars
+
+universe <- alliter <- list() # universe is a list that saves each run of the model for each of its elements
+universe[[1]] <- list(initial = results$initial,
+                      instruments = return.instr.vals(results),# instrument values
+                      simulation = results$simulation,         # simulation values
+                      target = compute.target(results, select.target.vars)$table, # values of target variables
+                      fitness = compute.target(results, select.target.vars)$fitness)  # fitness value (a sum of the ratios - 1)
+alliter[[1]] <- universe[[1]]
+
+# WHILE LOOP
+iters <- k <- 1
+print('ITERATIONS  SUCCESSFUL.RUNS   CURRENT.FITNESS  RUN.FITNESS   DIFFERENCE')
+print(c(iters, k, universe[[k]]$fitness))
+while (iters < 70)
+{
+  # Adjust Parameters and Run Model
+  sim <- universe[[k]]$initial
+  
+  sim$vars[sapply(instruments$var.agg, z.lab) %>% as.vector, 'value'] <- rnorm(N * length(instruments$var.agg), 1, std.dev) * sim$vars[sapply(instruments$var.agg, z.lab) %>% as.vector, 'value']
+  sim$vars[sapply(instruments$var.ind, zk.lab) %>% as.vector, 'value'] <- rep(rnorm(N * length(instruments$var.ind), 1, std.dev) * as.vector(sapply(instruments$var.ind, function (x) zk.mean(sim$vars[zk.lab(x), 'value']))), each = unique(K))
+  sim$pars[sapply(instruments$par, z.lab) %>% as.vector, 'value'] <- rnorm(N * length(instruments$par), 1, std.dev) * sim$pars[sapply(instruments$par, z.lab) %>% as.vector, 'value']
+  
+  # Boundary Conditions so Parameters are Meaningful
+  # apply(expand.grid(zlabs, 1 : 3), 1, function(x) paste0(x, collapse = "_alpha"))
+  if(sim$pars['Z1_alpha1', 'value'] > 1) sim$pars['Z1_alpha1', 'value'] <- .99
+  if(sim$pars['Z1_alpha2', 'value'] > 1) sim$pars['Z1_alpha2', 'value'] <- .99
+  if(sim$pars['Z1_alpha3', 'value'] > 1) sim$pars['Z1_alpha3', 'value'] <- .99
+  
+  if(sim$pars['Z2_alpha1', 'value'] > 1) sim$pars['Z2_alpha1', 'value'] <- .99
+  if(sim$pars['Z2_alpha2', 'value'] > 1) sim$pars['Z2_alpha2', 'value'] <- .99  
+  if(sim$pars['Z2_alpha3', 'value'] > 1) sim$pars['Z2_alpha3', 'value'] <- .99
+  
+  if(sim$pars['Z1_alpha2', 'value'] > sim$pars['Z1_alpha1', 'value']) sim$pars['Z1_alpha2', 'value'] <- sim$parameters['Z1_alpha1', 'value']
+  if(sim$pars['Z1_alpha3', 'value'] > sim$pars['Z1_alpha2', 'value']) sim$pars['Z1_alpha3', 'value'] <- sim$parameters['Z1_alpha2', 'value']
+  
+  if(sim$pars['Z2_alpha2', 'value'] > sim$pars['Z2_alpha1', 'value']) sim$pars['Z2_alpha2', 'value'] <- sim$pars['Z2_alpha1', 'value']
+  if(sim$pars['Z2_alpha3', 'value'] > sim$pars['Z2_alpha2', 'value']) sim$pars['Z2_alpha3', 'value'] <- sim$pars['Z2_alpha2', 'value']
+  
+  alliter[[iters + 1]] <- results <- run.new.model(sim, mvp.model)
+  
+  # If New Fitness is Lower, Save Parameters
+  if (universe[[k]]$fitness > compute.target(results, select.target.vars)$fitness & compute.target(results, select.target.vars)$fitness != 1)
+  {
+    k <- k + 1
+    universe[[k]] <- list(initial = results$initial,
+                      instruments = return.instr.vals(results),# instrument values
+                      simulation = results$simulation,         # simulation values
+                      target = compute.target(results, select.target.vars)$table, # values of target variables
+                      fitness = compute.target(results, select.target.vars)$fitness)  # fitness value (a sum of the ratios - 1)
+    beepr :: beep(3)
+  }
+  print(c(iters <- iters + 1, k, universe[[k]]$fitness, compute.target(results, select.target.vars)$fitness, universe[[k]]$fitness - compute.target(results, select.target.vars)$fitness))
+}
+universe[[k]]$target
+# saveRDS(universe, file = 'data/universe_jul31.RDS')
+# saveRDS(universe[[3]], file = 'data/simulation_stable_aug1.RDS')
+# saveRDS(universe, file = 'data/universe_aug2.RDS')
+# saveRDS(alliter, file = 'data/alliter_aug2.RDS')
+# saveRDS(universe[[5]], file = 'data/stable_simulation_aug2.RDS')
+saveRDS(universe, file = 'data/stable_universe_aug2.RDS')
+saveRDS(alliter, file = 'data/stable_alliter_aug2.RDS')
+```
+
+```{r}
+stable.sim.2 <- universe[[5]]
+initial <- stable.sim.2$initial
+initial$vars[paste0('Z1_tar-', 1 : 54), 'value'] <- 0.98
+initial$pars[paste0('Z1_mu', 0 : 2), 'value'] <- c(1.55, 0.7, 0.6) 
+res <- run.new.model(initial, mvp.model)
+```
+
