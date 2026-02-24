@@ -32,7 +32,7 @@ dff <- df %>%
     value = as.numeric(value),
     term = str_extract(region_term, "Immediate|Short\\.Term|Long\\.Term"),
     region = str_extract(region_term, "Z1|Z2") %>%
-      recode(Z1 = "Core", Z2 = "Periphery")
+      recode(Z1 = "EU", Z2 = "RoW")
   ) %>%
   mutate(
     dimension = 'aggregate',
@@ -56,19 +56,22 @@ dff <- df %>%
       unit,
       ')'
     ),
-    scenario = recode(
+    display_scenario = stringr::str_replace(
       scenario,
-      "household diet shift" = "diet",
-      "household energy consumption shift" = "energy"
-    )
-  )
+      "( \\| .*?)( \\| )",
+      "\\1\n"
+    ),
+    shock = as.integer(stringr::str_extract(scenario, "(?<=Scenario\\s)\\d+"))
+  ) %>%
+  filter(!is.na(value))
+
 
 cats <- levels(factor(dff$category))
 
 plots <- lapply(cats, function(cc) {
   ggplot(
     dplyr::filter(dff, category == cc),
-    aes(term, value, fill = scenario)
+    aes(term, value, fill = display_scenario)
   ) +
     geom_col(position = position_dodge(width = 0.8), width = 0.7) +
     facet_grid(display_name ~ region, scales = "free_y") +

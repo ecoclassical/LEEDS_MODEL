@@ -7,15 +7,40 @@ mvp.model <- function(t, y, parms, A.mat, B.mat) {
   )
   B.t <- B.mat
   A.t <- A.mat
-  i <- 2
 
-  #### MATRIX OF TECHNICAL COEFFICIENTS ####
-  # Define technical coefficients (note: a = initial coefficients; b = target coefficients)
+  # ---- period + shock time ----
+  i <- 2
+  t_shock <- as.integer(parms["t.shock"])
+
+  # ---- Demand scenarios (period-local; returns effective shares) ----
+  # Make sure this file defines compute_beta_eff(...)
+  source(file.path(root, "model", "demand_scenarios_2026.R"), local = TRUE)
+
+  beta_eff <- compute_beta_eff(
+    t = t,
+    t_shock = as.integer(parms["t.shock"]),
+    shock = as.integer(parms["shock"]),
+    rho = as.numeric(parms["rho"]),
+    beta_current = sim[zk.lab("beta"), i]
+  )
+
+  stopifnot(length(beta_eff) == length(sim[zk.lab("beta"), i]))
+  sim[zk.lab("beta"), i] <- beta_eff
+
+  # ---- Shock gating (A-adjustment starts at t.shock) ----
+
+  ce_eff <- parms[z.lab("ce")] # c(Z1_ce, Z2_ce)
+  if (t < t_shock) {
+    ce_eff[] <- 0
+  }
+
+  # ---- MATRIX OF TECHNICAL COEFFICIENTS ----
   foo <- matrix(
-    rep(sim[z.lab('gamma_A'), i - 1] * parms[z.lab('ce')], each = N * K^2),
+    rep(sim[z.lab("gamma_A"), i - 1] * ce_eff, each = N * K^2),
     ncol = K * N,
     nrow = K * N
   )
+
   A <- A.t[,, i] <- A.t[,, i - 1] + foo * (B.t - A.t[,, i - 1])
 
   A.xr.matrix <- cbind(
@@ -151,7 +176,7 @@ mvp.model <- function(t, y, parms, A.mat, B.mat) {
   #### PRODUCTION FIRMS ####
 
   # Final Demand Vector in Real Terms
-  sim[zk.lab('d'), i] = sim[zk.lab('beta'), i] *
+  sim[zk.lab('d'), i] = beta_eff *
     rep(sim[z.lab('c'), i], each = K) +
     sim[zk.lab('sigma'), i] * rep(sim[z.lab('g'), i], each = K) +
     sim[zk.lab('iota'), i] * rep(sim[z.lab('id'), i], each = K) +
@@ -159,6 +184,15 @@ mvp.model <- function(t, y, parms, A.mat, B.mat) {
     sim[unlist(lapply(rev(zlabs), function(z) paste0(z, '_eta-', 1:K))), i] *
       rep(sim[z.lab('rex'), i], each = K) -
     sim[zk.lab('eta'), i] * rep(sim[z.lab('imp'), i], each = K)
+
+  # sim[zk.lab('d'), i] = sim[zk.lab('beta'), i] *
+  #   rep(sim[z.lab('c'), i], each = K) +
+  #   sim[zk.lab('sigma'), i] * rep(sim[z.lab('g'), i], each = K) +
+  #   sim[zk.lab('iota'), i] * rep(sim[z.lab('id'), i], each = K) +
+  #   sim[zk.lab('iota_g'), i] * rep(sim[z.lab('id_g'), i], each = K) +
+  #   sim[unlist(lapply(rev(zlabs), function(z) paste0(z, '_eta-', 1:K))), i] *
+  #     rep(sim[z.lab('rex'), i], each = K) -
+  #   sim[zk.lab('eta'), i] * rep(sim[z.lab('imp'), i], each = K)
 
   # Real Output
   sim[zk.lab('x'), i] <- solve(diag(K * N) - A.t[,, i]) %*% sim[zk.lab('d'), i]

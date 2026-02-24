@@ -73,59 +73,61 @@ run.model <- function(
   .warn <- function(txt) .log_line(paste0("⚠ ", txt))
   .fail <- function(txt) .log_line(paste0("✖ ", txt))
 
-  # ---------------------------
-  # INITIALIZATION (seed objects for scenario script)
-  # ---------------------------
-  .rule("LEEDS_MODEL :: New simulation run")
+  # ---- timing (must exist no matter what) ----
   start_time <- Sys.time()
+
+  .rule("LEEDS_MODEL :: New simulation run")
+
+  # ---------------------------
+  # INITIALIZATION (core objects)
+  # ---------------------------
+
   .section("Initialization")
 
-  # ---- Seed parameters + variables (scenario_selection_2026.R may mutate these) ----
+  # ---- Seed parameters (named vector) ----
   para0 <- setNames(initial$pars$value, initial$pars$label)
   para <- para0
 
-  vars0 <- initial$vars$value
-  names(vars0) <- initial$vars$label
+  if (is.na(para["nPeriods"])) {
+    stop("Parameter 'nPeriods' not found in initial$pars.")
+  }
+  if (is.na(para["max.iterations"])) {
+    stop("Parameter 'max.iterations' not found in initial$pars.")
+  }
 
   # ---------------------------
-  # SCENARIO SELECTION (MUST run before nPeriods/A.t/B.t allocation)
+  # PRODUCTION SCENARIOS (pre-run)
+  # edits: para + initial$B.matrix (and optional initial$pars sync)
+  # does NOT touch sim
   # ---------------------------
-  .section("Scenario selection")
+  .section("Production scenarios")
 
   source(
-    file.path(root, "functions", "scenario_selection_2026.R"),
+    file.path(root, "model", "production_scenarios_2026.R"),
     local = environment()
   )
 
-  # ---- Robust sync: support legacy scenarios that modify initial$pars instead of para ----
-  # If 'para' was not changed by the scenario script but initial$pars was changed, refresh para.
-  if (isTRUE(all.equal(para, para0))) {
-    para_from_initial <- setNames(initial$pars$value, initial$pars$label)
-    if (!isTRUE(all.equal(para_from_initial, para0))) {
-      para <- para_from_initial
-      .warn(
-        "scenario_selection updated initial$pars; refreshed 'para' from initial$pars."
-      )
-    }
-  }
-
-  # Write para back into initial$pars so the returned scenario object is self-contained
+  # ---- Always write para back into initial$pars so returned object is self-contained ----
   idx_pars <- match(names(para), initial$pars$label)
   if (anyNA(idx_pars)) {
     missing <- names(para)[is.na(idx_pars)]
     stop(
-      "Internal error: 'para' has labels missing from initial$pars$label: ",
+      "run.model: 'para' has labels missing from initial$pars$label: ",
       paste(missing, collapse = ", ")
     )
   }
   initial$pars$value[idx_pars] <- as.numeric(para)
 
-  # ---- Derive dimensions AFTER scenarios ----
-  if (is.na(para["nPeriods"])) {
-    stop("Parameter 'nPeriods' not found in para.")
-  }
+  # ---- Dimensions AFTER production scenarios ----
   nPeriods <- as.integer(para["nPeriods"])
   maxIter <- as.integer(para["max.iterations"])
+
+  if (is.na(nPeriods) || nPeriods < 2) {
+    stop("Invalid nPeriods after production scenarios.")
+  }
+  if (is.na(maxIter) || maxIter < 1) {
+    stop("Invalid max.iterations after production scenarios.")
+  }
 
   .info(sprintf(
     "Parameters ready: nPeriods = %d, max.iterations = %d",
@@ -133,12 +135,19 @@ run.model <- function(
     maxIter
   ))
   .info(sprintf(
-    "Scenario sanity: Z1_ce = %s, Z2_ce = %s",
+    "Scenario sanity: shock = %s, rho = %s, t.shock = %s, Z1_ce = %s, Z2_ce = %s",
+    format(para["shock"], trim = TRUE),
+    format(para["rho"], trim = TRUE),
+    format(para["t.shock"], trim = TRUE),
     format(para["Z1_ce"], trim = TRUE),
     format(para["Z2_ce"], trim = TRUE)
   ))
 
-  # ---- Build A0 and B0 AFTER scenario changes (e.g., initial$B.matrix edits) ----
+  # ---------------------------
+  # Build A0/B0 AFTER production scenario edits to initial$B.matrix
+  # ---------------------------
+  .info("Building A0/B0/A.t/B.t after production scenarios…")
+
   A0 <- matrix(unlist(initial$A.matrix), nrow = K * N, ncol = K * N)
   B0 <- matrix(
     unlist(initial$B.matrix) * unlist(initial$A.matrix),
@@ -151,12 +160,12 @@ run.model <- function(
 
   .info(sprintf("max |B0 - A0| at init = %.6g", max(abs(B.t - A0))))
 
-  # ---- Variables AFTER we know nPeriods ----
+  # ---------------------------
+  # Variables: allocate sim once (NO scenario scripts touch sim anymore)
+  # ---------------------------
   n <- length(initial$vars$label)
-
-  # Use repeated t=1 values as initial guess for all periods
   sim <- array(
-    rep(vars0, times = nPeriods),
+    rep(initial$vars$value, times = nPeriods),
     dim = c(n, nPeriods),
     dimnames = list(initial$vars$label, NULL)
   )
@@ -295,6 +304,12 @@ run.model <- function(
   } # end time loop
 
   end_time <- Sys.time()
+
+  if (!exists("start_time", inherits = FALSE)) {
+    # Should never happen, but prevents crashes if refactoring goes wrong again
+    start_time <- end_time
+  }
+
   execution_time <- end_time - start_time
 
   # ---------------------------

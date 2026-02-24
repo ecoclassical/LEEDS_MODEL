@@ -31,7 +31,7 @@ library(visNetwork)
 library(scales)
 ```
 
-```{r init}
+```{r init, warning = F}
 # -----------------------------
 # Robust project root detection
 # -----------------------------
@@ -237,20 +237,11 @@ tf <- initial$pars['nPeriods', 'value'] # final time period for visualization
 initial_shock <- initial
 n_shock <- initial_shock$pars['shock', 'value'] <- 1
 
-# scenario <- scenario_list[[n_shock]] <- run.model(
-#   initial_shock,
-#   mvp.model,
-#   log_file = get_log_filename(n_shock),
-#   log_append = FALSE,
-#   print_final_state = FALSE
-# )
-# saveRDS(
-#   scenario,
-#   file = get_shock_filename(n_shock)
-# )
-
-scenario_list[[n_shock]] <- scenario <- readRDS(
-  file = get_shock_filename(n_shock)
+scenario_list[[n_shock]] <- scenario <- run_or_load_shock(
+  n_shock,
+  initial_shock,
+  mvp.model,
+  force = FALSE
 )
 ```
 
@@ -371,20 +362,11 @@ tf <- initial$pars['nPeriods', 'value'] # final time period for visualization
 initial_shock <- initial
 n_shock <- initial_shock$pars['shock', 'value'] <- 2
 
-# scenario <- scenario_list[[n_shock]] <- run.model(
-#   initial_shock,
-#   mvp.model,
-#   log_file = get_log_filename(n_shock),
-#   log_append = FALSE,
-#   print_final_state = FALSE
-# )
-# saveRDS(
-#   scenario,
-#   file = get_shock_filename(n_shock)
-# )
-
-scenario_list[[n_shock]] <- scenario <- readRDS(
-  file = get_shock_filename(n_shock)
+scenario_list[[n_shock]] <- scenario <- run_or_load_shock(
+  n_shock,
+  initial_shock,
+  mvp.model,
+  force = FALSE
 )
 ```
 
@@ -505,7 +487,12 @@ tf <- initial$pars['nPeriods', 'value'] # final time period for visualization
 initial_shock <- initial
 n_shock <- initial_shock$pars['shock', 'value'] <- 7
 
-scenario <- run_or_load_shock(n_shock, initial_shock, mvp.model, force = FALSE)
+scenario_list[[n_shock]] <- scenario <- run_or_load_shock(
+  n_shock,
+  initial_shock,
+  mvp.model,
+  force = FALSE
+)
 ```
 
 ## Visualize Shocked Coefficients
@@ -654,28 +641,27 @@ lookup <- stack(selected.list) |>
     Name = ind
   )
 
+# 1) Give scenario_list stable names (use display_name)
+names(scenario_list) <- sc$display_name[1:length(scenario_list)]
+
+# 2) Build tables
 scenario_tables_list <- lapply(scenario_list, function(x) {
   shock.summary(
     baseline,
     shock.run = x,
     t_ = c(t.shock + 1, t.shock + 7, t.shock + 20),
-    t_names = c('Immediate', 'Short.Term', 'Long.Term')
+    t_names = c("Immediate", "Short.Term", "Long.Term")
   )
 })
-names(scenario_tables_list) <- c("diet", "energy", 'wood')
 
+# 3) Keep the SAME names (display_name). Do NOT rename to shift.
+# names(scenario_tables_list) <- ...  # <- delete this line
+
+# 4) Bind into one data frame; factor levels follow the list order
 scenario.tables <- scenario_tables_list %>%
   bind_rows(.id = "scenario") %>%
   mutate(
-    scenario = factor(
-      scenario,
-      levels = names(scenario_tables_list),
-      labels = c(
-        'Final Demand\nHousehold Diet Shift',
-        'Final Demand\nHousehold Consumption Energy Shift',
-        'Intermediate Demand\nWood Shift'
-      )
-    )
+    scenario = factor(scenario, levels = names(scenario_tables_list))
   )
 
 df <- scenario.tables |>
@@ -684,7 +670,7 @@ df <- scenario.tables |>
   filter(!is.na(Name))
 
 
-source(file.path(dir_utils, 'scenario_comparison_2026.R'))
+source(file.path(utils_dir, 'scenario_comparison_2026.R'))
 
 p.comparison
 ```

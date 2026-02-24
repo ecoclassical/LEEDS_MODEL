@@ -30,9 +30,14 @@ if (shock == 2) {
 
 # Production - Wood
 if (shock == 7) {
-  # m = initial$B.matrix[3, 11] + initial$B.matrix[12, 2
-  para[c('Z1_ce', 'Z2_ce')] <- c(1, 0)
+  # 1) set CE in para (this is what mvp.model actually uses)
+  para[c("Z1_ce", "Z2_ce")] <- c(1, 0)
 
+  # 2) keep initial$pars in sync (optional but avoids confusion later)
+  initial$pars$value[match("Z1_ce", initial$pars$label)] <- para["Z1_ce"]
+  initial$pars$value[match("Z2_ce", initial$pars$label)] <- para["Z2_ce"]
+
+  # 3) change B shares (this is fine to do on initial$B.matrix)
   initial$B.matrix[11, ] <- rho
   initial$B.matrix[12, ] <- (1 - rho)
 }

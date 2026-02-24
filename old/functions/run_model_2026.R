@@ -99,9 +99,9 @@ run.model <- function(
 
   # ---- Robust sync: support legacy scenarios that modify initial$pars instead of para ----
   # If 'para' was not changed by the scenario script but initial$pars was changed, refresh para.
-  if (isTRUE(all.equal(para, para0))) {
+  if (isTRUE(all.equal(as.numeric(para), as.numeric(para0)))) {
     para_from_initial <- setNames(initial$pars$value, initial$pars$label)
-    if (!isTRUE(all.equal(para_from_initial, para0))) {
+    if (!isTRUE(all.equal(as.numeric(para_from_initial), as.numeric(para0)))) {
       para <- para_from_initial
       .warn(
         "scenario_selection updated initial$pars; refreshed 'para' from initial$pars."
