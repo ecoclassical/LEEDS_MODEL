@@ -86,6 +86,14 @@ plots <- lapply(cats, function(cc) {
 })
 
 p.comparison <- patchwork::wrap_plots(plots, ncol = 1, guides = "collect") &
-  theme(legend.position = "top")
+  theme(legend.position = "right")
 
 p.comparison
+
+ggsave(
+  filename = "p_comparison.pdf",
+  plot = p.comparison,
+  width = 10,
+  height = 20,
+  units = "in"
+)

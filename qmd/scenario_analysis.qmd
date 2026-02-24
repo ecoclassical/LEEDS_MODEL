@@ -741,6 +741,178 @@ scenario_analysis_2026_plot(
 
 ___
 
+# Scenario 11: Production - Glass Shift
+
+```{r shock.run.11}
+# Shock Selection and Run
+initial_shock <- initial
+n_shock <- initial_shock$pars['shock', 'value'] <- 11
+
+scenario_list[[n_shock]] <- scenario <- run_or_load_shock(
+  n_shock,
+  initial_shock,
+  mvp.model,
+  force = FALSE
+)
+```
+
+## Visualize Shocked Coefficients
+
+```{r shock.view.11}
+#| fig-width: 6
+#| fig-height: 4
+
+pairs <- data.frame(
+  row = sc %>%
+    filter(shock == n_shock) %>%
+    select(from, to) %>%
+    rep(2) %>%
+    unlist,
+  col = c(31, 31, 32, 32)
+)
+
+view.A(
+  scenario,
+  pairs,
+  title = paste(
+    sc %>% filter(shock == n_shock) %>% pull(shift),
+    "input-output coefficients"
+  )
+)
+```
+
+## Visualize Impacts
+
+```{r shock.visualize.scaled.11}
+#| fig-width: 8
+#| fig-height: 4
+
+p.selected.vars <- plot_selected_vars(
+  baseline = baseline,
+  scenario = scenario,
+  selected.list = selected.list,
+  shock_title = sc$display_name[n_shock],
+  t_shock = initial$pars["t.shock", "value"],
+  print_blocks = TRUE
+)
+
+p.selected.vars
+```
+
+## Summary Visualization
+
+```{r summary.table.11}
+#| fig-width: 10
+#| fig-height: 10
+
+scenario.table <- shock.summary(
+  baseline,
+  shock.run = scenario,
+  t_ = c(t.shock + 1, t.shock + 7, t.shock + 20),
+  t_names = c('Immediate', 'Short.Term', 'Long.Term')
+)
+
+write.csv(scenario.table, get_table_filename(n_shock), row.names = FALSE)
+
+scenario.table <- read.csv(get_table_filename(n_shock))
+
+scenario_analysis_2026_plot(
+  shock_df = scenario.table,
+  shock_title = sc$display_name[n_shock],
+  variable.table = variable.table
+)
+
+```
+
+___
+
+# Scenario 12: Production - Cement Shift
+
+```{r shock.run.12}
+# Shock Selection and Run
+initial_shock <- initial
+n_shock <- initial_shock$pars['shock', 'value'] <- 11
+
+scenario_list[[n_shock]] <- scenario <- run_or_load_shock(
+  n_shock,
+  initial_shock,
+  mvp.model,
+  force = FALSE
+)
+```
+
+## Visualize Shocked Coefficients
+
+```{r shock.view.12}
+#| fig-width: 6
+#| fig-height: 4
+
+pairs <- data.frame(
+  row = sc %>%
+    filter(shock == n_shock) %>%
+    select(from, to) %>%
+    rep(2) %>%
+    unlist,
+  col = c(31, 31, 32, 32)
+)
+
+view.A(
+  scenario,
+  pairs,
+  title = paste(
+    sc %>% filter(shock == n_shock) %>% pull(shift),
+    "input-output coefficients"
+  )
+)
+```
+
+## Visualize Impacts
+
+```{r shock.visualize.scaled.12}
+#| fig-width: 8
+#| fig-height: 4
+
+p.selected.vars <- plot_selected_vars(
+  baseline = baseline,
+  scenario = scenario,
+  selected.list = selected.list,
+  shock_title = sc$display_name[n_shock],
+  t_shock = initial$pars["t.shock", "value"],
+  print_blocks = TRUE
+)
+
+p.selected.vars
+```
+
+## Summary Visualization
+
+
+```{r summary.table.12}
+#| fig-width: 10
+#| fig-height: 10
+
+scenario.table <- shock.summary(
+  baseline,
+  shock.run = scenario,
+  t_ = c(t.shock + 1, t.shock + 7, t.shock + 20),
+  t_names = c('Immediate', 'Short.Term', 'Long.Term')
+)
+
+write.csv(scenario.table, get_table_filename(n_shock), row.names = FALSE)
+
+scenario.table <- read.csv(get_table_filename(n_shock))
+
+scenario_analysis_2026_plot(
+  shock_df = scenario.table,
+  shock_title = sc$display_name[n_shock],
+  variable.table = variable.table
+)
+
+```
+
+
+___
+
 # Scenario 13: Production - Energy Shift
 
 ```{r shock.run.13}
@@ -783,7 +955,7 @@ view.A(
 
 ## Visualize Impacts
 
-```{r shock.visualize.scaled.10}
+```{r shock.visualize.scaled.13}
 #| fig-width: 8
 #| fig-height: 4
 
@@ -801,7 +973,93 @@ p.selected.vars
 
 ## Summary Visualization
 
-```{r summary.table.10}
+```{r summary.table.13}
+#| fig-width: 10
+#| fig-height: 10
+
+scenario.table <- shock.summary(
+  baseline,
+  shock.run = scenario,
+  t_ = c(t.shock + 1, t.shock + 7, t.shock + 20),
+  t_names = c('Immediate', 'Short.Term', 'Long.Term')
+)
+
+write.csv(scenario.table, get_table_filename(n_shock), row.names = FALSE)
+
+scenario.table <- read.csv(get_table_filename(n_shock))
+
+scenario_analysis_2026_plot(
+  shock_df = scenario.table,
+  shock_title = sc$display_name[n_shock],
+  variable.table = variable.table
+)
+
+```
+
+
+___
+
+# Scenario 14: Production - Construction Shift
+
+```{r shock.run.14}
+# Shock Selection and Run
+initial_shock <- initial
+n_shock <- initial_shock$pars['shock', 'value'] <- 14
+
+scenario_list[[n_shock]] <- scenario <- run_or_load_shock(
+  n_shock,
+  initial_shock,
+  mvp.model,
+  force = FALSE
+)
+```
+
+## Visualize Shocked Coefficients
+
+```{r shock.view.14}
+#| fig-width: 6
+#| fig-height: 4
+
+pairs <- data.frame(
+  row = sc %>%
+    filter(shock == n_shock) %>%
+    select(from, to) %>%
+    rep(2) %>%
+    unlist,
+  col = c(31, 31, 32, 32)
+)
+
+view.A(
+  scenario,
+  pairs,
+  title = paste(
+    sc %>% filter(shock == n_shock) %>% pull(shift),
+    "input-output coefficients"
+  )
+)
+```
+
+## Visualize Impacts
+
+```{r shock.visualize.scaled.14}
+#| fig-width: 8
+#| fig-height: 4
+
+p.selected.vars <- plot_selected_vars(
+  baseline = baseline,
+  scenario = scenario,
+  selected.list = selected.list,
+  shock_title = sc$display_name[n_shock],
+  t_shock = initial$pars["t.shock", "value"],
+  print_blocks = TRUE
+)
+
+p.selected.vars
+```
+
+## Summary Visualization
+
+```{r summary.table.14}
 #| fig-width: 10
 #| fig-height: 10
 
