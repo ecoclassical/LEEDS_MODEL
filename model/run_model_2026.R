@@ -1,82 +1,22 @@
 run.model <- function(
   initial,
   model,
+  sc = NULL,
   log_file = NULL,
   log_append = TRUE,
   log_every_iter = 10,
   show_progress = TRUE,
   print_final_state = TRUE
 ) {
-  # ---------------------------
-  # Logging: console (stderr) + file
-  # ---------------------------
+  source(file.path(root, utils_dir, "logger_2026.R"))
 
-  # Choose a default log file if none provided
-  if (is.null(log_file)) {
-    ts <- format(Sys.time(), "%Y%m%d_%H%M%S")
-    base_dir <- if (exists("project_root", inherits = TRUE)) {
-      file.path(get("project_root", inherits = TRUE), "logs")
-    } else {
-      file.path(getwd(), "logs")
-    }
-    dir.create(base_dir, showWarnings = FALSE, recursive = TRUE)
-    log_file <- file.path(base_dir, paste0("LEEDS_MODEL_run_", ts, ".log"))
-  }
+  logger <- create_logger(log_file, log_append)
 
-  log_con <- NULL
-  if (!is.null(log_file) && nzchar(log_file)) {
-    log_con <- file(
-      log_file,
-      open = if (isTRUE(log_append)) "a" else "w",
-      encoding = "UTF-8"
-    )
-    on.exit(
-      {
-        try(close(log_con), silent = TRUE)
-      },
-      add = TRUE
-    )
-  }
+  on.exit(logger$close(), add = TRUE)
 
-  .log_line <- function(txt) {
-    cat(txt, "\n", file = stderr()) # console
-    if (!is.null(log_con)) {
-      writeLines(txt, log_con, sep = "\n", useBytes = TRUE)
-    } # file
-    invisible(NULL)
-  }
-
-  .rule <- function(title = NULL, width = 110, ch = "─") {
-    if (is.null(title) || !nzchar(title)) {
-      .log_line(paste(rep(ch, width), collapse = ""))
-    } else {
-      pad <- max(1, width - nchar(title) - 2)
-      left <- floor(pad / 2)
-      right <- pad - left
-      .log_line(paste0(
-        paste(rep(ch, left), collapse = ""),
-        " ",
-        title,
-        " ",
-        paste(rep(ch, right), collapse = "")
-      ))
-    }
-  }
-
-  .section <- function(title) {
-    .log_line("")
-    .log_line(paste0("── ", title, " ──"))
-  }
-
-  .info <- function(txt) .log_line(paste0("ℹ ", txt))
-  .ok <- function(txt) .log_line(paste0("✔ ", txt))
-  .warn <- function(txt) .log_line(paste0("⚠ ", txt))
-  .fail <- function(txt) .log_line(paste0("✖ ", txt))
-
-  # ---- timing (must exist no matter what) ----
-  start_time <- Sys.time()
-
-  .rule("LEEDS_MODEL :: New simulation run")
+  logger$rule("LEEDS_MODEL :: New simulation run")
+  logger$section("Initialization")
+  logger$info("Parameters ready")
 
   # ---------------------------
   # INITIALIZATION (core objects)
@@ -102,10 +42,18 @@ run.model <- function(
   # ---------------------------
   .section("Production scenarios")
 
-  source(
-    file.path(root, "model", "production_scenarios_2026.R"),
-    local = environment()
+  .rule("Production Scenarios Loaded")
+  source(file.path(root, "model", "production_scenarios_2026.R"))
+
+  out <- production_scenarios(
+    para = para,
+    initial = initial,
+    sc = sc, # must exist in calling scope
+    sync_pars = TRUE
   )
+
+  para <- out$para
+  initial <- out$initial
 
   # ---- Always write para back into initial$pars so returned object is self-contained ----
   idx_pars <- match(names(para), initial$pars$label)

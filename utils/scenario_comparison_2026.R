@@ -75,12 +75,13 @@ plots <- lapply(cats, function(cc) {
   ) +
     geom_col(position = position_dodge(width = 0.8), width = 0.7) +
     facet_grid(display_name ~ region, scales = "free_y") +
-    labs(title = cc, y = NULL, x = NULL) +
+    labs(title = cc, y = NULL, x = NULL, fill = "Scenario") +
     geom_hline(yintercept = 0, linetype = 'dashed', color = 'lightgray') +
     theme(
       plot.title = element_text(face = "bold", size = 12),
       strip.text = element_text(size = 9),
-      strip.text.y.right = element_text(size = 9, angle = 0)
+      strip.text.y.right = element_text(size = 9, angle = 0),
+      legend.title = element_text(face = 'bold')
     )
 })
 
