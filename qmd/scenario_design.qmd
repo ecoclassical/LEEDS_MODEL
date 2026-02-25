@@ -287,6 +287,32 @@ $$
 M = M_1 + M_2 = x_1 + x_2 = \sum^N_{j = 1} (l_{1j} + l_{2j}) d_j.
 $$
 
+## Final Demand - Good Version
+
+Let primary sector 1 and secondary sector 2 supply the same functional material input.
+
+For each using sector j, define:
+
+s_j \equiv a_{1j} + a_{2j}.
+
+Define a substitution parameter \rho \in [0,1]. Then:
+
+a'_{1j} = (1-\rho)a_{1j},
+
+a'_{2j} = a_{2j} + \rho a_{1j},
+
+a'_{ij} = a_{ij} \quad \text{for } i \neq 1,2.
+
+Then:
+
+a'_{1j} + a'_{2j} = a_{1j} + a_{2j} = s_j.
+
+This explicitly states:
+	•	Substitution
+	•	Bundle conservation
+	•	No productivity change
+	•	No change in total input requirement
+
 ## Final Demand
 
 For a final domestic demand component $D = \{c, g, id, id^g\}$ with sector-level shares $\delta = \{\beta, \sigma, \iota, \iota^g\}$ for household consumption, government consumption, private investment, and public investment, respectively, a shift $\rho$ is defined as:

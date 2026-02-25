@@ -8,8 +8,7 @@
 production_scenarios <- function(
   para,
   initial,
-  sc = NULL,
-  sync_pars = TRUE
+  sc = NULL
 ) {
   # --- Pull scalars safely ---
   shock <- as.integer(para[["shock"]])
@@ -21,59 +20,25 @@ production_scenarios <- function(
   # Production shocks (structural, pre-run)
   # -----------------------------------------
   if (shock > 6) {
-    # 2) Optional sync to initial$pars to avoid later confusion
-    if (sync_pars) {
-      idx1 <- match("Z1_ce", initial$pars$label)
-      idx2 <- match("Z2_ce", initial$pars$label)
-      if (is.na(idx1) || is.na(idx2)) {
-        stop(
-          "production_scenarios: could not find Z1_ce/Z2_ce in initial$pars$label"
-        )
-      }
-      initial$pars$value[idx1] <- as.numeric(para[["Z1_ce"]])
-      initial$pars$value[idx2] <- as.numeric(para[["Z2_ce"]])
-    }
-
-    # 3) B-share edits (safe here; B0 will be built AFTER this)
-    if (is.null(sc)) {
-      stop(
-        "production_scenarios: shock > 9 requires 'sc' mapping table (with columns: shock, from, to)"
-      )
-    }
-    if (!all(c("shock", "from", "to") %in% names(sc))) {
-      stop("production_scenarios: 'sc' must contain columns: shock, from, to")
-    }
+    initial$pars['Z1_ce', 'value'] <- as.numeric(para[["Z1_ce"]])
+    initial$pars['Z2_ce', 'value'] <- as.numeric(para[["Z2_ce"]])
 
     sc_row <- sc[sc$shock == shock, , drop = FALSE]
-    if (nrow(sc_row) != 1) {
-      stop(sprintf(
-        "production_scenarios: expected exactly 1 row in sc for shock=%s, found %s",
-        shock,
-        nrow(sc_row)
-      ))
-    }
-
     from <- as.integer(sc_row$from[[1]])
     to <- as.integer(sc_row$to[[1]])
 
-    if (is.na(from) || is.na(to)) {
-      stop("production_scenarios: sc$from/sc$to resolved to NA")
-    }
-
-    nR <- nrow(initial$B.matrix)
-    if (from < 1 || from > nR || to < 1 || to > nR) {
-      stop(sprintf(
-        "production_scenarios: from/to out of bounds for B.matrix rows (nrow=%s): from=%s, to=%s",
-        nR,
-        from,
-        to
-      ))
-    }
-
     # 1) Set CE in para (mvp.model reads parms["Z1_ce"], parms["Z2_ce"])
     para[c("Z1_ce", "Z2_ce")] <- c(1, 0)
-    initial$B.matrix[from, ] <- rho
-    initial$B.matrix[to, ] <- 1 - rho
+
+    A <- initial$A.matrix
+
+    # Primary row multiplier (constant)
+    initial$B.matrix[from, ] <- 1 - rho
+
+    # Secondary row multiplier (column-specific)
+    ratio <- ifelse(A[to, ] == 0, 0, A[from, ] / A[to, ])
+
+    initial$B.matrix[to, ] <- 1 + rho * ratio
   }
 
   # Return mutated inputs explicitly (don’t rely on side effects)
