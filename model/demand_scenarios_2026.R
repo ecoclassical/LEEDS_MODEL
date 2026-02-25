@@ -71,3 +71,104 @@ compute_beta_eff <- function(
 
   return(beta_eff)
 }
+
+compute_delta_eff <- function(
+  shock,
+  rho,
+  t,
+  t_shock,
+  delta_current,
+  sc,
+  prefix
+) {
+  shock <- as.integer(shock)
+  rho <- as.numeric(rho)
+
+  if (t < t_shock) {
+    return(delta_current)
+  }
+
+  if (is.null(sc)) {
+    stop("compute_delta_eff: sc table required")
+  }
+
+  sc_row <- sc[sc$shock == shock, , drop = FALSE]
+
+  if (nrow(sc_row) != 1) {
+    return(delta_current) # no demand shock for this shock id
+  }
+
+  from <- as.integer(sc_row$from[[1]])
+  to <- as.integer(sc_row$to[[1]])
+
+  # Construct names
+  from_name <- paste0(prefix, "-", from)
+  to_name <- paste0(prefix, "-", to)
+
+  idx_from <- which(names(delta_current) == from_name)
+  idx_to <- which(names(delta_current) == to_name)
+
+  if (length(idx_from) != 1 || length(idx_to) != 1) {
+    stop("compute_delta_eff: could not uniquely identify from/to")
+  }
+
+  m <- delta_current[idx_from] + delta_current[idx_to]
+
+  delta_eff <- delta_current
+
+  m_from <- delta_eff[idx_from]
+
+  delta_eff[idx_from] <- (1 - rho) * m_from
+  delta_eff[idx_to] <- delta_eff[idx_to] + rho * m_from
+
+  return(delta_eff)
+}
+
+compute_all_delta_eff <- function(
+  shock,
+  rho,
+  t,
+  t_shock,
+  sim,
+  i,
+  sc
+) {
+  list(
+    beta = compute_delta_eff(
+      shock,
+      rho,
+      t,
+      t_shock,
+      sim[zk.lab("beta"), i],
+      sc,
+      "Z1_beta"
+    ),
+    sigma = compute_delta_eff(
+      shock,
+      rho,
+      t,
+      t_shock,
+      sim[zk.lab("sigma"), i],
+      sc,
+      "Z1_sigma"
+    ),
+    iota = compute_delta_eff(
+      shock,
+      rho,
+      t,
+      t_shock,
+      sim[zk.lab("iota"), i],
+      sc,
+      "Z1_iota"
+    ),
+    iota_g = compute_delta_eff(
+      shock,
+      rho,
+      t,
+      t_shock,
+      sim[zk.lab("iota_g"), i],
+      sc,
+      "Z1_iota_g"
+    )
+  )
+}

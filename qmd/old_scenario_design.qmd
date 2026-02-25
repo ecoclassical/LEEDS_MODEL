@@ -1,0 +1,786 @@
+---
+title: "Scenario Design"
+subtitle: "Insights from a Core-Periphery SOCIO-ECO-MRIO-SFC Model"
+author:
+  - name: "Oriol Vallès Codina"
+    affiliation: "Johns Hopkins University, Net Zero Industrial Policy Lab, Department of Political Science"
+    email: 
+      - "oriolvallescodina@gmail.com"
+date: "`r Sys.Date()`"
+format:
+  html:
+    toc: true
+    toc_float: true
+    self-contained: true
+    number-sections: true
+    page-layout: full
+    css: fullwidth.css
+execute:
+  echo: false
+--- 
+
+```{r packages, warning = F, message = F}
+library(tidyverse)
+library(igraph)
+library(qgraph)
+library(visNetwork)
+library(scales)
+```
+
+```{r init, warning = FALSE, message = FALSE}
+root <- rprojroot::find_root(
+  rprojroot::is_rstudio_project | rprojroot::is_git_root
+)
+
+variable.table <<- read.csv(
+  file.path(root, "data", "Variable_Definitions.csv")
+)
+
+sector_list <- read.csv(
+  file.path(root, 'data', 'sector_list.csv'),
+  stringsAsFactors = FALSE
+)
+n_sector <- nrow(sector_list) # 54
+
+# Analysis and Plotting Utils
+source(file.path(root, "functions", "utils.R"))
+
+identif <- file.path(root, "data", "initial_state_2026.xlsx")
+initial <- load.new.init(identif)
+
+source(file.path(root, "functions", "run_model_2026.R"))
+source(file.path(root, "functions", "MVP_model_2026.R"))
+
+p_incidence_file <- file.path(root, "figures", "input_incidence.png")
+p_backward_file <- file.path(root, "figures", "backward_linkages.png")
+```
+
+ 
+
+```{r simulation, warning = F, message = F}
+# baseline <- run.model(
+#   initial,
+#   mvp.model,
+#   log_file = file.path(root, "logs", "baseline_run.log"),
+#   log_append = FALSE,
+#   print_final_state = FALSE
+# )
+
+# saveRDS(baseline, file = file.path(root, 'data', 'baseline_feb10.RDS'))
+baseline <- readRDS(
+  file = file.path(root, 'data', 'baseline_feb10.RDS')
+)
+
+```
+
+```{r calibration}
+#### LOAD TARGET VALUES ####
+
+target.list <- load.target(file.path(
+  root,
+  'data',
+  'target_values.xlsx'
+))
+target.table <- target.list$wide
+target.set <- target.list$long
+target.vars <- target.set$var.label
+target.set$target <- baseline$simulation[
+  target.set$var,
+  baseline$initial$pars['nPeriods', 'value']
+]
+target.set$ratio <- round(target.set$target / target.set$value, 2)
+
+# compute.target(baseline)
+```
+
+```{r variable_selection} 
+#| fig-width: 7
+#| fig-height: 4
+
+# Variable Selection
+selected.list <- list(
+  Macroeconomic = c('c', 'va', 'go', 'id', 'gdef', 'cab', 'tb'),
+  Social = c('n', 'nf', 'shp', 'shw'),
+  Debt.and.Wealth = c('lh', 'lf', 'v', 'k', 'b_s'),
+  Ecological = c('x_mat', 'land', 'mat', 'rec', 'emis', 'wa', 'water')
+)
+
+# plot.selected.by_group(baseline, selected.list)
+```
+
+# Overview 
+
+Our economy uses materials $M = \{ 
+\text{food},\;
+\text{energy},\;
+\text{wood},\;
+\text{plastic},\;
+\text{pulp},\;
+\text{paper},\;
+\text{metal},\;
+\text{glass},\;
+\text{cement},\;
+\text{rubber}
+\}$. 
+
+Shifts towards economic circularity can be either driven by final demand or by intermediate production substitutions. Interventions can be modeled as redistribution operators, governed by scalar parameter $\rho \in [0,1]$ decreasing primary material use $M_1$ and increases secondary material use $M_2$ either by:
+
+- by reallocating sector-level shares in **final demand** $\mathbf{d}$ from primary to secondary materials:
+  - in **consumption**:
+    - by households $c$ and 
+    - by government $g$
+  - in **investment / final production**, both 
+    - private $id$ and 
+    - public $id_g$, or
+- by changing input-output coefficients $A$ in **intermediate production**, substituting industrial material inputs from primary to secondary materials.
+
+_______
+
+# Table of Scenarios
+
+| Domain      | Shift              | From | To | Mechanism                  | Conserved Quantity            |
+|-------------|--------------------|------|----|----------------------------|-------------------------------|
+| Household Demand   | Diet         | 7    | 8  | Final demand reallocation  | Total food expenditure        |
+| Household Demand   | Energy  | 31   | 32 | Final demand reallocation  | Energy service demand         |
+| Production  | Wood   | 11   | 12 | Technical coefficient change | Total wood material input   |
+| Production  | Pulp   | 13   | 14 | Technical coefficient change | Paper output                |
+| Production  | Plastics | 17 | 18 | Technical coefficient change | Plastic product output      |
+| Production  | Metal  | 26   | 27 | Technical coefficient change | Metal product output        |
+| Production  | Glass  | 21   | 22 | Technical coefficient change | Glass product output        |
+| Production  | Cement | 24   | 25 | Technical coefficient change | Cementitious output         |
+| Production  | Energy  | 31   | 32 | Technical coefficient change | Energy service to production|
+| Production  | Construction | 36   | 27 | Technical coefficient change | Construction output         |
+
+```{r scenario.table}
+# ---- Scenario registry ----
+scenarios_tbl <- tibble::tribble(
+  ~shock , ~Domain                 , ~Shift         , ~From , ~To , ~Mechanism                     , ~Conserved_Quantity            ,
+   1L    , "Household Consumption" , "Diet"         ,  7L   ,  8L , "Final demand reallocation"    , "Total food expenditure"       ,
+   2L    , "Household Consumption" , "Energy"       , 31L   , 32L , "Final demand reallocation"    , "Energy service demand"        ,
+   3L    , "Production"            , "Wood"         , 11L   , 12L , "Technical coefficient change" , "Total wood material input"    ,
+   4L    , "Production"            , "Pulp"         , 13L   , 14L , "Technical coefficient change" , "Paper output"                 ,
+   5L    , "Production"            , "Plastics"     , 17L   , 18L , "Technical coefficient change" , "Plastic product output"       ,
+   6L    , "Production"            , "Metal"        , 26L   , 27L , "Technical coefficient change" , "Metal product output"         ,
+   7L    , "Production"            , "Glass"        , 21L   , 22L , "Technical coefficient change" , "Glass product output"         ,
+   8L    , "Production"            , "Cement"       , 24L   , 25L , "Technical coefficient change" , "Cementitious output"          ,
+   9L    , "Production"            , "Energy"       , 31L   , 32L , "Technical coefficient change" , "Energy service to production" ,
+  10L    , "Production"            , "Construction" , 36L   , 27L , "Technical coefficient change" , "Construction output"
+) %>%
+  mutate(
+    display_name = paste0("Scenario ", shock, ": ", Domain, " - ", Shift),
+    # Parameterize these as you implement new shocks.
+    shock_vars = case_when(
+      shock == 1L ~ "beta-7,beta-8",
+      shock == 2L ~ "beta-31,beta-32",
+      TRUE ~ NA_character_
+    ),
+    shock_sectors = case_when(
+      shock == 1L ~ "7,8",
+      shock == 2L ~ "31,32",
+      TRUE ~ NA_character_
+    ),
+    # Where the scenario run is stored (RDS). You can adopt a consistent naming scheme.
+    rds_file = file.path(
+      root,
+      "data",
+      paste0("shock_", shock, "_run.RDS")
+    ),
+    # Where the scenario summary table is stored.
+    table_file = file.path(
+      root,
+      "data",
+      "shock_tables",
+      paste0("shock_", shock, "_table.csv")
+    )
+  )
+```
+
+```{r sc.long}
+sc <- scenarios_tbl %>%
+  rename(
+    domain = Domain,
+    shift = Shift,
+    from = From,
+    to = To,
+    mechanism = Mechanism,
+    conserved = Conserved_Quantity
+  )
+
+sc %>%
+  write.csv(
+    file = file.path(root, "data", "scenarios_table.csv"),
+    row.names = FALSE
+  )
+
+sc_long <- sc %>%
+  select(shock, domain, shift, from, to, display_name) %>%
+  tidyr::pivot_longer(
+    cols = c(from, to),
+    names_to = "endpoint", # "from" or "to"
+    values_to = "sector"
+  )
+
+sc_long %>%
+  write.csv(
+    file = file.path(root, "data", "scenarios_table_long.csv"),
+    row.names = FALSE
+  )
+```
+
+___
+
+
+# Setup
+
+*Final demand* $\mathbf{d}$ in real terms is defined sector-by-sector as the sum of domestic components $D$ and the external balance:
+
+1. Household consumption $c$ with sector-level shares $\beta$, 
+2. Government consumption $g$ with sector-level shares $\sigma$, 
+3. Private investment $id$ with sector-level shares $\iota$, and
+4. Public investment $id^g$ with sector-level shares $\iota^g$.
+
+$$
+\mathbf{d}
+=
+\begin{pmatrix}
+\beta_1 \\
+\beta_2 \\
+\vdots \\
+\beta_N
+\end{pmatrix} c
++
+\begin{pmatrix}
+\sigma_1 \\
+\sigma_2 \\
+\vdots \\
+\sigma_N
+\end{pmatrix} g
++
+\begin{pmatrix}
+\iota_1 \\
+\iota_2 \\
+\vdots \\
+\iota_N
+\end{pmatrix} id
++
+\begin{pmatrix}
+\iota^g_1 \\
+\iota^g_2 \\
+\vdots \\
+\iota^g_N
+\end{pmatrix} id^g + \text{external balance}
+$$
+
+Real output $\mathbf{x}$ is then determined by the input-output system, where $L$ is the Leontief inverse matrix, with elements $l_{ij}$:
+
+$$
+\mathbf{x} = (I - A)^{-1} \mathbf{d} \equiv \mathbf{L}^{-1} \mathbf{d}.
+$$
+
+For primary sector material 1 and secondary material sector 2 (columns _from_ and _to_ in the scenarios table), material use is:
+$$
+M_1 = x_1 = \sum^N_{j=1} l_{1j} d_j, \qquad M_2 = x_2 = \sum^N_{j=1} l_{2j} d_j. 
+$$
+
+Total material use is 
+$$
+M = M_1 + M_2 = x_1 + x_2 = \sum^N_{j = 1} (l_{1j} + l_{2j}) d_j.
+$$
+
+## Final Demand - Good Version
+
+Let primary sector 1 and secondary sector 2 supply the same functional material input.
+
+For each using sector j, define:
+
+s_j \equiv a_{1j} + a_{2j}.
+
+Define a substitution parameter \rho \in [0,1]. Then:
+
+a'_{1j} = (1-\rho)a_{1j},
+
+a'_{2j} = a_{2j} + \rho a_{1j},
+
+a'_{ij} = a_{ij} \quad \text{for } i \neq 1,2.
+
+Then:
+
+a'_{1j} + a'_{2j} = a_{1j} + a_{2j} = s_j.
+
+This explicitly states:
+	•	Substitution
+	•	Bundle conservation
+	•	No productivity change
+	•	No change in total input requirement
+
+## Final Demand
+
+For a final domestic demand component $D = \{c, g, id, id^g\}$ with sector-level shares $\delta = \{\beta, \sigma, \iota, \iota^g\}$ for household consumption, government consumption, private investment, and public investment, respectively, a shift $\rho$ is defined as:
+
+$$
+\delta'_1 = (1-\rho) \delta_1, \qquad
+\delta'_2 = \delta_2 + \rho \delta_1.
+$$
+
+so that total expenditure is preserved automatically: 
+
+$$ \sum^N_j \delta'_j = \sum^N_j \delta_j = 1 $$ 
+
+By definition, the demand change vector is
+
+$$ 
+\Delta \mathbf{d} = \Delta \mathbf{d} = \mathbf{d}' - \mathbf{d}. 
+$$
+
+Primary material demand $d_1'$ decreases: 
+$$ 
+\Delta d_1 = - \rho \delta_1 D
+$$
+
+Secondary material demand $d_2'$ increases:
+
+$$
+\Delta d_2 = + \rho \delta_1 D
+$$
+
+Demand for other inputs does not change:
+
+$$
+\Delta d_j = 0 \text{ for } j \neq 1, 2
+$$
+
+While demand changes at the sector level from primary to secondary material use, 
+
+$$\Delta \mathbf{d} \neq 0,$$
+
+aggregate demand is constant:
+
+$$ 
+\sum_{j=1}^N \Delta d_j
+=
+-\rho\delta_1 D
++
+\rho\delta_1 D
+=
+0.
+$$
+
+Because 
+
+$$ \Delta M = \sum_{j=1}^N (l_{1j}+l_{2j}) \Delta d_j,$$
+
+in general, total material use $M' \neq M$ and $\Delta M \neq 0$. Further, there may be a structural rebound effect as primary material use $M_1'$ can increase even though final demand of primary material decreases, driven by total requirements of primary material $l_{1j}$:
+
+$$
+\Delta M_1 \equiv M_1' - M_1 = \sum_{j=1}^N l_{1j}\Delta d_j = l_{11}\Delta d_1 + l_{12}\Delta d_2 =  -\rho\,\delta_1 D l_{11} +  \rho\,\delta_1 D l_{12} =
+\rho\,\delta_1 D\,(l_{12}-l_{11}).
+$$
+
+Secondary material use $M_2'$ also changes driven by total requirements of secondary material $l_{2j}$:
+
+$$
+\Delta M_2 \equiv M_2' - M_2
+= \sum_{j=1}^N l_{2j}\Delta d_j
+= l_{21}\Delta d_1 + l_{22}\Delta d_2
+= -\rho\,\delta_1 D l_{21} + \rho\,\delta_1 D l_{22}
+= \rho\,\delta_1 D\,(l_{22} - l_{21}).
+$$
+
+Hence, total material use $M'$ changes:
+
+$$
+\Delta M = \rho \delta_1 D [(l_{12} + l_{22}) - (l_{11} + l_{21})]
+$$
+
+where $l_{11}+l_{21}$ is the total requirement of material $M$ generated by one unit of demand in the primary sector (defined as decreasing) and $l_{12}+l_{22}$ is the total requirement of material $M$ generated by one unit of demand in the secondary sector (defined as increasing). 
+
+_______
+
+## Intermediate Demand
+
+In this scenario, intermediate demand for primary material use decreases and increases for secondary material use, which involves changing the input-output coefficients $A$:
+$$
+a'_{1j} = (1-\rho)a_{1j}, \quad
+a'_{2j} = a_{2j} + \rho a_{1j},
+$$
+
+a recipe-preserving substitution, not physical material conservation. Define the technology shock $\Delta A = A' - A$ so that:
+
+$$
+\Delta a_{1j} = -\rho a_{1j},
+\qquad
+\Delta a_{2j} = +\rho a_{1j},
+\qquad
+\Delta a_{ij} = 0 \text{ otherwise.}
+$$
+
+For small $\rho$, first-order changes in gross output $x$ can be computed:
+
+$$ 
+\Delta \mathbf{x} \equiv \mathbf{x}' - \mathbf{x} \approx L (\Delta A) \mathbf{x}.
+$$
+
+Component-wise, the change in gross output $x_i$ is in general:
+
+$$
+\Delta x_i
+\approx
+\rho a_{1j} x_j (l_{i2} - l_{i1}).
+$$
+
+Primary material use $M'_1 \equiv x'_1$ changes:
+
+$$
+\Delta M_1
+\equiv
+M_1' - M_1
+=
+\Delta x_1
+\approx
+\rho a_{1j} x_j (l_{12} - l_{11}).
+$$ 
+
+Secondary material use $M'_2 \equiv x'_2$ changes:
+
+$$
+\Delta M_2
+\equiv
+M_2' - M_2
+=
+\Delta x_2
+\approx
+\rho a_{1j} x_j (l_{22} - l_{21}).
+$$
+
+For a shift in intermediate demand towards economic circularity, total material use $M$ is then:
+
+$$
+\Delta M
+=
+\Delta M_1 + \Delta M_2
+\approx
+\rho a_{1j} x_j
+\Big[(l_{12} + l_{22}) - (l_{11} + l_{21})\Big].
+$$
+
+which interestingly is the same as for final demand above, but changing the sector-level share $\delta_1$ for the input-output coefficient $a_{1j}$ of a specific using sector $j$. 
+
+If the substitution occurs in multiple using sectors $j \in \mathcal{J}$, then the first-order effects sum:
+
+$$
+\Delta x_i \approx \rho \sum_{j\in\mathcal{J}} a_{1j}x_j\,(l_{i2}-l_{i1}),
+$$
+
+so
+
+$$ 
+\Delta M_1 \approx \rho \sum_{j\in\mathcal{J}} a_{1j}x_j\,(l_{12}-l_{11}), 
+$$
+$$ 
+\Delta M_2 \approx \rho \sum_{j\in\mathcal{J}} a_{1j}x_j\,(l_{22}-l_{21}),
+$$ 
+$$ 
+\Delta M \approx \rho \sum_{j\in\mathcal{J}} a_{1j}x_j\Big[(l_{12}+l_{22})-(l_{11}+l_{21})\Big].
+$$
+
+____
+
+# Scenarios
+
+The following subsections reproduce only the `view.shock` visualizations for the first two household scenarios in order to isolate the variables directly modified by the intervention.
+
+## Scenario 1: Green Diet Shift
+
+```{r shock.1}
+#| fig-width: 6
+#| fig-height: 2
+
+# Time Period Selection
+t.shock <- initial$pars['t.shock', 'value'] # shock time period
+t0 <- 55 # initial time period for visualization
+tf <- initial$pars['nPeriods', 'value'] # final time period for visualization
+
+# Shock Selection and Run
+initial_shock <- initial
+initial_shock$pars['shock', 'value'] <- 1
+
+# diet.shock <- run.model(
+#   initial_shock,
+#   mvp.model,
+#   log_file = file.path(root, "logs", "shock_1_run.log"),
+#   log_append = FALSE,
+#   print_final_state = FALSE
+# )
+# saveRDS(
+#   diet.shock,
+#   file = file.path(root, 'data', 'shock_1_diet_shock.RDS')
+# )
+
+diet.shock <- readRDS(
+  file = file.path(root, 'data', 'shock_1_diet_shock.RDS')
+)
+shock.title <- 'Scenario 1: Household Demand - Green Diet Shift'
+
+view.shock(
+  diet.shock,
+  shock.vars = c(
+    'beta-7',
+    'beta-8'
+  ),
+  shock.sectors = c(7, 8),
+  shock.title = shock.title
+)
+```
+___
+
+## Scenario 2: Green Energy Shift
+
+```{r shock.2}
+#| fig-width: 6
+#| fig-height: 2
+
+# Time Period Selection
+t.shock <- initial$pars['t.shock', 'value'] # shock time period
+t0 <- 55 # initial time period for visualization
+tf <- initial$pars['nPeriods', 'value'] # final time period for visualization
+
+# Shock Selection and Run
+initial_shock <- initial
+initial_shock$pars['shock', 'value'] <- 2
+
+# energy.shock <- run.model(
+#   initial_shock,
+#   mvp.model,
+#   log_file = file.path(root, "logs", "shock_2_run.log"),
+#   log_append = FALSE,
+#   print_final_state = FALSE
+# )
+# saveRDS(
+#   energy.shock,
+#   file = file.path(root, 'data', 'shock_2_energy_shock.RDS')
+# )
+
+energy.shock <- readRDS(
+  file = file.path(root, 'data', 'shock_2_energy_shock.RDS')
+)
+shock.title <- 'Scenario 2: Household Demand - Green Energy Shift'
+
+view.shock(
+  energy.shock,
+  shock.vars = c(
+    'beta-31',
+    'beta-32'
+  ),
+  shock.sectors = c(31, 32),
+  shock.title = shock.title
+)
+```
+
+_____
+
+# Input-Output Analysis
+
+In the following figures we present a set of complementary indicators that help interpret the structural consequences of each intervention. Backward linkages describe how strongly a sector depends on upstream suppliers across the production network. Input incidence captures the distribution of intermediate inputs required throughout the supply chain. Total requirements combine both direct and indirect effects to show the full economy‑wide material and production consequences of the change.
+
+```{r A}
+A <- initial$A.matrix %>%
+  as.data.frame() %>%
+  tibble::rownames_to_column("input") %>%
+  mutate(input_num = match(input, dimnames(initial$A.matrix)[[1]])) %>% # row index
+  tidyr::pivot_longer(
+    cols = -c(input, input_num),
+    names_to = "output",
+    values_to = "value"
+  ) %>%
+  mutate(output_num = match(output, dimnames(initial$A.matrix)[[2]])) %>% # col index
+  mutate(
+    input_num = ((input_num - 1) %% n_sector) + 1,
+    output_num = ((output_num - 1) %% n_sector) + 1
+  ) %>%
+  tidyr::separate_wider_delim(
+    input,
+    delim = ".",
+    names = c("input_region", "input_sector"),
+    too_many = "merge"
+  ) %>%
+  tidyr::separate_wider_delim(
+    output,
+    delim = ".",
+    names = c("output_region", "output_sector"),
+    too_many = "merge"
+  ) %>%
+  left_join(
+    sector_list %>% mutate(label = gsub("<br>", " ", label)),
+    by = c("input_num" = "sector_code")
+  ) %>%
+  rename(input_label = label) %>%
+  left_join(
+    sector_list %>% mutate(label = gsub("<br>", " ", label)),
+    by = c("output_num" = "sector_code")
+  ) %>%
+  rename(output_label = label)
+
+
+# ---- prepare A ----
+
+lvl <- sector_list %>%
+  mutate(label = gsub("<br>", " ", label)) %>%
+  pull(label) %>%
+  rev # already in the order you want
+
+A %>% write.csv(file = file.path(root, "data", "A_matrix.csv"), row.names = F)
+```
+
+## Input Incidence
+
+Input incidence measures where a given intermediate input appears across the production system. Instead of asking which inputs a sector uses, it asks the inverse question: which sectors’ production recipes depend on this input. In matrix terms, it corresponds to tracking the distribution of a row of the technical coefficient matrix across columns.
+
+This diagnostic identifies the diffusion channels of a material or energy carrier through the economy. An input with narrow incidence affects only a limited set of activities and therefore generates localized adjustments when modified. By contrast, an input with broad incidence is embedded across many production processes and therefore constitutes a system-wide constraint: changes to that input propagate across multiple sectors even when those sectors are not directly targeted by the intervention.
+
+The circular-economy substitution replaces a “brown” input with a “clean” alternative at intensity ρ while preserving the input bundle. The macroeconomic relevance of the intervention therefore depends on how widely the original input appears in production recipes. High-incidence inputs generate economy-wide restructuring because many sectors indirectly inherit the technological change. Low-incidence inputs instead produce sector-specific adjustments with limited aggregate impact.
+
+Input incidence thus determines the **propagation domain of the policy**.
+
+```{r p_incidence}
+#| fig-width: 11
+#| fig-height: 9
+
+A_filtered <- A %>%
+  filter(input_num %in% sc_long$sector & input_region == 'EU') %>%
+  left_join(
+    sc_long,
+    by = c("input_num" = "sector"),
+    relationship = 'many-to-many'
+  ) %>%
+  filter(domain == 'Production') %>%
+  mutate(
+    output_label = factor(output_label, levels = lvl),
+    endpoint = recode(endpoint, from = 'Brown', to = 'Clean'),
+    shock = as.integer(shock),
+    facet_lab = paste0("Shock ", shock, "\n", shift, "\n", output_region),
+    facet_lab = factor(facet_lab, levels = unique(facet_lab[order(shock)]))
+  )
+
+
+# ---- plot ----
+
+p_incidence <- A_filtered %>%
+  ggplot(aes(y = output_label, x = value, fill = endpoint)) +
+  facet_grid(~ facet_lab + output_region) +
+  geom_bar(stat = 'identity', position = 'dodge') +
+  labs(
+    x = '',
+    y = '',
+    fill = 'Target EU Sector',
+    title = 'Input Incidence of Targeted EU Sectors by Scenario and Region',
+    subtitle = "In which sectors' production recipes does this input appear?"
+  ) +
+  theme(
+    plot.title = element_text(face = 'bold', size = 18),
+    plot.subtitle = element_text(face = 'italic'),
+    legend.title = element_text(face = 'bold'),
+    legend.position = 'bottom',
+    axis.text.x = element_text(size = 8)
+  )
+
+p_incidence
+
+ggsave(
+  filename = p_incidence_file,
+  plot = p_incidence,
+  width = 20, # inches — increase if still cramped
+  height = 12,
+  dpi = 300,
+  bg = "white"
+)
+```
+
+## Backward Linkages
+
+Backward linkages measure the dependence of a sector on upstream suppliers. They are obtained by reading the columns of the technical coefficient matrix and therefore describe the composition of the sector’s input requirements. A sector with concentrated backward linkages relies heavily on a small number of inputs, whereas a sector with diffuse linkages purchases a diversified bundle.
+
+Backward linkages identify leverage points in the production network: modifying a high-weight input changes the technological core of the sector, while modifying a low-weight input produces negligible structural effects.
+
+The circular substitution alters the composition of intermediate inputs inside the targeted sector. The magnitude of the direct technological shock is therefore proportional to the weight of the substituted input in that sector’s backward linkages. A high coefficient implies a first-order production change; a small coefficient implies a marginal adjustment.
+
+Backward linkages thus determine the local intensity of the intervention, while input incidence determines its systemic reach. The combined reading explains why some circular substitutions generate broad economy-wide adjustments whereas others remain sector-specific.
+
+```{r p_backward}
+#| fig-width: 11
+#| fig-height: 9
+
+#---- plot A2 ----
+
+A2 <- A %>%
+  filter(output_num %in% sc$from & output_region == 'EU') %>%
+  left_join(
+    sc,
+    by = c("output_num" = "from"),
+    relationship = 'many-to-many'
+  ) %>%
+  filter(domain == 'Production') %>%
+  mutate(
+    input_label = factor(input_label, levels = lvl),
+    shock = as.integer(shock),
+    facet_lab = paste0("Shock ", shock, "\n", shift, "\n", output_region),
+    facet_lab = factor(facet_lab, levels = unique(facet_lab[order(shock)]))
+  )
+
+p_backward <- A2 %>%
+  ggplot(aes(y = input_label, x = value, fill = input_region)) +
+  facet_grid(~facet_lab) +
+  geom_bar(stat = 'identity', position = 'dodge') +
+  labs(
+    x = '',
+    y = '',
+    fill = 'Target EU Sector',
+    title = 'Backward Linkages (Column Coefficients) of Targeted EU Manufacturing Sectors',
+    subtitle = 'From which supplying sectors does this sector obtain its inputs?'
+  ) +
+  theme(
+    plot.title = element_text(face = 'bold', size = 18),
+    plot.subtitle = element_text(face = 'italic'),
+    legend.title = element_text(face = 'bold'),
+    legend.position = 'bottom',
+    axis.text.x = element_text(size = 8)
+  )
+
+p_backward
+
+ggsave(
+  filename = p_backward_file, #"io_shock_coefficients2.png",
+  plot = p_backward,
+  width = 20, # inches — increase if still cramped
+  height = 12,
+  dpi = 300,
+  bg = "white"
+)
+```
+
+## Analytical Interpretation
+
+Changes propagate through the Leontief inverse:
+
+$$
+x = (I-A)^{-1}y
+$$
+
+and gains:
+
+$$
+Gain_j = (m_j - m'_j)/m_j
+$$
+
+
+# Implementation Refinements
+
+To align the scenario system with the circular substitution framework discussed above, the following modifications are recommended:
+
+1. Replace discrete coefficient rewrites with a continuous adoption parameter `rho`.
+2. Apply substitution using conservation of material bundles:
+   a_ij -> (1-rho)a_ij
+   a_i'j -> a_i'j + rho a_ij
+3. Ensure substitution is applied across all sectors j (economy-wide adoption).
+4. Store the conserved material bundle m_j = a_ij + a_i'j for diagnostics.
+5. Decompose impacts into brown (removal) and clean (addition) components sequentially.
+

@@ -1,7 +1,8 @@
 create_logger <- function(
   log_file = NULL,
   log_append = TRUE,
-  width = 110
+  width = 110,
+  context = NULL
 ) {
   if (is.null(log_file)) {
     ts <- format(Sys.time(), "%Y%m%d_%H%M%S")
@@ -17,6 +18,7 @@ create_logger <- function(
   )
 
   .log_line <- function(txt) {
+    txt <- paste0(.ctx(), txt)
     cat(txt, "\n", file = stderr())
     writeLines(txt, log_con, sep = "\n", useBytes = TRUE)
     invisible(NULL)
@@ -42,6 +44,10 @@ create_logger <- function(
   .section <- function(title) {
     .log_line("")
     .log_line(paste0("── ", title, " ──"))
+  }
+
+  .ctx <- function() {
+    if (is.null(context) || !nzchar(context)) "" else paste0(context, " ")
   }
 
   .info <- function(txt) .log_line(paste0("ℹ ", txt))

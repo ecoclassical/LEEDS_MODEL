@@ -94,7 +94,7 @@ sector_list <- read.csv(
   mutate(label = gsub("<br>", " ", label))
 
 # -----------------------------
-# Scenario workspace dirs
+## workspace dirs
 # -----------------------------
 workspace_dir <- file.path(root, "output", "scenarios")
 dir.create(workspace_dir, showWarnings = FALSE, recursive = TRUE)
@@ -244,7 +244,9 @@ tf <- initial$pars['nPeriods', 'value'] # final time period for visualization
 
 ___
 
-# Scenario 1: Household Demand - Green Diet Shift
+# Final Demand Scenarios
+
+## 1 | Food Shift
 
 ```{r shock.run}
 # Shock Selection and Run
@@ -259,7 +261,7 @@ scenario_list[[n_shock]] <- scenario <- run_or_load_shock(
 )
 ```
 
-## Visualize Shocked Variables
+### Visualize Shocked Variables
 
 ```{r shock.view}
 #| fig-width: 6
@@ -276,7 +278,7 @@ view.shock(
 )
 ```
 
-## Visualize Impacts
+### Visualize Impacts
 
 ```{r shock.visualize.scaled}
 #| fig-width: 8
@@ -293,6 +295,8 @@ p.selected.vars <- plot_selected_vars(
 
 p.selected.vars
 ```
+
+### Summary Visualization
 
 ```{r summary.table.1}
 #| fig-width: 10
@@ -319,7 +323,7 @@ scenario_analysis_2026_plot(
 
 ___
 
-# Scenario 2: Household Demand - Green Energy Shift
+## 2 | Energy Shift
 
 ```{r shock.run.2}
 # Shock Selection and Run
@@ -334,7 +338,7 @@ scenario_list[[n_shock]] <- scenario <- run_or_load_shock(
 )
 ```
 
-## Visualize Shocked Variables
+### Visualize Shocked Variables
 
 ```{r shock.view.2}
 #| fig-width: 6
@@ -351,7 +355,7 @@ view.shock(
 )
 ```
 
-## Visualize Impacts
+### Visualize Impacts
 
 ```{r shock.visualize.scaled.2}
 #| fig-width: 8
@@ -394,7 +398,9 @@ scenario_analysis_2026_plot(
 
 ___
 
-# Scenario 7: Production - Wood Shift
+# Intermediate Demand Scenarios 
+
+## 7 | Wood Shift
 
 ```{r shock.run.7}
 # Shock Selection and Run
@@ -405,11 +411,11 @@ scenario_list[[n_shock]] <- scenario <- run_or_load_shock(
   n_shock,
   initial_shock,
   mvp.model,
-  force = FALSE
+  force = TRUE
 )
 ```
 
-## Visualize Shocked Coefficients
+### Visualize Shocked Coefficients
 
 ```{r shock.view.7}
 #| fig-width: 6
@@ -434,7 +440,7 @@ view.A(
 )
 ```
 
-## Visualize Impacts
+### Visualize Impacts
 
 ```{r shock.visualize.scaled.7}
 #| fig-width: 8
@@ -452,7 +458,7 @@ p.selected.vars <- plot_selected_vars(
 p.selected.vars
 ```
 
-## Summary Visualization
+### Summary Visualization
 
 ```{r summary.table.7}
 #| fig-width: 10
@@ -480,7 +486,7 @@ scenario_analysis_2026_plot(
 
 ___
 
-# Scenario 8: Production - Pulp Shift
+## 8 | Pulp Shift
 
 ```{r shock.run.8}
 # Shock Selection and Run
@@ -491,11 +497,11 @@ scenario_list[[n_shock]] <- scenario <- run_or_load_shock(
   n_shock,
   initial_shock,
   mvp.model,
-  force = FALSE
+  force = TRUE
 )
 ```
 
-## Visualize Shocked Coefficients
+### Visualize Shocked Coefficients
 
 ```{r shock.view.8}
 #| fig-width: 6
@@ -520,7 +526,7 @@ view.A(
 )
 ```
 
-## Visualize Impacts
+### Visualize Impacts
 
 ```{r shock.visualize.scaled.8}
 #| fig-width: 8
@@ -538,7 +544,7 @@ p.selected.vars <- plot_selected_vars(
 p.selected.vars
 ```
 
-## Summary Visualization
+### Summary Visualization
 
 ```{r summary.table.8}
 #| fig-width: 10
@@ -565,7 +571,7 @@ scenario_analysis_2026_plot(
 
 ___
 
-# Scenario 9: Production - Plastics Shift
+## 9 | Plastics Shift
 
 ```{r shock.run.9}
 # Shock Selection and Run
@@ -576,11 +582,11 @@ scenario_list[[n_shock]] <- scenario <- run_or_load_shock(
   n_shock,
   initial_shock,
   mvp.model,
-  force = FALSE
+  force = TRUE
 )
 ```
 
-## Visualize Shocked Coefficients
+### Visualize Shocked Coefficients
 
 ```{r shock.view.9}
 #| fig-width: 6
@@ -605,7 +611,7 @@ view.A(
 )
 ```
 
-## Visualize Impacts
+### Visualize Impacts
 
 ```{r shock.visualize.scaled.9}
 #| fig-width: 8
@@ -623,7 +629,7 @@ p.selected.vars <- plot_selected_vars(
 p.selected.vars
 ```
 
-## Summary Visualization
+### Summary Visualization
 
 ```{r summary.table.9}
 #| fig-width: 10
@@ -650,7 +656,7 @@ scenario_analysis_2026_plot(
 
 ___ 
 
-# Scenario 10: Production - Metal Shift
+## 10 | Metal Shift
 
 ```{r shock.run.10}
 # Shock Selection and Run
@@ -661,11 +667,11 @@ scenario_list[[n_shock]] <- scenario <- run_or_load_shock(
   n_shock,
   initial_shock,
   mvp.model,
-  force = FALSE
+  force = TRUE
 )
 ```
 
-## Visualize Shocked Coefficients
+### Visualize Shocked Coefficients
 
 ```{r shock.view.10}
 #| fig-width: 6
@@ -690,7 +696,7 @@ view.A(
 )
 ```
 
-## Visualize Impacts
+### Visualize Impacts
 
 ```{r shock.visualize.scaled.10}
 #| fig-width: 8
@@ -708,7 +714,7 @@ p.selected.vars <- plot_selected_vars(
 p.selected.vars
 ```
 
-## Summary Visualization
+### Summary Visualization
 
 ```{r summary.table.10}
 #| fig-width: 10
@@ -735,7 +741,7 @@ scenario_analysis_2026_plot(
 
 ___
 
-# Scenario 11: Production - Glass Shift
+## 11 | Glass Shift
 
 ```{r shock.run.11}
 # Shock Selection and Run
@@ -746,11 +752,11 @@ scenario_list[[n_shock]] <- scenario <- run_or_load_shock(
   n_shock,
   initial_shock,
   mvp.model,
-  force = FALSE
+  force = TRUE
 )
 ```
 
-## Visualize Shocked Coefficients
+### Visualize Shocked Coefficients
 
 ```{r shock.view.11}
 #| fig-width: 6
@@ -775,7 +781,7 @@ view.A(
 )
 ```
 
-## Visualize Impacts
+### Visualize Impacts
 
 ```{r shock.visualize.scaled.11}
 #| fig-width: 8
@@ -793,7 +799,7 @@ p.selected.vars <- plot_selected_vars(
 p.selected.vars
 ```
 
-## Summary Visualization
+### Summary Visualization
 
 ```{r summary.table.11}
 #| fig-width: 10
@@ -820,22 +826,22 @@ scenario_analysis_2026_plot(
 
 ___
 
-# Scenario 12: Production - Cement Shift
+## 12 | Cement Shift
 
 ```{r shock.run.12}
 # Shock Selection and Run
 initial_shock <- initial
-n_shock <- initial_shock$pars['shock', 'value'] <- 11
+n_shock <- initial_shock$pars['shock', 'value'] <- 12
 
 scenario_list[[n_shock]] <- scenario <- run_or_load_shock(
   n_shock,
   initial_shock,
   mvp.model,
-  force = FALSE
+  force = TRUE
 )
 ```
 
-## Visualize Shocked Coefficients
+### Visualize Shocked Coefficients
 
 ```{r shock.view.12}
 #| fig-width: 6
@@ -860,7 +866,7 @@ view.A(
 )
 ```
 
-## Visualize Impacts
+### Visualize Impacts
 
 ```{r shock.visualize.scaled.12}
 #| fig-width: 8
@@ -878,7 +884,7 @@ p.selected.vars <- plot_selected_vars(
 p.selected.vars
 ```
 
-## Summary Visualization
+### Summary Visualization
 
 
 ```{r summary.table.12}
@@ -907,7 +913,7 @@ scenario_analysis_2026_plot(
 
 ___
 
-# Scenario 13: Production - Energy Shift
+## 13 | Energy Shift
 
 ```{r shock.run.13}
 # Shock Selection and Run
@@ -918,11 +924,11 @@ scenario_list[[n_shock]] <- scenario <- run_or_load_shock(
   n_shock,
   initial_shock,
   mvp.model,
-  force = FALSE
+  force = TRUE
 )
 ```
 
-## Visualize Shocked Coefficients
+### Visualize Shocked Coefficients
 
 ```{r shock.view.13}
 #| fig-width: 6
@@ -947,7 +953,7 @@ view.A(
 )
 ```
 
-## Visualize Impacts
+### Visualize Impacts
 
 ```{r shock.visualize.scaled.13}
 #| fig-width: 8
@@ -965,7 +971,7 @@ p.selected.vars <- plot_selected_vars(
 p.selected.vars
 ```
 
-## Summary Visualization
+### Summary Visualization
 
 ```{r summary.table.13}
 #| fig-width: 10
@@ -993,7 +999,7 @@ scenario_analysis_2026_plot(
 
 ___
 
-# Scenario 14: Production - Construction Shift
+## 14 | Construction Shift
 
 ```{r shock.run.14}
 # Shock Selection and Run
@@ -1004,11 +1010,11 @@ scenario_list[[n_shock]] <- scenario <- run_or_load_shock(
   n_shock,
   initial_shock,
   mvp.model,
-  force = FALSE
+  force = TRUE
 )
 ```
 
-## Visualize Shocked Coefficients
+### Visualize Shocked Coefficients
 
 ```{r shock.view.14}
 #| fig-width: 6
@@ -1033,7 +1039,7 @@ view.A(
 )
 ```
 
-## Visualize Impacts
+### Visualize Impacts
 
 ```{r shock.visualize.scaled.14}
 #| fig-width: 8
@@ -1051,7 +1057,7 @@ p.selected.vars <- plot_selected_vars(
 p.selected.vars
 ```
 
-## Summary Visualization
+### Summary Visualization
 
 ```{r summary.table.14}
 #| fig-width: 10

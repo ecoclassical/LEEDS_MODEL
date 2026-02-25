@@ -4,7 +4,7 @@ run.model <- function(
   sc = NULL,
   log_file = NULL,
   log_append = TRUE,
-  log_every_iter = 10,
+  log_every_iter = 25,
   show_progress = TRUE,
   print_final_state = TRUE
 ) {
@@ -49,8 +49,7 @@ run.model <- function(
   out <- production_scenarios(
     para = para,
     initial = initial,
-    sc = sc, # must exist in calling scope
-    sync_pars = TRUE
+    sc = sc
   )
 
   para <- out$para

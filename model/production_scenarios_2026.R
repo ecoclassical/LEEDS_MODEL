@@ -30,7 +30,8 @@ production_scenarios <- function(
     # 1) Set CE in para (mvp.model reads parms["Z1_ce"], parms["Z2_ce"])
     para[c("Z1_ce", "Z2_ce")] <- c(1, 0)
 
-    A <- initial$A.matrix
+    A <- as.matrix(initial$A.matrix)
+    storage.mode(A) <- "double"
 
     # Primary row multiplier (constant)
     initial$B.matrix[from, ] <- 1 - rho
