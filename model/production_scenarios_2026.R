@@ -17,51 +17,10 @@ production_scenarios <- function(
   nPeriods <- as.integer(para[["nPeriods"]])
   tshock <- as.integer(para[["t.shock"]])
 
-  # --- Basic sanity ---
-  if (is.na(shock)) {
-    stop("production_scenarios: para['shock'] is NA or missing")
-  }
-  if (is.na(rho)) {
-    stop("production_scenarios: para['rho'] is NA or missing")
-  }
-  if (!is.finite(rho) || rho < 0 || rho > 1) {
-    stop("production_scenarios: rho must be finite and in [0, 1]")
-  }
-
-  if (is.na(nPeriods) || nPeriods < 2) {
-    stop("production_scenarios: nPeriods must be >= 2")
-  }
-  if (is.na(tshock) || tshock < 1 || tshock > nPeriods) {
-    stop("production_scenarios: t.shock must be in [1, nPeriods]")
-  }
-
-  # --- Validate initial structure we will touch ---
-  if (is.null(initial$B.matrix)) {
-    stop("production_scenarios: initial$B.matrix is NULL")
-  }
-  if (!is.matrix(initial$B.matrix)) {
-    stop("production_scenarios: initial$B.matrix must be a matrix")
-  }
-
-  if (sync_pars) {
-    if (
-      is.null(initial$pars) ||
-        is.null(initial$pars$label) ||
-        is.null(initial$pars$value)
-    ) {
-      stop(
-        "production_scenarios: sync_pars=TRUE requires initial$pars$label and initial$pars$value"
-      )
-    }
-  }
-
   # -----------------------------------------
   # Production shocks (structural, pre-run)
   # -----------------------------------------
   if (shock > 6) {
-    # 1) Set CE in para (mvp.model reads parms["Z1_ce"], parms["Z2_ce"])
-    para[c("Z1_ce", "Z2_ce")] <- c(1, 0)
-
     # 2) Optional sync to initial$pars to avoid later confusion
     if (sync_pars) {
       idx1 <- match("Z1_ce", initial$pars$label)
@@ -111,6 +70,8 @@ production_scenarios <- function(
       ))
     }
 
+    # 1) Set CE in para (mvp.model reads parms["Z1_ce"], parms["Z2_ce"])
+    para[c("Z1_ce", "Z2_ce")] <- c(1, 0)
     initial$B.matrix[from, ] <- rho
     initial$B.matrix[to, ] <- 1 - rho
   }

@@ -8,7 +8,7 @@ run.model <- function(
   show_progress = TRUE,
   print_final_state = TRUE
 ) {
-  source(file.path(root, utils_dir, "logger_2026.R"))
+  source(file.path(utils_dir, "logger_2026.R"))
 
   logger <- create_logger(log_file, log_append)
 
@@ -22,7 +22,7 @@ run.model <- function(
   # INITIALIZATION (core objects)
   # ---------------------------
 
-  .section("Initialization")
+  logger$section("Initialization")
 
   # ---- Seed parameters (named vector) ----
   para0 <- setNames(initial$pars$value, initial$pars$label)
@@ -40,10 +40,11 @@ run.model <- function(
   # edits: para + initial$B.matrix (and optional initial$pars sync)
   # does NOT touch sim
   # ---------------------------
-  .section("Production scenarios")
+  logger$section("Production scenarios")
 
-  .rule("Production Scenarios Loaded")
-  source(file.path(root, "model", "production_scenarios_2026.R"))
+  logger$rule("Production Scenarios Loaded")
+
+  source(file.path(model_dir, "production_scenarios_2026.R"))
 
   out <- production_scenarios(
     para = para,
@@ -77,12 +78,12 @@ run.model <- function(
     stop("Invalid max.iterations after production scenarios.")
   }
 
-  .info(sprintf(
+  logger$info(sprintf(
     "Parameters ready: nPeriods = %d, max.iterations = %d",
     nPeriods,
     maxIter
   ))
-  .info(sprintf(
+  logger$info(sprintf(
     "Scenario sanity: shock = %s, rho = %s, t.shock = %s, Z1_ce = %s, Z2_ce = %s",
     format(para["shock"], trim = TRUE),
     format(para["rho"], trim = TRUE),
@@ -94,7 +95,7 @@ run.model <- function(
   # ---------------------------
   # Build A0/B0 AFTER production scenario edits to initial$B.matrix
   # ---------------------------
-  .info("Building A0/B0/A.t/B.t after production scenarios…")
+  logger$info("Building A0/B0/A.t/B.t after production scenarios…")
 
   A0 <- matrix(unlist(initial$A.matrix), nrow = K * N, ncol = K * N)
   B0 <- matrix(
@@ -106,7 +107,7 @@ run.model <- function(
   A.t <- array(rep(A0, times = nPeriods), dim = c(K * N, K * N, nPeriods))
   B.t <- B0
 
-  .info(sprintf("max |B0 - A0| at init = %.6g", max(abs(B.t - A0))))
+  logger$info(sprintf("max |B0 - A0| at init = %.6g", max(abs(B.t - A0))))
 
   # ---------------------------
   # Variables: allocate sim once (NO scenario scripts touch sim anymore)
@@ -121,14 +122,14 @@ run.model <- function(
   # ---------------------------
   # MARKUP DETERMINATION (t = 1)
   # ---------------------------
-  .section("Markup calibration (t = 1)")
+  logger$section("Markup calibration (t = 1)")
   i <- 1
 
   foo <- (1 - sim[zk.lab("w"), i] / sim[zk.lab("pr"), i]) /
     (1 + sim[zk.lab("kappa"), i] * rep(sim[z.lab("delta"), i], each = K))
 
   sim[zk.lab("mu"), ] <- foo / colSums(A.t[,, i]) - 1
-  .ok("Markup vector 'mu' calibrated at t = 1")
+  logger$ok("Markup vector 'mu' calibrated at t = 1")
 
   # Exogenous initial settings
   sim[z.lab("g"), i] <- para[z.lab("gg0")]
@@ -140,12 +141,12 @@ run.model <- function(
   # ---------------------------
   # TIME LOOP
   # ---------------------------
-  .section("Time loop")
-  .info(sprintf(
+  logger$section("Time loop")
+  logger$info(sprintf(
     "Starting Gauss–Seidel iterations across %d additional periods",
     nPeriods - 1
   ))
-  .info(sprintf(
+  logger$info(sprintf(
     "Logging to: %s",
     normalizePath(log_file, winslash = "/", mustWork = FALSE)
   ))
@@ -156,7 +157,7 @@ run.model <- function(
   for (i in 2:nPeriods) {
     if (isTRUE(show_progress)) {
       pct <- round(100 * (i - 1) / max(1, (nPeriods - 1)))
-      .info(sprintf(
+      logger$info(sprintf(
         "Solving time periods %3d%% (t = %d / %d)",
         pct,
         i,
@@ -172,7 +173,11 @@ run.model <- function(
 
     for (iter in 1:maxIter) {
       if (iter == 1) {
-        .info(sprintf("t = %d: starting iterations (max = %d)", i, maxIter))
+        logger$info(sprintf(
+          "t = %d: starting iterations (max = %d)",
+          i,
+          maxIter
+        ))
       }
 
       output <- model(
@@ -216,7 +221,7 @@ run.model <- function(
       )
 
       if (iter %% log_every_iter == 0 || iter == maxIter) {
-        .info(sprintf(
+        logger$info(sprintf(
           "t = %d, iter = %d: mean score = %s, error = %.4g",
           i,
           iter,
@@ -230,7 +235,7 @@ run.model <- function(
           error < para["consistency.threshold"]
       ) {
         last.iteration[i] <- iter
-        .ok(sprintf(
+        logger$ok(sprintf(
           "t = %d: converged at iter = %d with error = %.4g",
           i,
           iter,
@@ -241,7 +246,7 @@ run.model <- function(
     } # end iter loop
 
     if (!is.na(error) && error > para["consistency.threshold"]) {
-      .fail(sprintf(
+      logger$fail(sprintf(
         "t = %d: FAILED consistency check (error = %.4g > threshold = %s). Aborting time loop.",
         i,
         signif(error, 4),
@@ -263,27 +268,27 @@ run.model <- function(
   # ---------------------------
   # Completion & summary
   # ---------------------------
-  .section("Simulation completed")
+  logger$section("Simulation completed")
 
   if (requireNamespace("beepr", quietly = TRUE)) {
     beepr::beep(2)
   }
 
-  .ok(sprintf(
+  logger$ok(sprintf(
     "Total execution time: %s %s",
     round(as.numeric(execution_time), 3),
     attr(execution_time, "units")
   ))
 
   last_t <- max(which(colSums(!is.na(sim)) > 0))
-  .info(sprintf("Last non-NA simulated period: t = %d", last_t))
+  logger$info(sprintf("Last non-NA simulated period: t = %d", last_t))
 
   if (isTRUE(print_final_state)) {
-    .section("Final simulation state (sim[, last_t])")
+    logger$section("Final simulation state (sim[, last_t])")
     print(sim[, last_t])
   }
 
-  .rule("LEEDS_MODEL run finished")
+  logger$rule("LEEDS_MODEL run finished")
 
   return(list(
     initial = initial,
