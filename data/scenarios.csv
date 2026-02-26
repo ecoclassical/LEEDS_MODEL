@@ -1,0 +1,15 @@
+shock,domain,sector,transaction,shift,target,from,to,display_name,rds_file,table_file
+1,Final Demand,Household,Consumption,Food,beta,7,8,Scenario 1 | Final Demand | Household Consumption | Food Shift,data/scenarios/shock_runs/shock_1_run.RDS,data/scenarios/shock_tables/shock_1_table.csv
+2,Final Demand,Household,Consumption,Energy,beta,31,32,Scenario 2 | Final Demand | Household Consumption | Energy Shift,data/scenarios/shock_runs/shock_2_run.RDS,data/scenarios/shock_tables/shock_2_table.csv
+3,Final Demand,Government,Consumption,Cement,sigma,24,25,Scenario 3 | Final Demand | Government Consumption | Cement Shift,data/scenarios/shock_runs/shock_3_run.RDS,data/scenarios/shock_tables/shock_3_table.csv
+4,Final Demand,Government,Consumption,Plastics,sigma,17,18,Scenario 4 | Final Demand | Government Consumption | Plastics Shift,data/scenarios/shock_runs/shock_4_run.RDS,data/scenarios/shock_tables/shock_4_table.csv
+5,Final Demand,Firm,Investment,Cement,a,24,25,Scenario 5 | Final Demand | Firm Investment | Cement Shift,data/scenarios/shock_runs/shock_5_run.RDS,data/scenarios/shock_tables/shock_5_table.csv
+6,Final Demand,Firm,Investment,Plastics,a,17,18,Scenario 6 | Final Demand | Firm Investment | Plastics Shift,data/scenarios/shock_runs/shock_6_run.RDS,data/scenarios/shock_tables/shock_6_table.csv
+7,Intermediate Demand,Firm,Production,Wood,a,11,12,Scenario 7 | Intermediate Demand | Firm Production | Wood Shift,data/scenarios/shock_runs/shock_7_run.RDS,data/scenarios/shock_tables/shock_7_table.csv
+8,Intermediate Demand,Firm,Production,Pulp,a,13,14,Scenario 8 | Intermediate Demand | Firm Production | Pulp Shift,data/scenarios/shock_runs/shock_8_run.RDS,data/scenarios/shock_tables/shock_8_table.csv
+9,Intermediate Demand,Firm,Production,Plastics,a,17,18,Scenario 9 | Intermediate Demand | Firm Production | Plastics Shift,data/scenarios/shock_runs/shock_9_run.RDS,data/scenarios/shock_tables/shock_9_table.csv
+10,Intermediate Demand,Firm,Production,Metal,a,26,27,Scenario 10 | Intermediate Demand | Firm Production | Metal Shift,data/scenarios/shock_runs/shock_10_run.RDS,data/scenarios/shock_tables/shock_10_table.csv
+11,Intermediate Demand,Firm,Production,Glass,a,21,22,Scenario 11 | Intermediate Demand | Firm Production | Glass Shift,data/scenarios/shock_runs/shock_11_run.RDS,data/scenarios/shock_tables/shock_11_table.csv
+12,Intermediate Demand,Firm,Production,Cement,a,24,25,Scenario 12 | Intermediate Demand | Firm Production | Cement Shift,data/scenarios/shock_runs/shock_12_run.RDS,data/scenarios/shock_tables/shock_12_table.csv
+13,Intermediate Demand,Firm,Production,Energy,a,31,32,Scenario 13 | Intermediate Demand | Firm Production | Energy Shift,data/scenarios/shock_runs/shock_13_run.RDS,data/scenarios/shock_tables/shock_13_table.csv
+14,Intermediate Demand,Firm,Production,Construction,a,36,37,Scenario 14 | Intermediate Demand | Firm Production | Construction Shift,data/scenarios/shock_runs/shock_14_run.RDS,data/scenarios/shock_tables/shock_14_table.csv

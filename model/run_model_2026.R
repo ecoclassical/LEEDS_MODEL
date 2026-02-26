@@ -6,18 +6,19 @@ run.model <- function(
   log_append = TRUE,
   log_every_iter = 25,
   show_progress = TRUE,
-  print_final_state = TRUE
+  print_final_state = TRUE,
+  log_context = NULL
 ) {
-  source(file.path(utils_dir, "logger_2026.R"))
+  # ---------------------------
+  # Logging: console (stderr) + file
+  # ---------------------------
 
-  logger <- create_logger(log_file, log_append)
+  logger <- create_logger(log_file, log_append, context = log_context)
 
   on.exit(logger$close(), add = TRUE)
 
+  start_time <- Sys.time()
   logger$rule("LEEDS_MODEL :: New simulation run")
-  logger$section("Initialization")
-  logger$info("Parameters ready")
-
   # ---------------------------
   # INITIALIZATION (core objects)
   # ---------------------------
@@ -35,16 +36,14 @@ run.model <- function(
     stop("Parameter 'max.iterations' not found in initial$pars.")
   }
 
+  logger$info("Parameters ready")
+
   # ---------------------------
   # PRODUCTION SCENARIOS (pre-run)
   # edits: para + initial$B.matrix (and optional initial$pars sync)
   # does NOT touch sim
   # ---------------------------
   logger$section("Production scenarios")
-
-  logger$rule("Production Scenarios Loaded")
-
-  source(file.path(model_dir, "production_scenarios_2026.R"))
 
   out <- production_scenarios(
     para = para,
@@ -54,6 +53,8 @@ run.model <- function(
 
   para <- out$para
   initial <- out$initial
+
+  logger$rule("Production Scenarios Loaded")
 
   # ---- Always write para back into initial$pars so returned object is self-contained ----
   idx_pars <- match(names(para), initial$pars$label)

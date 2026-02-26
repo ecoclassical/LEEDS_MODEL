@@ -13,8 +13,7 @@ mvp.model <- function(t, y, parms, A.mat, B.mat) {
   t_shock <- as.integer(parms["t.shock"])
 
   # ---- Demand scenarios (period-local; returns effective shares) ----
-  # Make sure this file defines compute_delta_eff$beta(...)
-  source(file.path(root, "model", "demand_scenarios_2026.R"), local = TRUE)
+  # source(file.path(root, "model", "demand_scenarios_2026.R"), local = TRUE)
 
   delta_eff <- compute_all_delta_eff(
     shock = parms["shock"],
@@ -25,6 +24,11 @@ mvp.model <- function(t, y, parms, A.mat, B.mat) {
     i = i,
     sc = sc
   )
+
+  sim[zk.lab("beta"), i] <- delta_eff$beta
+  sim[zk.lab("sigma"), i] <- delta_eff$sigma
+  sim[zk.lab("iota"), i] <- delta_eff$iota
+  sim[zk.lab("iota_g"), i] <- delta_eff$iota_g
 
   # ---- Shock gating (A-adjustment starts at t.shock) ----
 
@@ -61,7 +65,7 @@ mvp.model <- function(t, y, parms, A.mat, B.mat) {
   # Speed of Adjustment to CE
   sim[z.lab('gamma_A'), i] <- parms[z.lab('gammaA0')] +
     sim[z.lab('g'), i - 1] *
-      zk.sum(sim[zk.lab('gammaA1'), i] * delta_eff$sigma)
+      zk.sum(sim[zk.lab('gammaA1'), i] * sim[zk.lab('sigma'), i])
 
   #### HOUSEHOLDS ####
 
@@ -175,20 +179,20 @@ mvp.model <- function(t, y, parms, A.mat, B.mat) {
   #### PRODUCTION FIRMS ####
 
   # Final Demand Vector in Real Terms
-  sim[zk.lab('d'), i] = delta_eff$beta *
+  sim[zk.lab('d'), i] = sim[zk.lab('beta'), i] *
     rep(sim[z.lab('c'), i], each = K) +
-    delta_eff$sigma * rep(sim[z.lab('g'), i], each = K) +
-    delta_eff$iota * rep(sim[z.lab('id'), i], each = K) +
-    delta_eff$iota_g * rep(sim[z.lab('id_g'), i], each = K) +
+    sim[zk.lab('sigma'), i] * rep(sim[z.lab('g'), i], each = K) +
+    sim[zk.lab('iota'), i] * rep(sim[z.lab('id'), i], each = K) +
+    sim[zk.lab('iota_g'), i] * rep(sim[z.lab('id_g'), i], each = K) +
     sim[unlist(lapply(rev(zlabs), function(z) paste0(z, '_eta-', 1:K))), i] *
       rep(sim[z.lab('rex'), i], each = K) -
     sim[zk.lab('eta'), i] * rep(sim[z.lab('imp'), i], each = K)
 
-  # sim[zk.lab('d'), i] = delta_eff$beta *
+  # sim[zk.lab('d'), i] = sim[zk.lab('beta'), i] *
   #   rep(sim[z.lab('c'), i], each = K) +
   #   sim[zk.lab('sigma'), i] * rep(sim[z.lab('g'), i], each = K) +
   #   sim[zk.lab('iota'), i] * rep(sim[z.lab('id'), i], each = K) +
-  #   delta_eff$iota_g * rep(sim[z.lab('id_g'), i], each = K) +
+  #   sim[zk.lab('iota_g'), i] * rep(sim[z.lab('id_g'), i], each = K) +
   #   sim[unlist(lapply(rev(zlabs), function(z) paste0(z, '_eta-', 1:K))), i] *
   #     rep(sim[z.lab('rex'), i], each = K) -
   #   sim[zk.lab('eta'), i] * rep(sim[z.lab('imp'), i], each = K)
@@ -395,7 +399,7 @@ mvp.model <- function(t, y, parms, A.mat, B.mat) {
     zk.sum(
       sim[zk.lab('p'), i] *
         sim[zk.lab('vat'), i] *
-        delta_eff$beta /
+        sim[zk.lab('beta'), i] /
         (1 + sim[zk.lab('vat'), i])
     )
 
@@ -579,18 +583,18 @@ mvp.model <- function(t, y, parms, A.mat, B.mat) {
     (1 + sim[zk.lab('vat'), i])
 
   # Average Price of Domestic Consumption
-  sim[z.lab('pa'), i] <- zk.sum(sim[zk.lab('p'), i] * delta_eff$beta)
+  sim[z.lab('pa'), i] <- zk.sum(sim[zk.lab('p'), i] * sim[zk.lab('beta'), i])
 
   # Average Price of Investment
-  sim[z.lab('pid'), i] <- zk.sum(sim[zk.lab('p'), i] * delta_eff$iota)
+  sim[z.lab('pid'), i] <- zk.sum(sim[zk.lab('p'), i] * sim[zk.lab('iota'), i])
 
   # Average Price of Government Investment
   sim[z.lab('pid_g'), i] <- zk.sum(
-    sim[zk.lab('p'), i] * delta_eff$iota_g
+    sim[zk.lab('p'), i] * sim[zk.lab('iota_g'), i]
   )
 
   # Average Price of Government Spending
-  sim[z.lab('pg'), i] <- zk.sum(sim[zk.lab('p'), i] * delta_eff$sigma)
+  sim[z.lab('pg'), i] <- zk.sum(sim[zk.lab('p'), i] * sim[zk.lab('sigma'), i])
 
   # Average Price of Import of Area 1 #NEW ----- CHECK TARIFFS!
   sim[z.lab('pim'), i] <- zk.sum(
@@ -650,7 +654,7 @@ mvp.model <- function(t, y, parms, A.mat, B.mat) {
       sim[zk.lab('dc'), i - 1]
   )
   sim[zk.lab('dc'), i] <- sim[zk.lab('dc'), i - 1] + # Stock of Durable Consumption Goods
-    delta_eff$beta * rep(sim[z.lab('c'), i], each = K) -
+    sim[zk.lab('beta'), i] * rep(sim[z.lab('c'), i], each = K) -
     sim[zk.lab('zeta_dc'), i - 1] * sim[zk.lab('dc'), i - 1]
   # sim[z.lab('kh'), i] <- sim[z.lab('kh'), i - 1] + sim[z.lab('x_mat'), i] -         # Socioeconomic Stock
   #   sim[z.lab('dis'), i]

@@ -127,7 +127,7 @@ initial <- load.init(initial_filename)
 # ---- Workspace filenames (generated / cached) ----
 baseline_filename <- file.path(workspace_dir, "baseline_2026.RDS")
 target_filename <- file.path(workspace_dir, "target_values.xlsx")
-scenario_filename <- file.path(workspace_dir, "scenarios.csv")
+scenario_filename <- file.path(dir_data, "scenarios.csv")
 
 sc <- read.csv(file = scenario_filename)
 
@@ -336,6 +336,8 @@ scenario_list[[n_shock]] <- scenario <- run_or_load_shock(
   mvp.model,
   force = FALSE
 )
+
+initial_shock$pars['rho', 'value']
 ```
 
 ### Visualize Shocked Variables
@@ -411,8 +413,10 @@ scenario_list[[n_shock]] <- scenario <- run_or_load_shock(
   n_shock,
   initial_shock,
   mvp.model,
-  force = TRUE
+  force = FALSE
 )
+
+scenario$para['rho']
 ```
 
 ### Visualize Shocked Coefficients
@@ -497,8 +501,10 @@ scenario_list[[n_shock]] <- scenario <- run_or_load_shock(
   n_shock,
   initial_shock,
   mvp.model,
-  force = TRUE
+  force = FALSE
 )
+
+scenario$para['rho']
 ```
 
 ### Visualize Shocked Coefficients
@@ -582,8 +588,10 @@ scenario_list[[n_shock]] <- scenario <- run_or_load_shock(
   n_shock,
   initial_shock,
   mvp.model,
-  force = TRUE
+  force = FALSE
 )
+
+scenario$para['rho']
 ```
 
 ### Visualize Shocked Coefficients
@@ -667,8 +675,10 @@ scenario_list[[n_shock]] <- scenario <- run_or_load_shock(
   n_shock,
   initial_shock,
   mvp.model,
-  force = TRUE
+  force = FALSE
 )
+
+scenario$para['rho']
 ```
 
 ### Visualize Shocked Coefficients
@@ -752,8 +762,10 @@ scenario_list[[n_shock]] <- scenario <- run_or_load_shock(
   n_shock,
   initial_shock,
   mvp.model,
-  force = TRUE
+  force = FALSE
 )
+
+scenario$para['rho']
 ```
 
 ### Visualize Shocked Coefficients
@@ -837,8 +849,10 @@ scenario_list[[n_shock]] <- scenario <- run_or_load_shock(
   n_shock,
   initial_shock,
   mvp.model,
-  force = TRUE
+  force = FALSE
 )
+
+scenario$para['rho']
 ```
 
 ### Visualize Shocked Coefficients
@@ -924,8 +938,10 @@ scenario_list[[n_shock]] <- scenario <- run_or_load_shock(
   n_shock,
   initial_shock,
   mvp.model,
-  force = TRUE
+  force = FALSE
 )
+
+scenario$para['rho']
 ```
 
 ### Visualize Shocked Coefficients
@@ -1010,8 +1026,14 @@ scenario_list[[n_shock]] <- scenario <- run_or_load_shock(
   n_shock,
   initial_shock,
   mvp.model,
-  force = TRUE
+  force = FALSE
 )
+
+scenario$para['rho']
+```
+
+```{r end_run}
+beepr::beep(3)
 ```
 
 ### Visualize Shocked Coefficients
@@ -1087,10 +1109,6 @@ ___
 # Scenario Comparison
 
 ```{r comparison} 
-#| fig-width: 10
-#| fig-height: 21
-#| fig-cap: "Comparison of Diet and Energy Transition Scenarios"
-
 selected.list <- list(
   Macroeconomic = c('c', 'va', 'go', 'id', 'gdef', 'cab', 'tb'),
   Social = c('n', 'nf', 'shp', 'shw'),
@@ -1131,132 +1149,76 @@ df <- scenario.tables |>
   dplyr::select(-Name) |> # drop old category column
   dplyr::left_join(lookup, by = "Variable") %>%
   filter(!is.na(Name))
+```
+
+## Immediate | Short Term | Long Term
+
+```{r comparison_plot}
+#| fig-width: 10
+#| fig-height: 21
+#| fig-cap: "Comparison of Circular Transition Scenarios"
 
 p <- build_policy_comparison_plot(
   df = df,
   variable.table = variable.table,
   sc = sc,
-  workspace_dir = workspace_dir
+  workspace_dir = workspace_dir,
+  filename = "p_comparison_terms.pdf"
 )
 
 p
 ```
 
-___
+```{r comparison_plot_2}
+#| fig-width: 10
+#| fig-height: 21
+#| fig-cap: "Comparison of Circular Transition Scenarios without Construction"
 
-# Key Structural Findings from Scenario Comparison
+p_2 <- build_policy_comparison_plot(
+  df = df %>% filter(!grepl('Construction', scenario)),
+  variable.table = variable.table,
+  sc = sc,
+  workspace_dir = workspace_dir,
+  filename = "p_comparison_terms_2.pdf"
+)
 
-The scenario analysis reveals a clear macro-ecological success combined with persistent social and distributional tensions. The green transition improves environmental indicators and external balances but generates labour market contraction and rising inequality, particularly over time.
+p_2
+```
 
-## Macroeconomic Stabilization
+## Time Average 
 
-Across both Core and Periphery, the green transition produces systematic macroeconomic improvements, especially beyond the immediate adjustment phase.
+```{r comparison_avg_plot}
+#| fig-width: 10
+#| fig-height: 21
+#| fig-cap: "Comparison of Circular Transition Scenarios"
 
-- Current account balance and trade balance improve in all time horizons  
-- Government deficit narrows significantly in the short and long term  
-- Value added and gross output recover after short-term adjustment costs  
-- The Core captures stronger and earlier gains than the Periphery  
+p_avg <- build_policy_comparison_plot_avg_terms(
+  df = df,
+  variable.table = variable.table,
+  sc = sc,
+  workspace_dir = workspace_dir,
+  filename = "p_comparison_avg_terms.pdf"
+)
 
-**Time dynamics:**  
-Short-term disruption → Medium-term stabilization → Long-term consolidation  
+p_avg
+```
 
-These patterns are consistent with a structural reallocation process rather than a prolonged recessionary adjustment.
+```{r comparison_avg_plot_2}
+#| fig-width: 10
+#| fig-height: 21
+#| fig-cap: "Comparison of Circular Transition Scenarios without Construction"
 
----
+p_avg_2 <- build_policy_comparison_plot_avg_terms(
+  df = df %>% filter(!grepl('Construction', scenario)),
+  variable.table = variable.table,
+  sc = sc,
+  workspace_dir = workspace_dir,
+  filename = "p_comparison_avg_terms_2.pdf"
+)
 
-## Distributional Shift Toward Capital
+p_avg_2
+```
 
-The transition generates a persistent and intensifying redistribution from labour to capital.
-
-| Indicator | Immediate | Short Term | Long Term | Interpretation |
-|----------|-----------|------------|-----------|----------------|
-| Wage share of income | ↓ | ↓↓ | ↓↓ | Labour loses income share |
-| Profit share of income | ↑ | ↑↑ | ↑↑ | Capital captures transition rents |
-| Worker disposable income | ↓ | ↓ | ↓ | Real labour income compression |
-| Capitalist disposable income | ↑ | ↑↑ | ↑↑ | Income polarization widens |
-
-The shift is not temporary; it strengthens over time, indicating a structural, capital-biased transition under existing institutional settings.
-
----
-
-## Labour Market Contraction
-
-Employment effects are consistently negative, with no clear recovery in the long term.
-
-| Variable | Core | Periphery | Dynamics |
-|----------|------|-----------|----------|
-| Total employment | ↓ | slight ↓ | Persistent decline |
-| Female employment | ↓↓ | slight ↓ | Gendered impact |
-| Real consumption | ↓ | flat/slight ↓ | Demand compression |
-
-The results suggest a labour-saving restructuring rather than a short-term displacement followed by reabsorption. The stronger fall in female employment points to sectoral reallocation away from feminized sectors.
-
----
-
-## Core–Periphery Asymmetry
-
-The macroeconomic benefits of the transition are unevenly distributed:
-
-- The Core experiences stronger improvements in trade balances and current account positions  
-- Financial variables and wealth indicators suggest capital re-accumulation in the Core  
-- The Periphery benefits less from value-added gains  
-
-This pattern indicates upstream green upgrading concentrated in core economies, with limited peripheral value capture.
-
----
-
-## Strong and Immediate Ecological Gains
-
-Environmental improvements are large, immediate, and sustained across all horizons.
-
-| Indicator | Pattern |
-|----------|---------|
-| CO₂ emissions | Large decline |
-| Material extraction | Decline |
-| Land use | Decline |
-| Waste | Decline |
-| Water use | Decline |
-| Recycling | Increase |
-
-Unlike the social variables, ecological gains are front-loaded rather than delayed.
-
----
-
-## Time Horizon Summary
-
-| Dimension | Immediate | Short Term | Long Term |
-|-----------|-----------|------------|-----------|
-| Ecology | Large gains | Maintained | Maintained |
-| Macroeconomic stability | Mixed | Improves | Consolidates |
-| Employment | Falls | Falls further | No recovery |
-| Inequality | Rises | Rises more | Structural shift |
-| Core–Periphery gap | Limited | Widening | Entrenched |
-
----
-
-## Overall Interpretation
-
-The modeled green transition is:
-
-**Ecologically effective**  
-**Macroeconomically stabilizing**  
-**Socially regressive under current institutions**  
-
-Without complementary policies such as:
-
-- Wage protection and collective bargaining support  
-- Employment guarantees or green job programs  
-- Labour-absorbing industrial policy  
-- Gender-sensitive transition measures  
-
-the transition path risks becoming politically destabilizing despite ecological success.
-
----
-
-## Executive Takeaway
-
-- The green transition delivers rapid ecological improvements and medium-term macroeconomic stabilization, particularly in external balances and fiscal positions. 
-- However, these gains are accompanied by persistent labour displacement, declining wage shares, rising profit shares, and falling worker incomes, with especially strong negative effects on female employment. 
-- Inequality widens over time, and the Core captures a disproportionate share of the macroeconomic benefits relative to the Periphery.
-- Without strong redistributive and labour-market institutions, the transition appears environmentally effective but socially and politically fragile.
-
+```{r all_run}
+cat("done\n")
+```

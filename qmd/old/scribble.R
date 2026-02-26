@@ -19,7 +19,7 @@ n_sector <- nrow(sector_list) # 54
 
 # ---- scenario table ----
 
-sc <- scenarios_tbl %>%
+sc <- sc %>%
   rename(
     domain = Domain,
     shift = Shift,

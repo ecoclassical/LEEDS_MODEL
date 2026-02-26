@@ -3,7 +3,6 @@
 # -----------------------------
 # --- Core utilities ---
 source(file.path(utils_dir, "utils.R"))
-source(file.path(utils_dir, "logger_2026.R"))
 
 # --- Scenario logic ---
 source(file.path(model_dir, "production_scenarios_2026.R"))
