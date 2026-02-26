@@ -19,9 +19,10 @@ compute_delta_eff <- function(
   target <- as.character(target)
   rho <- as.numeric(rho)
 
-  if (t < t_shock) {
+  if (t != t_shock) {
     return(delta_current)
   }
+
   if (is.null(sc)) {
     stop("compute_delta_eff: sc table required")
   }
@@ -67,7 +68,6 @@ compute_all_delta_eff <- function(
 
   sc_row <- sc[sc$shock == shock, , drop = FALSE]
   if (nrow(sc_row) != 1) {
-    # No (or ambiguous) scenario row: return current values unchanged
     return(list(
       beta = sim[zk.lab("beta"), i],
       sigma = sim[zk.lab("sigma"), i],
@@ -78,10 +78,11 @@ compute_all_delta_eff <- function(
 
   target <- as.character(sc_row$target[[1]])
 
-  beta_current <- sim[zk.lab("beta"), i]
-  sigma_current <- sim[zk.lab("sigma"), i]
-  iota_current <- sim[zk.lab("iota"), i]
-  iota_g_current <- sim[zk.lab("iota_g"), i]
+  # IMPORTANT: use lagged (t-1) vector as the base so the shock doesn't compound
+  beta_base <- sim[zk.lab("beta"), 1]
+  sigma_base <- sim[zk.lab("sigma"), 1]
+  iota_base <- sim[zk.lab("iota"), 1]
+  iota_g_base <- sim[zk.lab("iota_g"), 1]
 
   list(
     beta = if (target == "beta") {
@@ -91,12 +92,12 @@ compute_all_delta_eff <- function(
         rho,
         t,
         t_shock,
-        delta_current = beta_current,
+        delta_current = beta_base,
         sc = sc,
         prefix = "Z1_beta"
       )
     } else {
-      beta_current
+      beta_base
     },
 
     sigma = if (target == "sigma") {
@@ -106,12 +107,12 @@ compute_all_delta_eff <- function(
         rho,
         t,
         t_shock,
-        delta_current = sigma_current,
+        delta_current = sigma_base,
         sc = sc,
         prefix = "Z1_sigma"
       )
     } else {
-      sigma_current
+      sigma_base
     },
 
     iota = if (target == "iota") {
@@ -121,12 +122,12 @@ compute_all_delta_eff <- function(
         rho,
         t,
         t_shock,
-        delta_current = iota_current,
+        delta_current = iota_base,
         sc = sc,
         prefix = "Z1_iota"
       )
     } else {
-      iota_current
+      iota_base
     },
 
     iota_g = if (target == "iota_g") {
@@ -136,12 +137,12 @@ compute_all_delta_eff <- function(
         rho,
         t,
         t_shock,
-        delta_current = iota_g_current,
+        delta_current = iota_g_base,
         sc = sc,
         prefix = "Z1_iota_g"
       )
     } else {
-      iota_g_current
+      iota_g_base
     }
   )
 }

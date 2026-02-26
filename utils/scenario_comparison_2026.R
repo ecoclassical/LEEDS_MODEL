@@ -44,7 +44,7 @@ build_policy_comparison_plot <- function(
       term = factor(
         term,
         levels = c("Immediate", "Short.Term", "Long.Term"),
-        labels = c("Immediate", "Short term", "Long term")
+        labels = c("Immediate", "Short\nTerm", "Long\nTerm")
       )
     ) %>%
     dplyr::left_join(
@@ -112,7 +112,7 @@ build_policy_comparison_plot <- function(
   ) &
     ggplot2::theme(legend.position = "top") &
     ggplot2::guides(
-      fill = ggplot2::guide_legend(nrow = 3, byrow = TRUE)
+      fill = ggplot2::guide_legend(nrow = 5, byrow = TRUE)
     )
 
   # ---- optional save ----
@@ -270,7 +270,7 @@ build_policy_comparison_plot_avg_terms <- function(
       filename = file.path(workspace_dir, filename),
       plot = p.comparison.avg,
       width = 10,
-      height = 18,
+      height = 19,
       units = "in"
     )
   }

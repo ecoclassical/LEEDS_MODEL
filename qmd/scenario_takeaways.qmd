@@ -1,0 +1,222 @@
+---
+title: "Final Demand Scenario Takeaways"
+subtitle: "Insights from a Core-Periphery SOCIO-ECO-MRIO-SFC Model"
+author:
+  - name: "Oriol Vallès Codina"
+    affiliation: "Johns Hopkins University, Net Zero Industrial Policy Lab, Department of Political Science"
+    email: 
+      - "oriolvallescodina@gmail.com"
+date: "`r Sys.Date()`"
+format:
+  html:
+    toc: true
+    toc_float: true
+    self-contained: true
+    page-layout: full
+    css: fullwidth.css
+execute:
+  echo: false
+  working-dir: ..
+---
+
+## Social, Economic, and Ecological Impacts Across Scenarios
+::: {.callout-note}
+## Executive summary (for the research team)
+
+Three distinct transition regimes emerge:
+
+1. **Construction expansion (Scenario 14)** is **economically and socially positive** in the EU (output and employment rise; fiscal balance improves), but **ecologically negative** (material throughput and emissions increase) and **externally weakening** (current account and trade balance deteriorate).
+2. **Intermediate production restructuring (Scenarios 7–13)** delivers the **largest ecological gains** (emissions/materials fall), but is generally **contractionary and distributionally tense** in the EU (employment and investment fall; wage share often declines; fiscal balance worsens). EU–RoW effects are frequently **asymmetric**, with signs of burden shifting/leakage in some cases.
+3. **Final demand reallocation (Scenarios 1–6)** has **low leverage**: impacts are small across macro, social, and ecological indicators, and RoW spillovers are limited.
+
+The dominant structural trade-off is: stronger ecological improvement tends to coincide with stronger macro-social contraction, unless material throughput expands (construction).
+:::
+
+This subsection synthesizes the full scenario analysis with a focus on:  
+(1) macroeconomic performance,  
+(2) social and distributional outcomes,  
+(3) ecological effects, and  
+(4) EU–RoW asymmetries.  
+
+Because the **Construction Shift (Scenario 14)** operates at a scale far exceeding the remaining scenarios, it is treated separately from Scenarios 1–13.
+
+---
+
+## Compact summary matrix
+
+Legend: **++** strongly positive, **+** positive, **0** small/neutral, **−** negative, **−−** strongly negative, **±** mixed/asymmetric.
+
+| Scenario group | Output (EU) | Employment (EU) | Inequality (EU) | External balance (EU) | Ecology (EU) | RoW spillovers | EU–RoW symmetry |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| **Construction shift (14)** | **++** | **++** | **0 / +** | **−** | **−−** | Economy **+**, Ecology **−** | **Asymmetric** |
+| **Final demand shifts (1–6)** | **− / 0** | **− / 0** | **0** | **+ / 0** | **+ / 0** | Mostly **0** | **Mostly symmetric** |
+| **Intermediate production shifts (7–13)** | **− to −−** | **− to −−** | **−** | **±** | **+ to ++** | Mixed; often **asymmetric** | **Asymmetric** |
+| **Energy production shift (13)** *(subset)* | **−−** | **−−** | **−−** | **±** | **++** | RoW: employment/inequality sometimes **−** | **Most asymmetric** |
+
+# A. Construction Shift (Scenario 14): Expansionary but Ecologically Intensive
+
+### Economic Effects (EU)
+
+The construction restructuring generates a strong expansionary dynamic:
+
+- Gross output increases substantially.
+- Value added rises persistently into the long term.
+- Investment increases significantly.
+- Government deficit (defined positive = deficit) becomes more negative → fiscal balance improves.
+- Government debt issuance declines.
+- Current account and trade balance deteriorate (move negative).
+
+**Interpretation:**  
+Construction expansion strengthens domestic activity and improves fiscal balance, but weakens the external position through higher import intensity and external dependence.
+
+### Social Effects (EU)
+
+- Employment increases strongly.
+- Female employment increases.
+- Wage share remains stable or slightly positive.
+- Profit share does not spike sharply.
+
+This is the only scenario that clearly strengthens labor demand at scale without generating strong regressive redistribution.
+
+### Ecological Effects (EU)
+
+- Emissions increase.
+- Material extraction increases significantly.
+- Land use and water use expand.
+- Production of material goods increases strongly.
+
+Construction expansion intensifies material throughput and worsens ecological indicators.
+
+### RoW Spillovers
+
+- Output increases moderately.
+- Employment rises slightly.
+- Ecological burden increases.
+- External balances adjust asymmetrically.
+
+**Overall profile:**  
+Economically and socially expansionary in both regions, but ecologically negative.
+
+---
+
+# B. All Other Scenarios (1–13)
+
+These scenarios divide into:
+
+- Final demand shifts (1–6)
+- Intermediate production shifts (7–13)
+
+The structural effects differ substantially.
+
+---
+
+## 1. Final Demand Shifts (1–6)
+
+### Economic (EU)
+
+- Output: small decline or near neutral.
+- Investment: slight decline.
+- Fiscal balance: mild deterioration.
+- Trade and current account: often slight improvement via reduced imports.
+
+These scenarios are compositional rather than structural adjustments.
+
+### Social (EU)
+
+- Employment declines slightly.
+- Distributional effects are minimal.
+- Wage and profit shares remain broadly stable.
+
+### Ecological (EU)
+
+- Emissions decrease slightly.
+- Material extraction falls modestly.
+
+### RoW Effects
+
+- Employment: largely unchanged.
+- Distribution: largely unchanged.
+- External balances: minimal adjustment.
+
+**Overall profile:**  
+Low leverage. Mild ecological improvement with small macro and social costs, and minimal spillovers.
+
+---
+
+## 2. Intermediate Production Shifts (7–13, excluding Construction)
+
+### Economic (EU)
+
+Across energy, cement, metal, plastics, pulp, and wood shifts:
+
+- Output declines.
+- Investment declines.
+- Employment decreases.
+- Government deficit worsens (moves positive).
+- Government debt issuance increases.
+- Trade and current account positions adjust asymmetrically.
+
+These are contractionary adjustments.
+
+### Social (EU)
+
+- Employment falls more strongly than in final-demand shifts.
+- Wage share often declines.
+- Profit share rises in several cases (notably energy shift).
+- Distribution shifts against labor.
+
+The energy shift (Scenario 13) produces the strongest regressive pattern and the largest employment decline.
+
+### Ecological (EU)
+
+- Emissions decline significantly.
+- Material extraction decreases.
+- Land and waste pressures fall.
+
+Intermediate production restructuring delivers the strongest ecological gains.
+
+### RoW Effects
+
+RoW impacts are not neutral:
+
+- Employment declines modestly in several intermediate scenarios (especially energy).
+- Distributional shifts occur in attenuated form.
+- Trade balances adjust asymmetrically.
+- In some cases, EU ecological reductions coincide with weaker reductions or partial offsetting effects in RoW.
+
+Energy restructuring exhibits the strongest EU–RoW asymmetry and social tension.
+
+---
+
+# C. Structural Trade-Offs Identified
+
+The scenario space reveals three distinct transition regimes:
+
+1. Construction Expansion  
+   - Growth and employment increase.  
+   - Fiscal balance improves.  
+   - Ecological pressures intensify.  
+
+2. Intermediate Production Restructuring  
+   - Ecological indicators improve strongly.  
+   - Output, employment, and fiscal balance deteriorate.  
+   - Distribution shifts toward profits in several cases.  
+   - EU–RoW asymmetries become pronounced.  
+
+3. Final Demand Reallocation  
+   - Small macroeconomic effects.  
+   - Small ecological gains.  
+   - Limited distributional or spillover effects.  
+
+---
+
+# Overall Conclusion
+
+The model suggests a structural tension:
+
+- The stronger the ecological improvement, the stronger the macro-social contraction — unless material throughput expands.
+- Construction expansion reconciles growth and fiscal strength, but at ecological cost.
+- Production restructuring achieves ecological gains, but introduces employment, fiscal, and distributional tensions.
+- Final demand reallocation produces only incremental change.
+
+Deep transition therefore requires complementary policy instruments if ecological restructuring is to avoid regressive and contractionary dynamics.

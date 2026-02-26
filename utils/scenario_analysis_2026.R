@@ -134,7 +134,7 @@ scenario_analysis_2026_plot <- function(
       title = shock_title,
       subtitle = shock_subtitle,
       theme = theme(
-        plot.title = element_text(size = 24, face = "bold"),
+        plot.title = element_text(size = 22, face = "bold"),
         plot.subtitle = element_text(size = 12, face = "italic")
       )
     )

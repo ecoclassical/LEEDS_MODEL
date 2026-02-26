@@ -1,6 +1,6 @@
 ---
 title: "Scenario Analysis"
-subtitle: "Insights from a Core-Periphery SOCIO-ECO-MRIO-SFC Model"
+subtitle: "Insights from a EU-RoW SOCIO-ECO-MRIO-SFC Model"
 author:
   - name: "Oriol Vallès Codina"
     affiliation: "Johns Hopkins University, Net Zero Industrial Policy Lab, Department of Political Science"
@@ -246,12 +246,14 @@ ___
 
 # Final Demand Scenarios
 
-## 1 | Food Shift
+## 1 | Household Food Shift
 
 ```{r shock.run}
 # Shock Selection and Run
 initial_shock <- initial
 n_shock <- initial_shock$pars['shock', 'value'] <- 1
+
+initial_shock$pars['rho', 'value']
 
 scenario_list[[n_shock]] <- scenario <- run_or_load_shock(
   n_shock,
@@ -269,11 +271,12 @@ scenario_list[[n_shock]] <- scenario <- run_or_load_shock(
 
 view.shock(
   scenario,
-  shock.vars = c(
-    'beta-7',
-    'beta-8'
+  shock.vars = paste(
+    sc$target[n_shock],
+    sc[n_shock, c('from', 'to')] %>% unlist,
+    sep = '-'
   ),
-  shock.sectors = c(7, 8),
+  shock.sectors = sc[n_shock, c('from', 'to')] %>% unlist,
   shock.title = sc$display_name[n_shock]
 )
 ```
@@ -323,7 +326,7 @@ scenario_analysis_2026_plot(
 
 ___
 
-## 2 | Energy Shift
+## 2 | Household Energy Shift
 
 ```{r shock.run.2}
 # Shock Selection and Run
@@ -348,11 +351,12 @@ initial_shock$pars['rho', 'value']
 
 view.shock(
   scenario,
-  shock.vars = c(
-    'beta-31',
-    'beta-32'
+  shock.vars = paste(
+    sc$target[n_shock],
+    sc[n_shock, c('from', 'to')] %>% unlist,
+    sep = '-'
   ),
-  shock.sectors = c(31, 32),
+  shock.sectors = sc[n_shock, c('from', 'to')] %>% unlist,
   shock.title = sc$display_name[n_shock]
 )
 ```
@@ -399,6 +403,331 @@ scenario_analysis_2026_plot(
 ```
 
 ___
+
+## 3 | Government Energy Shift
+
+```{r shock.run.3}
+# Shock Selection and Run
+initial_shock <- initial
+n_shock <- initial_shock$pars['shock', 'value'] <- 3
+
+initial_shock$pars['rho', 'value']
+
+scenario_list[[n_shock]] <- scenario <- run_or_load_shock(
+  n_shock,
+  initial_shock,
+  mvp.model,
+  force = FALSE
+)
+```
+
+### Visualize Shocked Variables
+
+```{r shock.view.3}
+#| fig-width: 6
+#| fig-height: 2
+
+view.shock(
+  scenario,
+  shock.vars = paste(
+    sc$target[n_shock],
+    sc[n_shock, c('from', 'to')] %>% unlist,
+    sep = '-'
+  ),
+  shock.sectors = sc[n_shock, c('from', 'to')] %>% unlist,
+  shock.title = sc$display_name[n_shock]
+)
+```
+
+### Visualize Impacts
+
+```{r shock.visualize.scaled.3}
+#| fig-width: 8
+#| fig-height: 4
+
+p.selected.vars <- plot_selected_vars(
+  baseline = baseline,
+  scenario = scenario,
+  selected.list = selected.list,
+  shock_title = sc$display_name[n_shock],
+  t_shock = initial$pars["t.shock", "value"],
+  print_blocks = TRUE
+)
+
+p.selected.vars
+```
+
+### Summary Visualization
+
+```{r summary.table.3}
+#| fig-width: 10
+#| fig-height: 10
+
+scenario.table <- shock.summary(
+  baseline,
+  shock.run = scenario,
+  t_ = c(t.shock + 1, t.shock + 7, t.shock + 20),
+  t_names = c('Immediate', 'Short.Term', 'Long.Term')
+)
+
+# kable(diet.table, booktabs = T)
+write.csv(scenario.table, get_table_filename(n_shock), row.names = FALSE)
+
+scenario.table <- read.csv(get_table_filename(n_shock))
+
+scenario_analysis_2026_plot(
+  shock_df = scenario.table,
+  shock_title = sc$display_name[n_shock],
+  variable.table = variable.table
+)
+```
+
+___
+
+## 4 | Government Cement Shift
+
+```{r shock.run.4}
+# Shock Selection and Run
+initial_shock <- initial
+n_shock <- initial_shock$pars['shock', 'value'] <- 4
+
+initial_shock$pars['rho', 'value']
+
+scenario_list[[n_shock]] <- scenario <- run_or_load_shock(
+  n_shock,
+  initial_shock,
+  mvp.model,
+  force = FALSE
+)
+```
+
+### Visualize Shocked Variables
+
+```{r shock.view.4}
+#| fig-width: 6
+#| fig-height: 2
+
+view.shock(
+  scenario,
+  shock.vars = paste(
+    sc$target[n_shock],
+    sc[n_shock, c('from', 'to')] %>% unlist,
+    sep = '-'
+  ),
+  shock.sectors = sc[n_shock, c('from', 'to')] %>% unlist,
+  shock.title = sc$display_name[n_shock]
+)
+```
+
+### Visualize Impacts
+
+```{r shock.visualize.scaled.4}
+#| fig-width: 8
+#| fig-height: 4
+
+p.selected.vars <- plot_selected_vars(
+  baseline = baseline,
+  scenario = scenario,
+  selected.list = selected.list,
+  shock_title = sc$display_name[n_shock],
+  t_shock = initial$pars["t.shock", "value"],
+  print_blocks = TRUE
+)
+
+p.selected.vars
+```
+
+### Summary Visualization
+
+```{r summary.table.4}
+#| fig-width: 10
+#| fig-height: 10
+
+scenario.table <- shock.summary(
+  baseline,
+  shock.run = scenario,
+  t_ = c(t.shock + 1, t.shock + 7, t.shock + 20),
+  t_names = c('Immediate', 'Short.Term', 'Long.Term')
+)
+
+# kable(diet.table, booktabs = T)
+write.csv(scenario.table, get_table_filename(n_shock), row.names = FALSE)
+
+scenario.table <- read.csv(get_table_filename(n_shock))
+
+scenario_analysis_2026_plot(
+  shock_df = scenario.table,
+  shock_title = sc$display_name[n_shock],
+  variable.table = variable.table
+)
+```
+
+___
+
+
+
+
+
+## 5 | Firm Energy Shift
+
+```{r shock.run.5}
+# Shock Selection and Run
+initial_shock <- initial
+n_shock <- initial_shock$pars['shock', 'value'] <- 5
+
+initial_shock$pars['rho', 'value']
+
+scenario_list[[n_shock]] <- scenario <- run_or_load_shock(
+  n_shock,
+  initial_shock,
+  mvp.model,
+  force = FALSE
+)
+```
+
+### Visualize Shocked Variables
+
+```{r shock.view.5}
+#| fig-width: 6
+#| fig-height: 2
+
+view.shock(
+  scenario,
+  shock.vars = paste(
+    sc$target[n_shock],
+    sc[n_shock, c('from', 'to')] %>% unlist,
+    sep = '-'
+  ),
+  shock.sectors = sc[n_shock, c('from', 'to')] %>% unlist,
+  shock.title = sc$display_name[n_shock]
+)
+```
+
+### Visualize Impacts
+
+```{r shock.visualize.scaled.5}
+#| fig-width: 8
+#| fig-height: 4
+
+p.selected.vars <- plot_selected_vars(
+  baseline = baseline,
+  scenario = scenario,
+  selected.list = selected.list,
+  shock_title = sc$display_name[n_shock],
+  t_shock = initial$pars["t.shock", "value"],
+  print_blocks = TRUE
+)
+
+p.selected.vars
+```
+
+### Summary Visualization
+
+```{r summary.table.5}
+#| fig-width: 10
+#| fig-height: 10
+
+scenario.table <- shock.summary(
+  baseline,
+  shock.run = scenario,
+  t_ = c(t.shock + 1, t.shock + 7, t.shock + 20),
+  t_names = c('Immediate', 'Short.Term', 'Long.Term')
+)
+
+# kable(diet.table, booktabs = T)
+write.csv(scenario.table, get_table_filename(n_shock), row.names = FALSE)
+
+scenario.table <- read.csv(get_table_filename(n_shock))
+
+scenario_analysis_2026_plot(
+  shock_df = scenario.table,
+  shock_title = sc$display_name[n_shock],
+  variable.table = variable.table
+)
+```
+
+___
+
+## 6 | Firm Plastics Shift
+
+```{r shock.run.6}
+# Shock Selection and Run
+initial_shock <- initial
+n_shock <- initial_shock$pars['shock', 'value'] <- 6
+
+initial_shock$pars['rho', 'value']
+
+scenario_list[[n_shock]] <- scenario <- run_or_load_shock(
+  n_shock,
+  initial_shock,
+  mvp.model,
+  force = FALSE
+)
+```
+
+### Visualize Shocked Variables
+
+```{r shock.view.6}
+#| fig-width: 6
+#| fig-height: 2
+
+view.shock(
+  scenario,
+  shock.vars = paste(
+    sc$target[n_shock],
+    sc[n_shock, c('from', 'to')] %>% unlist,
+    sep = '-'
+  ),
+  shock.sectors = sc[n_shock, c('from', 'to')] %>% unlist,
+  shock.title = sc$display_name[n_shock]
+)
+```
+
+### Visualize Impacts
+
+```{r shock.visualize.scaled.6}
+#| fig-width: 8
+#| fig-height: 4
+
+p.selected.vars <- plot_selected_vars(
+  baseline = baseline,
+  scenario = scenario,
+  selected.list = selected.list,
+  shock_title = sc$display_name[n_shock],
+  t_shock = initial$pars["t.shock", "value"],
+  print_blocks = TRUE
+)
+
+p.selected.vars
+```
+
+### Summary Visualization
+
+```{r summary.table.6}
+#| fig-width: 10
+#| fig-height: 10
+
+scenario.table <- shock.summary(
+  baseline,
+  shock.run = scenario,
+  t_ = c(t.shock + 1, t.shock + 7, t.shock + 20),
+  t_names = c('Immediate', 'Short.Term', 'Long.Term')
+)
+
+# kable(diet.table, booktabs = T)
+write.csv(scenario.table, get_table_filename(n_shock), row.names = FALSE)
+
+scenario.table <- read.csv(get_table_filename(n_shock))
+
+scenario_analysis_2026_plot(
+  shock_df = scenario.table,
+  shock_title = sc$display_name[n_shock],
+  variable.table = variable.table
+)
+```
+
+___
+
 
 # Intermediate Demand Scenarios 
 

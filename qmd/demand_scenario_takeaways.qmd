@@ -1,0 +1,137 @@
+---
+title: "Final Demand Scenario Takeaways"
+subtitle: "Insights from a Core-Periphery SOCIO-ECO-MRIO-SFC Model"
+author:
+  - name: "Oriol Vallès Codina"
+    affiliation: "Johns Hopkins University, Net Zero Industrial Policy Lab, Department of Political Science"
+    email: 
+      - "oriolvallescodina@gmail.com"
+date: "`r Sys.Date()`"
+format:
+  html:
+    toc: true
+    toc_float: true
+    self-contained: true
+    page-layout: full
+    css: fullwidth.css
+execute:
+  echo: false
+  working-dir: ..
+---
+
+# Key Structural Findings from Scenario Comparison
+
+The scenario analysis reveals a clear macro-ecological success combined with persistent social and distributional tensions. The green transition improves environmental indicators and external balances but generates labour market contraction and rising inequality, particularly over time.
+
+## Macroeconomic Stabilization
+
+Across both Core and Periphery, the green transition produces systematic macroeconomic improvements, especially beyond the immediate adjustment phase.
+
+- Current account balance and trade balance improve in all time horizons  
+- Government deficit narrows significantly in the short and long term  
+- Value added and gross output recover after short-term adjustment costs  
+- The Core captures stronger and earlier gains than the Periphery  
+
+**Time dynamics:**  
+Short-term disruption → Medium-term stabilization → Long-term consolidation  
+
+These patterns are consistent with a structural reallocation process rather than a prolonged recessionary adjustment.
+
+---
+
+## Distributional Shift Toward Capital
+
+The transition generates a persistent and intensifying redistribution from labour to capital.
+
+| Indicator | Immediate | Short Term | Long Term | Interpretation |
+|----------|-----------|------------|-----------|----------------|
+| Wage share of income | ↓ | ↓↓ | ↓↓ | Labour loses income share |
+| Profit share of income | ↑ | ↑↑ | ↑↑ | Capital captures transition rents |
+| Worker disposable income | ↓ | ↓ | ↓ | Real labour income compression |
+| Capitalist disposable income | ↑ | ↑↑ | ↑↑ | Income polarization widens |
+
+The shift is not temporary; it strengthens over time, indicating a structural, capital-biased transition under existing institutional settings.
+
+---
+
+## Labour Market Contraction
+
+Employment effects are consistently negative, with no clear recovery in the long term.
+
+| Variable | Core | Periphery | Dynamics |
+|----------|------|-----------|----------|
+| Total employment | ↓ | slight ↓ | Persistent decline |
+| Female employment | ↓↓ | slight ↓ | Gendered impact |
+| Real consumption | ↓ | flat/slight ↓ | Demand compression |
+
+The results suggest a labour-saving restructuring rather than a short-term displacement followed by reabsorption. The stronger fall in female employment points to sectoral reallocation away from feminized sectors.
+
+---
+
+## Core–Periphery Asymmetry
+
+The macroeconomic benefits of the transition are unevenly distributed:
+
+- The Core experiences stronger improvements in trade balances and current account positions  
+- Financial variables and wealth indicators suggest capital re-accumulation in the Core  
+- The Periphery benefits less from value-added gains  
+
+This pattern indicates upstream green upgrading concentrated in core economies, with limited peripheral value capture.
+
+---
+
+## Strong and Immediate Ecological Gains
+
+Environmental improvements are large, immediate, and sustained across all horizons.
+
+| Indicator | Pattern |
+|----------|---------|
+| CO₂ emissions | Large decline |
+| Material extraction | Decline |
+| Land use | Decline |
+| Waste | Decline |
+| Water use | Decline |
+| Recycling | Increase |
+
+Unlike the social variables, ecological gains are front-loaded rather than delayed.
+
+---
+
+## Time Horizon Summary
+
+| Dimension | Immediate | Short Term | Long Term |
+|-----------|-----------|------------|-----------|
+| Ecology | Large gains | Maintained | Maintained |
+| Macroeconomic stability | Mixed | Improves | Consolidates |
+| Employment | Falls | Falls further | No recovery |
+| Inequality | Rises | Rises more | Structural shift |
+| Core–Periphery gap | Limited | Widening | Entrenched |
+
+---
+
+## Overall Interpretation
+
+The modeled green transition is:
+
+**Ecologically effective**  
+**Macroeconomically stabilizing**  
+**Socially regressive under current institutions**  
+
+Without complementary policies such as:
+
+- Wage protection and collective bargaining support  
+- Employment guarantees or green job programs  
+- Labour-absorbing industrial policy  
+- Gender-sensitive transition measures  
+
+the transition path risks becoming politically destabilizing despite ecological success.
+
+---
+
+## Executive Takeaway
+
+- The green transition delivers rapid ecological improvements and medium-term macroeconomic stabilization, particularly in external balances and fiscal positions. 
+- However, these gains are accompanied by persistent labour displacement, declining wage shares, rising profit shares, and falling worker incomes, with especially strong negative effects on female employment. 
+- Inequality widens over time, and the Core captures a disproportionate share of the macroeconomic benefits relative to the Periphery.
+- Without strong redistributive and labour-market institutions, the transition appears environmentally effective but socially and politically fragile.
+
