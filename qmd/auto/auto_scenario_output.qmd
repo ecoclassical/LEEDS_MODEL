@@ -1,0 +1,136 @@
+---
+title: "Scenario Analysis"
+subtitle: "Insights from a Core-Periphery SOCIO-ECO-MRIO-SFC Model"
+author:
+  - name: "Oriol Vallès Codina"
+    affiliation: "Johns Hopkins University, Net Zero Industrial Policy Lab, Department of Political Science"
+    email:
+      - "oriolvallescodina@gmail.com"
+date: "`r Sys.Date()`"
+format:
+  html:
+    toc: true
+    toc_float: true
+    self-contained: true
+    page-layout: full
+    css: fullwidth.css
+execute:
+  echo: false
+  working-dir: ..
+---
+
+# Initialization
+
+This file is the **execution layer**: it runs scenarios from `scenarios.csv`, writes logs, caches `.RDS` outputs, and (optionally) produces tidy long-format outputs for downstream analysis.
+
+```{r packages, warning=FALSE, message=FALSE}
+library(tidyverse)
+library(knitr)
+```
+
+```{r init, warning=FALSE, message=FALSE}
+# -----------------------------
+# Robust project root detection
+# -----------------------------
+qmd_in <- knitr::current_input()
+
+if (!is.null(qmd_in) && nzchar(qmd_in)) {
+  qmd_path <- normalizePath(qmd_in, winslash = "/")
+  root <- normalizePath(file.path(dirname(qmd_path), ".."), winslash = "/")
+} else {
+  wd0 <- normalizePath(getwd(), winslash = "/")
+  root <- if (basename(wd0) == "qmd") {
+    normalizePath("..", winslash = "/")
+  } else {
+    wd0
+  }
+}
+
+dir_data <- file.path(root, "data")
+
+model_dir <- file.path(root, "model")
+
+# Workspace dirs (shared across all scenario files)
+workspace_dir <- file.path(root, "output", "scenarios")
+dir_runs <- file.path(workspace_dir, "shock_runs")
+dir_tables <- file.path(workspace_dir, "shock_tables")
+dir_logs <- file.path(workspace_dir, "logs")
+dir_long <- file.path(workspace_dir, "shock_long")
+dir_cache <- file.path(workspace_dir, "scenario_cache")
+dir_rds <- file.path(workspace_dir, "rds_files")
+
+invisible(lapply(
+  list(
+    workspace_dir,
+    dir_runs,
+    dir_tables,
+    dir_logs,
+    dir_long,
+    dir_cache,
+    dir_rds
+  ),
+  dir.create,
+  showWarnings = FALSE,
+  recursive = TRUE
+))
+
+# Inputs
+initial_filename <- file.path(dir_data, "initial_state_2026.xlsx")
+stopifnot(file.exists(initial_filename))
+
+baseline_filename <- file.path(workspace_dir, "baseline_2026.RDS")
+scenario_filename <- file.path(workspace_dir, "scenarios.csv")
+stopifnot(file.exists(baseline_filename))
+stopifnot(file.exists(scenario_filename))
+
+sc <- read.csv(scenario_filename, stringsAsFactors = FALSE)
+
+# Core model bootstrapping
+source(file.path(model_dir, "bootstrap_2026.R"))
+initial <- load.init(initial_filename)
+
+get_shock_filename <- function(n) {
+  file.path(dir_runs, paste0("shock_", n, "_run.RDS"))
+}
+get_log_filename <- function(n) {
+  file.path(dir_logs, paste0("shock_", n, "_run.log"))
+}
+```
+
+# Execution API
+
+The pipeline expects a function `run_one_scenario(s)` in scope. If your `bootstrap_2026.R` already defines it, this block does nothing. Otherwise, a conservative default wrapper is provided.
+
+
+# Run scenarios
+
+```{r run_scenarios, warning=FALSE, message=FALSE}
+# Choose which shocks to run:
+shock_ids <- sort(unique(as.integer(sc$shock)))
+
+# Skip shocks already cached
+shock_ids <- shock_ids[
+  !file.exists(vapply(shock_ids, get_shock_filename, character(1)))
+]
+
+cat("Shocks to run:", paste(shock_ids, collapse = ", "), "\n")
+
+# If your bootstrap defines compute_scenario(), prefer it (it may also write tables/long outputs).
+if (exists("compute_scenario", mode = "function")) {
+  invisible(lapply(shock_ids, function(s) {
+    compute_scenario(
+      shock = s,
+      initial = initial,
+      baseline_filename = baseline_filename,
+      sc = sc,
+      dir_runs = dir_runs,
+      dir_tables = dir_tables,
+      dir_logs = dir_logs,
+      dir_long = dir_long,
+      dir_cache = dir_cache
+    )
+  }))
+} else {
+  invisible(lapply(shock_ids, run_one_scenario))
+}
+```

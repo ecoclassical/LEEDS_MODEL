@@ -31,7 +31,7 @@ library(visNetwork)
 library(scales)
 ```
 
-```{r init, warning = F}
+```{r init, warning = F, message = F}
 # -----------------------------
 # Robust project root detection
 # -----------------------------
@@ -52,29 +52,12 @@ if (!is.null(qmd_in) && nzchar(qmd_in)) {
   root_method <- "getwd() fallback"
 }
 
-dir_data <- file.path(root, "data")
-
-cat("root_method:", root_method, "\n")
-cat("getwd():", normalizePath(getwd(), winslash = "/"), "\n")
-cat("root  :", root, "\n")
-cat("dir_data:", dir_data, "\n")
-cat(
-  "VarDef exists?:",
-  file.exists(file.path(dir_data, "Variable_Definitions.csv")),
-  "\n"
-)
-cat(
-  "initial exists?:",
-  file.exists(file.path(dir_data, "initial_state_2026.xlsx")),
-  "\n"
-)
-
 # -----------------------------
 # Canonical directories
 # -----------------------------
 model_dir <- file.path(root, "model")
-functions_dir <- file.path(root, "functions") # keep only if you still use it
 utils_dir <- file.path(root, "utils")
+dir_data <- file.path(root, "data")
 
 # -----------------------------
 # Core inputs
@@ -317,10 +300,15 @@ write.csv(scenario.table, get_table_filename(n_shock), row.names = FALSE)
 
 scenario.table <- read.csv(get_table_filename(n_shock))
 
-scenario_analysis_2026_plot(
+scenario_analysis_plot(
   shock_df = scenario.table,
   shock_title = sc$display_name[n_shock],
-  variable.table = variable.table
+  variable.table = variable.table,
+  shock_subtitle = paste0(
+    'Shock Parameter ρ = ',
+    initial_shock$pars['rho', 'value'],
+    ". Teal = positive change, red = negative change (relative to baseline)"
+  )
 )
 ```
 
@@ -395,10 +383,15 @@ write.csv(scenario.table, get_table_filename(n_shock), row.names = FALSE)
 
 scenario.table <- read.csv(get_table_filename(n_shock))
 
-scenario_analysis_2026_plot(
+scenario_analysis_plot(
   shock_df = scenario.table,
   shock_title = sc$display_name[n_shock],
-  variable.table = variable.table
+  variable.table = variable.table,
+  shock_subtitle = paste0(
+    'Shock Parameter ρ = ',
+    initial_shock$pars['rho', 'value'],
+    ". Teal = positive change, red = negative change (relative to baseline)"
+  )
 )
 ```
 
@@ -475,11 +468,17 @@ write.csv(scenario.table, get_table_filename(n_shock), row.names = FALSE)
 
 scenario.table <- read.csv(get_table_filename(n_shock))
 
-scenario_analysis_2026_plot(
+scenario_analysis_plot(
   shock_df = scenario.table,
   shock_title = sc$display_name[n_shock],
-  variable.table = variable.table
+  variable.table = variable.table,
+  shock_subtitle = paste0(
+    'Shock Parameter ρ = ',
+    initial_shock$pars['rho', 'value'],
+    ". Teal = positive change, red = negative change (relative to baseline)"
+  )
 )
+
 ```
 
 ___
@@ -555,10 +554,15 @@ write.csv(scenario.table, get_table_filename(n_shock), row.names = FALSE)
 
 scenario.table <- read.csv(get_table_filename(n_shock))
 
-scenario_analysis_2026_plot(
+scenario_analysis_plot(
   shock_df = scenario.table,
   shock_title = sc$display_name[n_shock],
-  variable.table = variable.table
+  variable.table = variable.table,
+  shock_subtitle = paste0(
+    'Shock Parameter ρ = ',
+    initial_shock$pars['rho', 'value'],
+    ". Teal = positive change, red = negative change (relative to baseline)"
+  )
 )
 ```
 
@@ -639,10 +643,15 @@ write.csv(scenario.table, get_table_filename(n_shock), row.names = FALSE)
 
 scenario.table <- read.csv(get_table_filename(n_shock))
 
-scenario_analysis_2026_plot(
+scenario_analysis_plot(
   shock_df = scenario.table,
   shock_title = sc$display_name[n_shock],
-  variable.table = variable.table
+  variable.table = variable.table,
+  shock_subtitle = paste0(
+    'Shock Parameter ρ = ',
+    initial_shock$pars['rho', 'value'],
+    ". Teal = positive change, red = negative change (relative to baseline)"
+  )
 )
 ```
 
@@ -719,10 +728,15 @@ write.csv(scenario.table, get_table_filename(n_shock), row.names = FALSE)
 
 scenario.table <- read.csv(get_table_filename(n_shock))
 
-scenario_analysis_2026_plot(
+scenario_analysis_plot(
   shock_df = scenario.table,
   shock_title = sc$display_name[n_shock],
-  variable.table = variable.table
+  variable.table = variable.table,
+  shock_subtitle = paste0(
+    'Shock Parameter ρ = ',
+    initial_shock$pars['rho', 'value'],
+    ". Teal = positive change, red = negative change (relative to baseline)"
+  )
 )
 ```
 
@@ -809,10 +823,15 @@ write.csv(scenario.table, get_table_filename(n_shock), row.names = FALSE)
 
 scenario.table <- read.csv(get_table_filename(n_shock))
 
-scenario_analysis_2026_plot(
+scenario_analysis_plot(
   shock_df = scenario.table,
   shock_title = sc$display_name[n_shock],
-  variable.table = variable.table
+  variable.table = variable.table,
+  shock_subtitle = paste0(
+    'Shock Parameter ρ = ',
+    initial_shock$pars['rho', 'value'],
+    ". Teal = positive change, red = negative change (relative to baseline)"
+  )
 )
 
 ```
@@ -896,10 +915,15 @@ write.csv(scenario.table, get_table_filename(n_shock), row.names = FALSE)
 
 scenario.table <- read.csv(get_table_filename(n_shock))
 
-scenario_analysis_2026_plot(
+scenario_analysis_plot(
   shock_df = scenario.table,
   shock_title = sc$display_name[n_shock],
-  variable.table = variable.table
+  variable.table = variable.table,
+  shock_subtitle = paste0(
+    'Shock Parameter ρ = ',
+    initial_shock$pars['rho', 'value'],
+    ". Teal = positive change, red = negative change (relative to baseline)"
+  )
 )
 
 ```
@@ -983,10 +1007,15 @@ write.csv(scenario.table, get_table_filename(n_shock), row.names = FALSE)
 
 scenario.table <- read.csv(get_table_filename(n_shock))
 
-scenario_analysis_2026_plot(
+scenario_analysis_plot(
   shock_df = scenario.table,
   shock_title = sc$display_name[n_shock],
-  variable.table = variable.table
+  variable.table = variable.table,
+  shock_subtitle = paste0(
+    'Shock Parameter ρ = ',
+    initial_shock$pars['rho', 'value'],
+    ". Teal = positive change, red = negative change (relative to baseline)"
+  )
 )
 
 ```
@@ -1070,10 +1099,15 @@ write.csv(scenario.table, get_table_filename(n_shock), row.names = FALSE)
 
 scenario.table <- read.csv(get_table_filename(n_shock))
 
-scenario_analysis_2026_plot(
+scenario_analysis_plot(
   shock_df = scenario.table,
   shock_title = sc$display_name[n_shock],
-  variable.table = variable.table
+  variable.table = variable.table,
+  shock_subtitle = paste0(
+    'Shock Parameter ρ = ',
+    initial_shock$pars['rho', 'value'],
+    ". Teal = positive change, red = negative change (relative to baseline)"
+  )
 )
 
 ```
@@ -1157,10 +1191,15 @@ write.csv(scenario.table, get_table_filename(n_shock), row.names = FALSE)
 
 scenario.table <- read.csv(get_table_filename(n_shock))
 
-scenario_analysis_2026_plot(
+scenario_analysis_plot(
   shock_df = scenario.table,
   shock_title = sc$display_name[n_shock],
-  variable.table = variable.table
+  variable.table = variable.table,
+  shock_subtitle = paste0(
+    'Shock Parameter ρ = ',
+    initial_shock$pars['rho', 'value'],
+    ". Teal = positive change, red = negative change (relative to baseline)"
+  )
 )
 
 ```
@@ -1245,10 +1284,15 @@ write.csv(scenario.table, get_table_filename(n_shock), row.names = FALSE)
 
 scenario.table <- read.csv(get_table_filename(n_shock))
 
-scenario_analysis_2026_plot(
+scenario_analysis_plot(
   shock_df = scenario.table,
   shock_title = sc$display_name[n_shock],
-  variable.table = variable.table
+  variable.table = variable.table,
+  shock_subtitle = paste0(
+    'Shock Parameter ρ = ',
+    initial_shock$pars['rho', 'value'],
+    ". Teal = positive change, red = negative change (relative to baseline)"
+  )
 )
 
 ```
@@ -1333,10 +1377,15 @@ write.csv(scenario.table, get_table_filename(n_shock), row.names = FALSE)
 
 scenario.table <- read.csv(get_table_filename(n_shock))
 
-scenario_analysis_2026_plot(
+scenario_analysis_plot(
   shock_df = scenario.table,
   shock_title = sc$display_name[n_shock],
-  variable.table = variable.table
+  variable.table = variable.table,
+  shock_subtitle = paste0(
+    'Shock Parameter ρ = ',
+    initial_shock$pars['rho', 'value'],
+    ". Teal = positive change, red = negative change (relative to baseline)"
+  )
 )
 
 ```
@@ -1425,10 +1474,15 @@ write.csv(scenario.table, get_table_filename(n_shock), row.names = FALSE)
 
 scenario.table <- read.csv(get_table_filename(n_shock))
 
-scenario_analysis_2026_plot(
+scenario_analysis_plot(
   shock_df = scenario.table,
   shock_title = sc$display_name[n_shock],
-  variable.table = variable.table
+  variable.table = variable.table,
+  shock_subtitle = paste0(
+    'Shock Parameter ρ = ',
+    initial_shock$pars['rho', 'value'],
+    ". Teal = positive change, red = negative change (relative to baseline)"
+  )
 )
 
 ```
@@ -1492,7 +1546,8 @@ p <- build_policy_comparison_plot(
   variable.table = variable.table,
   sc = sc,
   workspace_dir = workspace_dir,
-  filename = "p_comparison_terms.pdf"
+  filename = "p_comparison_terms.pdf",
+  rho = initial_shock$pars['rho', 'value']
 )
 
 p
@@ -1508,7 +1563,8 @@ p_2 <- build_policy_comparison_plot(
   variable.table = variable.table,
   sc = sc,
   workspace_dir = workspace_dir,
-  filename = "p_comparison_terms_2.pdf"
+  filename = "p_comparison_terms_2.pdf",
+  rho = initial_shock$pars['rho', 'value']
 )
 
 p_2
@@ -1526,7 +1582,8 @@ p_avg <- build_policy_comparison_plot_avg_terms(
   variable.table = variable.table,
   sc = sc,
   workspace_dir = workspace_dir,
-  filename = "p_comparison_avg_terms.pdf"
+  filename = "p_comparison_avg_terms.pdf",
+  rho = initial_shock$pars['rho', 'value']
 )
 
 p_avg
@@ -1542,7 +1599,8 @@ p_avg_2 <- build_policy_comparison_plot_avg_terms(
   variable.table = variable.table,
   sc = sc,
   workspace_dir = workspace_dir,
-  filename = "p_comparison_avg_terms_2.pdf"
+  filename = "p_comparison_avg_terms_2.pdf",
+  rho = initial_shock$pars['rho', 'value']
 )
 
 p_avg_2

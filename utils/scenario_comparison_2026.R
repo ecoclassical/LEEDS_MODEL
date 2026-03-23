@@ -3,7 +3,8 @@ build_policy_comparison_plot <- function(
   variable.table,
   sc = NULL,
   workspace_dir = NULL,
-  filename = "p_comparison.pdf"
+  filename = "p_comparison.pdf",
+  rho = 0.2
 ) {
   # ---- helper ----
   replace_second_space <- function(x) {
@@ -110,9 +111,21 @@ build_policy_comparison_plot <- function(
     ncol = 1,
     guides = "collect"
   ) &
-    ggplot2::theme(legend.position = "top") &
-    ggplot2::guides(
-      fill = ggplot2::guide_legend(nrow = 5, byrow = TRUE)
+    ggplot2::theme(
+      legend.position = "top",
+      plot.title = element_text(size = 14)
+    ) &
+    ggplot2::guides(fill = ggplot2::guide_legend(nrow = 5, byrow = TRUE))
+
+  p.comparison <- p.comparison +
+    patchwork::plot_annotation(
+      title = "Comparison of Circular Transition Scenarios",
+      subtitle = paste0("Shock Parameter \u03c1 = ", rho),
+      theme = ggplot2::theme(
+        plot.title = ggplot2::element_text(size = 20, face = "bold"),
+        plot.subtitle = ggplot2::element_text(size = 14),
+        plot.title.position = "plot"
+      )
     )
 
   # ---- optional save ----
@@ -136,7 +149,8 @@ build_policy_comparison_plot_avg_terms <- function(
   sc = NULL,
   workspace_dir = NULL,
   filename = "p_comparison_avg_terms.pdf",
-  avg_fun = function(x) mean(x, na.rm = TRUE)
+  avg_fun = function(x) mean(x, na.rm = TRUE),
+  rho = 0.2
 ) {
   # ---- helper ----
   replace_second_space <- function(x) {
@@ -260,8 +274,12 @@ build_policy_comparison_plot_avg_terms <- function(
     guides = "collect"
   ) &
     ggplot2::theme(legend.position = "top") &
-    ggplot2::guides(
-      fill = ggplot2::guide_legend(nrow = 1, byrow = TRUE)
+    ggplot2::guides(fill = ggplot2::guide_legend(nrow = 1, byrow = TRUE))
+
+  p.comparison.avg <- p.comparison.avg +
+    patchwork::plot_annotation(
+      title = "Comparison of Circular Transition Scenarios",
+      subtitle = paste0("Shock Parameter \u03c1 = ", rho)
     )
 
   # ---- optional save ----

@@ -1,187 +1,647 @@
 ---
-execute:
-  echo: false
+title: "Scenario Design"
+subtitle: "Insights from a Core-Periphery SOCIO-ECO-MRIO-SFC Model"
+author:
+  - name: "Oriol Vallès Codina"
+    affiliation: "Johns Hopkins University, Net Zero Industrial Policy Lab, Department of Political Science"
+    email: 
+      - "oriolvallescodina@gmail.com"
+date: "`r Sys.Date()`"
 format:
   html:
-    page-layout: full
     toc: true
     toc_float: true
-title: Scenario Design
----
+    self-contained: true
+    number-sections: true
+    page-layout: full
+    css: fullwidth.css
+execute:
+  echo: false
+--- 
 
-# 1. Conceptual Framework
+```{r packages, warning = F, message = F}
+library(tidyverse)
+library(igraph)
+library(qgraph)
+library(visNetwork)
+library(scales)
+```
 
-This document formalizes the structural logic of the scenario design
-used in the model.\
-All redistribution mechanisms are constructed to preserve accounting
-identities and maintain structural consistency between:
+```{r directories, warning = F, message = F}
+# -----------------------------
+# Robust project root detection
+# -----------------------------
+qmd_in <- knitr::current_input()
 
-1.  Production-side sourcing (technical coefficients matrix $A$)
-2.  Demand-side allocation shares ($\beta, \sigma, \iota, \iota_g$)
+if (!is.null(qmd_in) && nzchar(qmd_in)) {
+  qmd_path <- normalizePath(qmd_in, winslash = "/")
+  root <- normalizePath(file.path(dirname(qmd_path), ".."), winslash = "/")
+  root_method <- "knitr::current_input()"
+} else {
+  # Fallback for interactive execution / sourcing
+  wd0 <- normalizePath(getwd(), winslash = "/")
+  root <- if (basename(wd0) == "qmd") {
+    normalizePath("..", winslash = "/")
+  } else {
+    wd0
+  }
+  root_method <- "getwd() fallback"
+}
 
-The governing parameter is:
+# -----------------------------
+# Canonical directories
+# -----------------------------
+model_dir <- file.path(root, "model")
+utils_dir <- file.path(root, "utils")
+dir_data <- file.path(root, "data")
+
+# -----------------------------
+# Core inputs
+# -----------------------------
+variable.table <- read.csv(
+  file.path(dir_data, "Variable_Definitions.csv"),
+  stringsAsFactors = FALSE
+)
+sector_list <- read.csv(
+  file.path(dir_data, "sector_list.csv"),
+  stringsAsFactors = FALSE
+) %>%
+  mutate(label = gsub("<br>", " ", label))
+n_sector <- nrow(sector_list) # 54
+initial_filename <- file.path(dir_data, "initial_state_2026.xlsx")
+
+# -----------------------------
+## workspace dirs
+# -----------------------------
+workspace_dir <- file.path(root, "output", "scenarios")
+dir.create(workspace_dir, showWarnings = FALSE, recursive = TRUE)
+
+dir_runs <- file.path(workspace_dir, "shock_runs")
+dir_tables <- file.path(workspace_dir, "shock_tables")
+dir_logs <- file.path(workspace_dir, "logs")
+dir_long <- file.path(workspace_dir, "shock_long")
+dir_cache <- file.path(workspace_dir, "scenario_cache")
+dir_rds <- file.path(workspace_dir, "rds_files")
+
+invisible(lapply(
+  list(dir_runs, dir_tables, dir_logs, dir_long, dir_cache, dir_rds),
+  dir.create,
+  showWarnings = FALSE,
+  recursive = TRUE
+))
+
+# -----------------------------
+# Source utilities + model code
+# -----------------------------
+
+source(file.path(model_dir, "bootstrap_2026.R"))
+
+# --- Load initial state ---
+initial <- load.init(initial_filename)
+
+p_incidence_file <- file.path(workspace_dir, "p_incidence.png")
+p_backward_file <- file.path(workspace_dir, "p_backward.png")
+```
+
+
+# Overview 
+
+Our economy uses materials $M = \{ 
+\text{food},\;
+\text{energy},\;
+\text{wood},\;
+\text{plastic},\;
+\text{pulp},\;
+\text{paper},\;
+\text{metal},\;
+\text{glass},\;
+\text{cement},\;
+\text{rubber}
+\}$. 
+
+Shifts towards economic circularity can be either driven by final demand or by intermediate production substitutions. Interventions can be modeled as redistribution operators, governed by scalar parameter $\rho \in [0,1]$ decreasing primary material use $M_1$ and increases secondary material use $M_2$ either by:
+
+- by reallocating sector-level shares in **final demand** $\mathbf{d}$ from primary to secondary materials:
+  - in **consumption**:
+    - by households $c$ and 
+    - by government $g$
+  - in **investment / final production**, both 
+    - private $id$ and 
+    - public $id_g$, or
+- by changing input-output coefficients $A$ in **intermediate production**, substituting industrial material inputs from primary to secondary materials.
+
+_______
+
+# Table of Scenarios
+
+```{r scenarios.table}
+scenario_filename <- file.path(dir_data, "scenarios.csv")
+
+sc <- read.csv(file = scenario_filename) %>%
+  mutate(from = as.integer(from), to = as.integer(to))
+
+# sc_long: one row per (shock, endpoint) for IO analysis chunks
+sc_long <- sc %>%
+  select(shock, domain, from, to, shift = display_name) %>%
+  pivot_longer(cols = c(from, to), names_to = "endpoint", values_to = "sector")
+
+sc %>%
+  select(-display_name) %>%
+  kable(
+    caption = "Scenario Registry",
+    align = "l",
+    escape = TRUE
+  ) %>%
+  kable_styling(
+    full_width = FALSE,
+    bootstrap_options = c("striped", "hover", "condensed"),
+    font_size = 12
+  ) %>%
+  scroll_box(width = "100%", height = "600px")
+```
+
+___
+
+
+# Setup
+
+*Final demand* $\mathbf{d}$ in real terms is defined sector-by-sector as the sum of domestic components $D$ and the external balance:
+
+1. Household consumption $c$ with sector-level shares $\beta$, 
+2. Government consumption $g$ with sector-level shares $\sigma$, 
+3. Private investment $id$ with sector-level shares $\iota$, and
+4. Public investment $id^g$ with sector-level shares $\iota^g$.
 
 $$
-\rho \in [0,1]
+\mathbf{d}
+=
+\begin{pmatrix}
+\beta_1 \\
+\beta_2 \\
+\vdots \\
+\beta_N
+\end{pmatrix} c
++
+\begin{pmatrix}
+\sigma_1 \\
+\sigma_2 \\
+\vdots \\
+\sigma_N
+\end{pmatrix} g
++
+\begin{pmatrix}
+\iota_1 \\
+\iota_2 \\
+\vdots \\
+\iota_N
+\end{pmatrix} id
++
+\begin{pmatrix}
+\iota^g_1 \\
+\iota^g_2 \\
+\vdots \\
+\iota^g_N
+\end{pmatrix} id^g + \text{external balance}
 $$
 
-interpreted as the **fraction of original allocation from sector `from`
-that is redirected to sector `to`.**
-
-This interpretation is applied symmetrically across production and
-demand.
-
-------------------------------------------------------------------------
-
-# 2. Production-Side Redistribution
-
-Let $a_{ij}$ denote the technical coefficient matrix.
-
-For a given shock affecting rows `from` and `to`, the redistribution
-rule is:
+Real output $\mathbf{x}$ is then determined by the input-output system, where $L$ is the Leontief inverse matrix, with elements $l_{ij}$:
 
 $$
-a'_{from,j} = (1 - \rho)\, a_{from,j}
+\mathbf{x} = (I - A)^{-1} \mathbf{d} \equiv \mathbf{L}^{-1} \mathbf{d}.
+$$
+
+For primary sector material 1 and secondary material sector 2 (columns _from_ and _to_ in the scenarios table), material use is:
+$$
+M_1 = x_1 = \sum^N_{j=1} l_{1j} d_j, \qquad M_2 = x_2 = \sum^N_{j=1} l_{2j} d_j. 
+$$
+
+Total material use is 
+$$
+M = M_1 + M_2 = x_1 + x_2 = \sum^N_{j = 1} (l_{1j} + l_{2j}) d_j.
+$$
+
+## Final Demand
+
+For a final domestic demand component $D = \{c, g, id, id^g\}$ with sector-level shares $\delta = \{\beta, \sigma, \iota, \iota^g\}$ for household consumption, government consumption, private investment, and public investment, respectively, a shift $\rho$ is defined as:
+
+$$
+\delta'_1 = (1-\rho) \delta_1, \qquad
+\delta'_2 = \delta_2 + \rho \delta_1.
+$$
+
+so that total expenditure is preserved automatically: 
+
+$$ \sum^N_j \delta'_j = \sum^N_j \delta_j = 1 $$ 
+
+By definition, the demand change vector is
+
+$$ 
+\Delta \mathbf{d} = \Delta \mathbf{d} = \mathbf{d}' - \mathbf{d}. 
+$$
+
+Primary material demand $d_1'$ decreases: 
+$$ 
+\Delta d_1 = - \rho \delta_1 D
+$$
+
+Secondary material demand $d_2'$ increases:
+
+$$
+\Delta d_2 = + \rho \delta_1 D
+$$
+
+Demand for other inputs does not change:
+
+$$
+\Delta d_j = 0 \text{ for } j \neq 1, 2
+$$
+
+While demand changes at the sector level from primary to secondary material use, 
+
+$$\Delta \mathbf{d} \neq 0,$$
+
+aggregate demand is constant:
+
+$$ 
+\sum_{j=1}^N \Delta d_j
+=
+-\rho\delta_1 D
++
+\rho\delta_1 D
+=
+0.
+$$
+
+Because 
+
+$$ \Delta M = \sum_{j=1}^N (l_{1j}+l_{2j}) \Delta d_j,$$
+
+in general, total material use $M' \neq M$ and $\Delta M \neq 0$. Further, there may be a structural rebound effect as primary material use $M_1'$ can increase even though final demand of primary material decreases, driven by total requirements of primary material $l_{1j}$:
+
+$$
+\Delta M_1 \equiv M_1' - M_1 = \sum_{j=1}^N l_{1j}\Delta d_j = l_{11}\Delta d_1 + l_{12}\Delta d_2 =  -\rho\,\delta_1 D l_{11} +  \rho\,\delta_1 D l_{12} =
+\rho\,\delta_1 D\,(l_{12}-l_{11}).
+$$
+
+Secondary material use $M_2'$ also changes driven by total requirements of secondary material $l_{2j}$:
+
+$$
+\Delta M_2 \equiv M_2' - M_2
+= \sum_{j=1}^N l_{2j}\Delta d_j
+= l_{21}\Delta d_1 + l_{22}\Delta d_2
+= -\rho\,\delta_1 D l_{21} + \rho\,\delta_1 D l_{22}
+= \rho\,\delta_1 D\,(l_{22} - l_{21}).
+$$
+
+Hence, total material use $M'$ changes:
+
+$$
+\Delta M = \rho \delta_1 D [(l_{12} + l_{22}) - (l_{11} + l_{21})]
+$$
+
+where $l_{11}+l_{21}$ is the total requirement of material $M$ generated by one unit of demand in the primary sector (defined as decreasing) and $l_{12}+l_{22}$ is the total requirement of material $M$ generated by one unit of demand in the secondary sector (defined as increasing). 
+
+_______
+
+## Intermediate Demand
+
+
+Let primary sector 1 and secondary sector 2 supply the same functional material input. For each using sector $j$, define:
+
+$$
+s_j \equiv a_{1j} + a_{2j}.
+$$
+
+Define a substitution parameter $\rho \in [0,1]$. Then:
+
+$$
+a'_{1j} = (1-\rho)a_{1j},
+$$
+
+$$ 
+a'_{2j} = a_{2j} + \rho a_{1j},
 $$
 
 $$
-a'_{to,j} = a_{to,j} + \rho\, a_{from,j}
+a'_{ij} = a_{ij} \quad \text{for } i \neq 1,2.
 $$
 
-This ensures:
+Then:
 
 $$
-a'_{from,j} + a'_{to,j} = a_{from,j} + a_{to,j}
+a'_{1j} + a'_{2j} = a_{1j} + a_{2j} = s_j.
 $$
 
-Thus:
+This explicitly states:
 
--   Column totals are preserved.
--   Total intermediate demand intensity is unchanged.
--   Only sourcing structure changes.
+	•	Substitution
+	•	Bundle conservation
+	•	No productivity change
+	•	No change in total input requirement
 
-This represents a **structural sourcing shift**, not a scaling of total
-production requirements.
-
-------------------------------------------------------------------------
-
-# 3. Demand-Side Redistribution
-
-Let $\delta_k$ represent any final demand share vector:
-
--   $\beta$ (household consumption)
--   $\sigma$ (government consumption)
--   $\iota$ (private investment)
--   $\iota_g$ (public investment)
-
-For a redistribution between sectors `from` and `to`, the symmetric rule
-is:
+In this scenario, intermediate demand for primary material use decreases and increases for secondary material use, which involves changing the input-output coefficients $A$:
 
 $$
-\delta'_{from} = (1 - \rho)\, \delta_{from}
+a'_{1j} = (1-\rho)a_{1j}, \quad
+a'_{2j} = a_{2j} + \rho a_{1j},
 $$
 
-$$
-\delta'_{to} = \delta_{to} + \rho\, \delta_{from}
-$$
-
-This preserves the budget simplex:
+a recipe-preserving substitution, not physical material conservation. Define the technology shock $\Delta A = A' - A$ so that:
 
 $$
-\sum_k \delta'_k = \sum_k \delta_k
+\Delta a_{1j} = -\rho a_{1j},
+\qquad
+\Delta a_{2j} = +\rho a_{1j},
+\qquad
+\Delta a_{ij} = 0 \text{ otherwise.}
 $$
 
-No re-normalization is required.
+For small $\rho$, first-order changes in gross output $x$ can be computed:
 
-This ensures conceptual symmetry with the production shock.
+$$ 
+\Delta \mathbf{x} \equiv \mathbf{x}' - \mathbf{x} \approx L (\Delta A) \mathbf{x}.
+$$
 
-------------------------------------------------------------------------
+Component-wise, the change in gross output $x_i$ is in general:
 
-# 4. Unified Interpretation of ρ
+$$
+\Delta x_i
+\approx
+\rho a_{1j} x_j (l_{i2} - l_{i1}).
+$$
 
-Under this design, $\rho$ has a single structural meaning:
+Primary material use $M'_1 \equiv x'_1$ changes:
 
-> Fraction of original allocation from sector `from` that is redirected
-> to sector `to`.
+$$
+\Delta M_1
+\equiv
+M_1' - M_1
+=
+\Delta x_1
+\approx
+\rho a_{1j} x_j (l_{12} - l_{11}).
+$$ 
 
-It does **not** represent a final share split between the pair.
+Secondary material use $M'_2 \equiv x'_2$ changes:
 
-It does **not** rescale total demand.
+$$
+\Delta M_2
+\equiv
+M_2' - M_2
+=
+\Delta x_2
+\approx
+\rho a_{1j} x_j (l_{22} - l_{21}).
+$$
 
-It operates as a directed redistribution operator.
+For a shift in intermediate demand towards economic circularity, total material use $M$ is then:
 
-------------------------------------------------------------------------
+$$
+\Delta M
+=
+\Delta M_1 + \Delta M_2
+\approx
+\rho a_{1j} x_j
+\Big[(l_{12} + l_{22}) - (l_{11} + l_{21})\Big].
+$$
 
-# 5. Implementation Notes
+which interestingly is the same as for final demand above, but changing the sector-level share $\delta_1$ for the input-output coefficient $a_{1j}$ of a specific using sector $j$. 
 
-## 5.1 Production Scenarios
+If the substitution occurs in multiple using sectors $j \in \mathcal{J}$, then the first-order effects sum:
 
-The model applies the redistribution directly to the technical
-coefficient multipliers before simulation.
+$$
+\Delta x_i \approx \rho \sum_{j\in\mathcal{J}} a_{1j}x_j\,(l_{i2}-l_{i1}),
+$$
 
-Key properties:
+so
 
--   Column sums preserved.
--   No negative coefficients created for $0 \le \rho \le 1$.
--   Leontief structure remains coherent.
+$$ 
+\Delta M_1 \approx \rho \sum_{j\in\mathcal{J}} a_{1j}x_j\,(l_{12}-l_{11}), 
+$$
+$$ 
+\Delta M_2 \approx \rho \sum_{j\in\mathcal{J}} a_{1j}x_j\,(l_{22}-l_{21}),
+$$ 
+$$ 
+\Delta M \approx \rho \sum_{j\in\mathcal{J}} a_{1j}x_j\Big[(l_{12}+l_{22})-(l_{11}+l_{21})\Big].
+$$
 
-## 5.2 Demand Scenarios
 
-The function `compute_delta_eff()` applies redistribution at each period
-$t \ge t_{shock}$:
+_____
 
-Pseudo-logic:
+# Input-Output Analysis
 
-    m_from <- delta[from]
-    delta[from] <- (1 - rho) * m_from
-    delta[to]   <- delta[to] + rho * m_from
+In the following figures we present a set of complementary indicators that help interpret the structural consequences of each intervention. Backward linkages describe how strongly a sector depends on upstream suppliers across the production network. Input incidence captures the distribution of intermediate inputs required throughout the supply chain. Total requirements combine both direct and indirect effects to show the full economy‑wide material and production consequences of the change.
 
-Exports and imports are excluded from redistribution logic.
+```{r A}
+A <- initial$A.matrix %>%
+  as.data.frame() %>%
+  tibble::rownames_to_column("input") %>%
+  mutate(input_num = match(input, dimnames(initial$A.matrix)[[1]])) %>% # row index
+  tidyr::pivot_longer(
+    cols = -c(input, input_num),
+    names_to = "output",
+    values_to = "value"
+  ) %>%
+  mutate(output_num = match(output, dimnames(initial$A.matrix)[[2]])) %>% # col index
+  mutate(
+    input_num = ((input_num - 1) %% n_sector) + 1,
+    output_num = ((output_num - 1) %% n_sector) + 1
+  ) %>%
+  tidyr::separate_wider_delim(
+    input,
+    delim = ".",
+    names = c("input_region", "input_sector"),
+    too_many = "merge"
+  ) %>%
+  tidyr::separate_wider_delim(
+    output,
+    delim = ".",
+    names = c("output_region", "output_sector"),
+    too_many = "merge"
+  ) %>%
+  left_join(
+    sector_list %>% mutate(label = gsub("<br>", " ", label)),
+    by = c("input_num" = "sector_code")
+  ) %>%
+  rename(input_label = label) %>%
+  left_join(
+    sector_list %>% mutate(label = gsub("<br>", " ", label)),
+    by = c("output_num" = "sector_code")
+  ) %>%
+  rename(output_label = label)
 
-------------------------------------------------------------------------
 
-# 6. Economic Interpretation
+# ---- prepare A ----
 
-Production shocks represent:
+lvl <- sector_list %>%
+  mutate(label = gsub("<br>", " ", label)) %>%
+  pull(label) %>%
+  rev # already in the order you want
 
--   Technological or sourcing transitions
--   Circular economy substitution
--   Material substitution in intermediate demand
+A %>% write.csv(file = file.path(dir_data, "A_matrix.csv"), row.names = F)
+```
 
-Demand shocks represent:
+## Input Incidence
 
--   Consumption reallocation
--   Investment redirection
--   Public procurement shifts
+Input incidence measures where a given intermediate input appears across the production system. Instead of asking which inputs a sector uses, it asks the inverse question: which sectors’ production recipes depend on this input. In matrix terms, it corresponds to tracking the distribution of a row of the technical coefficient matrix across columns.
 
-Because the operator is identical in form, the model ensures structural
-comparability between technological and behavioural transitions.
+This diagnostic identifies the diffusion channels of a material or energy carrier through the economy. An input with narrow incidence affects only a limited set of activities and therefore generates localized adjustments when modified. By contrast, an input with broad incidence is embedded across many production processes and therefore constitutes a system-wide constraint: changes to that input propagate across multiple sectors even when those sectors are not directly targeted by the intervention.
 
-------------------------------------------------------------------------
+The circular-economy substitution replaces a “brown” input with a “clean” alternative at intensity ρ while preserving the input bundle. The macroeconomic relevance of the intervention therefore depends on how widely the original input appears in production recipes. High-incidence inputs generate economy-wide restructuring because many sectors indirectly inherit the technological change. Low-incidence inputs instead produce sector-specific adjustments with limited aggregate impact.
 
-# 7. Stability Considerations
+Input incidence thus determines the **propagation domain of the policy**.
 
-For $0 \le \rho \le 1$:
+```{r p_incidence}
+#| fig-width: 11
+#| fig-height: 9
 
--   No coefficient becomes negative.
--   Accounting constraints hold exactly.
--   Redistribution is bounded.
--   Comparative statics remain interpretable.
+A_filtered <- A %>%
+  filter(input_num %in% sc_long$sector & input_region == 'EU') %>%
+  left_join(
+    sc_long,
+    by = c("input_num" = "sector"),
+    relationship = 'many-to-many'
+  ) %>%
+  filter(domain == 'Intermediate Demand') %>%
+  mutate(
+    output_label = factor(output_label, levels = lvl),
+    endpoint = recode(endpoint, from = 'Brown', to = 'Clean'),
+    shock = as.integer(shock),
+    facet_lab = paste0("Shock ", shock, "\n", shift, "\n", output_region),
+    facet_lab = factor(facet_lab, levels = unique(facet_lab[order(shock)]))
+  )
 
-Values of $\rho$ above 0.3--0.4 may imply rapid structural change and
-should be interpreted as aggressive transition scenarios rather than
-marginal adjustments.
 
-------------------------------------------------------------------------
+# ---- plot ----
 
-# 8. Summary
+if (nrow(A_filtered %>% filter(!is.na(value), value > 0)) > 0) {
+  p_incidence <- A_filtered %>%
+    filter(!is.na(value), value > 0) %>%
+    ggplot(aes(y = output_label, x = value, fill = endpoint)) +
+    facet_grid(~ facet_lab + output_region) +
+    geom_bar(stat = 'identity', position = 'dodge') +
+    labs(
+      x = '',
+      y = '',
+      fill = 'Target EU Sector',
+      title = 'Input Incidence of Targeted EU Sectors by Scenario and Region',
+      subtitle = "In which sectors' production recipes does this input appear?"
+    ) +
+    theme(
+      plot.title = element_text(face = 'bold', size = 18),
+      plot.subtitle = element_text(face = 'italic'),
+      legend.title = element_text(face = 'bold'),
+      legend.position = 'bottom',
+      axis.text.x = element_text(size = 8)
+    )
 
-The scenario design now satisfies:
+  p_incidence
 
--   Algebraic consistency
--   Accounting preservation
--   Symmetry across production and demand
--   Clear interpretation of the redistribution parameter
+  ggsave(
+    filename = p_incidence_file,
+    plot = p_incidence,
+    width = 20,
+    height = 12,
+    dpi = 300,
+    bg = "white"
+  )
+} else {
+  cat("*Input incidence plot: no matching rows (check domain values in scenarios.csv)*\n")
+}
+```
 
-This provides a structurally coherent foundation for scenario analysis
-and policy experimentation.
+## Backward Linkages
+
+Backward linkages measure the dependence of a sector on upstream suppliers. They are obtained by reading the columns of the technical coefficient matrix and therefore describe the composition of the sector’s input requirements. A sector with concentrated backward linkages relies heavily on a small number of inputs, whereas a sector with diffuse linkages purchases a diversified bundle.
+
+Backward linkages identify leverage points in the production network: modifying a high-weight input changes the technological core of the sector, while modifying a low-weight input produces negligible structural effects.
+
+The circular substitution alters the composition of intermediate inputs inside the targeted sector. The magnitude of the direct technological shock is therefore proportional to the weight of the substituted input in that sector’s backward linkages. A high coefficient implies a first-order production change; a small coefficient implies a marginal adjustment.
+
+Backward linkages thus determine the local intensity of the intervention, while input incidence determines its systemic reach. The combined reading explains why some circular substitutions generate broad economy-wide adjustments whereas others remain sector-specific.
+
+```{r p_backward}
+#| fig-width: 11
+#| fig-height: 9
+
+#---- plot A2 ----
+
+sc_prod <- sc %>% filter(domain == 'Intermediate Demand')
+
+A2 <- A %>%
+  filter(output_num %in% sc_prod$from & output_region == 'EU') %>%
+  left_join(
+    sc_prod,
+    by = c("output_num" = "from"),
+    relationship = 'many-to-many'
+  ) %>%
+  mutate(
+    input_label = factor(input_label, levels = lvl),
+    shock = as.integer(shock),
+    facet_lab = paste0("Shock ", shock, "\n", shift),
+    facet_lab = factor(facet_lab, levels = unique(facet_lab[order(shock)]))
+  )
+
+if (nrow(A2 %>% filter(!is.na(value), value > 0)) > 0) {
+  p_backward <- A2 %>%
+    filter(!is.na(value), value > 0) %>%
+    ggplot(aes(y = input_label, x = value, fill = input_region)) +
+    facet_grid(~facet_lab) +
+    geom_bar(stat = 'identity', position = 'dodge') +
+    labs(
+      x = '',
+      y = '',
+      fill = 'Supplying Region',
+      title = 'Backward Linkages (Column Coefficients) of Targeted EU Manufacturing Sectors',
+      subtitle = 'From which supplying sectors does this sector obtain its inputs?'
+    ) +
+    theme(
+      plot.title = element_text(face = 'bold', size = 18),
+      plot.subtitle = element_text(face = 'italic'),
+      legend.title = element_text(face = 'bold'),
+      legend.position = 'bottom',
+      axis.text.x = element_text(size = 8)
+    )
+
+  p_backward
+
+  ggsave(
+    filename = p_backward_file,
+    plot = p_backward,
+    width = 20,
+    height = 12,
+    dpi = 300,
+    bg = "white"
+  )
+} else {
+  cat("*Backward linkages plot: no matching rows (check domain values in scenarios.csv)*\n")
+}
+```
+
+## Analytical Interpretation
+
+Changes propagate through the Leontief inverse:
+
+$$
+x = (I-A)^{-1}y
+$$
+
+and gains:
+
+$$
+Gain_j = (m_j - m'_j)/m_j
+$$
+
+
+# Implementation Refinements
+
+To align the scenario system with the circular substitution framework discussed above, the following modifications are recommended:
+
+1. Replace discrete coefficient rewrites with a continuous adoption parameter `rho`.
+2. Apply substitution using conservation of material bundles:
+   a_ij -> (1-rho)a_ij
+   a_i'j -> a_i'j + rho a_ij
+3. Ensure substitution is applied across all sectors j (economy-wide adoption).
+4. Store the conserved material bundle m_j = a_ij + a_i'j for diagnostics.
+5. Decompose impacts into brown (removal) and clean (addition) components sequentially.
+

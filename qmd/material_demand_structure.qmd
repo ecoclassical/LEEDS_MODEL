@@ -1,0 +1,154 @@
+---
+title: "Material Demand Structure and Circular Economy Policy Portfolios"
+subtitle: "Analytical decomposition of primary and secondary material markets in the EU and Rest of World"
+author:
+  - name: "Oriol Vallès Codina"
+    affiliation: "Johns Hopkins University, Net Zero Industrial Policy Lab, Department of Political Science"
+    email: "oriolvallescodina@gmail.com"
+date: "`r Sys.Date()`"
+format:
+  docx:
+    toc: true
+    number-sections: true
+execute:
+  echo: false
+  warning: false
+  message: false
+---
+
+```{r setup}
+library(tidyverse)
+library(knitr)
+
+root     <- normalizePath(file.path(dirname(normalizePath(knitr::current_input())), ".."))
+fig_dir  <- file.path(root, "output", "figures")
+data_dir <- file.path(root, "data")
+```
+
+# Introduction
+
+A central challenge in the transition to a circular economy (CE) is identifying which policy instruments exert the greatest leverage over material flows. Existing studies largely treat CE interventions as isolated demand-side or supply-side shocks, without situating them within the full structure of demand that sustains primary material production. This section addresses that gap by developing a unified analytical decomposition of material demand and mapping a portfolio of CE policy interventions onto it.
+
+The analytical starting point is the input-output accounting identity. For any material sector $i$, gross output $x_i$ is exhausted by two demand categories: final demand $d_i$ — the sum of purchases by households, government, firms (investment), and public entities — and intermediate demand, the sum of purchases by all $j = 1, \ldots, N$ producing sectors:
+
+$$
+x_i = \underbrace{\sum_{K} \delta_i^K D^K}_{d_i} + \underbrace{\sum_{j} a_{ij}\, x_j}_{\text{intermediate demand}}
+$$
+
+where $\delta_i^K$ is the expenditure share of sector $i$ in demand component $K$ (household consumption, government consumption, private investment, public investment), $D^K$ is the aggregate size of component $K$, $a_{ij}$ is the technical coefficient of input $i$ per unit of output $j$, and $x_j$ is sector $j$'s gross output. The Leontief first-order material impact of any CE intervention — whether it operates through final demand or through production substitution — takes the unified form:
+
+$$
+\Delta M_1^{(P)} = \rho \cdot \underbrace{\left[\sum_{K \in P} \delta_i^K D^K + \mathbf{1}_{a \in P}\sum_j a_{ij} x_j\right]}_{\text{portfolio scale}} \cdot \underbrace{(l_{i2} - l_{i1})}_{\text{structural factor} \approx -1}
+$$
+
+where $P$ denotes the set of channels targeted by the intervention, $\rho \in [0,1]$ is the substitution intensity, and $(l_{i2} - l_{i1})$ is the structural factor of the Leontief inverse — the difference in backward linkages between the secondary and primary sectors. Across all eight material pairs examined here, this structural factor is empirically close to $-1$, implying that the ranking of interventions by ecological impact reduces almost entirely to a ranking by *portfolio scale*: the share of gross output $x_i$ that the targeted channels represent. The theoretical maximum — a simultaneous intervention across all channels — yields $\Delta M_1^{\text{full}} = \rho \cdot x_i \cdot (l_{i2} - l_{i1})$, providing a natural benchmark against which partial interventions can be assessed.
+
+The analysis proceeds in three steps. We first document the demand structure of primary and secondary sectors for eight key materials across the EU and Rest of World (RoW). We then map seven policy portfolios — defined by which demand channels they activate — onto this structure, computing the fraction of full-CE potential each portfolio captures. Finally, we examine the intermediate demand channel in depth, identifying which producing sectors drive material requirements and how these patterns compare across regions.
+
+---
+
+# Demand Structure of Material Sectors
+
+```{r fig-demand-structure, fig.cap="Demand structure of primary and secondary material sectors in the EU and Rest of World (baseline, period 70). Each facet panel shows gross output decomposed by demand channel. Primary and Secondary bars are shown side by side within each material group. Materials are ordered left-to-right by ascending intermediate demand share of the EU primary sector.", out.width="100%"}
+knitr::include_graphics(file.path(fig_dir, "p_demand_structure.png"))
+```
+
+Figure 1 decomposes the gross output of primary and secondary sectors for eight material pairs — Food, Carbon Energy, Plastics, Wood, Pulp, Glass, Cement, and Metals — across the EU and RoW regions. Within each panel, the left bar represents the primary (incumbent) sector and the right bar the secondary (circular) sector; bars are stacked by demand channel.
+
+## Structural heterogeneity across materials
+
+The figure reveals a fundamental structural divide among material sectors. At one extreme, industrial materials — cement, metals, glass, and pulp — are overwhelmingly driven by intermediate demand, which constitutes between 93 and 96 percent of their gross output in the EU. These sectors produce almost exclusively for other industries; final demand is negligible. At the other extreme, food is predominantly a final demand sector (65 percent), almost entirely composed of household consumption. Carbon energy occupies an intermediate position, with 34 percent final demand (largely household electricity consumption) and 66 percent intermediate demand. Plastics is the most balanced case: approximately 55 percent of output serves final demand — a composition dominated by government procurement rather than household consumption — while 46 percent serves intermediate uses.
+
+This structural heterogeneity has direct implications for policy design. For sectors whose output is almost entirely absorbed by other industries, consumer-facing instruments (eco-labelling, green public procurement of consumer goods) operate on a marginal share of market demand and consequently generate negligible reductions in primary material extraction. Conversely, production-side regulations — mandatory recycled content requirements, extended producer responsibility schemes, industrial symbiosis mandates — engage the dominant demand channel and are therefore structurally better positioned to drive large-scale substitution.
+
+## Primary-secondary market size gap
+
+A consistent feature across all eight material pairs is the substantially smaller gross output of secondary sectors relative to their primary counterparts. This gap is directly observable in Figure 1 as the height difference between the primary and secondary bars. The gap is widest for glass and cement, where secondary markets (recycled glass cullet, supplementary cementitious materials) remain embryonic relative to primary production. It is narrower for food (processed and organic food substitutes) and carbon energy (renewables), where CE transitions are more advanced.
+
+Equally informative is the *compositional* difference between primary and secondary bars. In several materials — notably carbon energy and plastics — the channel composition of secondary output differs from that of primary output, indicating that the secondary market is already structured around different buyers. Where secondary output is more intermediate-heavy than primary output, the secondary market is being pulled by industrial users adopting circular inputs ahead of final consumers, which suggests that production-side incentives may be reinforcing a nascent market transition already underway.
+
+## EU–RoW asymmetry
+
+Comparing the EU and RoW rows reveals systematic regional asymmetries in the demand structure of the same material sectors. RoW primary material sectors tend to exhibit higher intermediate demand shares than their EU counterparts for industrial materials, reflecting the greater importance of heavy industry and construction in RoW economies. For food and carbon energy, the RoW final demand share is also substantial but structured differently: household consumption in RoW economies is distributed across a broader set of final demand components, with public investment playing a relatively larger role. These asymmetries matter for the cross-regional incidence of CE policy: interventions designed around EU demand structures may have different leverage in RoW supply chains, an issue that is returned to in the policy portfolio analysis below.
+
+---
+
+# Policy Portfolio Effectiveness
+
+```{r fig-portfolio-heatmap, fig.cap="CE policy portfolio effectiveness by material sector. Each cell shows the percentage of full-CE potential (Delta M1 / Delta M1_full x 100) captured by a given portfolio. Full-CE potential is defined as a simultaneous rho = 0.2 substitution applied to all demand channels. The structural factor (l_i2 - l_i1) is approximately -1.0 for all materials, so the ranking of portfolios is determined entirely by the portfolio scale relative to gross output.", out.width="100%"}
+knitr::include_graphics(file.path(fig_dir, "p_portfolio_heatmap.png"))
+```
+
+Figure 2 presents a systematic comparison of seven policy portfolios across eight material sectors. Portfolios range from single-channel interventions (household consumption only; government consumption only) to combined strategies (all final demand; full-CE). The cell values report the portfolio scale as a percentage of gross output $x_i$, which — given that the structural factor $\approx -1$ for all materials — is directly proportional to the reduction in primary material extraction achieved by each portfolio at substitution intensity $\rho = 0.2$.
+
+## The dominance of the intermediate channel for industrial materials
+
+For cement, metals, glass, and pulp, the intermediate production channel alone captures between 93.5 and 95.7 percent of the full-CE benchmark. This near-completeness reflects the near-total absence of final demand for these materials: their primary market is intermediate. Any final demand portfolio — even one combining all four institutional components simultaneously — recovers less than 8 percent of potential for these sectors.
+
+The implication is stark: for industrial materials, production-side policies are not merely preferable to demand-side instruments but are categorically different in their order of magnitude. A mandatory recycled-content standard applied to all industrial users of cement achieves roughly 12 times the primary material reduction of a comprehensive green public procurement programme targeting cement in final demand.
+
+## Plastics: the case for government procurement
+
+Plastics presents the most nuanced pattern in Figure 2. The government consumption channel alone captures 47.5 percent of the full-CE potential — comparable to the intermediate production channel (45.9 percent) and substantially larger than household consumption (4.6 percent) or firm investment (2.4 percent). This reflects the structural dominance of government procurement within the final demand for plastics: government consumption accounts for 86 percent of the final demand basket for primary plastics in the EU (see Figure 1), dwarfing household and investment channels.
+
+Crucially, the government procurement scale factor ($\sigma_i \cdot G = 12.32$) is almost exactly equal to the intermediate scale factor ($\sum_j a_{ij} x_j = 11.89$). This formal equivalence — a government procurement policy for secondary plastics exerts the same first-order leverage as an economy-wide production substitution — is not coincidental but reflects the institutional structure of the plastics market in EU economies. Plastics are heavily used in public infrastructure, medical supply chains, and administrative operations, making government procurement a principal driver of demand that is, in principle, directly amenable to policy. This finding supports calls for a stronger circular public procurement framework as a cornerstone of EU plastics strategy, alongside — rather than instead of — production-side measures.
+
+## Carbon energy: the limits of consumer behaviour
+
+Carbon energy (fossil-fuel electricity generation) is a sector where public discourse has focused substantially on household behaviour change — shifting to renewable tariffs, reducing consumption — as a driver of decarbonisation and material transition. Figure 2 challenges this framing. Household consumption alone captures 30.6 percent of the full-CE potential for carbon energy, while the intermediate production channel captures 66.1 percent. Even a simultaneous shift of all final demand channels achieves only 33.8 percent. The dominant driver of fossil-fuel electricity demand is intermediate consumption by producing sectors — energy-intensive industries, transport, and services — rather than household end-use.
+
+This finding implies that policies targeting household energy behaviour, while meaningful, operate on roughly half the scale of policies mandating industrial energy source substitution. The All-FD portfolio for carbon energy achieves approximately the same leverage as the intermediate-only portfolio for wood — a decidedly modest industrial material. Carbon energy transition requires, above all, a transformation of industrial energy procurement.
+
+## Food: the role of household consumption
+
+Food is the sole material for which household consumption constitutes the dominant demand channel and, consequently, the most effective single-channel portfolio (63.8 percent of full-CE potential). This reflects the well-known structure of food systems: the food sector sells predominantly to households, with intermediate uses (agricultural inputs, food processing intermediaries) accounting for only 31 percent of gross output. Policies aimed at shifting household food consumption toward secondary or alternative food systems — plant-based food, reduced meat consumption, waste reduction — engage the principal demand channel and can therefore achieve substantial primary food material reductions.
+
+Nonetheless, even for food, an intermediate-and-final combined strategy captures 8 percentage points more than household consumption alone. The complementary intermediate channel corresponds to food-processing industries (meat packing, cold chain logistics, catering supply chains) whose procurement decisions are amenable to business-to-business green procurement standards, food waste directives, and supply chain sustainability requirements.
+
+---
+
+# Intermediate Demand Decomposition
+
+```{r fig-intermediate-decomp, fig.cap="Share of intermediate demand accounted for by key using sectors, for each primary material and region. Each bar shows a[i,j] * x_j as a percentage of the material's total intermediate demand. The y-axis shows sectors appearing in the top-5 user list for at least two materials. EU (left column) and RoW (right column) are shown separately.", out.width="100%"}
+knitr::include_graphics(file.path(fig_dir, "p_intermediate_decomp.png"))
+```
+
+Figure 3 decomposes the intermediate demand channel for each material into its constituent using sectors, allowing identification of the specific industries whose procurement practices drive primary material requirements. The y-axis is shared across all material columns, showing only sectors that rank in the top-5 users for at least two materials — preserving cross-material comparability while eliminating clutter from sector-specific outliers.
+
+## Construction as a cross-material nexus
+
+Construction emerges as the single most important using sector across multiple materials, appearing as a dominant user of cement, metals, wood, and glass. This cross-material nexus reflects the material intensity of built environment production: the construction sector simultaneously demands structural steel, cement, timber, and flat glass in correlated proportions. It implies that construction-sector CE policies — mandatory use of recycled aggregates, secondary steel, engineered timber, and cullet glass — have the potential to generate simultaneous reductions across multiple primary material demands, making construction a high-leverage target for coordinated CE industrial policy.
+
+The cross-material character of construction demand also implies that an economy-wide building renovation programme or circular construction standard would cascade through multiple primary sectors concurrently, generating aggregate ecological savings larger than the sum of sector-by-sector interventions. This interdependence is not captured by single-material analyses and motivates the multi-material modelling approach adopted here.
+
+## Rubber and Plastic Products: the key user of plastics
+
+For plastics, the dominant intermediate user is the Rubber and Plastic Products sector itself — reflecting the circular input structure of plastics production, wherein primary plastic resins are consumed by downstream processing industries that manufacture plastic goods. This self-referential structure suggests that mandatory recycled content requirements applied to plastic goods manufacturers would directly engage the largest intermediate user, producing a concentrated impact on primary plastic resin demand.
+
+## Energy Transmission as a user of Carbon Energy
+
+Carbon energy is distinguished by the prominence of Energy Transmission and Distribution as an intermediate user. This reflects the upstream-downstream chain within the energy sector itself: electricity generation (primary fossil-fuel electricity) feeds into transmission and distribution systems before reaching end-users. The implication is that renewable energy mandates applied at the generation stage — rather than at the distribution or retail stage — constitute the most direct production-side intervention for reducing primary energy material requirements.
+
+## EU–RoW divergence
+
+The EU and RoW columns reveal systematic divergences in the identity and magnitude of key using sectors. For metals, RoW intermediate demand is substantially larger in absolute terms, driven by higher capital intensity and infrastructure investment rates in RoW economies. For food, the RoW column shows a more prominent role for meat processing and food-related services, consistent with the more fragmented food processing infrastructure in non-EU economies.
+
+These regional divergences have two implications. First, CE policies designed around EU supply chain structures may fail to engage the dominant using sectors in RoW, limiting their impact on globally traded material flows. Second, the asymmetry in intermediate demand patterns implies that cross-border spillovers of EU CE policy — through value chain linkages and trade effects — will not be uniformly distributed across materials, with some sectors (notably construction-linked materials) exhibiting stronger cross-regional transmission than others.
+
+---
+
+# Summary and Policy Implications
+
+The analysis presented in this section yields several findings relevant to the design of circular economy policy portfolios.
+
+First, **the structural factor is approximately constant** across all eight material pairs examined ($l_{i2} - l_{i1} \approx -1$), implying that the ranking of CE interventions by ecological impact is determined entirely by the scale of the targeted demand channel relative to gross output. The material composition of the policy target — which channel is activated — matters far more than fine differences in the IO multiplier structure.
+
+Second, **intermediate production substitution dominates for all industrial materials**. For cement, metals, glass, and pulp — sectors that constitute the bulk of material flows in construction and manufacturing — the intermediate channel captures 93–96 percent of the full-CE benchmark. Demand-side instruments in these sectors are structurally limited to marginal impacts.
+
+Third, **plastics is the exceptional case** where a demand-side instrument (government procurement) exerts leverage comparable to a full production substitution. This structural equivalence, rooted in the institutional dominance of government procurement in the plastics final demand basket, argues for treating public procurement policy as a first-order tool in EU plastics strategy.
+
+Fourth, **food and carbon energy require differentiated approaches**: food transitions are effectively led by household demand-side policy, while carbon energy transitions must primarily engage the industrial intermediate channel to achieve scale.
+
+Fifth, **construction is a cross-material nexus** whose intermediate demand links cement, metals, wood, and glass simultaneously. Circular construction policies therefore offer a uniquely efficient pathway to multi-material impact that single-sector analyses underestimate.
+
+Sixth, **EU–RoW asymmetries in demand structure** imply that the ecological leverage of any given policy portfolio is region-specific, and that cross-border policy coordination — particularly around industrial material standards in globally traded sectors — is necessary to realise the full potential of CE transitions at the system level.

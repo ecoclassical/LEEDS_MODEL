@@ -1,6 +1,6 @@
 # R/scenario_analysis_2026.R
 
-scenario_analysis_2026_plot <- function(
+scenario_analysis_plot <- function(
   shock_df,
   shock_title,
   variable.table,

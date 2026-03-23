@@ -1,0 +1,1535 @@
+---
+title: "Scenarios: Design, Analysis, and Discussion"
+subtitle: "A Core-Periphery SOCIO-ECO-MRIO-SFC Model of Circular Economy Transitions"
+author:
+  - name: "Oriol Vallès Codina"
+    affiliation: "Johns Hopkins University, Net Zero Industrial Policy Lab, Department of Political Science"
+    email: "oriolvallescodina@gmail.com"
+date: "`r Sys.Date()`"
+format:
+  html:
+    toc: true
+    toc_float: true
+    toc-depth: 3
+    self-contained: true
+    number-sections: true
+    page-layout: full
+    css: fullwidth.css
+execute:
+  echo: false
+  warning: false
+  message: false
+---
+
+```{r setup}
+library(tidyverse)
+library(scales)
+library(igraph)
+library(qgraph)
+library(visNetwork)
+library(knitr)
+library(kableExtra)
+library(ggrepel)
+library(patchwork)
+```
+
+```{r directories}
+# ── Robust project root detection ────────────────────────────────────────────
+qmd_in <- knitr::current_input()
+
+if (!is.null(qmd_in) && nzchar(qmd_in)) {
+  qmd_path <- normalizePath(qmd_in, winslash = "/")
+  root <- normalizePath(file.path(dirname(qmd_path), ".."), winslash = "/")
+} else {
+  wd0 <- normalizePath(getwd(), winslash = "/")
+  root <- if (basename(wd0) == "qmd") normalizePath("..", winslash = "/") else wd0
+}
+
+model_dir    <- file.path(root, "model")
+utils_dir    <- file.path(root, "utils")
+dir_data     <- file.path(root, "data")
+workspace_dir <- file.path(root, "output", "scenarios")
+dir_runs     <- file.path(workspace_dir, "shock_runs")
+dir_tables   <- file.path(workspace_dir, "shock_tables")
+
+invisible(lapply(
+  list(workspace_dir, dir_runs, dir_tables),
+  dir.create, showWarnings = FALSE, recursive = TRUE
+))
+
+# ── Source model infrastructure ───────────────────────────────────────────────
+source(file.path(model_dir, "bootstrap_2026.R"))
+
+# ── Filename helpers (required by run_or_load_shock) ─────────────────────────
+get_shock_filename <- function(n) file.path(dir_runs,   paste0("shock_", n, "_run.RDS"))
+get_table_filename <- function(n) file.path(dir_tables, paste0("shock_", n, "_table.csv"))
+get_log_filename   <- function(n) file.path(dir_logs,   paste0("shock_", n, "_run.log"))
+
+# ── Variable groups (required by shock.summary) ───────────────────────────────
+selected.list <- list(
+  Macroeconomic   = c("c", "va", "go", "id", "gdef", "cab", "tb"),
+  Social          = c("n", "nf", "shp", "shw"),
+  Debt.and.Wealth = c("lh", "lf", "v", "k", "b_s"),
+  Ecological      = c("x_mat", "land", "mat", "rec", "emis", "wa", "water")
+)
+
+# ── Load initial state ────────────────────────────────────────────────────────
+initial_filename <- file.path(dir_data, "initial_state_2026.xlsx")
+initial <- load.init(initial_filename)
+
+# ── Supporting data ───────────────────────────────────────────────────────────
+sector_list <- read.csv(file.path(dir_data, "sector_list.csv"),
+                        stringsAsFactors = FALSE) %>%
+  mutate(label = gsub("<br>", " ", label))
+
+sc <- read.csv(file.path(dir_data, "scenarios.csv"), stringsAsFactors = FALSE)
+
+variable.table <- read.csv(file.path(dir_data, "Variable_Definitions.csv"),
+                           stringsAsFactors = FALSE)
+
+n_sector <- nrow(sector_list)
+```
+
+```{r baseline}
+# ── Load or run baseline ──────────────────────────────────────────────────────
+baseline_file <- file.path(workspace_dir, "baseline_2026.RDS")
+
+if (file.exists(baseline_file)) {
+  baseline <- readRDS(baseline_file)
+} else {
+  baseline <- run.model(initial, mvp.model)
+  saveRDS(baseline, file = baseline_file)
+}
+
+t_shock <- initial$pars["t.shock", "value"]
+t_end   <- initial$pars["nPeriods", "value"]
+```
+
+```{r leontief}
+# ── Leontief inverse (for all subsequent ΔM computations) ────────────────────
+A_mat <- initial$A.matrix
+L_mat <- solve(diag(nrow(A_mat)) - A_mat)
+
+# Row / column names follow "Z1.sector_j" or "Z2.sector_j" grammar
+row_names <- rownames(A_mat)
+
+# Helper: convert sector index (1..54) → position in full 108x108 matrix
+eu_idx  <- function(j) j              # Z1 rows 1..54
+row_idx <- function(j) j              # EU rows first by convention
+```
+
+```{r scenarios_extended}
+# ── Enrich scenarios table with sector labels ─────────────────────────────────
+sc_ext <- sc %>%
+  mutate(from = as.integer(from), to = as.integer(to)) %>%
+  left_join(
+    sector_list %>% rename(from_label = label),
+    by = c("from" = "sector_code")
+  ) %>%
+  left_join(
+    sector_list %>% rename(to_label = label),
+    by = c("to" = "sector_code")
+  )
+
+write.csv(sc_ext, file.path(dir_data, "scenarios_extended.csv"), row.names = FALSE)
+
+# ── Scenario groupings ────────────────────────────────────────────────────────
+sc_fd   <- sc_ext %>% filter(domain == "Final Demand")         # shocks 1–6
+sc_prod <- sc_ext %>% filter(domain == "Intermediate Demand")  # shocks 7–14
+
+sc_fd_nums   <- sc_fd$shock
+sc_prod_nums <- sc_prod$shock
+```
+
+---
+
+# Overview
+
+This section presents the full scenario analysis for the SOCIO-ECO-MRIO-SFC model of the EU–RoW economy. We study circular economy (CE) transitions through a two-pronged lens: **final demand reallocations** that shift household, government, and investment expenditures from primary to secondary material sectors; and **intermediate production substitutions** that alter input-output coefficients at the point of industrial production. Fourteen scenarios spanning food, energy, wood, pulp, plastics, metal, glass, cement, and construction sectors are evaluated.
+
+The section is organized as follows. Section 2 characterizes the input-output structure of the EU–RoW economy and motivates the choice of scenarios. Section 3 formalizes scenario design and derives analytical predictions for material impact. Section 4 presents the simulated trajectories, contrasting baseline and shocked paths for macroeconomic, social, and ecological variables. Section 5 synthesizes findings around the **triple dilemma** — the structural tension between ecological improvement, macroeconomic stability, and social equity — with particular attention to EU–RoW asymmetries. Section 6 traces the material consumption trajectories and quantifies rebound effects. Section 7 offers a forward-looking discussion, including a disclaimer on the carbon-industry IO connections that our scenarios do not directly target.
+
+---
+
+# The Input-Output Structure of the EU–RoW Economy
+
+## Sector Composition and Gross Output
+
+```{r gross_output}
+#| fig-width: 10
+#| fig-height: 8
+
+# ── Gross output from baseline at t_shock ─────────────────────────────────────
+get_x <- function(prefix, j) {
+  nm <- paste0(prefix, "_x-", j)
+  if (!is.null(baseline$simulation) && nm %in% rownames(baseline$simulation))
+    as.numeric(baseline$simulation[nm, t_shock])
+  else NA_real_
+}
+
+go_df <- tibble(
+  sector = rep(seq_len(n_sector), 2),
+  region = rep(c("EU", "RoW"), each = n_sector),
+  prefix = rep(c("Z1", "Z2"), each = n_sector)
+) %>%
+  mutate(gross_output = map2_dbl(prefix, sector, get_x)) %>%
+  left_join(sector_list, by = c("sector" = "sector_code"))
+
+top20_go <- go_df %>%
+  arrange(desc(gross_output)) %>%
+  slice_head(n = 20)
+
+ggplot(top20_go, aes(x = gross_output, y = reorder(label, gross_output), fill = region)) +
+  geom_col(position = "dodge") +
+  scale_x_continuous(labels = comma) +
+  labs(
+    title = "Top 20 Sectors by Gross Output",
+    x = "Gross Output (million $)",
+    y = "",
+    fill = "Region"
+  ) +
+  theme_minimal(base_size = 13) +
+  theme(plot.title = element_text(face = "bold"))
+```
+
+## IO Network: Cross-Border Links
+
+```{r io_network_edges}
+#| fig-width: 9
+#| fig-height: 7
+
+# ── Parse full A matrix ────────────────────────────────────────────────────────
+A_long <- A_mat %>%
+  as.data.frame() %>%
+  rownames_to_column("input") %>%
+  pivot_longer(-input, names_to = "output", values_to = "value") %>%
+  filter(value > 0) %>%
+  mutate(
+    from_region = sub("\\..*$", "", input),
+    to_region   = sub("\\..*$", "", output),
+    flow_type   = paste0(
+      recode(from_region, Z1 = "EU", Z2 = "RoW"), "→",
+      recode(to_region,   Z1 = "EU", Z2 = "RoW")
+    ),
+    from_sector_num = as.integer(sub("^[^.]*\\.", "", input) %>%
+                                   gsub("[^0-9]", "", .)),
+    to_sector_num   = as.integer(sub("^[^.]*\\.", "", output) %>%
+                                   gsub("[^0-9]", "", .))
+  ) %>%
+  filter(!is.na(from_sector_num), !is.na(to_sector_num)) %>%
+  left_join(sector_list %>% rename(from_label = label),
+            by = c("from_sector_num" = "sector_code")) %>%
+  left_join(sector_list %>% rename(to_label = label),
+            by = c("to_sector_num" = "sector_code"))
+
+# ── Top RoW→EU cross-border links ─────────────────────────────────────────────
+cross_border <- A_long %>%
+  filter(flow_type == "RoW→EU") %>%
+  arrange(desc(value)) %>%
+  slice_head(n = 20) %>%
+  mutate(link = paste0(from_label, " → ", to_label))
+
+ggplot(cross_border,
+       aes(x = value, y = reorder(link, value))) +
+  geom_col(fill = "#E05C5C") +
+  labs(
+    title = "Top 20 RoW→EU Input-Output Links",
+    subtitle = "The dominant cross-border link is fossil-fuel extraction (RoW) → fossil-fuel processing (EU)",
+    x = "Technical Coefficient",
+    y = ""
+  ) +
+  theme_minimal(base_size = 12) +
+  theme(plot.title = element_text(face = "bold"))
+```
+
+> **Geopolitical timeliness.** The dominant cross-border IO link — fossil-fuel extraction (RoW) to fossil-fuel processing (EU) — places this model at the centre of current energy-security debates. In the context of ongoing US–Iran confrontation and successive rounds of fossil-fuel sanctions, the dependence of European processing industries on RoW energy inputs is not merely an analytical parameter but an active geopolitical fault line. Our scenarios model general CE substitutions; the carbon-industry connection is addressed in the forward-looking discussion (Section 7).
+
+## Ecological Intensities by Sector
+
+```{r intensities}
+#| fig-width: 11
+#| fig-height: 10
+
+# ── Read intensity data from initial state ─────────────────────────────────────
+intensity_vars <- initial$variables$industry
+
+# Target intensities — include whatever is available
+target_intens <- c(
+  "Carbon Intensity",
+  "Matter Intensity of Output",
+  "Land Intensity",
+  "Water Intensity"
+)
+
+available_intens <- target_intens[target_intens %in% intensity_vars$name]
+
+if (length(available_intens) == 0) {
+  # Fallback: show a note
+  cat("*Note: intensity data not found in initial state. Skipping intensity plots.*\n")
+} else {
+  intens_long <- intensity_vars %>%
+    filter(name %in% available_intens) %>%
+    mutate(region = recode(area, Z1 = "EU", Z2 = "RoW")) %>%
+    pivot_longer(
+      cols = matches("^\\d+$"),
+      names_to = "sector",
+      values_to = "value"
+    ) %>%
+    mutate(
+      sector = as.integer(sector),
+      industry = sector_list$label[sector]
+    ) %>%
+    filter(!is.na(value), value > 0)
+
+  ordered_industries <- sector_list$label[sort(unique(intens_long$sector))]
+  intens_long <- intens_long %>%
+    mutate(industry = factor(industry, levels = rev(ordered_industries)))
+
+  intensity_labels <- c(
+    "Carbon Intensity"           = "CO₂ Intensity (ton GHG / M$)",
+    "Matter Intensity of Output" = "Material Intensity (ton / M$)",
+    "Land Intensity"             = "Land Intensity (ha / M$)",
+    "Water Intensity"            = "Water Intensity (m³ / M$)"
+  )
+
+  for (int_nm in available_intens) {
+    p <- intens_long %>%
+      filter(name == int_nm) %>%
+      ggplot(aes(x = value, y = industry, fill = region)) +
+      geom_col(position = "dodge") +
+      scale_x_log10(labels = scientific) +
+      facet_wrap(~region, scales = "free_x") +
+      labs(
+        title = int_nm,
+        x = intensity_labels[int_nm] %||% int_nm,
+        y = ""
+      ) +
+      theme_minimal(base_size = 10) +
+      theme(
+        plot.title    = element_text(face = "bold"),
+        legend.position = "none"
+      )
+    print(p)
+  }
+}
+```
+
+```{r co2_matter_scatter}
+#| fig-width: 9
+#| fig-height: 7
+
+# ── Carbon vs Material intensity scatter ──────────────────────────────────────
+if (length(available_intens) >= 2 &&
+    all(c("Carbon Intensity", "Matter Intensity of Output") %in% available_intens)) {
+
+  ci <- intensity_vars %>%
+    filter(name == "Carbon Intensity") %>%
+    mutate(region = recode(area, Z1 = "EU", Z2 = "RoW")) %>%
+    pivot_longer(cols = matches("^\\d+$"), names_to = "sector", values_to = "carbon") %>%
+    mutate(sector = as.integer(sector))
+
+  mi <- intensity_vars %>%
+    filter(name == "Matter Intensity of Output") %>%
+    mutate(region = recode(area, Z1 = "EU", Z2 = "RoW")) %>%
+    pivot_longer(cols = matches("^\\d+$"), names_to = "sector", values_to = "matter") %>%
+    mutate(sector = as.integer(sector))
+
+  scatter_df <- ci %>%
+    inner_join(mi, by = c("region", "sector")) %>%
+    left_join(sector_list %>% select(sector_code, label),
+              by = c("sector" = "sector_code")) %>%
+    left_join(go_df %>% select(sector, region, gross_output),
+              by = c("sector", "region")) %>%
+    filter(!is.na(carbon), !is.na(matter), carbon > 0, matter > 0)
+
+  ggplot(scatter_df,
+         aes(x = 1000 * matter, y = carbon,
+             size = gross_output, fill = region)) +
+    geom_point(shape = 21, alpha = 0.75) +
+    geom_text_repel(aes(label = label), size = 2.5, max.overlaps = 20,
+                    box.padding = 0.3, show.legend = FALSE) +
+    scale_x_log10(labels = comma) +
+    scale_y_log10(labels = comma) +
+    scale_size_continuous(range = c(2, 12), guide = "none") +
+    labs(
+      title = "Carbon vs Material Intensity by Sector",
+      subtitle = "Size = gross output; double-log scale",
+      x = "Material Intensity (ton / M$)",
+      y = "Carbon Intensity (ton GHG / M$)",
+      fill = "Region"
+    ) +
+    theme_minimal(base_size = 12) +
+    theme(plot.title = element_text(face = "bold"))
+}
+```
+
+---
+
+# Scenario Design
+
+## Taxonomy and Registry
+
+```{r scenario_table}
+sc_ext %>%
+  select(shock, display_name, domain, sector, transaction, shift, from_label, to_label) %>%
+  rename(
+    `#`           = shock,
+    Name          = display_name,
+    Domain        = domain,
+    Sector        = sector,
+    Transaction   = transaction,
+    Shift         = shift,
+    `From sector` = from_label,
+    `To sector`   = to_label
+  ) %>%
+  kbl(caption = "Table 1. Scenario Registry",
+      align = c("c","l","l","l","l","l","l","l")) %>%
+  kable_styling(bootstrap_options = c("striped","hover","condensed"),
+                full_width = FALSE, font_size = 12) %>%
+  row_spec(which(sc_ext$domain == "Intermediate Demand"), background = "#f0f4ff") %>%
+  pack_rows("Final Demand Shocks",        1,              nrow(sc_fd)) %>%
+  pack_rows("Intermediate Demand Shocks", nrow(sc_fd) + 1, nrow(sc_ext))
+```
+
+Scenarios 1–6 operate on the **final demand simplex**: household consumption shares ($\beta$), government consumption shares ($\sigma$), private investment shares ($\iota$), and public investment shares ($\iota^g$). Scenarios 7–14 operate on the **technical coefficient matrix** $A$, altering the industrial production recipe.
+
+## Formal Mechanics
+
+### Final Demand Reallocation
+
+For demand component $D \in \{c, g, id, id^g\}$ with sector-level shares $\delta$, a parameter $\rho \in [0,1]$ governs the fractional reallocation from primary sector 1 to secondary sector 2:
+
+$$\delta'_1 = (1-\rho)\,\delta_1, \qquad \delta'_2 = \delta_2 + \rho\,\delta_1.$$
+
+This conserves the total budget ($\sum_j \delta'_j = 1$) while shifting composition. The induced material changes are:
+
+$$\Delta M_1 = \rho\,\delta_1\,D\,(l_{12} - l_{11}), \qquad \Delta M_2 = \rho\,\delta_1\,D\,(l_{22} - l_{21}),$$
+
+$$\boxed{\Delta M = \rho\,\delta_1\,D\,\bigl[(l_{12}+l_{22}) - (l_{11}+l_{21})\bigr].}$$
+
+where $l_{ij}$ are entries of the Leontief inverse $L = (I - A)^{-1}$.  A **structural rebound** occurs if $l_{12} > l_{11}$, i.e., the secondary sector generates more total primary-material requirements than the primary sector itself. This is possible when the secondary material is embedded in production chains with high primary material intensity.
+
+### Intermediate Production Substitution
+
+For intermediate input substitution, the A-matrix is modified:
+
+$$a'_{1j} = (1-\rho)\,a_{1j}, \qquad a'_{2j} = a_{2j} + \rho\,a_{1j}, \qquad a'_{ij} = a_{ij}\ (\text{otherwise}).$$
+
+This preserves the material input bundle $s_j = a_{1j} + a_{2j}$, implies no change in total input requirements per unit output, and captures a recipe-preserving substitution. To first order in $\rho$:
+
+$$\Delta x_i \approx \rho\,\sum_{j\in\mathcal{J}} a_{1j}\,x_j\,(l_{i2} - l_{i1}),$$
+
+so that:
+
+$$\boxed{\Delta M = \rho\,\biggl(\sum_{j\in\mathcal{J}} a_{1j}\,x_j\biggr)\,\bigl[(l_{12}+l_{22}) - (l_{11}+l_{21})\bigr].}$$
+
+Formally, the final demand and intermediate demand formulas share the same structural factor $[(l_{12}+l_{22}) - (l_{11}+l_{21})]$. They differ only in the **scale factor**: $\delta_1 D$ for demand-side, $\sum_j a_{1j} x_j$ (total intermediate demand for the primary material) for supply-side.
+
+## Input-Output Structure: Incidence and Backward Linkages
+
+```{r io_analysis}
+#| fig-width: 12
+#| fig-height: 9
+
+# ── Prepare A long for scenario sectors ───────────────────────────────────────
+sc_long <- sc_ext %>%
+  select(shock, domain, from, to, shift = display_name) %>%
+  pivot_longer(cols = c(from, to), names_to = "endpoint", values_to = "sector")
+
+A_df <- A_mat %>%
+  as.data.frame() %>%
+  rownames_to_column("input") %>%
+  mutate(input_num = match(input, rownames(A_mat))) %>%
+  pivot_longer(cols = -c(input, input_num), names_to = "output", values_to = "value") %>%
+  mutate(
+    output_num    = match(output, colnames(A_mat)),
+    input_sector  = ((input_num  - 1) %% n_sector) + 1,
+    output_sector = ((output_num - 1) %% n_sector) + 1,
+    input_region  = sub("\\..*$", "", input),
+    output_region = sub("\\..*$", "", output)
+  ) %>%
+  left_join(sector_list %>% rename(input_label  = label), by = c("input_sector"  = "sector_code")) %>%
+  left_join(sector_list %>% rename(output_label = label), by = c("output_sector" = "sector_code"))
+
+lvl <- rev(sector_list$label)
+
+# ── Input Incidence (intermediate-demand shocks only) ─────────────────────────
+sc_prod_from <- sc_prod %>%
+  select(shock, domain, from, to, shift = display_name) %>%
+  mutate(input_sector = as.integer(from))
+
+A_incidence <- A_df %>%
+  mutate(input_sector = as.integer(input_sector)) %>%
+  filter(input_sector %in% sc_prod_from$input_sector,
+         input_region == "Z1",
+         !is.na(value), value > 0) %>%
+  inner_join(sc_prod_from, by = "input_sector") %>%
+  mutate(
+    output_label   = factor(output_label, levels = lvl),
+    receiving_reg  = recode(output_region, Z1 = "EU", Z2 = "RoW"),
+    shock_label    = paste0("Sc.", shock, ": ", shift)
+  )
+
+if (nrow(A_incidence) > 0) {
+  p_incidence <- ggplot(A_incidence,
+         aes(y = output_label, x = value, fill = receiving_reg)) +
+    facet_grid(receiving_reg ~ shock_label) +
+    geom_col(position = "dodge") +
+    labs(
+      title    = "Input Incidence of Primary Material Sectors by Scenario",
+      subtitle = "Which sectors' production recipes depend on this input?",
+      x = "Technical Coefficient",
+      y = "",
+      fill = "Receiving Region"
+    ) +
+    theme_minimal(base_size = 8) +
+    theme(
+      plot.title      = element_text(face = "bold", size = 11),
+      axis.text.y     = element_text(size = 6),
+      strip.text      = element_text(size = 7),
+      legend.position = "bottom"
+    )
+  p_incidence
+  ggsave(file.path(workspace_dir, "p_incidence_v2.png"),
+         p_incidence, width = 22, height = 12, dpi = 300, bg = "white")
+} else {
+  cat("*Input incidence plot skipped: no matching rows in A matrix.*\n")
+}
+```
+
+## Analytical ΔM: Expected Material Impact by Scenario
+
+This subsection derives and visualises the **first-order analytical prediction** for the change in primary material use $\Delta M_1$, secondary material use $\Delta M_2$, and total material use $\Delta M$, before running any simulation. These estimates depend on three ingredients:
+
+1. The **structural factor** $\Lambda_{12} \equiv (l_{12}+l_{22}) - (l_{11}+l_{21})$: purely IO-structural, determines the direction and magnitude of the material-efficiency gain.
+2. The **scale factor**: $\delta_1 D$ (final demand) or $\sum_j a_{1j} x_j$ (intermediate demand).
+3. The substitution parameter $\rho = 0.2$.
+
+```{r delta_M_computation}
+# ── Leontief entries and structural factors ────────────────────────────────────
+rho <- 0.2
+
+get_leontief <- function(sector_from, sector_to) {
+  # Indices in the EU sub-block (rows 1..54 for Z1)
+  i_from     <- as.integer(sector_from)
+  i_to       <- as.integer(sector_to)
+  i_from_row <- i_from + n_sector   # RoW equivalent of EU sector `from` (rows 55..108)
+  # Full matrix: EU sectors occupy rows i_from and i_to directly (Z1 block)
+  list(
+    l11        = L_mat[i_from,     i_from],
+    l12        = L_mat[i_from,     i_to],
+    l21        = L_mat[i_to,       i_from],
+    l22        = L_mat[i_to,       i_to],
+    lambda     = (L_mat[i_from, i_to] + L_mat[i_to, i_to]) -
+                 (L_mat[i_from, i_from] + L_mat[i_to, i_from]),
+    # RoW equivalent of sector `from`: how shift in EU demand affects RoW primary material
+    l11_row    = L_mat[i_from_row, i_from],
+    l12_row    = L_mat[i_from_row, i_to]
+  )
+}
+
+# ── Final demand ΔM ────────────────────────────────────────────────────────────
+get_D_level <- function(target_col) {
+  nm <- case_when(
+    target_col == "beta"   ~ "Z1_c",
+    target_col == "sigma"  ~ "Z1_g",
+    target_col == "iota"   ~ "Z1_id",
+    target_col == "iota_g" ~ "Z1_id_g",
+    TRUE ~ NA_character_
+  )
+  if (is.na(nm)) return(NA_real_)
+  if (!is.null(baseline$simulation) && nm %in% rownames(baseline$simulation))
+    return(as.numeric(baseline$simulation[nm, t_shock]))
+  if (!is.null(initial$vars) && nm %in% rownames(initial$vars))
+    return(as.numeric(initial$vars[nm, "value"]))
+  NA_real_
+}
+
+get_delta1 <- function(target_col, from_sector) {
+  nm <- case_when(
+    target_col == "beta"   ~ paste0("Z1_beta-",   from_sector),
+    target_col == "sigma"  ~ paste0("Z1_sigma-",  from_sector),
+    target_col == "iota"   ~ paste0("Z1_iota-",   from_sector),
+    target_col == "iota_g" ~ paste0("Z1_iota_g-", from_sector),
+    TRUE ~ NA_character_
+  )
+  if (is.na(nm)) return(NA_real_)
+  if (!is.null(baseline$simulation) && nm %in% rownames(baseline$simulation))
+    return(as.numeric(baseline$simulation[nm, t_shock]))
+  if (!is.null(initial$vars) && nm %in% rownames(initial$vars))
+    return(as.numeric(initial$vars[nm, "value"]))
+  NA_real_
+}
+
+delta_M_fd <- sc_fd %>%
+  rowwise() %>%
+  mutate(
+    lf          = list(get_leontief(from, to)),
+    lambda      = lf$lambda,
+    D           = get_D_level(target),
+    delta1      = get_delta1(target, from),
+    scale       = delta1 * D,
+    DeltaM1     = rho * scale * (lf$l12 - lf$l11),
+    DeltaM1_RoW = rho * scale * (lf$l12_row - lf$l11_row),
+    DeltaM1_tot = DeltaM1 + DeltaM1_RoW,
+    DeltaM2     = rho * scale * (lf$l22 - lf$l21),
+    DeltaM      = rho * scale * lambda,
+    delta_type  = "Final Demand"
+  ) %>%
+  ungroup() %>%
+  select(shock, display_name, from_label, to_label, delta_type,
+         lambda, scale, DeltaM1, DeltaM1_RoW, DeltaM1_tot, DeltaM2, DeltaM)
+
+# ── Intermediate ΔM ────────────────────────────────────────────────────────────
+# For our production scenarios, substitution is applied across ALL using sectors j.
+# Scale = Σ_j a_{from,j} * x_j  = row "from" of A dotted with output vector x.
+
+get_total_intermediate_demand <- function(from_sector) {
+  # row of A for the FROM sector (EU region only, rows 1..n_sector)
+  a_row <- A_mat[from_sector, ]   # full 108-vector
+  # sector outputs: EU block
+  x_all <- sapply(seq_along(a_row), function(k) {
+    # region and sector index from name
+    nm <- names(a_row)[k]
+    if (is.null(nm) || is.na(nm)) return(0)
+    reg <- sub("\\..*$", "", nm)
+    prefix <- if (reg == "Z1") "Z1" else "Z2"
+    sec <- ((k - 1) %% n_sector) + 1
+    xnm <- paste0(prefix, "_x-", sec)
+    if (!is.null(baseline$simulation) && xnm %in% rownames(baseline$simulation))
+      as.numeric(baseline$simulation[xnm, t_shock])
+    else 0
+  })
+  sum(a_row * x_all, na.rm = TRUE)
+}
+
+delta_M_prod <- sc_prod %>%
+  rowwise() %>%
+  mutate(
+    lf          = list(get_leontief(from, to)),
+    lambda      = lf$lambda,
+    scale       = get_total_intermediate_demand(as.integer(from)),
+    DeltaM1     = rho * scale * (lf$l12 - lf$l11),
+    DeltaM1_RoW = rho * scale * (lf$l12_row - lf$l11_row),
+    DeltaM1_tot = DeltaM1 + DeltaM1_RoW,
+    DeltaM2     = rho * scale * (lf$l22 - lf$l21),
+    DeltaM      = rho * scale * lambda,
+    delta_type  = "Intermediate Demand"
+  ) %>%
+  ungroup() %>%
+  select(shock, display_name, from_label, to_label, delta_type,
+         lambda, scale, DeltaM1, DeltaM1_RoW, DeltaM1_tot, DeltaM2, DeltaM)
+
+delta_M_all <- bind_rows(delta_M_fd, delta_M_prod) %>%
+  mutate(
+    shock_lab = paste0("Sc.", shock, "\n",
+                       str_wrap(display_name, width = 20))
+  )
+```
+
+```{r deltaM_table}
+delta_M_all %>%
+  select(`#` = shock, Scenario = display_name, Domain = delta_type,
+         `From` = from_label, `To` = to_label,
+         `Lambda (structural)` = lambda,
+         `Scale factor`  = scale,
+         `ΔM1 EU (primary)` = DeltaM1,
+         `ΔM1 RoW`          = DeltaM1_RoW,
+         `ΔM1 total`        = DeltaM1_tot,
+         `ΔM2 (secondary)`  = DeltaM2,
+         `ΔM (total)`       = DeltaM) %>%
+  mutate(across(where(is.double), ~ round(.x, 4))) %>%
+  kbl(caption = "Table 2. Analytical first-order material impacts by scenario (ρ = 0.2). ΔM1 EU = change in EU primary material sector output; ΔM1 RoW = change in RoW equivalent sector via MRIO multiplier; ΔM1 total = EU + RoW combined.",
+      align = c("c","l","l","l","l","r","r","r","r","r","r","r")) %>%
+  kable_styling(bootstrap_options = c("striped","hover","condensed"),
+                full_width = TRUE, font_size = 11) %>%
+  column_spec(8:10, bold = TRUE) %>%
+  row_spec(which(delta_M_all$DeltaM < 0), background = "#e8f5e9") %>%
+  row_spec(which(delta_M_all$DeltaM > 0), background = "#fff3e0")
+```
+
+```{r deltaM_bar}
+#| fig-width: 11
+#| fig-height: 6
+
+delta_M_all %>%
+  select(shock, shock_lab, delta_type, DeltaM1, DeltaM2, DeltaM) %>%
+  pivot_longer(cols = c(DeltaM1, DeltaM2, DeltaM),
+               names_to = "component", values_to = "value") %>%
+  mutate(
+    component = recode(component,
+                       DeltaM1 = "ΔM₁ (primary)",
+                       DeltaM2 = "ΔM₂ (secondary)",
+                       DeltaM  = "ΔM (total)"),
+    component = factor(component,
+                       levels = c("ΔM₁ (primary)", "ΔM₂ (secondary)", "ΔM (total)"))
+  ) %>%
+  ggplot(aes(x = reorder(shock_lab, shock), y = value, fill = component)) +
+  geom_col(position = "dodge") +
+  geom_hline(yintercept = 0, linewidth = 0.4) +
+  facet_wrap(~ delta_type, scales = "free_x") +
+  scale_fill_manual(values = c("#E05C5C", "#4CAF50", "#2196F3")) +
+  labs(
+    title    = "Expected First-Order Material Change by Scenario",
+    subtitle = "Negative ΔM = net material reduction; positive = rebound/expansion",
+    x = "",
+    y = "ΔM (million $ equivalent output)",
+    fill = ""
+  ) +
+  theme_minimal(base_size = 11) +
+  theme(
+    plot.title    = element_text(face = "bold", size = 13),
+    axis.text.x   = element_text(size = 8),
+    legend.position = "bottom"
+  )
+```
+
+```{r lambda_scale_scatter}
+#| fig-width: 9
+#| fig-height: 6
+
+ggplot(delta_M_all,
+       aes(x = scale, y = lambda, size = abs(DeltaM),
+           fill = delta_type, label = paste0("Sc.", shock))) +
+  geom_point(shape = 21, alpha = 0.8) +
+  geom_hline(yintercept = 0, linetype = "dashed", linewidth = 0.4) +
+  geom_text_repel(size = 3, max.overlaps = 20, show.legend = FALSE) +
+  scale_size_continuous(range = c(2, 14), guide = "none") +
+  labs(
+    title    = "Structural Factor vs Scale Factor",
+    subtitle = "λ̄ < 0 → net material reduction; λ̄ > 0 → rebound risk. Size = |ΔM|",
+    x        = "Scale Factor (δ₁D or Σ a₁ⱼxⱼ)",
+    y        = "Structural Factor λ̄ = (l₁₂+l₂₂)−(l₁₁+l₂₁)",
+    fill     = "Domain"
+  ) +
+  theme_minimal(base_size = 12) +
+  theme(plot.title = element_text(face = "bold"),
+        legend.position = "bottom")
+```
+
+> **Interpretation.** The structural factor $\bar{\lambda}$ determines whether a substitution reduces or increases total material throughput. A negative $\bar{\lambda}$ means the secondary sector has a lower combined material requirement than the primary sector — the green transition genuinely reduces material use. A positive $\bar{\lambda}$ indicates a structural rebound: secondary production is more material-intensive than primary, so substitution paradoxically increases total material throughput. The scale factor ($\delta_1 D$ or $\Sigma_j a_{1j} x_j$) amplifies or attenuates the structural signal depending on how large the affected demand component is relative to total output.
+
+### Why Final Demand Scale Factors Are Small: The Household Budget Landscape
+
+The final demand scenarios (Sc.1–6) cluster at low scale factors because CE policy targets — food, fossil-fuel electricity, cement, plastics — represent small shares of household and government budgets. The chart below shows the full landscape of household consumption scale factors $\delta_1 D = \beta_j \cdot C_{Z1}$ for all 54 EU sectors, with the six scenario sectors highlighted. The largest household spending categories are service sectors (real estate, leisure, professional services, transport) that are not primary-material-intensive, and hence not typical CE targets.
+
+```{r fd_scale_landscape}
+#| fig-width: 11
+#| fig-height: 6
+
+# ── All beta × Z1_c scale factors ─────────────────────────────────────────────
+Z1_c_val <- as.numeric(baseline$simulation["Z1_c", t_shock])
+
+fd_landscape <- tibble(
+  sector_code = 1:n_sector,
+  label       = sector_list$label,
+  beta        = as.numeric(baseline$simulation[paste0("Z1_beta-", 1:n_sector), t_shock]),
+  scale       = beta * Z1_c_val
+) %>%
+  mutate(
+    label_clean = gsub("<br>", "\n", label),
+    is_scenario = sector_code %in% sc_fd$from,
+    sc_label    = if_else(is_scenario,
+                          paste0("Sc.", sc_fd$shock[match(sector_code, sc_fd$from)]),
+                          NA_character_)
+  ) %>%
+  arrange(desc(scale)) %>%
+  mutate(rank = row_number())
+
+ggplot(fd_landscape, aes(x = reorder(label_clean, scale), y = scale,
+                          fill = is_scenario)) +
+  geom_col(alpha = 0.85) +
+  geom_text(
+    data = filter(fd_landscape, is_scenario),
+    aes(label = sc_label), hjust = -0.15, size = 3, fontface = "bold", colour = "#C62828"
+  ) +
+  coord_flip() +
+  scale_fill_manual(values = c("FALSE" = "grey70", "TRUE" = "#E53935"),
+                    labels = c("FALSE" = "Other sectors", "TRUE" = "CE scenario target"),
+                    name = "") +
+  scale_y_continuous(expand = expansion(mult = c(0, 0.12))) +
+  labs(
+    title    = "Household Consumption Scale Factor by Sector (δ₁D = β_j × C_EU)",
+    subtitle = "CE scenarios target sectors well below the household spending frontier",
+    x = "", y = "Scale factor δ₁D"
+  ) +
+  theme_minimal(base_size = 10) +
+  theme(
+    plot.title      = element_text(face = "bold"),
+    legend.position = "bottom",
+    axis.text.y     = element_text(size = 7, lineheight = 0.85)
+  )
+```
+
+> The household spending frontier is dominated by service sectors (Real Estate: 110, Leisure: 79, Professional Services: 66, Transport: 48) that carry low material intensity and are not typical CE targets. Among primary-material sectors, Other Food (33) and Meat (25) have the largest shares. Fossil-fuel electricity (Sc.2, scale = 6.9) ranks low because it represents a small share of final household expenditure — most energy costs are embedded in intermediate production chains, not direct consumer spending.
+
+### Intermediate Demand: Scale Dominates, Fossil Fuel Connections
+
+For intermediate production substitution scenarios (Sc.7–14), both the scale factor and the structural factor matter. The chart below decomposes the scale factor $\sum_j a_{1j} x_j$ for each intermediate scenario into its **top contributing user sectors** — i.e., which industries account for most of the primary material's intermediate use. For the fossil-fuel electricity scenario (Sc.13), this reveals which sectors would be most affected by a switch from fossil to renewable electricity in production.
+
+```{r intermediate_scale_decomp}
+#| fig-width: 12
+#| fig-height: 8
+
+# ── Build decomposition for each intermediate scenario ────────────────────────
+xvec_all <- sapply(1:108, function(k) {
+  pref <- if (k <= n_sector) "Z1" else "Z2"
+  s    <- ((k - 1) %% n_sector) + 1
+  nm   <- paste0(pref, "_x-", s)
+  v    <- baseline$simulation[nm, t_shock]
+  if (is.null(v) || length(v) == 0 || is.na(v)) 0 else as.numeric(v)
+})
+
+A_num <- as.matrix(A_mat)
+
+decomp_rows <- map_dfr(1:nrow(sc_prod), function(i) {
+  from <- as.integer(sc_prod$from[i])
+  contribs <- A_num[from, ] * xvec_all
+  tibble(
+    shock       = sc_prod$shock[i],
+    from_label  = sc_prod$from_label[i],
+    col_idx     = seq_along(contribs),
+    contribution = contribs
+  ) %>%
+    mutate(
+      region     = if_else(col_idx <= n_sector, "EU", "RoW"),
+      sector_num = ((col_idx - 1) %% n_sector) + 1,
+      sec_label  = gsub("<br>", " ", sector_list$label[sector_num])
+    ) %>%
+    filter(contribution > 0) %>%
+    arrange(desc(contribution)) %>%
+    slice_head(n = 8) %>%
+    mutate(rank = row_number())
+})
+
+# Highlight fossil fuel electricity scenario
+decomp_rows <- decomp_rows %>%
+  mutate(is_ff = shock == 13)
+
+decomp_rows <- decomp_rows %>%
+  group_by(shock) %>%
+  mutate(y_label = factor(sec_label, levels = rev(unique(sec_label[order(contribution)])))) %>%
+  ungroup()
+
+ggplot(decomp_rows,
+       aes(x = contribution, y = y_label, fill = region, alpha = is_ff)) +
+  geom_col() +
+  facet_wrap(~ paste0("Sc.", shock, ": ", gsub("<br>", " ", from_label)),
+             scales = "free_y", ncol = 4) +
+  scale_fill_manual(values = c("EU" = "#1565C0", "RoW" = "#E65100")) +
+  scale_alpha_manual(values = c("FALSE" = 0.6, "TRUE" = 1.0), guide = "none") +
+  labs(
+    title    = "Intermediate Demand Scale Decomposition: Top 8 User Sectors per Scenario",
+    subtitle = "Bar = a[from,j] × x[j] — the contribution of sector j to the total scale factor. Sc.13 (FF electricity) highlighted.",
+    x        = "Contribution to scale (a × x)",
+    y        = "",
+    fill     = "Region"
+  ) +
+  theme_minimal(base_size = 9) +
+  theme(
+    plot.title      = element_text(face = "bold"),
+    strip.text      = element_text(face = "bold", size = 8),
+    legend.position = "bottom",
+    axis.text.y     = element_text(size = 7)
+  )
+```
+
+```{r leontief_multiplier_comparison}
+#| fig-width: 10
+#| fig-height: 5
+
+# ── Leontief multiplier comparison across intermediate scenarios ───────────────
+# For each scenario: EU ΔM1 structural component and RoW component
+lm_comp <- sc_prod %>%
+  rowwise() %>%
+  mutate(
+    from      = as.integer(from),
+    to        = as.integer(to),
+    L_eu_diff = L_mat[from, to]     - L_mat[from, from],
+    L_row_diff= L_mat[from + n_sector, to] - L_mat[from + n_sector, from],
+    scale_val = sum(A_num[from, ] * xvec_all),
+    label_clean = gsub("<br>", " ", from_label)
+  ) %>%
+  ungroup() %>%
+  select(shock, label_clean, L_eu_diff, L_row_diff, scale_val) %>%
+  pivot_longer(cols = c(L_eu_diff, L_row_diff),
+               names_to = "region", values_to = "L_diff") %>%
+  mutate(
+    region     = recode(region, L_eu_diff = "EU: L[from,to]−L[from,from]",
+                                L_row_diff = "RoW: L[from+54,to]−L[from+54,from]"),
+    sc_label   = paste0("Sc.", shock, "\n", label_clean)
+  )
+
+ggplot(lm_comp,
+       aes(x = reorder(sc_label, -scale_val), y = L_diff, fill = region)) +
+  geom_col(position = "dodge", alpha = 0.85) +
+  geom_hline(yintercept = 0, linewidth = 0.3) +
+  scale_fill_manual(values = c(
+    "EU: L[from,to]−L[from,from]"          = "#1565C0",
+    "RoW: L[from+54,to]−L[from+54,from]"  = "#E65100"
+  )) +
+  labs(
+    title    = "Leontief Multiplier Difference by Intermediate Scenario (EU vs RoW)",
+    subtitle = "Bars sorted by scale factor (largest left). EU ≈ −1 for all; RoW variation reveals cross-border asymmetry.",
+    x        = "",
+    y        = "L[from,to] − L[from,from]",
+    fill     = ""
+  ) +
+  theme_minimal(base_size = 11) +
+  theme(plot.title = element_text(face = "bold"), legend.position = "bottom")
+```
+
+> **Key findings.** *Scale dominates structural variation:* the EU Leontief multiplier difference (L[from,to] − L[from,from]) is approximately −1.0 for all intermediate scenarios, varying only between −0.998 (Pulp, Cement) and −1.184 (Construction). This near-constancy means that **variation in |ΔM| across scenarios is driven almost entirely by the scale factor**, not by IO multiplier differences. *Fossil-fuel electricity (Sc.13):* despite being connected to many sectors (scale = 14.85), its scale is moderate because the biggest users of FF electricity are downstream service and infrastructure sectors (Energy Transmission: 2.54, Durable Goods: 1.58, Professional Services: 0.83) rather than the most material-intensive heavy industries. Its structural factor is near zero (λ̄ = −0.004) because FF and renewable electricity share nearly identical backward linkages in the IO table. *RoW multiplier differences* are small (< 0.02 in absolute value for most scenarios) but non-zero for Construction, Metals, and Glass — the three scenarios with the largest cross-border production linkages.
+
+---
+
+# Simulation Results
+
+## Sample Scenario Trajectories
+
+We present simulation trajectories for three representative scenarios from the three regimes identified in the analysis: a final demand shock (Scenario 1), an intermediate production restructuring (Scenario 13: Energy), and the construction expansion (Scenario 14). These illustrate the qualitatively distinct adjustment dynamics at work.
+
+```{r load_representative_shocks}
+# ── Load or run three representative shocks ───────────────────────────────────
+rep_shocks <- c(1, 13, 14)
+
+shock_data <- list()
+
+for (ns in rep_shocks) {
+  run <- run_or_load_shock(ns, initial, mvp.model)
+  if (!is.null(run)) {
+    df <- shock.long.new(baseline, run)
+    df$n_shock <- ns
+    shock_data[[as.character(ns)]] <- df
+  }
+}
+
+shock_df <- bind_rows(shock_data)
+```
+
+```{r plot_rep_trajectories}
+#| fig-width: 12
+#| fig-height: 10
+
+# Variables to display for each group
+eco_vars  <- c("mat", "emis", "wa")
+econ_vars <- c("y", "n", "gdef", "cab")
+soc_vars  <- c("shw", "shp", "ydw", "ydc", "nf")
+
+shock_labels <- c(
+  "1"  = "Sc. 1: HH Food Demand Shift",
+  "13" = "Sc. 13: Energy Production Shift",
+  "14" = "Sc. 14: Construction Shift"
+)
+
+plot_group <- function(vars, group_name) {
+  shock_df %>%
+    filter(variable %in% vars, n_shock %in% rep_shocks) %>%
+    mutate(scenario_lab = shock_labels[as.character(n_shock)]) %>%
+    ggplot(aes(x = time, y = value, colour = scenario, linetype = area)) +
+    facet_grid(name ~ scenario_lab, scales = "free_y") +
+    geom_line(linewidth = 0.8) +
+    geom_vline(xintercept = t_shock, linetype = "dashed",
+               linewidth = 0.3, colour = "grey40") +
+    labs(
+      title    = paste("Representative Scenarios —", group_name),
+      subtitle = "Dashed vertical line = shock activation (t = 70)",
+      x = "Period",
+      y = "Level",
+      colour = "Scenario",
+      linetype = "Region"
+    ) +
+    theme_minimal(base_size = 10) +
+    theme(
+      plot.title      = element_text(face = "bold", size = 12),
+      strip.text      = element_text(size = 9),
+      legend.position = "bottom"
+    )
+}
+
+print(plot_group(eco_vars,  "Ecological Variables"))
+print(plot_group(econ_vars, "Macroeconomic Variables"))
+print(plot_group(soc_vars,  "Social/Distributional Variables"))
+```
+
+## Cross-Scenario Heatmap
+
+```{r heatmap_all}
+#| fig-width: 13
+#| fig-height: 8
+
+# ── Compute/load summary tables for all 14 shocks ─────────────────────────────
+# shock.summary() returns wide format:
+#   Name | Variable | Immediate.Z1 | Short.Term.Z1 | Long.Term.Z1 |
+#                     Immediate.Z2 | Short.Term.Z2 | Long.Term.Z2
+summary_tables <- list()
+
+for (ns in 1:14) {
+  run <- run_or_load_shock(ns, initial, mvp.model)
+  if (!is.null(run)) {
+    tbl <- shock.summary(baseline, run,
+                         t_ = c(t_shock + 1, t_shock + 7, t_shock + 20),
+                         t_names = c("Immediate", "Short.Term", "Long.Term")) %>%
+      mutate(n_shock = ns)
+    summary_tables[[ns]] <- tbl
+  }
+}
+
+summary_wide <- bind_rows(summary_tables)
+
+# ── Pivot to long format ───────────────────────────────────────────────────────
+# Columns: Name, Variable, Immediate.Z1...Long.Term.Z2, n_shock
+# → pivot value cols to: horizon_region | value
+summary_long <- summary_wide %>%
+  pivot_longer(
+    cols      = matches("^(Immediate|Short\\.Term|Long\\.Term)\\.(Z[12])$"),
+    names_to  = c("horizon", "region"),
+    names_pattern = "^(.+)\\.(Z[12])$",
+    values_to = "pct_change"
+  ) %>%
+  mutate(
+    horizon = factor(horizon,
+                     levels = c("Immediate", "Short.Term", "Long.Term"),
+                     labels = c("Immediate", "Short Term", "Long Term")),
+    region  = recode(region, Z1 = "EU", Z2 = "RoW")
+  )
+
+# ── Variable labels ────────────────────────────────────────────────────────────
+var_labels <- c(
+  y    = "Output",
+  n    = "Employment",
+  nf   = "Female Employ.",
+  shw  = "Wage Share",
+  shp  = "Profit Share",
+  mat  = "Material",
+  emis = "Emissions",
+  wa   = "Waste",
+  cab  = "Curr. Account",
+  gdef = "Gov. Deficit",
+  land = "Land Use",
+  water= "Water Use",
+  rec  = "Recycling",
+  va   = "Value Added",
+  go   = "Gross Output"
+)
+
+heatmap_vars_short <- c("y","n","nf","shw","shp","mat","emis","wa","cab","gdef")
+
+heatmap_df <- summary_long %>%
+  filter(Variable %in% heatmap_vars_short, horizon == "Long Term") %>%
+  mutate(
+    var_lab   = paste0(region, ": ", coalesce(var_labels[Variable], Variable)),
+    shock_lab = paste0("Sc.", n_shock)
+  )
+
+if (nrow(heatmap_df) > 0) {
+  ggplot(heatmap_df,
+         aes(x = factor(n_shock), y = var_lab, fill = pct_change)) +
+    geom_tile(colour = "white", linewidth = 0.3) +
+    geom_text(aes(label = sprintf("%.1f%%", pct_change)),
+              size = 2.5, colour = "black") +
+    scale_fill_gradient2(
+      low = "#1565C0", mid = "white", high = "#C62828",
+      midpoint = 0, limits = c(-20, 20), oob = squish,
+      name = "% change\nvs baseline"
+    ) +
+    labs(
+      title    = "Cross-Scenario Heatmap: Long-Run % Change vs Baseline",
+      subtitle = "Blue = decrease; Red = increase. Capped at ±20%.",
+      x = "Scenario", y = ""
+    ) +
+    theme_minimal(base_size = 10) +
+    theme(plot.title = element_text(face = "bold", size = 12))
+}
+```
+
+```{r heatmap_horizons}
+#| fig-width: 13
+#| fig-height: 7
+
+eco_social_short <- c("mat", "emis", "n", "shw")
+
+heatmap_horizons <- summary_long %>%
+  filter(Variable %in% eco_social_short) %>%
+  mutate(
+    var_lab = paste0(region, ": ", coalesce(var_labels[Variable], Variable))
+  )
+
+if (nrow(heatmap_horizons) > 0) {
+  ggplot(heatmap_horizons,
+         aes(x = factor(n_shock), y = var_lab, fill = pct_change)) +
+    geom_tile(colour = "white", linewidth = 0.3) +
+    scale_fill_gradient2(
+      low = "#1565C0", mid = "white", high = "#C62828",
+      midpoint = 0, limits = c(-15, 15), oob = squish,
+      name = "% change"
+    ) +
+    facet_wrap(~horizon) +
+    labs(
+      title    = "Material, Emissions, Employment: Dynamics Across Horizons",
+      subtitle = "Immediate (t+1), Short Term (t+7), Long Term (t+20) vs baseline",
+      x = "Scenario", y = ""
+    ) +
+    theme_minimal(base_size = 10) +
+    theme(plot.title = element_text(face = "bold"))
+}
+```
+
+---
+
+# The Triple Dilemma: Ecological, Economic, and Social Outcomes
+
+The scenario space does not yield a single "win-win" path. Instead, three structurally distinct transition regimes emerge, each positioning itself differently on the **trilemma between ecological improvement, macroeconomic stability, and social equity**. Table 3 provides a compact comparative matrix.
+
+```{r regime_table}
+tribble(
+  ~`Regime`,              ~`EU Output`, ~`EU Employment`, ~`EU Wage Share`,
+  ~`External Balance`, ~`EU Ecology`, ~`RoW Ecology`, ~`EU–RoW Symmetry`,
+
+  "**A. Construction (Sc.14)**",
+  "++", "++", "0/+", "−", "−−", "−", "Asymmetric",
+
+  "**B. Final Demand (Sc.1–6)**",
+  "−/0", "−/0", "0", "+/0", "+/0", "≈0", "Mostly symmetric",
+
+  "**C. Intermediate Production (Sc.7–13)**",
+  "− to −−", "− to −−", "−", "±", "+ to ++", "Mixed", "Asymmetric",
+
+  "**C₁. Energy (Sc.13)** *(subset)*",
+  "−−", "−−", "−−", "±", "++", "RoW: −", "Most asymmetric"
+) %>%
+  kbl(caption = "Table 3. Compact Regime Matrix (Long Run)",
+      align   = "l") %>%
+  kable_styling(bootstrap_options = c("striped","condensed"), font_size = 12) %>%
+  row_spec(1, background = "#fff3e0") %>%
+  row_spec(2, background = "#f3f4f6") %>%
+  row_spec(3, background = "#e8f5e9") %>%
+  row_spec(4, background = "#e0f2f1")
+```
+
+**Legend:** ++ strongly positive, + positive, 0 negligible, − negative, −− strongly negative, ± mixed/sign-changes across horizons.
+
+## Regime A: Construction Expansion
+
+Scenario 14 — which reallocates intermediate construction inputs toward secondary material use at large scale — stands apart as the only scenario generating unambiguous expansionary macroeconomic and social dynamics. Gross output and value added rise substantially; employment, including female employment, increases; and the fiscal balance improves as the automatic stabilizers benefit from higher activity. Crucially, this is also the only scenario where the wage share does not deteriorate.
+
+The mechanism is straightforward: construction is a high-output-multiplier sector with strong backward linkages into the domestic economy. The substitution increases demand for secondary construction materials — which are produced locally — generating a Keynesian multiplier effect that dominates the restructuring cost.
+
+The ecological verdict, however, is unambiguous: material extraction, land use, water use, and emissions all increase. Construction expansion is ecologically intensive regardless of the secondary material ratio within it. This is the **growth vs ecology** horn of the trilemma: Regime A achieves social and economic goals at ecological cost.
+
+The RoW impact is also expansionary in output terms — the demand spillover is transmitted through trade — but the ecological burden in RoW also rises. The asymmetry is quantitative rather than qualitative.
+
+## Regime B: Final Demand Reallocation
+
+Scenarios 1–6 implement household, government, and investment expenditure shifts away from primary food, energy, and material sectors. The leverage of these interventions is structurally limited. Because the affected demand shares ($\delta_1 D$) are small relative to total economic activity, the scale factor is modest regardless of $\bar{\lambda}$.
+
+The simulation confirms this: output falls marginally or remains near-neutral, employment changes are small, and distributional effects are negligible. The ecological improvement — while genuine — is proportionally modest: a 20% shift in one demand share produces a corresponding fraction of the economy's material and emissions footprint.
+
+This regime illustrates the **incremental vs structural** dimension of the trilemma. Consumer-side and expenditure-side policies are coherent with social stability and entail minimal macro risk, but they cannot deliver the material throughput reductions required for a substantive ecological transition. They function best as complements to supply-side restructuring, not substitutes.
+
+RoW spillovers are minimal, consistent with the limited systemic reach of final demand shocks.
+
+## Regime C: Intermediate Production Restructuring
+
+Scenarios 7–13 operate at the production core of the economy, altering the technical coefficients of wood, pulp, plastics, metal, glass, cement, and energy sectors. This is where the trilemma is most acute.
+
+**Ecological gains** are strong and immediate. Reductions in primary material extraction and emissions appear across the full distribution of scenarios in this group, with the energy substitution (Scenario 13) delivering the largest ecological dividend. The analytical $\Delta M$ estimates confirm the negative structural factor $\bar{\lambda}$ for these sectors — secondary alternatives have lower material intensity than primary inputs.
+
+**Macroeconomic contraction** accompanies these gains, however. Output declines across all horizons as the technology shift reduces gross output multipliers. Investment falls as firms adjust to the new input regime. The government fiscal position deteriorates as reduced activity compresses tax revenues while public expenditure adjusts more slowly. The scale of contraction is approximately proportional to the breadth of the affected sector: energy (widespread incidence) produces the largest macro effect.
+
+**Distributional shift toward capital** is the most concerning social dynamic. As employment falls and productivity gains accrue to capital owners — who capture the reduced input costs without fully passing them on to wages — the wage share declines and the profit share rises. Worker disposable income contracts, and the effect strengthens over time: the distributional deterioration is a medium-run structural shift, not a transient adjustment cost. Female employment falls disproportionately in several scenarios, reflecting sectoral feminization patterns in the affected upstream industries.
+
+### The Energy Scenario: A Case Study in Asymmetry
+
+Scenario 13 exhibits the starkest EU–RoW divergence. EU ecological indicators improve substantially — emissions and material extraction fall — but RoW employment declines modestly and RoW distributional patterns deteriorate. This reflects the structure of the EU–RoW linkage: EU energy-sector restructuring reduces demand for RoW fossil-fuel inputs (the dominant cross-border link). RoW fossil-fuel extraction sectors consequently face reduced demand, transmitting contractionary effects. The EU ecological gain is thus partially offset by a terms-of-trade and demand loss in RoW — a form of **ecological burden shifting** that does not represent a global environmental improvement of equal magnitude.
+
+This asymmetry illustrates a broader point: when the dominant cross-border IO link is a carbon-intensive chain, supply-side restructuring in the Core produces asymmetric outcomes in the Periphery. The distributional implications — EU capital capturing the transition rents while RoW workers bear output losses — constitute a justice concern of direct relevance to JUST2CE's normative framing.
+
+## Core–Periphery Structural Asymmetry
+
+Across all Regime C scenarios, the EU experiences stronger ecological improvements but also sharper macro-social contractions, while RoW experiences attenuated versions of both. This pattern reflects two structural features of the model:
+
+1. **Directionality of IO links.** The cross-border IO structure is asymmetric: there are approximately three times more production links from RoW to EU than from EU to RoW (by number; even more by weight). EU restructuring therefore generates large inward effects (from its own input restructuring) and limited outward transmission. RoW effects arrive primarily through demand spillovers, which are smaller in magnitude.
+
+2. **Composition of trade.** RoW's dominant export to EU is fossil fuels — the most carbon-intensive supply chain. EU intermediate production restructuring that reduces fossil-fuel intensity disproportionately harms RoW fossil-fuel exporters while concentrating the ecological dividend in the EU.
+
+These asymmetries do not disappear with policy design: they are structural features of the current IO topology. Addressing them requires either direct policy coordination across regions or explicit compensation mechanisms — a governance challenge beyond the scope of the scenarios modelled here, but central to the JUST2CE framework.
+
+---
+
+# Material Consumption Trajectories and Rebound Effects
+
+## Primary Material Consumption: Baseline vs Shock
+
+```{r rebound_trajectories}
+#| fig-width: 12
+#| fig-height: 8
+
+# ── Load all 14 shock runs ─────────────────────────────────────────────────────
+all_shock_runs <- list()
+
+for (ns in 1:14) {
+  run <- run_or_load_shock(ns, initial, mvp.model)
+  if (!is.null(run)) all_shock_runs[[as.character(ns)]] <- run
+}
+
+# ── Extract M1 (primary material) trajectory ──────────────────────────────────
+mat_vars <- c("Z1_mat", "Z2_mat")
+
+extract_mat <- function(run, n_shock) {
+  if (is.null(run$simulation)) return(NULL)
+  sim <- run$simulation
+  vars_found <- intersect(mat_vars, rownames(sim))
+  if (length(vars_found) == 0) return(NULL)
+
+  lapply(vars_found, function(v) {
+    tibble(
+      time    = seq_len(ncol(sim)),
+      region  = sub("_.*$", "", v),
+      value   = as.numeric(sim[v, ]),
+      n_shock = n_shock,
+      scenario = "shock"
+    )
+  }) %>% bind_rows()
+}
+
+# Baseline material trajectories
+base_mat <- lapply(mat_vars, function(v) {
+  if (!is.null(baseline$simulation) && v %in% rownames(baseline$simulation))
+    tibble(time = seq_len(ncol(baseline$simulation)),
+           region = sub("_.*$", "", v),
+           value = as.numeric(baseline$simulation[v, ]),
+           n_shock = 0,
+           scenario = "baseline")
+  else NULL
+}) %>% bind_rows()
+
+# Shock material trajectories
+shock_mat <- map2_dfr(all_shock_runs, names(all_shock_runs),
+                      ~ extract_mat(.x, as.integer(.y)))
+
+mat_all <- bind_rows(base_mat, shock_mat) %>%
+  mutate(region = recode(region, Z1 = "EU", Z2 = "RoW"))
+
+# ── Difference: shock − baseline ──────────────────────────────────────────────
+mat_diff <- shock_mat %>%
+  left_join(
+    base_mat %>% select(time, region, baseline_val = value),
+    by = c("time", "region")
+  ) %>%
+  mutate(
+    delta_mat = value - baseline_val,
+    n_shock   = as.integer(n_shock),
+    shock_lab = paste0("Sc.", n_shock, ": ",
+                       sc$display_name[match(n_shock, sc$shock)]),
+    region    = recode(region, Z1 = "EU", Z2 = "RoW")
+  )
+
+# ── EU material: level trajectories ───────────────────────────────────────────
+p1 <- mat_all %>%
+  filter(region == "EU") %>%
+  mutate(
+    line_type = if_else(scenario == "baseline", "Baseline", paste0("Sc.", n_shock)),
+    alpha_val = if_else(scenario == "baseline", 1, 0.6)
+  ) %>%
+  ggplot(aes(x = time, y = value,
+             group = interaction(n_shock, scenario),
+             colour = scenario == "baseline",
+             alpha  = alpha_val)) +
+  geom_line(linewidth = 0.7) +
+  geom_vline(xintercept = t_shock, linetype = "dashed",
+             linewidth = 0.4, colour = "grey40") +
+  scale_colour_manual(values = c("TRUE" = "black", "FALSE" = "#E05C5C"),
+                      labels = c("TRUE" = "Baseline", "FALSE" = "Shock runs"),
+                      name = "") +
+  scale_alpha_identity(guide = "none") +
+  labs(
+    title    = "EU Primary Material Extraction: All Scenarios vs Baseline",
+    subtitle = "Each red line = one shock; black = baseline",
+    x = "Period", y = "Material Extraction (M$)"
+  ) +
+  theme_minimal(base_size = 11) +
+  theme(plot.title = element_text(face = "bold"), legend.position = "bottom")
+
+print(p1)
+```
+
+```{r rebound_difference}
+#| fig-width: 12
+#| fig-height: 7
+
+# ── Difference trajectories by scenario ───────────────────────────────────────
+p2 <- mat_diff %>%
+  filter(region == "EU", time > t_shock - 5) %>%
+  mutate(
+    regime = case_when(
+      n_shock == 14             ~ "A: Construction",
+      n_shock %in% 1:6         ~ "B: Final Demand",
+      n_shock %in% 7:13        ~ "C: Intermediate Production",
+      TRUE ~ "Other"
+    )
+  ) %>%
+  ggplot(aes(x = time, y = delta_mat,
+             group = n_shock,
+             colour = regime)) +
+  geom_line(linewidth = 0.8, alpha = 0.8) +
+  geom_hline(yintercept = 0, linewidth = 0.4) +
+  geom_vline(xintercept = t_shock, linetype = "dashed",
+             linewidth = 0.3, colour = "grey40") +
+  scale_colour_manual(
+    values = c(
+      "A: Construction"            = "#E65100",
+      "B: Final Demand"            = "#1565C0",
+      "C: Intermediate Production" = "#2E7D32"
+    )
+  ) +
+  labs(
+    title    = "Deviation from Baseline: EU Material Extraction",
+    subtitle = "Positive = material expansion vs baseline; Negative = material reduction",
+    x = "Period", y = "ΔM (material extraction, deviation from baseline)",
+    colour = "Regime"
+  ) +
+  theme_minimal(base_size = 11) +
+  theme(plot.title = element_text(face = "bold"), legend.position = "bottom")
+
+print(p2)
+```
+
+## Cumulative Material Stock Differences
+
+The trajectory of the instantaneous deviation ($\Delta M_t$) does not fully capture the aggregate material throughput effect of a policy, because a brief but large reduction can be offset by a subsequent rebound. To assess the net cumulative effect, we compute:
+
+$$\Delta M^{\text{cum}}_t = \sum_{\tau = t_{\text{shock}}}^{t} \Delta M_\tau = \sum_{\tau = t_{\text{shock}}}^{t} (M_\tau^{\text{shock}} - M_\tau^{\text{baseline}}).$$
+
+A monotonically declining $\Delta M^{\text{cum}}_t$ indicates a genuine, sustained material reduction. A curve that flattens or reverses indicates a rebound where the initial reduction is partially or fully undone by subsequent increases.
+
+```{r cumulative_rebound}
+#| fig-width: 12
+#| fig-height: 7
+
+cum_diff <- mat_diff %>%
+  filter(region == "EU") %>%
+  group_by(n_shock) %>%
+  arrange(time) %>%
+  mutate(
+    post_shock = time >= t_shock,
+    delta_cum  = cumsum(if_else(post_shock, delta_mat, 0))
+  ) %>%
+  ungroup() %>%
+  filter(post_shock) %>%
+  mutate(
+    regime = case_when(
+      n_shock == 14         ~ "A: Construction",
+      n_shock %in% 1:6     ~ "B: Final Demand",
+      n_shock %in% 7:13    ~ "C: Intermediate Production",
+      TRUE ~ "Other"
+    ),
+    shock_lab = paste0("Sc.", n_shock)
+  )
+
+ggplot(cum_diff,
+       aes(x = time, y = delta_cum,
+           group = n_shock,
+           colour = regime,
+           label = if_else(time == max(time), shock_lab, NA_character_))) +
+  geom_line(linewidth = 0.8, alpha = 0.8) +
+  geom_label_repel(
+    data = cum_diff %>% group_by(n_shock) %>% slice_tail(n = 1),
+    aes(label = shock_lab),
+    size = 3, max.overlaps = 20, show.legend = FALSE
+  ) +
+  geom_hline(yintercept = 0, linewidth = 0.4) +
+  scale_colour_manual(
+    values = c(
+      "A: Construction"            = "#E65100",
+      "B: Final Demand"            = "#1565C0",
+      "C: Intermediate Production" = "#2E7D32"
+    )
+  ) +
+  labs(
+    title    = "Cumulative Material Stock Difference: EU",
+    subtitle = "Negative = cumulative material saving vs baseline; rebound if curve reverses upward",
+    x = "Period",
+    y = "Cumulative ΔM (sum of deviations from baseline)",
+    colour = "Regime"
+  ) +
+  theme_minimal(base_size = 11) +
+  theme(plot.title = element_text(face = "bold"), legend.position = "bottom")
+```
+
+> **Reading the rebound chart.** A steadily declining cumulative curve confirms that the material reduction deepens over time without reversal — no rebound. A curve that declines initially but then flattens indicates that the shock induced a one-time adjustment followed by convergence back toward baseline — a partial rebound. Curves that turn positive indicate that the policy actually increased cumulative material use over the period, despite an initial transient reduction. Regime C scenarios (green) generally show the strongest and most sustained cumulative reductions. Regime A (construction, orange) shows the largest cumulative *increase* in material extraction, confirming the ecological cost of expansionary construction policy. Regime B (final demand, blue) shows modest cumulative reductions that do not deepen over time.
+
+## Sectoral Material Output Trajectories
+
+The aggregate material indicator $M$ conceals important heterogeneity across material categories. Each CE scenario targets a specific primary-to-secondary substitution, so its first-order effect should be visible in the output of the targeted sector. The plots below show the **% deviation from baseline** in gross output for the primary material sectors studied in the scenario table: food, fossil-fuel electricity, wood, pulp, plastics, metals, glass, cement, and construction. This is the sector-level analogue of the aggregate material and emissions trajectories: rather than tracking total material extraction, we track the output of the industries that extract or process specific material types.
+
+```{r sectoral_material_trajectories}
+#| fig-width: 13
+#| fig-height: 9
+
+# ── Sector definitions for material output tracking ───────────────────────────
+material_sectors <- tibble(
+  sector_code = c(7,  8,  11, 13, 17, 21, 24, 26, 31, 36),
+  label       = c("Food (Meat)", "Food (Other)", "Wood", "Pulp",
+                  "Plastics", "Glass", "Cement", "Metals",
+                  "Fossil-Fuel Electricity", "Construction")
+)
+
+# ── Extract EU gross output for each material sector from all shock runs ───────
+extract_sector_x <- function(run, n_shock) {
+  if (is.null(run$simulation)) return(NULL)
+  sim <- run$simulation
+  map_dfr(material_sectors$sector_code, function(j) {
+    nm <- paste0("Z1_x-", j)
+    if (!nm %in% rownames(sim)) return(NULL)
+    tibble(
+      time        = seq_len(ncol(sim)),
+      sector_code = j,
+      value       = as.numeric(sim[nm, ]),
+      n_shock     = n_shock
+    )
+  })
+}
+
+base_sector_x <- map_dfr(material_sectors$sector_code, function(j) {
+  nm <- paste0("Z1_x-", j)
+  if (is.null(baseline$simulation) || !nm %in% rownames(baseline$simulation))
+    return(NULL)
+  tibble(
+    time        = seq_len(ncol(baseline$simulation)),
+    sector_code = j,
+    baseline_val = as.numeric(baseline$simulation[nm, ])
+  )
+})
+
+shock_sector_x <- map2_dfr(all_shock_runs, names(all_shock_runs),
+                            ~ extract_sector_x(.x, as.integer(.y)))
+
+sector_diff <- shock_sector_x %>%
+  left_join(base_sector_x, by = c("time", "sector_code")) %>%
+  mutate(
+    pct_dev   = 100 * (value - baseline_val) / baseline_val,
+    n_shock   = as.integer(n_shock),
+    regime    = case_when(
+      n_shock == 14        ~ "A: Construction",
+      n_shock %in% 1:6    ~ "B: Final Demand",
+      n_shock %in% 7:13   ~ "C: Intermediate Production",
+      TRUE ~ "Other"
+    )
+  ) %>%
+  left_join(material_sectors, by = "sector_code") %>%
+  filter(time >= t_shock - 2)
+
+ggplot(sector_diff,
+       aes(x = time, y = pct_dev,
+           group = n_shock,
+           colour = regime)) +
+  geom_line(linewidth = 0.7, alpha = 0.8) +
+  geom_hline(yintercept = 0, linewidth = 0.3) +
+  geom_vline(xintercept = t_shock, linetype = "dashed",
+             linewidth = 0.3, colour = "grey40") +
+  facet_wrap(~ label, scales = "free_y", ncol = 5) +
+  scale_colour_manual(
+    values = c(
+      "A: Construction"            = "#E65100",
+      "B: Final Demand"            = "#1565C0",
+      "C: Intermediate Production" = "#2E7D32"
+    )
+  ) +
+  labs(
+    title    = "Sectoral Material Output: % Deviation from Baseline (EU)",
+    subtitle = "Each line = one shock scenario; panels = primary material sector targeted",
+    x = "Period", y = "% deviation from baseline",
+    colour = "Regime"
+  ) +
+  theme_minimal(base_size = 10) +
+  theme(
+    plot.title   = element_text(face = "bold"),
+    legend.position = "bottom",
+    strip.text   = element_text(face = "bold", size = 9)
+  )
+```
+
+> **Reading the sectoral plots.** Each panel shows the trajectory of EU gross output in one primary material sector across all 14 scenarios. The directly targeted scenario (e.g., Wood shift → Scenario 7) should show the largest deviation in the Wood panel. Scenarios affecting the same sector indirectly — through intermediate linkages — produce smaller cross-panel spillovers. Final-demand scenarios (blue) generally produce smaller deviations than intermediate-production scenarios (green) because they operate through a narrower demand channel. The Construction scenario (orange) appears across multiple panels due to its large backward linkages with cement, metals, and glass.
+
+---
+
+# Discussion and Forward Look
+
+## The Triple Dilemma in Context
+
+The scenario analysis reveals a robust structural trilemma for the EU circular economy transition:
+
+- **Ecological effectiveness** is achievable but concentrated in the intermediate production restructuring scenarios (Regime C), which simultaneously produce macroeconomic contraction and distributional regress.
+- **Macroeconomic expansion** is achievable only via the construction pathway (Regime A), which worsens ecological outcomes.
+- **Social equity** — measured by wage share and employment — deteriorates in the ecologically effective regimes and is maintained only in the macroeconomically expansionary regime.
+
+This trilemma is not an artefact of model parameterisation. It reflects deep structural features of the EU–RoW IO topology: the primary material sectors targeted for reduction are precisely those with the strongest backward linkages and highest employment multipliers. Substituting toward secondary materials reduces the output and employment generated per unit of final demand, even as it improves the material and emissions profile.
+
+Policy implications are direct: a "just transition" cannot be achieved through CE restructuring alone. Complementary instruments — wage protection, green employment programmes, progressive fiscal policy, active labour market support — are structural prerequisites if the transition is not to be simultaneously ecologically successful and socially regressive. The Core–Periphery dimension adds a coordination imperative: without explicit EU–RoW policy coordination, the ecological gains of the EU transition may be partially purchased at the cost of output and employment losses in RoW — a transfer from Periphery to Core that contradicts the normative objectives of JUST2CE.
+
+## Scenario Leverage: Which Scenarios Matter Most?
+
+The analytical ΔM estimates allow us to rank scenarios by their structural leverage before simulation:
+
+- **Structural factor** $\bar{\lambda}$: determines the direction and per-unit magnitude of material change.
+- **Scale factor**: determines the size of the affected demand or intermediate input stream.
+- **Combined ΔM** = $\rho \times \text{scale} \times \bar{\lambda}$: the first-order expected material impact.
+
+The cross-scenario heatmap and cumulative trajectory plots confirm the ordering: Energy (Sc.13) and Construction (Sc.14) have the highest absolute $|\Delta M|$ because they combine large scale factors (widespread use in the economy) with significant structural factors. Wood and pulp scenarios (Sc.7–8) have lower leverage because the scale factor — total intermediate demand for these materials — is smaller. Final demand scenarios (Sc.1–6) rank lowest: the demand shares $\delta_1$ are small in absolute level, limiting leverage despite plausible structural factors.
+
+The practical implication is that **scenario prioritisation can be done analytically** using the ΔM table before running any simulations, saving computational resources and directing policy attention toward high-leverage interventions.
+
+## Asymmetric Rebound: Why Secondary ≠ Circular
+
+A recurring structural insight from the Leontief analysis is that the circular economy benefit of substitution is not guaranteed. The sign and magnitude of $\Delta M$ depend on whether the secondary sector has lower embedded material requirements ($l_{12} + l_{22}$) than the primary sector ($l_{11} + l_{21}$). This comparison is non-trivial: secondary material production often requires energy-intensive processing (smelting, recycling, remanufacturing), so its total requirements may exceed those of the primary material for some sector pairs.
+
+Where $\bar{\lambda} > 0$ (rebound regime), a policy framed as "circular economy" actually increases total material throughput. The model can thus identify when circularity is nominal (input substitution without material efficiency gain) versus genuine (structural reduction in material intensity). This distinction is policy-critical: only scenarios with $\bar{\lambda} < 0$ deliver authentic material footprint reductions.
+
+## Forward Look: The Carbon-Industry IO Connection
+
+The scenario suite presented here focuses on a broad set of CE substitutions, treating the EU–RoW economy as a general input-output system. It does not directly model the sector where the EU–RoW IO connection is most concentrated: the fossil-fuel chain (RoW fossil-fuel extraction → EU fossil-fuel processing). This chain is, by a substantial margin, the dominant cross-border production link in the technical coefficient matrix.
+
+This omission is deliberate at this stage of the research: our objective was to characterise the general CE substitution space, not to model a specific geopolitical scenario. Nevertheless, the omission generates a relevant limitation. The scenarios where EU restructuring most directly affects the dominant cross-border link — specifically, the energy sector scenarios (Sc.13) — do so indirectly via reduced energy demand, not by explicitly modelling a fossil-fuel supply disruption.
+
+**Future research directions:** A natural extension of this work is to design a targeted scenario set that explicitly models the fossil-fuel chain disruption — a shock to the RoW fossil-fuel extraction → EU fossil-fuel processing coefficient — under different policy responses. This would allow the model to directly quantify the macroeconomic, social, and ecological consequences of:
+
+1. **Energy sanctions** or supply disruptions (e.g., the US–Iran confrontation) that reduce RoW fossil-fuel exports to EU;
+2. **Accelerated EU energy transition** driven by geopolitical necessity rather than climate policy;
+3. **RoW fossil-fuel substitution** — the equivalent of our CE scenarios applied specifically to the dominant cross-border link.
+
+Such an extension would require calibrating the shock magnitudes from trade data (e.g., BACI, Comext, IEA) and mapping them to the IO framework. The workplan foresees this as Phase 1 of the second year of the project (April–June 2026). The results presented here provide the baseline characterisation against which such targeted scenarios should be benchmarked.
+
+---
+
+# Appendix: Scenario Details and Summary Statistics
+
+## Full Summary Tables by Scenario
+
+```{r appendix_tables, results='asis'}
+for (ns in 1:14) {
+  tbl <- summary_wide %>% filter(n_shock == ns) %>% select(-n_shock)
+  if (nrow(tbl) > 0) {
+    cat("\n\n### Scenario", ns, ":", sc$display_name[sc$shock == ns], "\n\n")
+    print(
+      tbl %>%
+        mutate(across(where(is.double), ~ round(.x, 2))) %>%
+        kbl(caption = paste("Scenario", ns, "— % change vs baseline")) %>%
+        kable_styling(bootstrap_options = c("condensed","striped"),
+                      full_width = FALSE, font_size = 10)
+    )
+  }
+}
+```
+
+## ΔM Analytical Results
+
+```{r appendix_deltaM}
+delta_M_all %>%
+  select(`#` = shock, Scenario = display_name, Domain = delta_type,
+         Lambda = lambda, Scale = scale, DeltaM1, DeltaM2, DeltaM) %>%
+  mutate(across(where(is.double), ~ round(.x, 5))) %>%
+  kbl(caption = "Appendix A. Full ΔM table (ρ = 0.2)") %>%
+  kable_styling(bootstrap_options = c("striped","condensed"),
+                full_width = FALSE, font_size = 10)
+```

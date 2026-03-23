@@ -1,0 +1,187 @@
+---
+execute:
+  echo: false
+format:
+  html:
+    page-layout: full
+    toc: true
+    toc_float: true
+title: Scenario Design
+---
+
+# 1. Conceptual Framework
+
+This document formalizes the structural logic of the scenario design
+used in the model.\
+All redistribution mechanisms are constructed to preserve accounting
+identities and maintain structural consistency between:
+
+1.  Production-side sourcing (technical coefficients matrix $A$)
+2.  Demand-side allocation shares ($\beta, \sigma, \iota, \iota_g$)
+
+The governing parameter is:
+
+$$
+\rho \in [0,1]
+$$
+
+interpreted as the **fraction of original allocation from sector `from`
+that is redirected to sector `to`.**
+
+This interpretation is applied symmetrically across production and
+demand.
+
+------------------------------------------------------------------------
+
+# 2. Production-Side Redistribution
+
+Let $a_{ij}$ denote the technical coefficient matrix.
+
+For a given shock affecting rows `from` and `to`, the redistribution
+rule is:
+
+$$
+a'_{from,j} = (1 - \rho)\, a_{from,j}
+$$
+
+$$
+a'_{to,j} = a_{to,j} + \rho\, a_{from,j}
+$$
+
+This ensures:
+
+$$
+a'_{from,j} + a'_{to,j} = a_{from,j} + a_{to,j}
+$$
+
+Thus:
+
+-   Column totals are preserved.
+-   Total intermediate demand intensity is unchanged.
+-   Only sourcing structure changes.
+
+This represents a **structural sourcing shift**, not a scaling of total
+production requirements.
+
+------------------------------------------------------------------------
+
+# 3. Demand-Side Redistribution
+
+Let $\delta_k$ represent any final demand share vector:
+
+-   $\beta$ (household consumption)
+-   $\sigma$ (government consumption)
+-   $\iota$ (private investment)
+-   $\iota_g$ (public investment)
+
+For a redistribution between sectors `from` and `to`, the symmetric rule
+is:
+
+$$
+\delta'_{from} = (1 - \rho)\, \delta_{from}
+$$
+
+$$
+\delta'_{to} = \delta_{to} + \rho\, \delta_{from}
+$$
+
+This preserves the budget simplex:
+
+$$
+\sum_k \delta'_k = \sum_k \delta_k
+$$
+
+No re-normalization is required.
+
+This ensures conceptual symmetry with the production shock.
+
+------------------------------------------------------------------------
+
+# 4. Unified Interpretation of ρ
+
+Under this design, $\rho$ has a single structural meaning:
+
+> Fraction of original allocation from sector `from` that is redirected
+> to sector `to`.
+
+It does **not** represent a final share split between the pair.
+
+It does **not** rescale total demand.
+
+It operates as a directed redistribution operator.
+
+------------------------------------------------------------------------
+
+# 5. Implementation Notes
+
+## 5.1 Production Scenarios
+
+The model applies the redistribution directly to the technical
+coefficient multipliers before simulation.
+
+Key properties:
+
+-   Column sums preserved.
+-   No negative coefficients created for $0 \le \rho \le 1$.
+-   Leontief structure remains coherent.
+
+## 5.2 Demand Scenarios
+
+The function `compute_delta_eff()` applies redistribution at each period
+$t \ge t_{shock}$:
+
+Pseudo-logic:
+
+    m_from <- delta[from]
+    delta[from] <- (1 - rho) * m_from
+    delta[to]   <- delta[to] + rho * m_from
+
+Exports and imports are excluded from redistribution logic.
+
+------------------------------------------------------------------------
+
+# 6. Economic Interpretation
+
+Production shocks represent:
+
+-   Technological or sourcing transitions
+-   Circular economy substitution
+-   Material substitution in intermediate demand
+
+Demand shocks represent:
+
+-   Consumption reallocation
+-   Investment redirection
+-   Public procurement shifts
+
+Because the operator is identical in form, the model ensures structural
+comparability between technological and behavioural transitions.
+
+------------------------------------------------------------------------
+
+# 7. Stability Considerations
+
+For $0 \le \rho \le 1$:
+
+-   No coefficient becomes negative.
+-   Accounting constraints hold exactly.
+-   Redistribution is bounded.
+-   Comparative statics remain interpretable.
+
+Values of $\rho$ above 0.3--0.4 may imply rapid structural change and
+should be interpreted as aggressive transition scenarios rather than
+marginal adjustments.
+
+------------------------------------------------------------------------
+
+# 8. Summary
+
+The scenario design now satisfies:
+
+-   Algebraic consistency
+-   Accounting preservation
+-   Symmetry across production and demand
+-   Clear interpretation of the redistribution parameter
+
+This provides a structurally coherent foundation for scenario analysis
+and policy experimentation.

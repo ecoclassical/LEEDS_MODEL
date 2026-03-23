@@ -1,0 +1,249 @@
+---
+title: "Scenario Design"
+subtitle: "Insights from a Core-Periphery SOCIO-ECO-MRIO-SFC Model"
+author:
+  - name: "Oriol Vallès Codina"
+    affiliation: "Johns Hopkins University, Net Zero Industrial Policy Lab, Department of Political Science"
+    email: "oriolvallescodina@gmail.com"
+date: "`r Sys.Date()`"
+format:
+  docx:
+    toc: false
+    number-sections: true
+execute:
+  echo: false
+  warning: false
+  message: false
+---
+
+```{r setup}
+library(tidyverse)
+library(knitr)
+library(kableExtra)
+
+qmd_in <- knitr::current_input()
+if (!is.null(qmd_in) && nzchar(qmd_in)) {
+  root <- normalizePath(file.path(dirname(normalizePath(qmd_in)), ".."))
+} else {
+  wd0 <- normalizePath(getwd())
+  root <- if (basename(wd0) == "qmd") normalizePath("..") else wd0
+}
+
+dir_data <- file.path(root, "data")
+sector_list <- read.csv(file.path(dir_data, "sector_list.csv"), stringsAsFactors = FALSE) %>%
+  mutate(label = gsub("<br>", " ", label))
+```
+
+# Overview
+
+Our economy uses materials $M = \{
+\text{food},\;
+\text{energy},\;
+\text{wood},\;
+\text{plastic},\;
+\text{pulp},\;
+\text{paper},\;
+\text{metal},\;
+\text{glass},\;
+\text{cement},\;
+\text{rubber}
+\}$.
+
+Shifts towards economic circularity can be either driven by final demand or by intermediate production substitutions. Interventions can be modeled as redistribution operators, governed by scalar parameter $\rho \in [0,1]$ decreasing primary material use $M_1$ and increases secondary material use $M_2$ either by:
+
+- by reallocating sector-level shares in **final demand** $\mathbf{d}$ from primary to secondary materials:
+  - in **consumption**:
+    - by households $c$ and
+    - by government $g$
+  - in **investment / final production**, both
+    - private $id$ and
+    - public $id_g$, or
+- by changing input-output coefficients $A$ in **intermediate production**, substituting industrial material inputs from primary to secondary materials.
+
+---
+
+# Table of Scenarios
+
+```{r scenarios_table}
+sc <- read.csv(file.path(dir_data, "scenarios.csv"), stringsAsFactors = FALSE) %>%
+  mutate(from = as.integer(from), to = as.integer(to)) %>%
+  left_join(sector_list %>% rename(from_label = label), by = c("from" = "sector_code")) %>%
+  left_join(sector_list %>% rename(to_label   = label), by = c("to"   = "sector_code")) %>%
+  select(shock, domain, sector, transaction, shift, target, from, from_label, to, to_label)
+
+kable(sc,
+      caption = "Scenario Registry",
+      col.names = c("#", "Domain", "Sector", "Transaction", "Shift",
+                    "Target", "From", "From (label)", "To", "To (label)"),
+      align = "l")
+```
+
+---
+
+# Setup
+
+*Final demand* $\mathbf{d}$ in real terms is defined sector-by-sector as the sum of domestic components $D$ and the external balance:
+
+1. Household consumption $c$ with sector-level shares $\beta$,
+2. Government consumption $g$ with sector-level shares $\sigma$,
+3. Private investment $id$ with sector-level shares $\iota$, and
+4. Public investment $id^g$ with sector-level shares $\iota^g$.
+
+$$
+\mathbf{d}
+=
+\begin{pmatrix}
+\beta_1 \\
+\beta_2 \\
+\vdots \\
+\beta_N
+\end{pmatrix} c
++
+\begin{pmatrix}
+\sigma_1 \\
+\sigma_2 \\
+\vdots \\
+\sigma_N
+\end{pmatrix} g
++
+\begin{pmatrix}
+\iota_1 \\
+\iota_2 \\
+\vdots \\
+\iota_N
+\end{pmatrix} id
++
+\begin{pmatrix}
+\iota^g_1 \\
+\iota^g_2 \\
+\vdots \\
+\iota^g_N
+\end{pmatrix} id^g + \text{external balance}
+$$
+
+Real output $\mathbf{x}$ is then determined by the input-output system, where $L$ is the Leontief inverse matrix, with elements $l_{ij}$:
+
+$$
+\mathbf{x} = (I - A)^{-1} \mathbf{d} \equiv L\, \mathbf{d}.
+$$
+
+For primary sector material 1 and secondary material sector 2 (columns *from* and *to* in the scenarios table), material use is:
+
+$$
+M_1 = x_1 = \sum^N_{j=1} l_{1j} d_j, \qquad M_2 = x_2 = \sum^N_{j=1} l_{2j} d_j.
+$$
+
+Total material use is
+
+$$
+M = M_1 + M_2 = x_1 + x_2 = \sum^N_{j = 1} (l_{1j} + l_{2j})\, d_j.
+$$
+
+## Final Demand
+
+For a final domestic demand component $D = \{c, g, id, id^g\}$ with sector-level shares $\delta = \{\beta, \sigma, \iota, \iota^g\}$, a shift $\rho$ is defined as:
+
+$$
+\delta'_1 = (1-\rho)\, \delta_1, \qquad
+\delta'_2 = \delta_2 + \rho\, \delta_1,
+$$
+
+so that total expenditure is preserved automatically:
+
+$$
+\sum^N_j \delta'_j = \sum^N_j \delta_j = 1.
+$$
+
+By definition, the demand change vector is $\Delta \mathbf{d} = \mathbf{d}' - \mathbf{d}$. Primary material demand decreases:
+
+$$
+\Delta d_1 = - \rho\, \delta_1\, D,
+$$
+
+secondary material demand increases:
+
+$$
+\Delta d_2 = + \rho\, \delta_1\, D,
+$$
+
+and demand for other inputs does not change: $\Delta d_j = 0$ for $j \neq 1, 2$.
+
+While demand changes at the sector level, aggregate demand is constant:
+
+$$
+\sum_{j=1}^N \Delta d_j = -\rho\delta_1 D + \rho\delta_1 D = 0.
+$$
+
+Because $\Delta M = \sum_{j=1}^N (l_{1j}+l_{2j})\,\Delta d_j$, in general total material use $\Delta M \neq 0$. There may also be a structural rebound: primary material use $M_1'$ can increase even though final demand of primary material decreases. The first-order material changes are:
+
+$$
+\Delta M_1 = \rho\,\delta_1\, D\,(l_{12}-l_{11}),
+$$
+
+$$
+\Delta M_2 = \rho\,\delta_1\, D\,(l_{22} - l_{21}),
+$$
+
+$$
+\Delta M = \rho\,\delta_1\, D\,\big[(l_{12} + l_{22}) - (l_{11} + l_{21})\big],
+$$
+
+where $l_{11}+l_{21}$ is the total material requirement generated by one unit of demand in the primary sector and $l_{12}+l_{22}$ is the total material requirement generated by one unit of demand in the secondary sector.
+
+---
+
+## Intermediate Demand
+
+Let primary sector 1 and secondary sector 2 supply the same functional material input. For each using sector $j$, define $s_j \equiv a_{1j} + a_{2j}$. A substitution parameter $\rho \in [0,1]$ gives:
+
+$$
+a'_{1j} = (1-\rho)\,a_{1j}, \qquad
+a'_{2j} = a_{2j} + \rho\, a_{1j}, \qquad
+a'_{ij} = a_{ij} \quad \text{for } i \neq 1,2,
+$$
+
+so that $a'_{1j} + a'_{2j} = s_j$ (bundle conservation, no productivity change). The technology shock is $\Delta A = A' - A$:
+
+$$
+\Delta a_{1j} = -\rho\, a_{1j},
+\qquad
+\Delta a_{2j} = +\rho\, a_{1j},
+\qquad
+\Delta a_{ij} = 0 \text{ otherwise.}
+$$
+
+For small $\rho$, first-order changes in gross output are:
+
+$$
+\Delta \mathbf{x} \approx L\,(\Delta A)\,\mathbf{x}.
+$$
+
+Component-wise, $\Delta x_i \approx \rho\, a_{1j}\, x_j\,(l_{i2} - l_{i1})$. The material changes for a substitution in a single using sector $j$ are:
+
+$$
+\Delta M_1 \approx \rho\, a_{1j}\, x_j\,(l_{12} - l_{11}),
+$$
+
+$$
+\Delta M_2 \approx \rho\, a_{1j}\, x_j\,(l_{22} - l_{21}),
+$$
+
+$$
+\Delta M \approx \rho\, a_{1j}\, x_j\,\big[(l_{12} + l_{22}) - (l_{11} + l_{21})\big].
+$$
+
+If the substitution occurs across all using sectors $j \in \mathcal{J}$, the first-order effects sum:
+
+$$
+\Delta M_1 \approx \rho \sum_{j\in\mathcal{J}} a_{1j}\,x_j\,(l_{12}-l_{11}),
+$$
+
+$$
+\Delta M_2 \approx \rho \sum_{j\in\mathcal{J}} a_{1j}\,x_j\,(l_{22}-l_{21}),
+$$
+
+$$
+\Delta M \approx \rho \sum_{j\in\mathcal{J}} a_{1j}\,x_j\,\big[(l_{12}+l_{22})-(l_{11}+l_{21})\big].
+$$
+
+Note that the structural factor $\bar{\lambda} = (l_{12}+l_{22})-(l_{11}+l_{21})$ is identical for both the final demand and intermediate demand cases. What differs is the scale factor: $\delta_1 D$ in the final demand case versus $\sum_j a_{1j} x_j$ in the intermediate demand case.
