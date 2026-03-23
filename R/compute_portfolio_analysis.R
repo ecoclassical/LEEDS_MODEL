@@ -20,6 +20,16 @@ x_base <- c(
   sapply(1:n_sec, function(j) sim[paste0('Z2_x-', j), t_sh])
 )
 
+# ── Cross-border import propensities from MARIO (empirical, by FD channel) ────
+# eta_k[j] = share of EU final demand for sector j that is imported from RoW.
+# Source: MARIO - Aggregated (2).xlsx, F21 block (RoW supply -> EU final demand).
+mario_ch <- read.csv('data/mrio_fd_channel_shares.csv', stringsAsFactors = FALSE)
+# Vectors indexed 1..54 (matching LEEDS sector order)
+eta_hh_ch   <- mario_ch$eta_RoW_hh    # HH import propensity per sector
+eta_gov_ch  <- mario_ch$eta_RoW_gov   # Gov import propensity per sector
+eta_gfcf_ch <- mario_ch$eta_RoW_gfcf  # GFCF import propensity per sector
+# Public investment treated as domestic (eta = 0), as calibration prior
+
 # ── Material sectors to analyse ───────────────────────────────────────────────
 mat_sectors <- data.frame(
   label   = c('Food', 'Carbon Energy', 'Plastics', 'Wood',
@@ -62,17 +72,40 @@ get_channel_scales <- function(local_j, prefix = 'Z1') {
   reg_channels$var   <- sub('^Z1', prefix, channels$var)
   reg_channels$share <- sub('^Z1', prefix, channels$share)
 
-  fd <- sapply(reg_channels$key, function(k) {
+  # Domestic FD scales: delta[k,j] * D[k]
+  fd_dom <- sapply(reg_channels$key, function(k) {
     row <- reg_channels[reg_channels$key == k, ]
     sn  <- paste0(row$share, '-', local_j)
     if (sn %in% rownames(sim))
       as.numeric(sim[sn, t_sh]) * as.numeric(sim[row$var, t_sh])
     else 0
   })
-  names(fd) <- channels$key
+  names(fd_dom) <- channels$key
+
+  # Cross-border import demand: eta_k[j] * D[k]  (EU only; F21 block from MARIO).
+  # For RoW (Z2), cross-border demand flows the other direction (= EU exports),
+  # already captured in "Net exports / other", so fd_imp = 0 for Z2.
+  if (prefix == 'Z1') {
+    D <- sapply(reg_channels$key, function(k) {
+      row <- reg_channels[reg_channels$key == k, ]
+      as.numeric(sim[row$var, t_sh])
+    })
+    names(D) <- channels$key
+    fd_imp <- c(
+      HH      = eta_hh_ch[local_j]   * D['HH'],
+      Gov     = eta_gov_ch[local_j]  * D['Gov'],
+      FirmInv = eta_gfcf_ch[local_j] * D['FirmInv'],
+      PubInv  = 0
+    )
+  } else {
+    fd_imp <- c(HH = 0, Gov = 0, FirmInv = 0, PubInv = 0)
+  }
+
   int <- sum(A[a_row_idx, ] * x_base, na.rm = TRUE)
   x_i <- as.numeric(sim[paste0(prefix, '_x-', local_j), t_sh])
-  list(fd = fd, int = int, x_i = x_i)
+  list(fd_dom = fd_dom, fd_imp = fd_imp,
+       fd = fd_dom + fd_imp,   # total per channel (for portfolio scale)
+       int = int, x_i = x_i)
 }
 
 # ── Build demand structure table — primary & secondary × EU & RoW ────────────
@@ -80,12 +113,18 @@ build_struct_rows <- function(mat_label, sector_j, mat_type, region, prefix) {
   cs        <- get_channel_scales(sector_j, prefix)
   net_other <- max(cs$x_i - sum(cs$fd) - cs$int, 0)
   bind_rows(
-    data.frame(material=mat_label, mat_type=mat_type, region=region, channel='HH consumption',     channel_type='Final Demand', scale=cs$fd['HH']),
-    data.frame(material=mat_label, mat_type=mat_type, region=region, channel='Gov consumption',    channel_type='Final Demand', scale=cs$fd['Gov']),
-    data.frame(material=mat_label, mat_type=mat_type, region=region, channel='Firm investment',    channel_type='Final Demand', scale=cs$fd['FirmInv']),
-    data.frame(material=mat_label, mat_type=mat_type, region=region, channel='Public investment',  channel_type='Final Demand', scale=cs$fd['PubInv']),
-    data.frame(material=mat_label, mat_type=mat_type, region=region, channel='Intermediate',       channel_type='Intermediate', scale=cs$int),
-    data.frame(material=mat_label, mat_type=mat_type, region=region, channel='Net exports / other',channel_type='Other',        scale=net_other)
+    # Domestic components
+    data.frame(material=mat_label, mat_type=mat_type, region=region, channel='HH consumption (dom)',    channel_type='Final Demand', scale=unname(cs$fd_dom['HH'])),
+    data.frame(material=mat_label, mat_type=mat_type, region=region, channel='Gov consumption (dom)',   channel_type='Final Demand', scale=unname(cs$fd_dom['Gov'])),
+    data.frame(material=mat_label, mat_type=mat_type, region=region, channel='Firm investment (dom)',   channel_type='Final Demand', scale=unname(cs$fd_dom['FirmInv'])),
+    data.frame(material=mat_label, mat_type=mat_type, region=region, channel='Public investment',       channel_type='Final Demand', scale=unname(cs$fd_dom['PubInv'])),
+    # Cross-border import demand (F21 block)
+    data.frame(material=mat_label, mat_type=mat_type, region=region, channel='HH consumption (import)',  channel_type='Import FD', scale=unname(cs$fd_imp['HH'])),
+    data.frame(material=mat_label, mat_type=mat_type, region=region, channel='Gov consumption (import)', channel_type='Import FD', scale=unname(cs$fd_imp['Gov'])),
+    data.frame(material=mat_label, mat_type=mat_type, region=region, channel='Firm investment (import)', channel_type='Import FD', scale=unname(cs$fd_imp['FirmInv'])),
+    # Intermediate and other
+    data.frame(material=mat_label, mat_type=mat_type, region=region, channel='Intermediate',             channel_type='Intermediate', scale=cs$int),
+    data.frame(material=mat_label, mat_type=mat_type, region=region, channel='Net exports / other',      channel_type='Other',        scale=net_other)
   )
 }
 
@@ -108,15 +147,24 @@ mat_order <- struct_long %>%
   arrange(pct_int) %>%
   pull(material)
 
-chan_levels <- c('Net exports / other', 'Public investment', 'Firm investment',
-                 'Gov consumption', 'HH consumption', 'Intermediate')
+chan_levels <- c(
+  'Net exports / other',
+  'Public investment',
+  'Firm investment (import)', 'Firm investment (dom)',
+  'Gov consumption (import)', 'Gov consumption (dom)',
+  'HH consumption (import)',  'HH consumption (dom)',
+  'Intermediate'
+)
 chan_colours <- c(
-  'Intermediate'          = '#2c7bb6',
-  'HH consumption'        = '#d7191c',
-  'Gov consumption'       = '#e85d04',
-  'Firm investment'       = '#fdae61',
-  'Public investment'     = '#fee090',
-  'Net exports / other'   = '#cccccc'
+  'Intermediate'              = '#2c7bb6',
+  'HH consumption (dom)'      = '#d7191c',
+  'HH consumption (import)'   = '#f4a582',   # lighter red
+  'Gov consumption (dom)'     = '#e85d04',
+  'Gov consumption (import)'  = '#fddbc7',   # lighter orange
+  'Firm investment (dom)'     = '#fdae61',
+  'Firm investment (import)'  = '#fff2cc',   # lighter yellow
+  'Public investment'         = '#fee090',
+  'Net exports / other'       = '#cccccc'
 )
 
 struct_long$material <- factor(struct_long$material, levels = mat_order)
@@ -129,11 +177,12 @@ p1 <- ggplot(struct_long,
              aes(x = mat_type, y = scale, fill = channel)) +
   geom_col(width = 0.75, colour = 'white', linewidth = 0.2) +
   facet_grid(region ~ material, scales = 'free_y') +
-  scale_fill_manual(values = chan_colours, name = 'Channel') +
+  scale_fill_manual(values = chan_colours, name = 'Channel',
+                    guide = guide_legend(ncol = 1)) +
   scale_y_continuous(expand = expansion(mult = c(0, 0.06))) +
   labs(
     title    = 'Demand Structure: Primary vs Secondary Material Sectors (EU & RoW, baseline t = 70)',
-    subtitle = 'Gross output = intermediate demand + final demand + net exports',
+    subtitle = 'Gross output = intermediate + domestic FD + cross-border FD (import) + net exports\nLight shades = cross-border import demand (F21 block, empirical from MARIO)',
     x = NULL, y = 'Output (model units)'
   ) +
   theme_minimal(base_size = 11) +
@@ -157,17 +206,23 @@ port_rows <- lapply(1:nrow(mat_sectors), function(r) {
   struct1 <- L[ms$from_j, ms$to_j] - L[ms$from_j, ms$from_j]
 
   lapply(names(portfolios), function(pname) {
-    p     <- portfolios[[pname]]
-    pscale <- sum(cs$fd[p$fd], na.rm = TRUE) + if (p$int) cs$int else 0
+    p <- portfolios[[pname]]
+    # Portfolio scale: domestic FD only (consistent with EU Leontief structural factor).
+    # Cross-border import demand is shown in the demand structure figure (Plot 1) but
+    # excluded here because a CE substitution in imported goods requires the RoW
+    # structural factor (L[j+54, k+54]), not the EU struct1 used here.
+    pscale_dom <- sum(cs$fd_dom[p$fd], na.rm = TRUE) + if (p$int) cs$int else 0
+    pscale_imp <- sum(cs$fd_imp[p$fd], na.rm = TRUE)   # informational only
     data.frame(
-      material    = ms$label,
-      portfolio   = p$label,
-      port_key    = pname,
-      scale       = pscale,
-      x_i         = cs$x_i,
-      struct1     = struct1,
-      DeltaM1     = rho * pscale * struct1,
-      pct_of_full = pscale / cs$x_i * 100,
+      material      = ms$label,
+      portfolio     = p$label,
+      port_key      = pname,
+      scale         = pscale_dom,
+      scale_imp     = round(pscale_imp, 3),   # cross-border addendum
+      x_i           = cs$x_i,
+      struct1       = struct1,
+      DeltaM1       = rho * pscale_dom * struct1,
+      pct_of_full   = pscale_dom / cs$x_i * 100,
       stringsAsFactors = FALSE
     )
   }) %>% bind_rows()

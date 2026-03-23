@@ -247,3 +247,87 @@ $$
 $$
 
 Note that the structural factor $\bar{\lambda} = (l_{12}+l_{22})-(l_{11}+l_{21})$ is identical for both the final demand and intermediate demand cases. What differs is the scale factor: $\delta_1 D$ in the final demand case versus $\sum_j a_{1j} x_j$ in the intermediate demand case.
+
+---
+
+# Cross-Regional Final Demand and Import Disaggregation
+
+## The domestic-only limitation of current FD shares
+
+The final demand shares $\beta_j$, $\sigma_j$, $\iota_j$, $\iota^g_j$ in the model are calibrated as **domestic absorption shares**: they express the fraction of each aggregate demand component that accrues to domestically produced goods of sector $j$. Cross-border purchases — EU demand for Rest-of-World (RoW) goods — are not captured in these share vectors. Instead, they enter the current model through a single aggregate import propensity:
+
+$$
+\eta_j^{Z1} \equiv \frac{\text{total imports of sector } j \text{ goods by EU}}{\text{total EU imports}}
+$$
+
+The current final demand equation for EU sector $j$ is:
+
+$$
+d_j^{Z1} = \beta_j c + \sigma_j g + \iota_j id + \iota^g_j id^g
+          + \underbrace{\eta_j^{Z2}\, r^{Z1}}_{\text{EU exports}}
+          - \underbrace{\eta_j^{Z1}\, \text{imp}^{Z1}}_{\text{EU imports}}
+$$
+
+where $r^{Z1}$ denotes EU export revenue and $\text{imp}^{Z1}$ is total EU final imports. This **trade-balance approach** nets out imports from domestic demand and adds exports, but treats the cross-border import flow as a single residual with no disaggregation by institutional channel.
+
+## The MRIO absorption approach
+
+In the standard multi-regional input-output (MRIO) absorption framework, cross-regional demand is made explicit. The full $2N \times 1$ demand vector is partitioned as:
+
+$$
+\mathbf{d}^{\text{full}} =
+\begin{pmatrix} \mathbf{d}^{\text{dom}} \\ \mathbf{d}^{\text{imp}} \end{pmatrix}
+$$
+
+where $\mathbf{d}^{\text{dom}} \in \mathbb{R}^N$ is EU domestic absorption (demand for EU goods, rows $1,\ldots,N$) and $\mathbf{d}^{\text{imp}} \in \mathbb{R}^N$ is EU import demand (demand for RoW goods, rows $N{+}1,\ldots,2N$). The Leontief system is unchanged:
+
+$$
+\mathbf{x}^{\text{full}} = (I - A)^{-1}\, \mathbf{d}^{\text{full}}
+$$
+
+where $A$ is the full $2N \times 2N$ MRIO technical coefficients matrix. The output vector $\mathbf{x}^{\text{full}}$ now decomposes as:
+
+- $x^{\text{full}}_{1,\ldots,N}$: EU output induced by EU demand (domestic production and backward linkages)
+- $x^{\text{full}}_{N+1,\ldots,2N}$: **RoW output induced by EU demand** — the supply-chain footprint of EU absorption in the Rest of World
+
+## Decomposing aggregate imports by FD channel
+
+The aggregate import propensity $\eta_j^{Z1}$ captures total EU import demand for sector $j$ across all institutional channels. In the absence of channel-disaggregated import data from the MRIO source, we apportion $\eta_j^{Z1} \cdot \text{imp}^{Z1}$ across channels using FD-weighted import intensity scalars:
+
+$$
+d_j^{\text{imp}} = \underbrace{\eta_j\, c}_{\beta\text{-channel}}
+                 + \underbrace{\kappa\,\eta_j\, g}_{\sigma\text{-channel}}
+                 + \underbrace{\lambda\,\eta_j\, id}_{\iota\text{-channel}}
+                 + \underbrace{0 \cdot id^g}_{\iota^g\text{-channel}}
+$$
+
+where the scalars $\kappa$ and $\lambda$ adjust the import intensity of each channel relative to household consumption:
+
+| Channel | Import intensity | Rationale |
+|---------|-----------------|-----------|
+| $\beta$ (households) | $\eta_j$ | Households purchase imported goods directly |
+| $\sigma$ (government) | $\kappa \cdot \eta_j$, $\kappa < 1$ | Home-bias in public procurement |
+| $\iota$ (firm investment) | $\lambda \cdot \eta_j$, $\lambda \geq 1$ | Capital goods tend to be import-intensive |
+| $\iota^g$ (public investment) | $0$ | Exogenous policy stabiliser, treated as domestic |
+
+We calibrate $\kappa = 0.5$ and $\lambda = 1.2$, consistent with empirical evidence on institutional import propensities in EU economies. The channel decomposition is normalised so that:
+
+$$
+d_j^{\text{imp}} = \frac{w_\beta + w_\sigma + w_\iota}{w_\beta + w_\sigma + w_\iota} \cdot \eta_j^{Z1}\,\text{imp}^{Z1}
+= \eta_j^{Z1}\,\text{imp}^{Z1}
+$$
+
+with weights $w_\beta = c$, $w_\sigma = \kappa g$, $w_\iota = \lambda\, id$.
+
+**Data limitation.** The decomposition above is a calibration assumption, not directly observed. The model contains only a single aggregate $\eta_j^{Z1}$ per sector — the import propensity summed across all FD channels. Channel-specific import propensities ($\eta^\beta_j$, $\eta^\sigma_j$, $\eta^\iota_j$) would require the $F_{21}$ block of the MRIO source table (RoW supply to EU final demand, disaggregated by institutional column), which is not currently available in the model calibration. The $\kappa$ and $\lambda$ scalars are therefore structural priors rather than estimated parameters.
+
+## Implications for CE policy portfolio analysis
+
+This extension has a direct implication for the CE policy portfolio effectiveness calculations. The current portfolio analysis uses domestic-only scale factors: $\delta_j^K D^K$ measures only the domestic component of channel $K$'s demand for sector $j$ output. Under the full MRIO absorption framework, the scale factor for channel $K$ is augmented by the cross-regional import component:
+
+$$
+\text{scale}_j^K = \underbrace{\delta_j^K D^K}_{\text{domestic}} + \underbrace{\eta_j^K\, D^K}_{\text{import demand}}
+= (\delta_j^K + \eta_j^K)\, D^K
+$$
+
+For sectors with high import propensity (food, energy, manufactured goods), this augmentation can materially increase the portfolio scale and therefore the estimated $\Delta M_1$ potential. The analysis in the current paper uses the domestic-only scale factors as a conservative benchmark; the full MRIO extension is left for future work pending access to channel-disaggregated MRIO import data.
