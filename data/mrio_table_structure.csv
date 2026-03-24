@@ -1,0 +1,8 @@
+row_type,row_label,ID_EU_buy,ID_RoW_buy,FD_EU_HH,FD_EU_Gov,FD_EU_Firm,FD_EU_GovInv,FD_RoW_HH,FD_RoW_Gov,FD_RoW_Firm,FD_RoW_GovInv,X_total
+output,EU,Z11 (EU->EU),Z12 (EU->RoW),b1c1 [dom],s1g1 [dom],i1*id1 [dom],ig1*idg1 [dom],b1c2 [cross],s1g2 [cross],i1*id2 [cross],ig1*idg2 [cross],d1
+output,RoW,Z21 (RoW->EU),Z22 (RoW->RoW),b2c1 [cross],s2g1 [cross],i2*id1 [cross],ig2*idg1 [cross],b2c2 [dom],s2g2 [dom],i2*id2 [dom],ig2*idg2 [dom],d2
+va_w,W (wages),W1,W2,,,,,,,,
+va_p,P (profits),P1,P2,,,,,,,,
+va_t,T (taxes),T1,T2,,,,,,,,
+va_total,VA = W+P+T,VA1,VA2,,,,,,,,
+total,Total Input X^T,d1^T,d2^T,,,,,,,,

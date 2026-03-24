@@ -1,0 +1,545 @@
+---
+title: "Formal Setup"
+subtitle: "Circular Economy Interventions in a Core-Periphery SOCIO-ECO-MRIO-SFC Model"
+author:
+  - name: "Oriol Vallès Codina"
+    affiliation: "Johns Hopkins University, Net Zero Industrial Policy Lab, Department of Political Science"
+    email: "oriolvallescodina@gmail.com"
+date: "`r Sys.Date()`"
+format:
+  html:
+    toc: true
+    toc-float: true
+    embed-resources: true
+    number-sections: true
+  docx:
+    toc: true
+    toc-depth: 3
+    number-sections: true
+execute:
+  echo: false
+  warning: false
+  message: false
+---
+
+```{r setup}
+library(tidyverse)
+library(knitr)
+library(kableExtra)
+
+qmd_in <- knitr::current_input()
+if (!is.null(qmd_in) && nzchar(qmd_in)) {
+  root <- normalizePath(file.path(dirname(normalizePath(qmd_in)), ".."))
+} else {
+  wd0 <- normalizePath(getwd())
+  root <- if (basename(wd0) == "qmd") normalizePath("..") else wd0
+}
+dir_data <- file.path(root, "data")
+
+sc <- read.csv(file.path(dir_data, "scenarios.csv")) %>%
+  mutate(from = as.integer(from), to = as.integer(to))
+```
+
+# Overview
+
+Our economy uses materials $M = \{
+\text{food},\;
+\text{energy},\;
+\text{wood},\;
+\text{plastic},\;
+\text{pulp},\;
+\text{metal},\;
+\text{glass},\;
+\text{cement}
+\}$.
+
+Shifts towards economic circularity can be driven by final demand or by intermediate production substitutions. Interventions are modelled as redistribution operators governed by scalar parameter $\rho \in [0,1]$, decreasing primary material use $M_1$ and increasing secondary material use $M_2$ either by:
+
+- reallocating sector-level shares in **final demand** $\mathbf{d}$ from primary to secondary materials:
+  - in **consumption**: by households $c$ and by government $g$
+  - in **investment**: private $id$ and public $id^g$, or
+- by changing input-output coefficients $A$ in **intermediate production**, substituting industrial material inputs from primary to secondary.
+
+---
+
+# Scenario Registry
+
+```{r scenarios-table}
+tbl_data <- sc %>% select(-display_name, -rds_file, -table_file)
+if (knitr::is_html_output()) {
+  tbl_data %>%
+    kable(caption = "Scenario Registry", align = "l", escape = TRUE) %>%
+    kable_styling(full_width = FALSE,
+                  bootstrap_options = c("striped", "hover", "condensed"),
+                  font_size = 12) %>%
+    scroll_box(width = "100%", height = "600px")
+} else {
+  kable(tbl_data, caption = "Scenario Registry", align = "l")
+}
+```
+
+---
+
+# Setup
+
+Let $r, s \in \{1, \ldots, R\}$ index regions ($R = 2$: $r=1$ EU, $r=2$ RoW) and $i, j \in \{1, \ldots, N\}$ index sectors ($N = 54$). All vectors have dimension $RN = 108$, stacking regions as $(\cdot_1^\top, \cdot_2^\top)^\top$.
+
+## MRIO Table Structure
+
+The multi-regional input-output table partitions total output into intermediate flows and final demand across regions. Its block structure is:
+
+```{r mrio-table}
+#| echo: false
+if (knitr::is_html_output()) {
+
+  cs <- function(x, bg) cell_spec(x, format = "html", background = bg, escape = FALSE)
+  dom_bg <- "#D5EFCF"   # green  — domestic flow (r = s)
+  xbr_bg <- "#FAD7D7"   # pink   — cross-border flow (r ≠ s)
+
+  # FD cell symbols: subscript = supplying region r (column position marks consuming region s)
+  eu_fd <- c(
+    "&beta;<sub>1</sub>c<sub>1</sub>",
+    "&sigma;<sub>1</sub>g<sub>1</sub>",
+    "&iota;<sub>1</sub>&middot;id<sub>1</sub>",
+    "&iota;<sup>g</sup><sub>1</sub>&middot;id<sup>g</sup><sub>1</sub>"
+  )
+  rw_fd <- c(
+    "&beta;<sub>2</sub>c<sub>2</sub>",
+    "&sigma;<sub>2</sub>g<sub>2</sub>",
+    "&iota;<sub>2</sub>&middot;id<sub>2</sub>",
+    "&iota;<sup>g</sup><sub>2</sub>&middot;id<sup>g</sup><sub>2</sub>"
+  )
+
+  # Row 1 (EU sells): EU FD = domestic (green), RoW FD = cross-border (pink)
+  # Row 2 (RoW sells): EU FD = cross-border (pink), RoW FD = domestic (green)
+  tbl <- data.frame(
+    lbl = c(
+      "EU", "RoW",
+      "W &mdash; wages &rarr; households",
+      "P &mdash; profits &rarr; capitalists",
+      "T &mdash; taxes &rarr; government",
+      "<b>VA = W + P + T</b>",
+      "<b>Aggregate Supply</b>"
+    ),
+    id_eu = c(
+      "Z<sub>11</sub><br><small>EU&rarr;EU</small>",
+      "Z<sub>21</sub><br><small>RoW&rarr;EU</small>",
+      "W<sub>1</sub>", "P<sub>1</sub>", "T<sub>1</sub>",
+      "VA<sub>1</sub>", "d<sub>1</sub><sup>T</sup>"
+    ),
+    id_rw = c(
+      "Z<sub>12</sub><br><small>EU&rarr;RoW</small>",
+      "Z<sub>22</sub><br><small>RoW&rarr;RoW</small>",
+      "W<sub>2</sub>", "P<sub>2</sub>", "T<sub>2</sub>",
+      "VA<sub>2</sub>", "d<sub>2</sub><sup>T</sup>"
+    ),
+    eu_hh  = c(cs(eu_fd[1], dom_bg), cs(rw_fd[1], xbr_bg), rep("", 5)),
+    eu_gov = c(cs(eu_fd[2], dom_bg), cs(rw_fd[2], xbr_bg), rep("", 5)),
+    eu_f   = c(cs(eu_fd[3], dom_bg), cs(rw_fd[3], xbr_bg), rep("", 5)),
+    eu_g   = c(cs(eu_fd[4], dom_bg), cs(rw_fd[4], xbr_bg), rep("", 5)),
+    rw_hh  = c(cs(eu_fd[1], xbr_bg), cs(rw_fd[1], dom_bg), rep("", 5)),
+    rw_gov = c(cs(eu_fd[2], xbr_bg), cs(rw_fd[2], dom_bg), rep("", 5)),
+    rw_f   = c(cs(eu_fd[3], xbr_bg), cs(rw_fd[3], dom_bg), rep("", 5)),
+    rw_g   = c(cs(eu_fd[4], xbr_bg), cs(rw_fd[4], dom_bg), rep("", 5)),
+    D      = c("d<sub>1</sub>", "d<sub>2</sub>", rep("", 5)),
+    check.names = FALSE, stringsAsFactors = FALSE
+  )
+
+  col_names_h <- c("", "", "",
+                   "HH", "Gov", "Firm", "Gov&dagger;",
+                   "HH", "Gov", "Firm", "Gov&dagger;", "D")
+
+  kable(tbl, "html", escape = FALSE,
+        align = c("l", "c", "c", rep("c", 9)),
+        col.names = col_names_h) |>
+    kable_classic(full_width = FALSE, html_font = "serif", font_size = 12) |>
+    add_header_above(c(" "=1, "Industry Demand"=2,
+                       "Consumption"=2, "Investment"=2,
+                       "Consumption"=2, "Investment"=2, " "=1),
+                     bold = TRUE) |>
+    add_header_above(c(" "=1, "EU"=1, "RoW"=1,
+                       "EU"=4, "RoW"=4, " "=1),
+                     bold = TRUE) |>
+    add_header_above(c(" "=1,
+                       "Intermediate Demand (ID)"=2,
+                       "Final Demand (FD)"=8,
+                       "Aggregate Demand (D)"=1),
+                     bold = TRUE) |>
+    pack_rows("Industry Output", 1, 2,
+              label_row_css = paste0("font-weight:bold;background:#E8EEF4;",
+                                     "border-top:2px solid #1B2A3B;color:#1B2A3B;")) |>
+    pack_rows("Value Added", 3, 5,
+              label_row_css = paste0("font-weight:bold;background:#E8EEF4;",
+                                     "border-top:1px solid #1B2A3B;color:#1B2A3B;")) |>
+    row_spec(0, bold = TRUE) |>
+    row_spec(2, extra_css = "border-bottom:2px solid #1B2A3B;") |>
+    row_spec(3:5, background = "#FEF9E7") |>
+    row_spec(6, bold = TRUE, background = "#FEF9E7",
+             extra_css = "border-top:1px solid #aaa;border-bottom:1px solid #aaa;") |>
+    row_spec(7, bold = TRUE,
+             extra_css = "border-bottom:2px solid #1B2A3B;") |>
+    column_spec(1, bold = TRUE) |>
+    footnote(
+      general_title = "Note.",
+      general = paste0(
+        "&dagger; Public investment id<sup>g</sup><sub>r</sub> is an optimal-control stabilizer. ",
+        "Subscript on share vectors (&beta;, &sigma;, &iota;): supplying region r. ",
+        "Subscript on aggregates (c, g, id): consuming region s. ",
+        "Green cells: domestic flow (r = s). Pink cells: cross-border flow (r &ne; s). ",
+        "W (wages) &rarr; households; P (profits) &rarr; capitalists; T (taxes) &rarr; government."
+      ),
+      footnote_as_chunk = TRUE,
+      escape = FALSE
+    )
+
+} else {
+  # Plain fallback for Word/docx
+  tbl_plain <- data.frame(
+    ` `        = c("EU", "RoW", "W", "P", "T", "VA", "Agg. Supply"),
+    `ID EU`    = c("Z11 EU->EU",  "Z21 RoW->EU",  "W1","P1","T1","VA1","d1^T"),
+    `ID RoW`   = c("Z12 EU->RoW", "Z22 RoW->RoW", "W2","P2","T2","VA2","d2^T"),
+    `EU HH`    = c("b1c1 [dom]", "b2c2 [xbr]", rep("",5)),
+    `EU Gov`   = c("s1g1 [dom]", "s2g2 [xbr]", rep("",5)),
+    `EU Firm`  = c("i1*id1 [dom]","i2*id2 [xbr]",rep("",5)),
+    `EU GovI`  = c("ig1*idg1 [dom]","ig2*idg2 [xbr]",rep("",5)),
+    `RoW HH`   = c("b1c1 [xbr]", "b2c2 [dom]", rep("",5)),
+    `RoW Gov`  = c("s1g1 [xbr]", "s2g2 [dom]", rep("",5)),
+    `RoW Firm` = c("i1*id1 [xbr]","i2*id2 [dom]",rep("",5)),
+    `RoW GovI` = c("ig1*idg1 [xbr]","ig2*idg2 [dom]",rep("",5)),
+    D          = c("d1","d2",rep("",5)),
+    check.names = FALSE
+  )
+  kable(tbl_plain, align = "l",
+        col.names = c("","EU","RoW","HH","Gov","Firm","Gov+","HH","Gov","Firm","Gov+","D"),
+        caption = "MRIO table structure. [dom] = domestic; [xbr] = cross-border.")
+}
+```
+
+```{r mrio-xlsx}
+#| echo: false
+#| message: false
+#| warning: false
+#| output: false
+library(openxlsx)
+wb <- createWorkbook()
+ws <- "MRIO"
+addWorksheet(wb, ws, gridLines = FALSE)
+
+# Column widths: [group] [item] [ID_EU] [ID_RoW] [EU FD x4] [RoW FD x4] [D]
+setColWidths(wb, ws, cols = 1,    widths = 14)
+setColWidths(wb, ws, cols = 2,    widths = 24)
+setColWidths(wb, ws, cols = 3:4,  widths = 16)
+setColWidths(wb, ws, cols = 5:12, widths = 13)
+setColWidths(wb, ws, cols = 13,   widths = 11)
+setRowHeights(wb, ws, rows = 1,     heights = 22)
+setRowHeights(wb, ws, rows = 2:4,   heights = 18)
+setRowHeights(wb, ws, rows = 5:6,   heights = 34)
+setRowHeights(wb, ws, rows = 7:9,   heights = 22)
+setRowHeights(wb, ws, rows = 10:11, heights = 20)
+setRowHeights(wb, ws, rows = 12,    heights = 60)
+
+mk  <- function(...) createStyle(fontName = "Times New Roman", ...)
+h1  <- mk(fontSize=11, fontColour="white",   fgFill="#1B2A3B",
+          halign="center", valign="center", textDecoration="bold", wrapText=TRUE)
+h2  <- mk(fontSize=10, fontColour="white",   fgFill="#2E5084",
+          halign="center", valign="center", textDecoration="bold", wrapText=TRUE)
+h3  <- mk(fontSize=10, fontColour="white",   fgFill="#4A7EC7",
+          halign="center", valign="center", textDecoration="bold", wrapText=TRUE)
+h4  <- mk(fontSize=10, fontColour="#1B2A3B", fgFill="#C9D6E8",
+          halign="center", valign="center", textDecoration="bold",
+          border="bottom", borderStyle="medium", borderColour="#1B2A3B")
+grp <- mk(fontSize=10, fontColour="#1B2A3B", fgFill="#E8EEF4",
+          halign="left",  valign="center",  textDecoration="bold", wrapText=TRUE)
+sub <- mk(fontSize=10, halign="left",  valign="center", wrapText=TRUE)
+zbl <- mk(fontSize=10, fgFill="#F0F4F8", halign="center", valign="center",
+          border=c("top","bottom","left","right"), borderStyle="thin",
+          borderColour="#AAAAAA", wrapText=TRUE)
+dom <- mk(fontSize=10, fgFill="#D5EFCF", halign="center", valign="center",
+          border=c("top","bottom","left","right"), borderStyle="thin", borderColour="#AAAAAA")
+xbr <- mk(fontSize=10, fgFill="#FAD7D7", halign="center", valign="center",
+          border=c("top","bottom","left","right"), borderStyle="thin", borderColour="#AAAAAA")
+vac <- mk(fontSize=10, fgFill="#FEF9E7", halign="center", valign="center",
+          border=c("top","bottom","left","right"), borderStyle="thin", borderColour="#AAAAAA")
+tot <- mk(fontSize=10, textDecoration="bold", fgFill="#E8EEF4",
+          halign="center", valign="center",
+          border=c("top","bottom"), borderStyle="medium", borderColour="#1B2A3B")
+nst <- mk(fontSize=9, fontColour="#444444", textDecoration="italic",
+          halign="left", valign="top", wrapText=TRUE)
+
+# ── Header row 1 ──────────────────────────────────────────────────────────────
+writeData(wb, ws, "Intermediate Demand (ID)", startCol=3,  startRow=1)
+writeData(wb, ws, "Final Demand (FD)",         startCol=5,  startRow=1)
+writeData(wb, ws, "Aggregate Demand (D)",       startCol=13, startRow=1)
+mergeCells(wb, ws, cols=1:2,  rows=1)
+mergeCells(wb, ws, cols=3:4,  rows=1)
+mergeCells(wb, ws, cols=5:12, rows=1)
+addStyle(wb, ws, h1, rows=1, cols=1:13, gridExpand=TRUE)
+
+# ── Header row 2 ──────────────────────────────────────────────────────────────
+writeData(wb, ws, "EU",  startCol=3, startRow=2)
+writeData(wb, ws, "RoW", startCol=4, startRow=2)
+writeData(wb, ws, "EU",  startCol=5, startRow=2)
+writeData(wb, ws, "RoW", startCol=9, startRow=2)
+mergeCells(wb, ws, cols=1:2,  rows=2)
+mergeCells(wb, ws, cols=5:8,  rows=2)
+mergeCells(wb, ws, cols=9:12, rows=2)
+addStyle(wb, ws, h2, rows=2, cols=1:13, gridExpand=TRUE)
+
+# ── Header row 3 ──────────────────────────────────────────────────────────────
+writeData(wb, ws, "Industry Demand", startCol=3,  startRow=3)
+writeData(wb, ws, "Consumption",     startCol=5,  startRow=3)
+writeData(wb, ws, "Investment",      startCol=7,  startRow=3)
+writeData(wb, ws, "Consumption",     startCol=9,  startRow=3)
+writeData(wb, ws, "Investment",      startCol=11, startRow=3)
+mergeCells(wb, ws, cols=1:2,   rows=3)
+mergeCells(wb, ws, cols=3:4,   rows=3)
+mergeCells(wb, ws, cols=5:6,   rows=3)
+mergeCells(wb, ws, cols=7:8,   rows=3)
+mergeCells(wb, ws, cols=9:10,  rows=3)
+mergeCells(wb, ws, cols=11:12, rows=3)
+addStyle(wb, ws, h3, rows=3, cols=1:13, gridExpand=TRUE)
+
+# ── Header row 4 ──────────────────────────────────────────────────────────────
+h4vals <- c("","","","HH","Gov","Firm","Gov\u2020","HH","Gov","Firm","Gov\u2020","","D")
+for (j in seq_along(h4vals)) writeData(wb, ws, h4vals[j], startCol=j, startRow=4)
+addStyle(wb, ws, h4, rows=4, cols=1:13, gridExpand=TRUE)
+
+# ── Industry output rows (5–6) ────────────────────────────────────────────────
+# Subscript notation: region index as subscript on share vectors (β,σ,ι) and aggregates
+io_rows <- list(
+  list(row=5, grp_lbl="Industry Output", reg="EU",
+       id1="Z\u2081\u2081\nEU \u2192 EU",   id2="Z\u2081\u2082\nEU \u2192 RoW",
+       eu_fd = c("\u03B2\u2081c\u2081", "\u03C3\u2081g\u2081",
+                 "\u03B9\u2081\u00B7id\u2081", "\u03B9\u1D4D\u2081\u00B7id\u1D4D\u2081"),
+       rw_fd = c("\u03B2\u2081c\u2081", "\u03C3\u2081g\u2081",
+                 "\u03B9\u2081\u00B7id\u2081", "\u03B9\u1D4D\u2081\u00B7id\u1D4D\u2081"),
+       agg="d\u2081", eu_dom=TRUE),
+  list(row=6, grp_lbl="",            reg="RoW",
+       id1="Z\u2082\u2081\nRoW \u2192 EU",  id2="Z\u2082\u2082\nRoW \u2192 RoW",
+       eu_fd = c("\u03B2\u2082c\u2082", "\u03C3\u2082g\u2082",
+                 "\u03B9\u2082\u00B7id\u2082", "\u03B9\u1D4D\u2082\u00B7id\u1D4D\u2082"),
+       rw_fd = c("\u03B2\u2082c\u2082", "\u03C3\u2082g\u2082",
+                 "\u03B9\u2082\u00B7id\u2082", "\u03B9\u1D4D\u2082\u00B7id\u1D4D\u2082"),
+       agg="d\u2082", eu_dom=FALSE)
+)
+for (d in io_rows) {
+  r <- d$row
+  writeData(wb, ws, d$grp_lbl, startCol=1,  startRow=r)
+  writeData(wb, ws, d$reg,     startCol=2,  startRow=r)
+  writeData(wb, ws, d$id1,     startCol=3,  startRow=r)
+  writeData(wb, ws, d$id2,     startCol=4,  startRow=r)
+  for (k in 1:4) {
+    writeData(wb, ws, d$eu_fd[k], startCol=4+k, startRow=r)
+    writeData(wb, ws, d$rw_fd[k], startCol=8+k, startRow=r)
+  }
+  writeData(wb, ws, d$agg, startCol=13, startRow=r)
+  addStyle(wb, ws, grp, rows=r, cols=1,   gridExpand=TRUE)
+  addStyle(wb, ws, sub, rows=r, cols=2,   gridExpand=TRUE)
+  addStyle(wb, ws, zbl, rows=r, cols=3:4, gridExpand=TRUE)
+  addStyle(wb, ws, if(d$eu_dom) dom else xbr, rows=r, cols=5:8,  gridExpand=TRUE)
+  addStyle(wb, ws, if(d$eu_dom) xbr else dom, rows=r, cols=9:12, gridExpand=TRUE)
+  addStyle(wb, ws, tot, rows=r, cols=13,  gridExpand=TRUE)
+}
+mergeCells(wb, ws, cols=1, rows=5:6)
+
+# ── Value added rows (7–9) ────────────────────────────────────────────────────
+va <- data.frame(
+  lbl = c("W \u2014 wages \u2192 households",
+          "P \u2014 profits \u2192 capitalists",
+          "T \u2014 taxes \u2192 government"),
+  v1  = c("W\u2081", "P\u2081", "T\u2081"),
+  v2  = c("W\u2082", "P\u2082", "T\u2082"),
+  stringsAsFactors = FALSE
+)
+for (k in 1:3) {
+  r <- 6 + k
+  writeData(wb, ws, if(k==1) "Value Added" else "", startCol=1, startRow=r)
+  writeData(wb, ws, va$lbl[k], startCol=2, startRow=r)
+  writeData(wb, ws, va$v1[k],  startCol=3, startRow=r)
+  writeData(wb, ws, va$v2[k],  startCol=4, startRow=r)
+  addStyle(wb, ws, grp, rows=r, cols=1,   gridExpand=TRUE)
+  addStyle(wb, ws, sub, rows=r, cols=2,   gridExpand=TRUE)
+  addStyle(wb, ws, vac, rows=r, cols=3:4, gridExpand=TRUE)
+}
+mergeCells(wb, ws, cols=1, rows=7:9)
+
+# ── Total value added (row 10) ────────────────────────────────────────────────
+writeData(wb, ws, "Total Value Added", startCol=1, startRow=10)
+writeData(wb, ws, "VA\u2081",          startCol=3, startRow=10)
+writeData(wb, ws, "VA\u2082",          startCol=4, startRow=10)
+mergeCells(wb, ws, cols=1:2, rows=10)
+addStyle(wb, ws, tot, rows=10, cols=1:13, gridExpand=TRUE)
+addStyle(wb, ws, vac, rows=10, cols=3:4,  gridExpand=TRUE)
+
+# ── Aggregate supply (row 11) ─────────────────────────────────────────────────
+writeData(wb, ws, "Aggregate Supply", startCol=1, startRow=11)
+writeData(wb, ws, "d\u2081\u1D40",    startCol=3, startRow=11)
+writeData(wb, ws, "d\u2082\u1D40",    startCol=4, startRow=11)
+mergeCells(wb, ws, cols=1:2, rows=11)
+addStyle(wb, ws, tot, rows=11, cols=1:13, gridExpand=TRUE)
+
+# ── Note — spans full table width (row 12) ────────────────────────────────────
+note_txt <- paste0(
+  "Note. Rows = selling/producing region; columns = buying region (ID) or ",
+  "consuming institution (FD). Subscript on share vectors (\u03B2, \u03C3, \u03B9): ",
+  "supplying region r. Subscript on aggregates (c, g, id): consuming region s. ",
+  "Green cells: domestic flow (r\u202F=\u202Fs). Pink cells: cross-border flow (r\u202F\u2260\u202Fs). ",
+  "W (wages) \u2192 households; P (profits) \u2192 capitalists; T (taxes) \u2192 government. ",
+  "\u2020 Public investment id\u1D4D\u1D63 is an optimal-control stabilizer."
+)
+writeData(wb, ws, note_txt, startCol=1, startRow=12)
+mergeCells(wb, ws, cols=1:13, rows=12)
+addStyle(wb, ws, nst, rows=12, cols=1, gridExpand=TRUE)
+
+# ── Outer borders ─────────────────────────────────────────────────────────────
+addStyle(wb, ws, mk(border="top",    borderStyle="medium", borderColour="#1B2A3B"),
+         rows=1,  cols=1:13, gridExpand=TRUE, stack=TRUE)
+addStyle(wb, ws, mk(border="bottom", borderStyle="medium", borderColour="#1B2A3B"),
+         rows=11, cols=1:13, gridExpand=TRUE, stack=TRUE)
+
+out_xlsx <- file.path(root, "output", "mrio_table_styled.xlsx")
+saveWorkbook(wb, out_xlsx, overwrite=TRUE)
+message("Saved: ", out_xlsx)
+```
+
+Each block $Z_{rs} \in \mathbb{R}^{N\times N}$ records flows **from** the selling region $r$ **to** the buying region $s$: element $z_{ri,sj}$ is the value of good $(r,i)$ used as intermediate input by sector $(s,j)$. The FD block is also two-dimensional: diagonal sub-blocks ($r = s$) are **domestic** final demand; off-diagonal sub-blocks ($r \neq s$) are **cross-border** flows. Each row balances: $\mathbf{d}_r = \sum_s Z_{rs}\mathbf{1} + \mathbf{fd}_r$.
+
+Value added decomposes column-wise into wages ($W$), profits ($P$), and net taxes ($T$): $\mathrm{VA}_r = W_r + P_r + T_r$, so $d_{sj} = \sum_{r,i} z_{ri,sj} + \mathrm{VA}_{sj}$.
+
+Technical coefficients are defined column-wise from the intermediate blocks:
+
+$$
+a_{ri,sj} = \frac{z_{ri,sj}}{d_{sj}}, \qquad
+A = \begin{pmatrix} A_{11} & A_{12} \\ A_{21} & A_{22} \end{pmatrix} \in \mathbb{R}^{RN\times RN}.
+$$
+
+---
+
+## Final Demand
+
+For each region $r$, institutional channels $K \in \{c,\, g,\, id,\, id^g\}$ (household consumption, government consumption, private investment, public investment) contribute to the regional final demand vector. Define:
+
+- $\boldsymbol{\varphi}_K^r \in \mathbb{R}^N$: sector share vector for channel $K$ in region $r$ (elements $\varphi_{K,i}^r \geq 0$, $\sum_i \varphi_{K,i}^r = 1$)
+- $fd_K^r \in \mathbb{R}$: aggregate expenditure scalar for channel $K$ in region $r$
+
+The **composite final demand vector** stacks regional components:
+
+$$
+\mathbf{fd} = \begin{pmatrix} \mathbf{fd}^1 \\ \mathbf{fd}^2 \end{pmatrix} \in \mathbb{R}^{RN},
+\qquad
+\mathbf{fd}^r = \sum_{K} \boldsymbol{\varphi}_K^r\, fd_K^r
+= \underbrace{\boldsymbol{\beta}^r}_{\boldsymbol{\varphi}_c^r} c^r
++ \underbrace{\boldsymbol{\sigma}^r}_{\boldsymbol{\varphi}_g^r} g^r
++ \underbrace{\boldsymbol{\iota}^r}_{\boldsymbol{\varphi}_{id}^r} id^r
++ \underbrace{\boldsymbol{\iota}^{g,r}}_{\boldsymbol{\varphi}_{id^g}^r} id^{g,r}
+$$
+
+The full final demand vector is therefore $\mathbf{fd} = \sum_K \boldsymbol{\Phi}_K\, \mathbf{fd}_K$ where $\boldsymbol{\Phi}_K = \mathrm{blkdiag}(\boldsymbol{\varphi}_K^1, \boldsymbol{\varphi}_K^2)$ is $RN \times R$ and $\mathbf{fd}_K = (fd_K^1, fd_K^2)^\top$.
+
+---
+
+## IO System and Gross Output
+
+Intermediate demand is $\mathbf{id} = A\mathbf{d}$, with element $id_{ri} = \sum_{s,j} a_{ri,sj}\, d_{sj}$. The IO balance for gross output $\mathbf{d} \in \mathbb{R}^{RN}$ is:
+
+$$
+\mathbf{d} = \mathbf{fd} + A\mathbf{d}
+\quad\Longrightarrow\quad
+\mathbf{d} = (I - A)^{-1}\mathbf{fd} \equiv L\,\mathbf{fd},
+$$
+
+where $L \in \mathbb{R}^{RN\times RN}$ is the Leontief inverse with elements $l_{ri,sj}$: the total output of sector $(r,i)$ — direct and indirect across all IO rounds — required to deliver one unit of final demand for good $(s,j)$.
+
+Element-wise: $d_{ri} = \sum_{s,j} l_{ri,sj}\, fd_{sj}$.
+
+For primary sector 1 and secondary sector 2 in region $r$, material use is:
+
+$$
+M_1^r = d_{r,1} = \sum_{s=1}^R\sum_{j=1}^N l_{r1,sj}\, fd_{sj}, \qquad
+M_2^r = d_{r,2} = \sum_{s=1}^R\sum_{j=1}^N l_{r2,sj}\, fd_{sj}.
+$$
+
+Total material use $M^r = M_1^r + M_2^r = \sum_{sj}(l_{r1,sj}+l_{r2,sj})\,fd_{sj}$.
+
+---
+
+## Final Demand Interventions
+
+A CE substitution of intensity $\rho$ in region $r$ and channel $K$ shifts fraction $\rho$ of primary material final demand to secondary:
+
+$$
+\Delta fd_{r,1}^{(K)} = -\rho\,\varphi_{K,1}^r\,fd_K^r, \qquad
+\Delta fd_{r,2}^{(K)} = +\rho\,\varphi_{K,1}^r\,fd_K^r, \qquad
+\Delta fd_{si}^{(K)} = 0 \text{ otherwise,}
+$$
+
+so aggregate expenditure is preserved: $\sum_{si}\Delta fd_{si}^{(K)} = 0$. Output responds via $\Delta\mathbf{d} = L\,\Delta\mathbf{fd}$:
+
+$$
+\Delta M_1^r = \Delta d_{r,1} = \sum_{sj} l_{r1,sj}\,\Delta fd_{sj}
+= l_{r1,r1}\bigl(-\rho\,\varphi_{K,1}^r fd_K^r\bigr) + l_{r1,r2}\bigl(+\rho\,\varphi_{K,1}^r fd_K^r\bigr)
+= \rho\,\varphi_{K,1}^r fd_K^r\,(l_{r1,r2} - l_{r1,r1}).
+$$
+
+Summing over all final demand channels $K$, with $fd_{r,1} \equiv \sum_K \varphi_{K,1}^r fd_K^r$ denoting total primary material final demand in region $r$:
+
+$$
+\Delta M_1^r = \rho\, fd_{r,1}\,(l_{r1,r2} - l_{r1,r1}), \qquad
+\Delta M_2^r = \rho\, fd_{r,1}\,(l_{r2,r2} - l_{r2,r1}).
+$$
+
+---
+
+## Intermediate Demand Interventions
+
+A CE substitution in intermediate production changes technical coefficients for all using sectors $j$ in $\mathcal{J}$:
+
+$$
+\Delta a_{r1,sj} = -\rho\,a_{r1,sj}, \qquad
+\Delta a_{r2,sj} = +\rho\,a_{r1,sj}, \qquad
+\Delta a_{ri,sj} = 0 \text{ for } i\neq 1,2,
+$$
+
+preserving total input shares ($a'_{r1,sj}+a'_{r2,sj} = a_{r1,sj}+a_{r2,sj}$). For small $\rho$, the first-order output change is $\Delta\mathbf{d} \approx L\,(\Delta A)\,\mathbf{d}$, giving:
+
+$$
+\Delta M_1^r \approx \rho \sum_{j\in\mathcal{J}}\sum_s a_{r1,sj}\,d_{sj}\,(l_{r1,r2} - l_{r1,r1}), \qquad
+\Delta M_2^r \approx \rho \sum_{j\in\mathcal{J}}\sum_s a_{r1,sj}\,d_{sj}\,(l_{r2,r2} - l_{r2,r1}).
+$$
+
+The scale is now $\sum_{j,s} a_{r1,sj}\,d_{sj}$ — total intermediate use of primary material $(r,1)$ across all using sectors — replacing the final demand scale $fd_{r,1}$. The Leontief structural factors $(l_{r1,r2}-l_{r1,r1})$ are identical in both cases.
+
+---
+
+## Unified Impact Formula
+
+The IO accounting identity $d_{r,1} = fd_{r,1} + \sum_{s,j} a_{r1,sj}\,d_{sj}$ (gross output of primary = final demand + intermediate use) unifies both mechanisms. For the **full CE** case:
+
+$$
+\boxed{
+\Delta M_1^r = \rho\,d_{r,1}\,(l_{r1,r2} - l_{r1,r1}), \qquad
+\Delta M_2^r = \rho\,d_{r,1}\,(l_{r2,r2} - l_{r2,r1})
+}
+$$
+
+The Leontief 2×2 block $\begin{pmatrix}l_{r1,r1} & l_{r1,r2}\\l_{r2,r1} & l_{r2,r2}\end{pmatrix}$ is near-diagonal for any primary–secondary pair: $l_{r1,r1}\approx l_{r2,r2}\approx 1$ (self-referential diagonal) and $l_{r1,r2}\approx l_{r2,r1}\approx 0$ (primary and secondary do not feed into each other). Hence:
+
+$$
+(l_{r1,r2}-l_{r1,r1})\approx -1, \qquad (l_{r2,r2}-l_{r2,r1})\approx +1, \qquad \Delta M^r \approx 0.
+$$
+
+The CE intervention **reduces primary material use by $\approx \rho\,d_{r,1}$, increases secondary by $\approx \rho\,d_{r,1}$, and leaves total material throughput approximately unchanged**. For **partial portfolios** engaging a subset of channels, $d_{r,1}$ is replaced by the relevant channel volume:
+
+$$
+\Delta M_1^r \;=\; \rho \cdot \underbrace{\Bigl[
+  \underbrace{fd_{r,1}^c}_{\substack{\text{household}}}
+  + \underbrace{fd_{r,1}^g}_{\substack{\text{government}}}
+  + \underbrace{fd_{r,1}^{id}}_{\substack{\text{private inv.}}}
+  + \underbrace{fd_{r,1}^{id^g}}_{\substack{\text{public inv.}}}
+  + \underbrace{\textstyle\sum_{s,j} a_{r1,sj}\,d_{sj}}_{\text{firm input demand}}
+\Bigr]}_{\displaystyle =\;d_{r,1}\;\text{(full CE)}} \cdot \underbrace{(l_{r1,r2} - l_{r1,r1})}_{\approx\,-1}
+$$
+
+Because $(l_{r1,r2}-l_{r1,r1})\approx -1$ is constant across all material pairs, **the ranking of CE interventions reduces entirely to a ranking of the demand channel volumes**, which are measured empirically in the Descriptive Analytics section.
+
+**Caveat — emission impacts are not governed by the $\approx -1$ factor.** That result applies only to primary material output (one row of $L$). Emission impacts require summing the Leontief column difference across *all* upstream sectors $(s,k)$ weighted by their emission intensities: $\sum_{s,k} \varepsilon_{sk}(l_{r1,sk}^{\text{sec}} - l_{r1,sk}^{\text{pri}})$. This sum can be positive even when $(l_{r1,r2}-l_{r1,r1})\approx -1$, as the Metals structural rebound demonstrates.

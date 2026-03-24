@@ -1,0 +1,256 @@
+---
+title: "Descriptive Analytics of the MRIO Demand Structure"
+subtitle: "Anticipating Circular Economy Simulation Outcomes from Input-Output Accounting Identities"
+author:
+  - name: "Oriol Vallès Codina"
+    affiliation: "Johns Hopkins University, Net Zero Industrial Policy Lab, Department of Political Science"
+    email: "oriolvallescodina@gmail.com"
+date: "`r Sys.Date()`"
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    toc-float: true
+    number-sections: true
+    theme: flatly
+    fig-width: 12
+    fig-height: 7
+    embed-resources: true
+  docx:
+    toc: true
+    toc-depth: 3
+    number-sections: true
+execute:
+  echo: false
+  warning: false
+  message: false
+---
+
+```{r setup}
+library(knitr)
+
+qmd_in <- knitr::current_input()
+if (!is.null(qmd_in) && nzchar(qmd_in)) {
+  root <- normalizePath(file.path(dirname(normalizePath(qmd_in)), ".."))
+} else {
+  wd0 <- normalizePath(getwd())
+  root <- if (basename(wd0) == "qmd") normalizePath("..") else wd0
+}
+
+fig_png  <- file.path(root, "output", "png_figures")
+fig_pdf  <- file.path(root, "output", "pdf_figures")
+```
+
+# Overview
+
+This section documents the **multi-regional input-output (MRIO) structure of demand** for eight key material pairs in the EU and Rest of World (RoW), as calibrated in the SOCIO-ECO-MRIO-SFC model at its baseline steady state (period $t = 70$). The figures presented here are **descriptive statistics** derived analytically from the IO accounting framework — they do not require running full simulations.
+
+Their purpose is twofold. First, they provide a transparent characterisation of the demand architecture that sustains primary material production across regions and institutional channels. Second, and more importantly for this paper, they serve as **anticipatory analytics**: each figure is a direct empirical measurement of one of the formal variables derived in the Formal Setup section — the demand channel volumes $D_i^c, D_i^g, D_i^{id}, D_i^{ig}, \sum_j a_{1j}x_j$ that constitute the scale factor in $\Delta M_1 = \rho\,[D_i^c + D_i^g + D_i^{id} + D_i^{ig} + \sum_j a_{1j}x_j]\cdot(l_{12}-l_{11})$. Because $(l_{12}-l_{11})\approx -1$ is constant across all eight material pairs, the ranking of CE interventions by ecological impact reduces entirely to a ranking of these channel volumes, which the figures below measure directly.
+
+---
+
+# Demand Structure of Material Sectors
+
+## Gross Output by Demand Channel
+
+```{r fig-demand-structure, fig.cap="Gross output decomposition for primary and secondary material sectors across EU and RoW. Columns: EU Domestic, EU Cross-border, RoW Domestic, RoW Cross-border demand. Rows: Primary vs Secondary. Bars stacked by institutional demand channel.", out.width="100%"}
+include_graphics(file.path(fig_png, "demand", "p_demand_structure.png"))
+```
+
+Figure 1 decomposes gross output for all eight material pairs by institutional demand channel (household consumption, government consumption, firm investment, public investment, and firm intermediate consumption) across four regional flow dimensions: EU domestic production for EU demand, EU cross-border imports from RoW, RoW domestic production, and RoW cross-border exports to EU.
+
+**Key patterns:**
+
+- **Industrial materials** (cement, glass, metals, pulp) are overwhelmingly driven by **firm intermediate consumption**, which accounts for 93–96% of gross output in the EU. Final demand channels are negligible. This has direct implications for CE policy design: demand-side instruments (eco-labelling, green public procurement) operate on a structurally marginal share of these markets.
+
+- **Food** (primary: Meat; secondary: Other Food) stands at the opposite extreme: 65% of EU domestic output serves **household consumption**. This is the only material sector where a consumer-facing intervention can engage the dominant demand channel.
+
+- **Carbon Energy** (primary: Fossil-Fuel Electricity; secondary: Renewable Electricity) is structurally intermediate, with approximately 34% final demand (predominantly household electricity consumption) and 66% intermediate. Industrial energy procurement is the primary driver.
+
+- **Plastics** presents an exceptional structure: while approximately 55% of output serves final demand, this component is dominated by **government consumption** rather than households. Private investment and household channels are minor. This structural feature of the plastics market makes government procurement a first-order policy lever.
+
+- **Primary vs Secondary gap**: Secondary sectors (recycled/renewable alternatives) are systematically smaller than their primary counterparts in absolute terms. The compositional mix of secondary output also differs — in several materials, secondary sectors are more intermediate-heavy, suggesting industrial early adopters are leading the transition ahead of final consumers.
+
+## Demand Composition (% of Primary + Secondary Combined)
+
+```{r fig-demand-composition, fig.cap="Demand channel composition for primary and secondary material sectors, normalised to 100% of combined (primary + secondary) gross output per material × region × origin column. Enables direct comparison of channel mix between primary and secondary sectors.", out.width="100%"}
+include_graphics(file.path(fig_png, "demand", "p_demand_composition.png"))
+```
+
+Figure 2 normalises each bar to the combined primary plus secondary gross output, making the compositional differences between primary and secondary sectors directly visible.
+
+**Key highlights:**
+
+- For **Carbon Energy** (Fossil-Fuel → Renewable Electricity), secondary output (renewables) is substantially more intermediate-heavy than primary (fossil fuels), reflecting that renewable electricity is primarily procured by industrial users through long-term contracts and grid operators, while fossil-fuel electricity has a larger direct household retail component.
+
+- For **Food** (Meat → Other Food), the primary and secondary channel compositions are similar, suggesting that secondary food markets replicate the institutional structure of conventional meat markets — a positive sign for the scalability of substitution interventions.
+
+- The **EU domestic vs cross-border** column comparison reveals that cross-border (import) demand tends to be more intermediate-heavy, particularly for manufactured materials (plastics, metals). This reflects the role of global value chains in sourcing industrial inputs from RoW suppliers.
+
+---
+
+# Import Structure: EU Demand for RoW Goods
+
+```{r fig-import-decomp, fig.cap="EU import demand from RoW decomposed by sector and demand channel. Includes firm intermediate consumption, household consumption, government consumption, and firm investment. Top 20 sectors by total import demand.", out.width="100%"}
+include_graphics(file.path(fig_png, "demand", "p_import_decomp.png"))
+```
+
+Figure 3 maps the cross-border component of EU demand — imports from RoW — broken down by institutional channel, including both final demand channels (households, government, firm investment) and firm intermediate consumption. Import propensities are calibrated directly from the MARIO MRIO source table (F21/F11 block), rather than using the $\kappa$/$\lambda$ approximation from prior model versions.
+
+**Key highlights:**
+
+- **Firm intermediate consumption** dominates EU import demand across most high-import sectors. For energy and manufactured goods, the bulk of cross-border purchases are industrial inputs, not consumer goods. This implies that CE policies targeting intermediate production substitution have the largest potential to reduce import dependency alongside domestic primary material use.
+
+- **Fossil fuels and carbon energy** rank among the highest-import sectors, with a pronounced intermediate consumption component reflecting the EU's structural dependence on imported fossil-fuel inputs for industrial production processes.
+
+- **Government and household consumption** import shares are non-trivial for food and certain consumer goods, identifying channels where procurement policy and consumption-side interventions could reduce cross-border material footprints.
+
+- The ranking of sectors by total import demand directly anticipates which CE transitions will generate the largest **trade balance improvements** in the dynamic simulations: scenarios reducing demand in high-import primary sectors will produce the largest improvements in the EU current account balance.
+
+---
+
+# CE Policy Portfolio Effectiveness
+
+```{r fig-portfolio-heatmap, fig.cap="CE policy portfolio effectiveness by material sector. Cell values report the portfolio scale as a percentage of gross output x_i, which — given the structural factor (l_i2 - l_i1) approximately -1 for all materials — equals the percentage of full-CE potential captured by that portfolio at substitution intensity rho = 0.2.", out.width="100%"}
+include_graphics(file.path(fig_png, "portfolio", "p_portfolio_heatmap.png"))
+```
+
+Figure 4 systematically compares seven CE policy portfolios across eight material sectors. Each cell value is the **portfolio scale as a percentage of gross output** $x_i$, which — because $(l_{i2} - l_{i1}) \approx -1$ for all materials — equals the fraction of the full-CE benchmark $(\rho \cdot x_i)$ captured by that portfolio.
+
+This figure is the key analytical bridge between the IO structure and the simulation outcomes. Because the structural factor is approximately constant across all material pairs, **differences in simulation outcomes will be driven almost entirely by differences in portfolio scale**, not by variation in the IO multiplier. The heatmap therefore anticipates the ordering of cumulative material savings, emission reductions, and macroeconomic effects across scenarios.
+
+**Key findings:**
+
+- **Intermediate production substitution dominates for all industrial materials.** For cement, metals, glass, and pulp, the intermediate channel alone captures 93–96% of the full-CE benchmark. Any final demand portfolio — even combining all four institutional components — recovers less than 8% of potential. This is not a marginal advantage of production-side policy; it is a **categorical difference in order of magnitude**.
+
+- **Plastics: government procurement equals intermediate substitution.** For plastics, the government consumption channel alone (47.5%) is comparable to the intermediate channel (45.9%) and far exceeds household consumption (4.6%). This formal equivalence — unique among the eight materials — reflects the institutional dominance of government procurement in the EU plastics market and makes circular public procurement a first-order policy instrument alongside production-side regulation.
+
+- **Food (Meat → Other Food): the household channel leads.** At 63.8%, household consumption is the dominant CE lever for food — the only material where this is true. Even so, the intermediate channel adds a complementary 31%, pointing to the importance of food processing and catering supply chains.
+
+- **Carbon Energy (Fossil-Fuel → Renewable Electricity): intermediate dominates over household behaviour.** Despite public discourse focusing on household energy transitions, household consumption captures only 30.6% of the full-CE potential for carbon energy. The intermediate channel captures 66.1%. Industrial energy procurement — not consumer behaviour — is the primary driver of fossil-fuel electricity demand.
+
+---
+
+# Intermediate Demand Decomposition: Key Using Sectors
+
+## Absolute Intermediate Demand
+
+```{r fig-intermediate-abs, fig.cap="Intermediate demand decomposed by using sector (top 10 globally ranked by total contribution). Primary (top) and Secondary (bottom) sectors shown separately. Columns: EU Domestic, EU Cross-border, RoW Domestic, RoW Cross-border.", out.width="100%"}
+include_graphics(file.path(fig_png, "intermediate", "p_intermediate_abs.png"))
+```
+
+## Composition (% of Total Intermediate Demand)
+
+```{r fig-intermediate-pct, fig.cap="Intermediate demand composition as percentage of total intermediate demand per material × region × origin. Same layout as Figure 5.", out.width="100%"}
+include_graphics(file.path(fig_png, "intermediate", "p_intermediate_pct.png"))
+```
+
+Figures 5 and 6 decompose the intermediate demand channel for each material into the specific producing sectors whose procurement decisions drive it, across EU and RoW and for both domestic and cross-border demand flows.
+
+**Key highlights:**
+
+- **Construction is a cross-material nexus.** Construction appears as a dominant intermediate user of cement, metals, wood, and glass simultaneously. This cross-material character implies that circular construction standards — mandating recycled aggregates, secondary steel, engineered timber, and cullet glass — would cascade through multiple primary sectors concurrently. In the simulations, scenarios targeting construction-linked materials will exhibit correlated output and employment effects across sectors.
+
+- **The energy sector is self-referential for Carbon Energy (Fossil-Fuel Electricity).** Energy transmission and distribution is the largest intermediate user of fossil-fuel electricity, reflecting the upstream-downstream structure of electricity value chains. Renewable energy mandates applied at the generation stage therefore engage the dominant intermediate user directly.
+
+- **Rubber and plastics products dominate plastics intermediate demand.** The plastics processing industry is the principal user of primary plastic resins, creating a concentrated channel for mandatory recycled content requirements.
+
+- **EU vs RoW divergences** in the identity and magnitude of key using sectors imply that CE policies calibrated to EU supply chain structures may not engage the dominant using sectors in RoW. Cross-border spillovers of EU CE policy will be material-specific, with construction-linked materials exhibiting stronger cross-regional transmission.
+
+---
+
+# Full Supply-Chain Upstream Requirements (Leontief)
+
+## Primary Sectors
+
+```{r fig-leontief-primary, fig.cap="Full supply-chain upstream input requirements for primary material sectors, column view of (L - I)[k,i] × x[i]. Y-axis: top 20 upstream sectors by aggregate total contribution. Fill: material. Columns: EU Domestic, EU Cross-border, RoW Domestic, RoW Cross-border.", out.width="100%"}
+include_graphics(file.path(fig_png, "leontief", "p_leontief_primary_abs.png"))
+```
+
+## Secondary Sectors
+
+```{r fig-leontief-secondary, fig.cap="Full supply-chain upstream input requirements for secondary (circular) material sectors. Same layout as Figure 7. Differences relative to Figure 7 identify where primary and secondary supply chains diverge in their upstream structure.", out.width="100%"}
+include_graphics(file.path(fig_png, "leontief", "p_leontief_secondary_abs.png"))
+```
+
+Figures 7 and 8 present the **column view of the Leontief upstream decomposition**: $(L - I)_{ki} \cdot x_i$, showing which sectors $k$ are required as inputs — across all orders of IO interdependence — to sustain the gross output $x_i$ of each material sector $i$. This is the full supply-chain view, encompassing not just direct inputs (captured by the $A$ matrix) but all indirect upstream requirements propagated through the IO system.
+
+The column view is qualitatively different from the intermediate demand decomposition (Figures 5–6). Intermediate demand shows who directly purchases from material sector $i$; the Leontief upstream view shows what sector $i$ itself requires, tracing backwards through all production stages.
+
+**Key highlights:**
+
+- **Animal Farming is the dominant upstream input for Food (primary: Meat).** In the EU domestic column (Figure 7), Animal Farming ranks first across the Food material — the full supply-chain view makes explicit what is obvious from the production structure: meat processing draws on livestock rearing across all IO orders. Notably, in the EU cross-border column, Fossil-Fuel Electricity and Metals appear as significant cross-regional upstream requirements, connecting food production to global energy and industrial supply chains.
+
+- **Fossil-fuel extraction and processing are the dominant upstream inputs for primary Carbon Energy (Fossil-Fuel Electricity).** This connection — invisible in direct intermediate demand statistics — becomes salient in the full supply-chain view. Primary fossil-fuel electricity generation draws heavily on fossil-fuel extraction (EU domestic) and fossil-fuel processing as upstream requirements across all IO orders. This validates the model's treatment of carbon energy scenarios as a pivot point for cross-sectoral decarbonisation.
+
+- **Metals shows the largest aggregate Leontief contribution** across all material sectors, driven by the economy-wide role of metals as an input to machinery, infrastructure, and energy systems. Crucially, comparing the primary (Figure 7) and secondary (Figure 8) columns for Metals reveals the precise mechanism behind the emission rebound quantified in Section 7. The $\approx -1$ structural factor acts *symmetrically*: shifting demand from primary (sector 26) to secondary (sector 27) reduces upstream requirements for sector 26 by $\sim 1$ unit ($L_{26,26} = 1.245 \to L_{26,27} = 0.187$, $\Delta L = -1.058$) and increases requirements for sector 27 by $\sim 1$ unit ($L_{27,26} = 0.071 \to L_{27,27} = 1.102$, $\Delta L = +1.031$). Because Metals Re-processing is itself more emission-intensive than primary Metals ($\varepsilon_{27} = 429.9$ vs $\varepsilon_{26} = 276.5$), the increase in sector 27 requirements costs more in emissions (+443) than the reduction in sector 26 saves (−293). A secondary contribution comes from Fossil-Fuel Electricity (sector 31), which secondary metals requires more intensively ($L_{31,26} = 0.030 \to L_{31,27} = 0.057$), adding +74 to the rebound due to its very high emission intensity ($\varepsilon_{31} = 2{,}771$). The savings from reduced Mining and Fossil-Fuel Extraction — inputs that primary metals needs for iron ore and coal — partially offset these but are insufficient to reverse the net sign.
+
+- **Primary vs secondary supply-chain divergence**: Comparing Figures 7 and 8, secondary sectors generally exhibit different upstream structures relative to their primary counterparts. Secondary Carbon Energy (Renewable Electricity) has substantially lower fossil-fuel upstream requirements, confirming the ecological rationale for the transition. For Metals, the divergence works in the opposite direction for emissions — secondary Metals Re-processing requires more of itself and more fossil-fuel electricity — producing the rebound documented in Section 7.
+
+- **The EU–RoW cross-border column** reveals which upstream requirements are supplied cross-regionally. For Carbon Energy and Metals, significant upstream requirements originate from RoW sectors, underscoring the importance of global supply chain dynamics in evaluating the full ecological impact of EU CE transitions.
+
+- **Sector ordering** (largest aggregate contribution at top) reveals that energy-related sectors, Animal Farming (for Food), construction, and financial/business services constitute the dominant upstream inputs across materials — reflecting the economy-wide energy, agricultural, and services intensity of all production processes.
+
+---
+
+# Environmental Impact Estimates
+
+## CO2 Emissions
+
+```{r fig-impact-emis, fig.cap="Analytical first-order CO2 emission impact (Delta, 10t CO2eq) of CE portfolios by material sector. Negative = reduction. Based on sector-level emission intensities at t=70 and the Leontief output change formula. EU region, rho = 0.2.", out.width="100%"}
+include_graphics(file.path(fig_png, "impact", "p_impact_emis.png"))
+```
+
+## Material Intensity
+
+```{r fig-impact-mat, fig.cap="Analytical first-order material intensity impact (Delta) of CE portfolios by material sector. Negative = reduction. mu_mat intensity (domestic material extraction per unit output) is independently calibrated and genuinely distinct from emission intensities.", out.width="100%"}
+include_graphics(file.path(fig_png, "impact", "p_impact_mat.png"))
+```
+
+Figures 9 and 10 translate the portfolio scale analysis into environmental impact estimates using sector-level intensity coefficients (emissions, material use) calibrated at the baseline ($t = 70$). The formula applied is:
+
+$$
+\Delta \text{Environmental}^{(P)} = \rho \cdot \text{scale}^{(P)} \cdot \sum_k \varepsilon_k \cdot (L_{k,\text{secondary}} - L_{k,\text{primary}})
+$$
+
+where $\varepsilon_k$ is the environmental intensity of sector $k$ (quantity per unit of output) and the Leontief difference captures the change in upstream output induced by the demand substitution.
+
+::: {.callout-warning}
+**Calibration caveat — land and water intensities:** The land use and water use intensity coefficients (`lambda_j` for land, `omega_j` for water) are currently **identical to the carbon emission coefficients** in the model calibration. These parameters have not been independently empirically calibrated. Their impact figures therefore replicate the CO₂ pattern exactly and are not substantively informative. Proper calibration from land-use and water-footprint databases (e.g., EXIOBASE environmental extensions) is required before these indicators can be interpreted. Land and water impact plots are accordingly omitted from this document.
+:::
+
+**These estimates are analytical first-order approximations** computed at a single baseline period. They anticipate the direction and relative magnitude of cumulative simulation impacts but do not capture the dynamic feedback effects (multiplier propagation, income distribution, investment responses) that the full SFC model tracks over periods 70–100. The cumulative time-aggregate impacts from the simulations will exceed these point estimates by a factor reflecting the number of periods over which the shock is sustained and the SFC multiplier dynamics.
+
+**Key findings:**
+
+- **Carbon energy transitions generate by far the largest absolute emission and material reductions.** The intermediate channel alone yields $\Delta \text{CO}_2 \approx -6{,}357$ (10t CO₂eq) at $\rho = 0.2$, and the full-CE portfolio yields $-9{,}630$. This reflects both the large portfolio scale (intermediate channel dominates at 66%) and the high emission intensity of fossil-fuel electricity generation.
+
+- **Food transitions produce large absolute emission reductions** through the household consumption channel ($-1{,}558$), driven by the high emission intensity of the food processing supply chain.
+
+- **Glass, Cement, and Metals show positive $\Delta$ values** (emission increases) under the intermediate portfolio. This is a **structural rebound effect** driven by the upstream energy intensity of secondary/recycled production. The mechanism is distinct from — and not contradicted by — the $\approx -1$ structural factor for primary material output. That factor applies only to row $i$ of $L$ (primary material sector output falls by $\approx 1$ unit per unit shifted, for all materials including metals). The emission impact, however, aggregates the Leontief difference across *all* upstream sectors weighted by their emission intensities:
+
+$$\Delta_{\text{emis}}^{(\text{INT})} = \rho \cdot \text{scale}_{\text{INT}} \cdot \sum_{k=1}^{54} \varepsilon_k \cdot (L_{k,27} - L_{k,26})$$
+
+  For Metals (primary sector 26, secondary sector 27 — Metals Re-processing) the numbers are: $\rho = 0.2$, $\text{scale}_{\text{INT}} = 26.3$ (billion EUR), giving $\Delta_{\text{emis}}^{(\text{INT})} \approx +994$ (10t CO₂eq) — a substantial **increase** in upstream emissions despite a reduction in primary metal output. The mechanism operates through two Leontief channels, both readable directly from the $L$ matrix:
+
+  **Channel 1 — the symmetric −1 effect (dominant):** The CE substitution reduces primary metals requirements by $\Delta L_{26} \approx -1.058$ and increases secondary metals (Metals Re-processing) requirements by $\Delta L_{27} \approx +1.031$. Since $\varepsilon_{27} = 429.9 > \varepsilon_{26} = 276.5$ (Metals Re-processing is more emission-intensive than primary Metals), the gain from losing one unit of sector 26 ($\approx -293$ emission units) is outweighed by the cost of gaining one unit of sector 27 ($\approx +443$ emission units), yielding a net of $+150$.
+
+  **Channel 2 — electricity substitution (secondary):** Secondary metals (EAF scrap recycling) requires more Fossil-Fuel Electricity than primary metals: $L_{31,27} = 0.057$ vs $L_{31,26} = 0.030$ ($\Delta L_{31} = +0.027$). Given the very high emission intensity of fossil-fuel electricity ($\varepsilon_{31} = 2{,}771$), this adds $\approx +74$ to the rebound. Partially offsetting this, primary metals requires more Mining ($\Delta L < 0$, saving $-22$) and Fossil-Fuel Extraction ($\Delta L < 0$, saving $-8$) — inputs for iron ore and coal that secondary scrap recycling does not need.
+
+  The net emission structural factor is therefore positive (+238 per unit scale), confirming that under the current calibration, CE transitions in metals increase total upstream emissions. This finding highlights a critical policy complementarity: the rebound would reverse sign under a decarbonised electricity grid (eliminating channel 2) *and* if secondary metal reprocessing were made less emission-intensive (eliminating channel 1). Both channels must be addressed simultaneously.
+
+- **Material intensity (mu_mat)** tells a broadly consistent story with emissions, with the notable exception that Wood transitions show strong material savings (harvested biomass reduction) while their emission reductions are comparatively modest — reflecting the lower emission intensity of forestry relative to its material extraction burden.
+
+---
+
+# Summary and Analytical Implications
+
+The MRIO demand structure documented in this section establishes four key analytical priors that should be borne in mind when interpreting the dynamic simulation results in the following section.
+
+**1. The structural factor is approximately constant.** Across all eight material pairs, $(l_{i2} - l_{i1}) \approx -1$, implying that the ecological leverage of any CE intervention is determined almost entirely by the size of the demand channels engaged — the fraction of gross output targeted across households, government, investment, and firm inputs — rather than by material-specific IO multiplier variation. This gives the demand channel breakdown (Figure 4) near-sufficient predictive power for the ranking of simulation outcomes.
+
+**2. The dominant channel varies categorically across materials.** No single policy instrument type is universally effective. Industrial materials require production-side intervention; food requires consumption-side; plastics admits government procurement as an equally potent alternative to production substitution; carbon energy requires industrial energy procurement reform above all else. A portfolio approach that tailors instruments to the demand structure of each material is strictly superior to any uniform policy.
+
+**3. Intermediate imports are substantial and concentrated.** The cross-border import structure (Figure 3) reveals that CE transitions in the EU will have asymmetric effects on RoW economies through trade linkages, with sectors like fossil fuels, metals, and plastics exhibiting the largest cross-regional import dependencies. The dynamic simulations will quantify these external balance effects; the import decomposition identifies which sectors drive them.
+
+**4. Structural rebound is a real constraint for industrial materials.** For glass, cement, and metals, the secondary sector's upstream supply chain is currently more emission-intensive than the primary sector's. For Metals, the Leontief decomposition identifies two specific channels: (i) Metals Re-processing is itself more emission-intensive than primary Metals ($\varepsilon_{27} > \varepsilon_{26}$), so the symmetric $\approx +1$ increase in sector 27 requirements outweighs the $\approx -1$ reduction in sector 26; and (ii) secondary metals requires more fossil-fuel electricity than primary metals ($L_{31,27} > L_{31,26}$). Both channels must be addressed — through decarbonisation of the electricity grid and cleaner reprocessing technology — before CE transitions in metals can deliver net emission reductions.

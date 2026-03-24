@@ -200,14 +200,16 @@ struct_long$region_dom <- factor(paste(struct_long$region, '\u2014', struct_long
 theme_demand <- function(base_size = 11) {
   theme_grey(base_size = base_size) %+replace%
     theme(
-      strip.text.x    = element_text(face = 'bold', size = 10),
-      strip.text.y    = element_text(face = 'bold', size = 9, angle = 0),
-      axis.text.y     = element_text(size = 9),
-      axis.text.x     = element_text(size = 8),
-      legend.position = 'top',
-      legend.direction= 'horizontal',
-      legend.title    = element_text(face = 'bold'),
-      plot.title      = element_text(face = 'bold')
+      strip.text.x       = element_text(face = 'bold', size = 10),
+      strip.text.y       = element_text(face = 'bold', size = 10, angle = 0),
+      axis.text.y        = element_text(size = 10, hjust = 1),
+      axis.text.x        = element_text(size = 8),
+      legend.position    = 'top',
+      legend.direction   = 'horizontal',
+      legend.title       = element_text(face = 'bold'),
+      panel.grid.major.y = element_blank(),
+      plot.title         = element_text(face = 'bold',   size = 16, hjust = 0),
+      plot.subtitle      = element_text(face = 'italic', size = 14, hjust = 0)
     )
 }
 
@@ -215,7 +217,7 @@ demand_scale <- scale_fill_manual(values = chan_colours, name = 'channel',
                                   guide = guide_legend(nrow = 1))
 
 # ── PLOT 1 v1: y = material, facet rows = mat_type ────────────────────────────
-p1_v1 <- ggplot(struct_long, aes(y = material, x = scale, fill = channel)) +
+p1 <- ggplot(struct_long, aes(y = material, x = scale, fill = channel)) +
   geom_col(width = 0.75, colour = 'white', linewidth = 0.2) +
   facet_grid(vars(mat_type), vars(region, dom_for), scales = 'free_x') +
   demand_scale +
@@ -225,9 +227,9 @@ p1_v1 <- ggplot(struct_long, aes(y = material, x = scale, fill = channel)) +
        x = 'Output (model units)', y = NULL) +
   theme_demand()
 
-ggsave('output/pdf_figures/demand/p_demand_structure_v1.pdf', p1_v1, width = 16, height = 7)
-ggsave('output/png_figures/demand/p_demand_structure_v1.png', p1_v1, width = 16, height = 7,  dpi = 150)
-cat('Saved: p_demand_structure_v1\n')
+ggsave('output/pdf_figures/demand/p_demand_structure.pdf', p1, width = 16, height = 7)
+ggsave('output/png_figures/demand/p_demand_structure.png', p1, width = 16, height = 7,  dpi = 150)
+cat('Saved: p_demand_structure\n')
 
 # ── Composition: normalised to primary + secondary combined ────────────────────
 struct_comp <- struct_long %>%
@@ -237,7 +239,7 @@ struct_comp <- struct_long %>%
   mutate(pct = ifelse(total_ps > 0, scale / total_ps * 100, 0))
 
 # ── PLOT 1b v1: y = material, facet rows = mat_type ───────────────────────────
-p1b_v1 <- ggplot(struct_comp, aes(y = material, x = pct, fill = channel)) +
+p1b <- ggplot(struct_comp, aes(y = material, x = pct, fill = channel)) +
   geom_col(width = 0.75, colour = 'white', linewidth = 0.2) +
   facet_grid(vars(mat_type), vars(region, dom_for)) +
   demand_scale +
@@ -248,9 +250,9 @@ p1b_v1 <- ggplot(struct_comp, aes(y = material, x = pct, fill = channel)) +
        x = '% of primary + secondary material output', y = NULL) +
   theme_demand()
 
-ggsave('output/pdf_figures/demand/p_demand_composition_v1.pdf', p1b_v1, width = 16, height = 7)
-ggsave('output/png_figures/demand/p_demand_composition_v1.png', p1b_v1, width = 16, height = 7,  dpi = 150)
-cat('Saved: p_demand_composition_v1\n')
+ggsave('output/pdf_figures/demand/p_demand_composition.pdf', p1b, width = 16, height = 7)
+ggsave('output/png_figures/demand/p_demand_composition.png', p1b, width = 16, height = 7,  dpi = 150)
+cat('Saved: p_demand_composition\n')
 
 # ── PLOT 1c: EU import demand by sector and FD channel (actual MARIO eta) ──────
 # Replaces the kappa/lambda approximation in compute_mrio_fd_extension.R.
@@ -260,10 +262,11 @@ import_all <- lapply(1:n_sec, function(j) {
   data.frame(
     sector_j  = j,
     label     = sec_list$label[j],
-    `household consumption`  = unname(cs$fd_imp['HH']),
-    `government consumption` = unname(cs$fd_imp['Gov']),
-    `firm investment`        = unname(cs$fd_imp['FirmInv']),
-    total_imp = sum(cs$fd_imp[c('HH', 'Gov', 'FirmInv')]),
+    `household consumption`       = unname(cs$fd_imp['HH']),
+    `government consumption`      = unname(cs$fd_imp['Gov']),
+    `firm investment`             = unname(cs$fd_imp['FirmInv']),
+    `firm intermediate consumption` = cs$int_imp,
+    total_imp = sum(cs$fd_imp[c('HH', 'Gov', 'FirmInv')]) + cs$int_imp,
     check.names = FALSE,
     stringsAsFactors = FALSE
   )
@@ -273,17 +276,19 @@ top20_imp <- import_all %>% arrange(desc(total_imp)) %>% slice(1:20) %>% pull(la
 
 import_long <- import_all %>%
   filter(label %in% top20_imp) %>%
-  pivot_longer(cols = c('household consumption', 'government consumption', 'firm investment'),
+  pivot_longer(cols = c('household consumption', 'government consumption',
+                        'firm investment', 'firm intermediate consumption'),
                names_to = 'channel', values_to = 'import_demand') %>%
   mutate(
-    channel = factor(channel, levels = c('firm investment', 'government consumption',
-                                         'household consumption')),
+    channel = factor(channel, levels = c('firm intermediate consumption', 'firm investment',
+                                         'government consumption', 'household consumption')),
     label   = factor(label, levels = import_all %>%
                        filter(label %in% top20_imp) %>%
                        arrange(total_imp) %>% pull(label))
   )
 
-imp_colours <- chan_colours[c('household consumption', 'government consumption', 'firm investment')]
+imp_colours <- chan_colours[c('household consumption', 'government consumption',
+                              'firm investment', 'firm intermediate consumption')]
 
 p1c <- ggplot(import_long, aes(x = label, y = import_demand, fill = channel)) +
   geom_col(width = 0.75, colour = 'white', linewidth = 0.2) +
@@ -292,8 +297,8 @@ p1c <- ggplot(import_long, aes(x = label, y = import_demand, fill = channel)) +
                     guide = guide_legend(nrow = 1)) +
   scale_y_continuous(expand = expansion(mult = c(0, 0.06))) +
   labs(
-    title    = 'EU Import Demand from RoW by Sector and FD Channel (actual MARIO eta)',
-    subtitle = 'Import demand = eta_k[j] / (1 - eta_k[j]) x domestic FD[k,j]. Channel-specific eta from MARIO F21 block. Top 20 sectors.',
+    title    = 'EU Imports from RoW by Sector and Demand Channel',
+    subtitle = 'Top 20 sectors. Import demand = eta_k[j] / (1 - eta_k[j]) x domestic FD[k,j].',
     x = NULL, y = 'Import demand (model units)'
   ) +
   theme_demand(base_size = 11) +
@@ -391,23 +396,21 @@ ggsave('output/png_figures/portfolio/p_portfolio_heatmap.png', p2, width = 10, h
 cat('Saved: p_portfolio_heatmap\n')
 
 # ── PLOT 3: Intermediate demand decomposition ─────────────────────────────────
-# Layout: y = using_sector (fixed across panels), fill = material,
-#         facet rows = mat_type (Primary / Secondary),
-#         facet cols = region × dom_for  (EU·Dom, EU·Cross, RoW·Dom, RoW·Cross)
-top_n_sectors <- 15
+# Layout (demand-like): y = material, fill = using_sector (stacked),
+#   facet rows = mat_type (Primary / Secondary),
+#   facet cols = region × dom_for  (EU·Dom, EU·Cross, RoW·Dom, RoW·Cross)
+top_n_sectors <- 10
 
-# Step 1: global top-15 using sectors by total contribution across all materials and types
-all_contrib <- Reduce('+', lapply(1:nrow(mat_sectors), function(r) {
+# Global top-10 using sectors by total contribution across all materials and types
+all_contrib_id <- Reduce('+', lapply(1:nrow(mat_sectors), function(r) {
   ms <- mat_sectors[r, ]
   rowSums(sapply(c(ms$from_j, ms$to_j), function(i) {
-    v <- A[i, 1:n_sec] * x_base[1:n_sec]
-    names(v) <- sec_list$label
-    v
+    v <- A[i, 1:n_sec] * x_base[1:n_sec]; names(v) <- sec_list$label; v
   }))
 }))
-sectors_keep <- names(sort(all_contrib, decreasing = TRUE))[1:top_n_sectors]
+sectors_keep <- names(sort(all_contrib_id, decreasing = TRUE))[1:top_n_sectors]
 
-# Step 2: build rows for each material × mat_type × region × dom_for
+# Build rows for each material × mat_type × region × dom_for
 make_int_rows <- function(mat_label, mat_type, i_eu, i_row) {
   eu_dom <- A[i_eu, 1:n_sec]             * x_base[1:n_sec]
   eu_imp <- A[i_eu, (n_sec+1):(2*n_sec)] * x_base[(n_sec+1):(2*n_sec)]
@@ -419,17 +422,13 @@ make_int_rows <- function(mat_label, mat_type, i_eu, i_row) {
   names(rw_dom) <- names(rw_imp) <- sec_list$label
   total_rw <- sum(rw_dom, na.rm=TRUE) + sum(rw_imp, na.rm=TRUE)
 
-  # Safe lookup: missing sectors get 0 (not NA)
+  # Safe lookup: missing sectors → 0
   collapse <- function(v, total) {
     top_v   <- sapply(sectors_keep, function(s) if (s %in% names(v)) v[[s]] else 0)
     other_v <- sum(v[!names(v) %in% sectors_keep], na.rm=TRUE)
     bind_rows(
-      data.frame(using_sector = sectors_keep,
-                 abs_val = as.numeric(top_v),
-                 stringsAsFactors = FALSE),
-      data.frame(using_sector = 'Other',
-                 abs_val = other_v,
-                 stringsAsFactors = FALSE)
+      data.frame(using_sector = sectors_keep, abs_val = as.numeric(top_v), stringsAsFactors = FALSE),
+      data.frame(using_sector = 'Other',      abs_val = other_v,           stringsAsFactors = FALSE)
     ) %>% mutate(pct = ifelse(total > 0, abs_val / total * 100, 0))
   }
   bind_rows(
@@ -448,75 +447,53 @@ int_decomp <- lapply(1:nrow(mat_sectors), function(r) {
   )
 }) %>% bind_rows()
 
-# Order using_sector by total EU primary domestic contribution (largest at top)
-sector_order_id <- int_decomp %>%
-  filter(using_sector != 'Other', mat_type == 'Primary',
-         region == 'EU', dom_for == 'Domestic') %>%
-  group_by(using_sector) %>%
-  summarise(total = sum(abs_val, na.rm=TRUE), .groups='drop') %>%
-  arrange(desc(total)) %>%
-  pull(using_sector)
+# Colour palette: one colour per using sector
+sector_order_id <- c(sectors_keep, 'Other')
+sector_pal_id   <- c(setNames(scales::hue_pal()(top_n_sectors), sectors_keep), 'Other' = '#cccccc')
 
-# Factor levels: named sectors top→bottom, Other at bottom
-int_decomp$using_sector <- factor(int_decomp$using_sector,
-                                  levels = c(rev(sector_order_id), 'Other'))
-int_decomp$material <- factor(int_decomp$material, levels = mat_order)
-int_decomp$mat_type <- factor(int_decomp$mat_type, levels = c('Primary', 'Secondary'))
-int_decomp$region   <- factor(int_decomp$region,   levels = c('EU', 'RoW'))
-int_decomp$dom_for  <- factor(int_decomp$dom_for,  levels = c('Domestic', 'Cross-border'))
+int_decomp$using_sector <- factor(int_decomp$using_sector, levels = sector_order_id)
+int_decomp$material     <- factor(int_decomp$material, levels = mat_order)
+int_decomp$mat_type     <- factor(int_decomp$mat_type, levels = c('Primary', 'Secondary'))
+int_decomp$region       <- factor(int_decomp$region,   levels = c('EU', 'RoW'))
+int_decomp$dom_for      <- factor(int_decomp$dom_for,  levels = c('Domestic', 'Cross-border'))
 
-# % of combined (primary + secondary) normalisation per material × region × dom_for
-int_decomp <- int_decomp %>%
-  group_by(material, region, dom_for) %>%
-  mutate(total_combined = sum(abs_val, na.rm = TRUE)) %>%
-  ungroup() %>%
-  mutate(pct_combined = ifelse(total_combined > 0, abs_val / total_combined * 100, 0))
-
-# Colour palette: one colour per material
-mat_pal_id <- setNames(scales::hue_pal()(length(mat_order)), mat_order)
-
-# ── Plot builder: y = using_sector, fill = material, rows = mat_type ──────────
+# ── Plot builder: demand-like stacked bars ─────────────────────────────────────
 make_int_plot <- function(df, xvar, xlabel, title_suffix) {
-  x_scale <- if (xvar == 'pct_combined')
-    scale_x_continuous(expand = expansion(mult = c(0, 0.06)),
+  x_scale <- if (xvar == 'pct')
+    scale_x_continuous(expand = expansion(mult = c(0, 0.03)),
                        labels = function(v) paste0(round(v, 0), '%'))
   else
     scale_x_continuous(expand = expansion(mult = c(0, 0.06)))
 
-  ggplot(df, aes(y = using_sector, x = .data[[xvar]], fill = material)) +
-    geom_col(width = 0.75, colour = 'white', linewidth = 0.2,
-             position = position_dodge(width = 0.8)) +
+  ggplot(df, aes(y = material, x = .data[[xvar]], fill = using_sector)) +
+    geom_col(width = 0.75, colour = 'white', linewidth = 0.2) +
     facet_grid(vars(mat_type), vars(region, dom_for), scales = 'free_x') +
-    scale_fill_manual(values = mat_pal_id, name = 'material',
+    scale_fill_manual(values = sector_pal_id, name = 'using sector',
                       guide = guide_legend(nrow = 1)) +
     x_scale +
-    labs(title    = paste('Intermediate Demand by Using Sector:', title_suffix),
-         subtitle = 'Rows: Primary / Secondary. Columns: EU·Domestic, EU·Cross-border, RoW·Domestic, RoW·Cross-border. y-axis fixed across panels.',
+    labs(title    = paste('Intermediate Demand Decomposition by Using Sector:', title_suffix),
+         subtitle = 'Rows: Primary / Secondary. Columns: EU·Domestic, EU·Cross-border, RoW·Domestic, RoW·Cross-border.',
          x = xlabel, y = NULL) +
     theme_grey(base_size = 10) +
-    theme(strip.text.x   = element_text(face = 'bold', size = 10),
-          strip.text.y   = element_text(face = 'bold', size = 10, angle = 0),
-          axis.text.y    = element_text(size = 8),
-          axis.text.x    = element_text(size = 8),
-          legend.position  = 'top',
-          legend.direction = 'horizontal',
-          legend.title     = element_text(face = 'bold'),
+    theme(strip.text.x      = element_text(face = 'bold', size = 10),
+          strip.text.y      = element_text(face = 'bold', size = 10, angle = 0),
+          axis.text.y        = element_text(size = 10, hjust = 1),
+          axis.text.x       = element_text(size = 8),
+          legend.position   = 'top', legend.direction = 'horizontal',
+          legend.title      = element_text(face = 'bold'),
           panel.grid.major.y = element_blank(),
-          plot.title       = element_text(face = 'bold', size = 12))
+          plot.title        = element_text(face = 'bold',   size = 16, hjust = 0),
+          plot.subtitle     = element_text(face = 'italic', size = 14, hjust = 0))
 }
 
-p_int_pct <- make_int_plot(int_decomp, 'pct_combined',
-                           '% of combined (primary + secondary) intermediate demand',
-                           '% of Combined Output')
-p_int_abs <- make_int_plot(int_decomp, 'abs_val',
-                           'Intermediate demand (model units)',
-                           'Absolute Levels')
+p_int_abs <- make_int_plot(int_decomp, 'abs_val', 'Intermediate demand (model units)', 'Absolute Levels')
+p_int_pct <- make_int_plot(int_decomp, 'pct',     '% of total intermediate demand',    '% of Total')
 
-ggsave('output/pdf_figures/intermediate/p_intermediate_pct.pdf', p_int_pct, width=16, height=10)
-ggsave('output/png_figures/intermediate/p_intermediate_pct.png', p_int_pct, width=16, height=10, dpi=150)
-ggsave('output/pdf_figures/intermediate/p_intermediate_abs.pdf', p_int_abs, width=16, height=10)
-ggsave('output/png_figures/intermediate/p_intermediate_abs.png', p_int_abs, width=16, height=10, dpi=150)
-cat('Saved: p_intermediate_pct, p_intermediate_abs\n')
+ggsave('output/pdf_figures/intermediate/p_intermediate_abs.pdf', p_int_abs, width=16, height=8)
+ggsave('output/png_figures/intermediate/p_intermediate_abs.png', p_int_abs, width=16, height=8, dpi=150)
+ggsave('output/pdf_figures/intermediate/p_intermediate_pct.pdf', p_int_pct, width=16, height=8)
+ggsave('output/png_figures/intermediate/p_intermediate_pct.png', p_int_pct, width=16, height=8, dpi=150)
+cat('Saved: p_intermediate_abs, p_intermediate_pct\n')
 
 # ── PLOT 3c: Full Leontief upstream input requirements — all supply chain orders ─
 # COLUMN view: (L − I)[k, i] × x[i] — what does each material sector i REQUIRE
@@ -532,141 +509,109 @@ cat('Saved: p_intermediate_pct, p_intermediate_abs\n')
 #         scales = 'free_y'
 
 L_minus_I <- L - diag(nrow(L))
-top_n_lf  <- 15  # kept per panel before collapse; final named set comes from max-ranking below
+top_n_lf  <- 20
 
+# Build full Leontief upstream rows for each material × mat_type × region × dom_for
 int_decomp_lf <- lapply(1:nrow(mat_sectors), function(r) {
   ms <- mat_sectors[r, ]
   lapply(list(list(j = ms$from_j, type = 'Primary'),
               list(j = ms$to_j,   type = 'Secondary')), function(mt) {
-    i_eu  <- mt$j
-    i_row <- mt$j + n_sec
-    xi_eu  <- x_base[i_eu]
-    xi_row <- x_base[i_row]
-
-    # Column view: upstream requirements of sector i from domestic vs cross-border
-    # EU primary sector's upstream: from EU sectors (domestic) and from RoW sectors (cross-border)
-    eu_dom <- L_minus_I[1:n_sec,              i_eu]  * xi_eu
-    eu_imp <- L_minus_I[(n_sec+1):(2*n_sec),  i_eu]  * xi_eu
-    # RoW primary sector's upstream: from RoW sectors (domestic) and from EU sectors (cross-border)
-    rw_dom <- L_minus_I[(n_sec+1):(2*n_sec),  i_row] * xi_row
-    rw_imp <- L_minus_I[1:n_sec,              i_row]  * xi_row
+    i_eu  <- mt$j;         i_row <- mt$j + n_sec
+    xi_eu <- x_base[i_eu]; xi_row <- x_base[i_row]
+    eu_dom <- L_minus_I[1:n_sec,             i_eu]  * xi_eu
+    eu_imp <- L_minus_I[(n_sec+1):(2*n_sec), i_eu]  * xi_eu
+    rw_dom <- L_minus_I[(n_sec+1):(2*n_sec), i_row] * xi_row
+    rw_imp <- L_minus_I[1:n_sec,             i_row]  * xi_row
     names(eu_dom) <- names(eu_imp) <- names(rw_dom) <- names(rw_imp) <- sec_list$label
-
     make_rows <- function(contrib, region_lbl, dom_lbl) {
-      top_s  <- names(sort(contrib, decreasing = TRUE))[1:top_n_lf]
-      other  <- sum(contrib[!names(contrib) %in% top_s], na.rm = TRUE)
-      bind_rows(
-        data.frame(material = ms$label, mat_type = mt$type,
-                   region = region_lbl, dom_for = dom_lbl,
-                   using_sector = top_s,
-                   abs_val = as.numeric(contrib[top_s]),
-                   stringsAsFactors = FALSE),
-        data.frame(material = ms$label, mat_type = mt$type,
-                   region = region_lbl, dom_for = dom_lbl,
-                   using_sector = 'Other', abs_val = other,
-                   stringsAsFactors = FALSE)
-      )
+      data.frame(material = ms$label, mat_type = mt$type,
+                 region = region_lbl, dom_for = dom_lbl,
+                 using_sector = names(contrib),
+                 abs_val = as.numeric(contrib),
+                 stringsAsFactors = FALSE)
     }
-    bind_rows(
-      make_rows(eu_dom, 'EU',  'Domestic'),
-      make_rows(eu_imp, 'EU',  'Cross-border'),
-      make_rows(rw_dom, 'RoW', 'Domestic'),
-      make_rows(rw_imp, 'RoW', 'Cross-border')
-    )
+    bind_rows(make_rows(eu_dom,'EU','Domestic'), make_rows(eu_imp,'EU','Cross-border'),
+              make_rows(rw_dom,'RoW','Domestic'), make_rows(rw_imp,'RoW','Cross-border'))
   }) %>% bind_rows()
 }) %>% bind_rows()
 
-# Rank sectors by maximum contribution to ANY single panel — ensures material-specific
-# dominant sectors (Fossil-Fuel Extraction for Carbon Energy) are always named.
-# Top-15 by max abs_val across all material × mat_type × region × dom_for combinations.
-top_sectors_lf <- int_decomp_lf %>%
-  filter(using_sector != 'Other') %>%
+# Top-20 upstream sectors ranked separately for primary and secondary
+# (by max contribution to any single panel — keeps fossil-fuel sectors visible for Carbon Energy)
+top_lf_pri <- int_decomp_lf %>%
+  filter(mat_type == 'Primary') %>%
   group_by(using_sector) %>%
-  summarise(max_val = max(abs_val, na.rm = TRUE), .groups = 'drop') %>%
-  arrange(desc(max_val)) %>%
-  slice(1:15) %>%
-  pull(using_sector)
+  summarise(total_val = sum(abs_val, na.rm=TRUE), .groups='drop') %>%
+  arrange(desc(total_val)) %>% slice(1:top_n_lf) %>% pull(using_sector)
 
-# Collapse anything outside top-15 into "Other"
-int_decomp_lf <- int_decomp_lf %>%
-  mutate(using_sector = ifelse(using_sector %in% top_sectors_lf,
-                               using_sector, 'Other')) %>%
-  group_by(material, mat_type, region, dom_for, using_sector) %>%
-  summarise(abs_val = sum(abs_val, na.rm = TRUE), .groups = 'drop')
-
-# Add % of combined (primary + secondary) per material × region × dom_for
-int_decomp_lf <- int_decomp_lf %>%
-  group_by(material, region, dom_for) %>%
-  mutate(total_combined = sum(abs_val, na.rm = TRUE)) %>%
-  ungroup() %>%
-  mutate(pct_combined = ifelse(total_combined > 0, abs_val / total_combined * 100, 0))
-
-# Legend order: by max contribution (same ranking used for selection)
-legend_order_lf <- int_decomp_lf %>%
-  filter(using_sector != 'Other') %>%
+top_lf_sec <- int_decomp_lf %>%
+  filter(mat_type == 'Secondary') %>%
   group_by(using_sector) %>%
-  summarise(max_val = max(abs_val, na.rm = TRUE), .groups = 'drop') %>%
-  arrange(desc(max_val)) %>%
-  pull(using_sector)
+  summarise(total_val = sum(abs_val, na.rm=TRUE), .groups='drop') %>%
+  arrange(desc(total_val)) %>% slice(1:top_n_lf) %>% pull(using_sector)
 
-int_decomp_lf$material    <- factor(int_decomp_lf$material,    levels = mat_order)
-int_decomp_lf$mat_type    <- factor(int_decomp_lf$mat_type,    levels = c('Primary', 'Secondary'))
-int_decomp_lf$region      <- factor(int_decomp_lf$region,      levels = c('EU', 'RoW'))
-int_decomp_lf$dom_for     <- factor(int_decomp_lf$dom_for,     levels = c('Domestic', 'Cross-border'))
-int_decomp_lf$using_sector <- factor(int_decomp_lf$using_sector,
-                                     levels = c(legend_order_lf, 'Other'))
+# Collapse into Other, then add % of combined per material × region × dom_for
+collapse_lf <- function(df, top_sectors) {
+  df %>%
+    mutate(using_sector = ifelse(using_sector %in% top_sectors, using_sector, 'Other')) %>%
+    group_by(material, mat_type, region, dom_for, using_sector) %>%
+    summarise(abs_val = sum(abs_val, na.rm=TRUE), .groups='drop') %>%
+    group_by(material, region, dom_for) %>%
+    mutate(total_combined = sum(abs_val, na.rm=TRUE)) %>% ungroup() %>%
+    mutate(pct_combined = ifelse(total_combined > 0, abs_val/total_combined*100, 0),
+           using_sector = factor(using_sector, levels = c('Other', rev(top_sectors))),
+           material = factor(material, levels = mat_order),
+           region   = factor(region,   levels = c('EU','RoW')),
+           dom_for  = factor(dom_for,  levels = c('Domestic','Cross-border')))
+}
 
-n_named_lf  <- length(legend_order_lf)
-sector_pal_lf <- c(setNames(scales::hue_pal()(n_named_lf), legend_order_lf), 'Other' = '#cccccc')
+lf_pri <- collapse_lf(filter(int_decomp_lf, mat_type=='Primary'),   top_lf_pri)
+lf_sec <- collapse_lf(filter(int_decomp_lf, mat_type=='Secondary'), top_lf_sec)
 
-# ── Builder for 4 layout variants ─────────────────────────────────────────────
-make_lf_plot <- function(df, xvar, xlabel, layout) {
+# Colour palette: one colour per material
+mat_pal_lf <- setNames(scales::hue_pal()(length(mat_order)), mat_order)
+
+# ── Builder: separate Primary / Secondary plots ────────────────────────────────
+# y = upstream sector (top-20, fixed), fill = material (dodged),
+# facet cols = region × dom_for
+make_lf_plot <- function(df, mat_type_lbl, top_sectors, xvar, xlabel) {
   x_scale <- if (xvar == 'pct_combined')
     scale_x_continuous(expand = expansion(mult = c(0, 0.06)),
                        labels = function(v) paste0(round(v, 0), '%'))
   else
     scale_x_continuous(expand = expansion(mult = c(0, 0.06)))
 
-  facets <- if (layout == 'v1')
-    facet_grid(vars(mat_type), vars(region, dom_for), scales = 'free_x')
-  else
-    facet_grid(vars(material), vars(region, dom_for), scales = 'free_x')
-
-  y_aes <- if (layout == 'v1') 'material' else 'mat_type'
-  sub   <- if (layout == 'v1')
-    'Rows: Primary / Secondary. Columns: EU·Domestic, EU·Cross-border, RoW·Domestic, RoW·Cross-border.'
-  else
-    'Rows: materials. Columns: EU·Domestic, EU·Cross-border, RoW·Domestic, RoW·Cross-border.'
-
-  ggplot(df, aes(y = .data[[y_aes]], x = .data[[xvar]], fill = using_sector)) +
-    geom_col(width = 0.75, colour = 'white', linewidth = 0.2) +
-    facets +
-    scale_fill_manual(values = sector_pal_lf, name = 'upstream sector') +
+  ggplot(df, aes(y = using_sector, x = .data[[xvar]], fill = material)) +
+    geom_col(width = 0.75, colour = 'white', linewidth = 0.2,
+             position = position_dodge(width = 0.8)) +
+    facet_grid(cols = vars(region, dom_for), scales = 'free_x') +
+    scale_fill_manual(values = mat_pal_lf, name = 'material',
+                      guide = guide_legend(nrow = 1)) +
     x_scale +
-    labs(title    = 'Full Supply-Chain Upstream Input Requirements (Leontief)',
-         subtitle = sub, x = xlabel, y = NULL) +
-    theme_grey(base_size = 9) +
-    theme(strip.text.x       = element_text(face = 'bold', size = 10),
-          strip.text.y       = element_text(face = 'bold', size = 9, angle = 0),
-          axis.text.y        = element_text(size = 8),
-          axis.text.x        = element_text(size = 8),
-          legend.position    = 'right',
+    labs(title    = paste0('Full Supply-Chain Upstream Requirements (Leontief, ', mat_type_lbl, ')'),
+         subtitle = 'Top 20 upstream sectors by max contribution. Columns: EU·Domestic, EU·Cross-border, RoW·Domestic, RoW·Cross-border.',
+         x = xlabel, y = NULL) +
+    theme_grey(base_size = 10) +
+    theme(strip.text.x    = element_text(face = 'bold', size = 10),
+          axis.text.y     = element_text(size = 10),
+          axis.text.x     = element_text(size = 8),
+          legend.position  = 'top', legend.direction = 'horizontal',
+          legend.title     = element_text(face = 'bold'),
           panel.grid.major.y = element_blank(),
-          plot.title         = element_text(face = 'bold', size = 12))
+          plot.title        = element_text(face = 'bold',   size = 16, hjust = 0),
+          plot.subtitle     = element_text(face = 'italic', size = 14, hjust = 0))
 }
 
-dims_lf <- list(v1 = c(16, 8), v2 = c(16, 14))
-
-for (layout in c('v1', 'v2')) {
-  w <- dims_lf[[layout]][1]; h <- dims_lf[[layout]][2]
-  p_abs <- make_lf_plot(int_decomp_lf, 'abs_val',     'Upstream requirement (model units)', layout)
-  p_pct <- make_lf_plot(int_decomp_lf, 'pct_combined','% of combined (primary + secondary)', layout)
-  ggsave(sprintf('output/pdf_figures/leontief/p_leontief_%s_abs.pdf', layout), p_abs, width=w, height=h)
-  ggsave(sprintf('output/png_figures/leontief/p_leontief_%s_abs.png', layout), p_abs, width=w, height=h, dpi=150)
-  ggsave(sprintf('output/pdf_figures/leontief/p_leontief_%s_pct.pdf', layout), p_pct, width=w, height=h)
-  ggsave(sprintf('output/png_figures/leontief/p_leontief_%s_pct.png', layout), p_pct, width=w, height=h, dpi=150)
+for (xvar in c('abs_val', 'pct_combined')) {
+  xlabel <- if (xvar == 'pct_combined') '% of combined (primary + secondary)' else 'Upstream requirement (model units)'
+  tag    <- if (xvar == 'pct_combined') 'pct' else 'abs'
+  p_pri  <- make_lf_plot(lf_pri, 'Primary',   top_lf_pri, xvar, xlabel)
+  p_sec  <- make_lf_plot(lf_sec, 'Secondary', top_lf_sec, xvar, xlabel)
+  ggsave(sprintf('output/pdf_figures/leontief/p_leontief_primary_%s.pdf',   tag), p_pri, width=16, height=10)
+  ggsave(sprintf('output/png_figures/leontief/p_leontief_primary_%s.png',   tag), p_pri, width=16, height=10, dpi=150)
+  ggsave(sprintf('output/pdf_figures/leontief/p_leontief_secondary_%s.pdf', tag), p_sec, width=16, height=10)
+  ggsave(sprintf('output/png_figures/leontief/p_leontief_secondary_%s.png', tag), p_sec, width=16, height=10, dpi=150)
 }
-cat('Saved: p_leontief v1/v2 x abs/pct\n')
+cat('Saved: p_leontief primary/secondary x abs/pct\n')
 
 # ── Environmental intensity impacts by CE portfolio ────────────────────────────
 # For a demand shift rho from sector 1 (primary) to sector 2 (secondary),
