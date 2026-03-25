@@ -1,3 +1,25 @@
+run_or_load_baseline <- function(initial, model_fun, baseline_file = baseline_filename, force = FALSE) {
+  if (file.exists(baseline_file) && !force) {
+    message("✔ Loading cached baseline")
+    return(readRDS(baseline_file))
+  }
+
+  message("▶ Running baseline")
+  res <- run.model(
+    initial,
+    model_fun,
+    sc = sc,
+    log_file = file.path(dirname(baseline_file), "logs", "baseline_run.log"),
+    log_append = FALSE,
+    print_final_state = FALSE,
+    log_context = "[baseline]"
+  )
+
+  saveRDS(res, baseline_file)
+  return(res)
+}
+
+
 run_or_load_shock <- function(n_shock, initial, model_fun, force = FALSE) {
   shock_file <- get_shock_filename(n_shock)
 

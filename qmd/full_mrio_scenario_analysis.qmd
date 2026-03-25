@@ -108,7 +108,7 @@ initial <- load.init(initial_filename)
 
 ```{r filenames}
 # ---- Workspace filenames (generated / cached) ----
-baseline_filename <- file.path(workspace_dir, "baseline_2026.RDS")
+baseline_filename <- file.path(workspace_dir, "full_mrio_baseline_2026.RDS")
 target_filename <- file.path(workspace_dir, "target_values.xlsx")
 scenario_filename <- file.path(dir_data, "scenarios.csv")
 

@@ -40,51 +40,95 @@ sc <- read.csv(file.path(dir_data, "scenarios.csv")) %>%
   mutate(from = as.integer(from), to = as.integer(to))
 ```
 
-# Overview
-
-Our economy uses materials $M = \{
-\text{food},\;
-\text{energy},\;
-\text{wood},\;
-\text{plastic},\;
-\text{pulp},\;
-\text{metal},\;
-\text{glass},\;
-\text{cement}
-\}$.
-
-Shifts towards economic circularity can be driven by final demand or by intermediate production substitutions. Interventions are modelled as redistribution operators governed by scalar parameter $\rho \in [0,1]$, decreasing primary material use $M_1$ and increasing secondary material use $M_2$ either by:
-
-- reallocating sector-level shares in **final demand** $\mathbf{d}$ from primary to secondary materials:
-  - in **consumption**: by households $c$ and by government $g$
-  - in **investment**: private $id$ and public $id^g$, or
-- by changing input-output coefficients $A$ in **intermediate production**, substituting industrial material inputs from primary to secondary.
-
----
-
-# Scenario Registry
-
-```{r scenarios-table}
-tbl_data <- sc %>% select(-display_name, -rds_file, -table_file)
-if (knitr::is_html_output()) {
-  tbl_data %>%
-    kable(caption = "Scenario Registry", align = "l", escape = TRUE) %>%
-    kable_styling(full_width = FALSE,
-                  bootstrap_options = c("striped", "hover", "condensed"),
-                  font_size = 12) %>%
-    scroll_box(width = "100%", height = "600px")
-} else {
-  kable(tbl_data, caption = "Scenario Registry", align = "l")
-}
-```
-
----
-
 # Setup
 
-Let $r, s \in \{1, \ldots, R\}$ index regions ($R = 2$: $r=1$ EU, $r=2$ RoW) and $i, j \in \{1, \ldots, N\}$ index sectors ($N = 54$). All vectors have dimension $RN = 108$, stacking regions as $(\cdot_1^\top, \cdot_2^\top)^\top$.
+Let $r, s \in \{1, \ldots, R\}$ index regions ($R = 2$: $r=1$ EU, $r=2$ RoW) and $i, j \in \{1, \ldots, N\}$ index sectors ($N = 54$). All vectors stack regions as $(\cdot^{1\top}, \cdot^{2\top})^\top$ and have dimension $RN = 108$.
 
-## MRIO Table Structure
+Our economy uses materials
+
+$$M = \{\text{food},\; \text{energy},\; \text{wood},\; \text{plastic},\; \text{pulp},\; \text{metal},\; \text{glass},\; \text{cement}\}$$
+
+organised in **primary–secondary pairs** $(m_1, m_2)$ within each material type; we are primarily interested in primary material use $M_1$.
+
+## Intermediate Demand
+
+Let $\mathbf{x} \in \mathbb{R}^{RN}$ denote gross output. Technical coefficients $a_{ri,sj} \geq 0$ give the input of good $(r,i)$ required per unit of output of sector $(s,j)$, calibrated as $a_{ri,sj} = Z_{ri,sj}/x_{sj}$. Stacked into the $RN \times RN$ matrix $A$, intermediate demand is:
+
+$$Z_{ri,sj} = a_{ri,sj}\, x_{sj}, \qquad \mathbf{Z} = A\,\hat{\mathbf{x}}$$
+
+where $\hat{\mathbf{x}} = \mathrm{diag}(\mathbf{x})$. Block $A^{rs} \in \mathbb{R}^{N \times N}$ collects inputs from region $r$'s industries used by region $s$'s industries; diagonal blocks ($r=s$) are domestic intermediate flows, off-diagonal blocks ($r \neq s$) are cross-border intermediate flows.
+
+## Final Demand
+
+$K = 4$ institutional channels allocate aggregate expenditure across sectors and across supplying regions:
+
+1. Household consumption $c_r$ with sector shares $\boldsymbol{\beta}^{rs}$,
+2. Government consumption $g_r$ with sector shares $\boldsymbol{\sigma}^{rs}$,
+3. Private investment $id_r$ with sector shares $\boldsymbol{\iota}^{rs}$, and
+4. Public investment $id^g_r$ with sector shares $\boldsymbol{\iota}^{g,rs}$.
+
+The **bilateral allocation shares** $\delta^{rs}_{n,k}$ give the fraction of region $s$'s channel-$k$ aggregate demand sourced from sector $n$ of region $r$, distinguishing four dimensions:
+
+- **supplying region** $r$: where the good originates,
+- **demanding region** $s$: where the institution resides,
+- **supplying industry** $n$: which sector produces the good, and
+- **demand channel** $k \in \mathcal{K}$: institutional type.
+
+Collecting bilateral share blocks $\boldsymbol{\delta}^{rs} \equiv [\boldsymbol{\beta}^{rs},\, \boldsymbol{\sigma}^{rs},\, \boldsymbol{\iota}^{rs},\, \boldsymbol{\iota}^{g,rs}] \in \mathbb{R}^{N \times K}$ into the full allocation matrix $\boldsymbol{\Delta} \in \mathbb{R}^{RN \times RK}$ and defining $\mathbf{f} = (c_1, g_1, id_1, id^g_1, c_2, g_2, id_2, id^g_2)^\top \in \mathbb{R}^{RK}$:
+
+$$
+\boldsymbol{\Delta} =
+\begin{pmatrix} \boldsymbol{\delta}^{11} & \boldsymbol{\delta}^{12} \\ \boldsymbol{\delta}^{21} & \boldsymbol{\delta}^{22} \end{pmatrix},
+\qquad
+\mathbf{fd} = \boldsymbol{\Delta}\, \mathbf{f}, \qquad
+fd_{r,n} = \sum_{s=1}^R \sum_{k \in \mathcal{K}} \delta^{rs}_{n,k}\, f_{s,k}
+$$
+
+Column exhaustion: $\sum_{r,n} \delta^{rs}_{n,k} = 1$ — region $s$'s channel-$k$ expenditure is fully allocated across all supplying regions and sectors. Diagonal blocks ($r = s$) encode **domestic** sourcing; off-diagonal blocks ($r \neq s$) encode **cross-border** final goods flows — each distinguished by channel. No separate import or export terms are required: bilateral flows are implicit in the off-diagonal column sums of $\boldsymbol{\Delta}$.
+
+## IO Balance and Gross Output
+
+The IO balance equates gross output to intermediate use plus final demand:
+
+$$
+\mathbf{x} = A\mathbf{x} + \mathbf{fd}
+\quad\Longrightarrow\quad
+\mathbf{x} = (I - A)^{-1}\mathbf{fd} \equiv L\,\mathbf{fd} = L\,\boldsymbol{\Delta}\,\mathbf{f}
+$$
+
+where $L = (I - A)^{-1} \in \mathbb{R}^{RN \times RN}$ is the **Leontief inverse** with elements $l_{ri,sj}$: the total output of sector $(r,i)$ — direct and indirect across all IO rounds — required per unit of final demand for good $(s,j)$.
+
+**Domestic vs. cross-border decomposition.** Gross output of any sector $(r,i)$ decomposes analytically into domestically-induced and foreign-demand-induced components:
+
+$$
+x_{r,i} = \underbrace{\sum_{j=1}^N l_{ri,rj}\, fd_{rj}}_{\text{domestic-demand-induced}} + \underbrace{\sum_{s \neq r}\sum_{j=1}^N l_{ri,sj}\, fd_{sj}}_{\text{foreign-demand-induced}}
+$$
+
+This decomposition requires no additional simulation variables — it is computed from the Leontief columns and $\mathbf{fd}$.
+
+## Material Sectors and Ecological Intensities
+
+For each material type $m \in M$, sector $m_1$ produces the **primary** material and sector $m_2$ the **secondary** (recycled) substitute. Primary material use equals the gross output of the primary sector:
+
+$$
+x_{m_1} = \bigl(L\,\mathbf{fd}\bigr)_{m_1} = \sum_{s=1}^R \sum_{j=1}^N l_{m_1,sj}\, fd_{sj}
+= \sum_{s,j,k}\, l_{m_1,sj}\, \delta^{rs}_{j,k}\, f_{s,k}
+$$
+
+Ecological pressures are measured via intensity vectors $\boldsymbol{\varepsilon}$ (CO$_2$-eq emissions), $\boldsymbol{\lambda}$ (land), $\boldsymbol{\omega}$ (water), $\mathbf{m}$ (material throughput) $\in \mathbb{R}^{RN}$ — physical pressure per unit of gross output:
+
+$$
+E^r = \boldsymbol{\varepsilon}^{r\top} \mathbf{x}^r, \quad
+\Lambda^r = \boldsymbol{\lambda}^{r\top} \mathbf{x}^r, \quad
+\Omega^r = \boldsymbol{\omega}^{r\top} \mathbf{x}^r, \quad
+\mathcal{M}^r = \mathbf{m}^{r\top} \mathbf{x}^r
+$$
+
+Each decomposes into domestic- and foreign-demand-induced components using the Leontief decomposition of $\mathbf{x}^r$ above, enabling cross-border responsibility accounting without additional simulation variables.
+
+---
+
+# Multi-Region Input-Output Structure
 
 The multi-regional input-output table partitions total output into intermediate flows and final demand across regions. Its block structure is:
 
@@ -417,24 +461,57 @@ $$
 
 ## Final Demand
 
-For each region $r$, institutional channels $K \in \{c,\, g,\, id,\, id^g\}$ (household consumption, government consumption, private investment, public investment) contribute to the regional final demand vector. Define:
+*Final demand* $\mathbf{fd} \in \mathbb{R}^{RN}$ is defined sector-by-sector across all $RN$ region–sector pairs, with $R$ regions and $N$ sectors each. For each region $r$, $K = 4$ institutional channels allocate aggregate expenditure across sectors:
 
-- $\boldsymbol{\varphi}_K^r \in \mathbb{R}^N$: sector share vector for channel $K$ in region $r$ (elements $\varphi_{K,i}^r \geq 0$, $\sum_i \varphi_{K,i}^r = 1$)
-- $fd_K^r \in \mathbb{R}$: aggregate expenditure scalar for channel $K$ in region $r$
+1. Household consumption $c_r$ with sector-level shares $\boldsymbol{\beta}_r$,
+2. Government consumption $g_r$ with sector-level shares $\boldsymbol{\sigma}_r$,
+3. Private investment $id_r$ with sector-level shares $\boldsymbol{\iota}_r$, and
+4. Public investment $id^g_r$ with sector-level shares $\boldsymbol{\iota}^g_r$.
 
-The **composite final demand vector** stacks regional components:
+Stacking the $N$-dimensional sub-vectors across regions:
 
 $$
-\mathbf{fd} = \begin{pmatrix} \mathbf{fd}^1 \\ \mathbf{fd}^2 \end{pmatrix} \in \mathbb{R}^{RN},
-\qquad
-\mathbf{fd}^r = \sum_{K} \boldsymbol{\varphi}_K^r\, fd_K^r
-= \underbrace{\boldsymbol{\beta}^r}_{\boldsymbol{\varphi}_c^r} c^r
-+ \underbrace{\boldsymbol{\sigma}^r}_{\boldsymbol{\varphi}_g^r} g^r
-+ \underbrace{\boldsymbol{\iota}^r}_{\boldsymbol{\varphi}_{id}^r} id^r
-+ \underbrace{\boldsymbol{\iota}^{g,r}}_{\boldsymbol{\varphi}_{id^g}^r} id^{g,r}
+\mathbf{fd} = \begin{pmatrix} \mathbf{fd}^1 \\ \vdots \\ \mathbf{fd}^R \end{pmatrix}, \qquad
+\mathbf{fd}^r =
+\begin{pmatrix} \beta_{r,1} \\ \vdots \\ \beta_{r,N} \end{pmatrix} c_r
++
+\begin{pmatrix} \sigma_{r,1} \\ \vdots \\ \sigma_{r,N} \end{pmatrix} g_r
++
+\begin{pmatrix} \iota_{r,1} \\ \vdots \\ \iota_{r,N} \end{pmatrix} id_r
++
+\begin{pmatrix} \iota^g_{r,1} \\ \vdots \\ \iota^g_{r,N} \end{pmatrix} id^g_r
 $$
 
-The full final demand vector is therefore $\mathbf{fd} = \sum_K \boldsymbol{\Phi}_K\, \mathbf{fd}_K$ where $\boldsymbol{\Phi}_K = \mathrm{blkdiag}(\boldsymbol{\varphi}_K^1, \boldsymbol{\varphi}_K^2)$ is $RN \times R$ and $\mathbf{fd}_K = (fd_K^1, fd_K^2)^\top$.
+where $\beta_{r,n}, \sigma_{r,n}, \iota_{r,n}, \iota^g_{r,n} \geq 0$ with $\sum_n \beta_{r,n} = \cdots = 1$ for each $r$.
+
+**Full MRIO.** The per-region formula above is the *domestic-only* special case. In the multi-regional setting, region $s$'s institutions also buy final goods from region $r \neq s$. Rather than appending separate import and export terms, the MRIO approach encodes all bilateral flows directly in a single **allocation matrix** $\boldsymbol{\Theta} \in \mathbb{R}^{RN \times RK}$:
+
+$$
+\boldsymbol{\Theta} =
+\begin{pmatrix}
+\boldsymbol{\Theta}^{11} & \cdots & \boldsymbol{\Theta}^{1R} \\
+\vdots & \ddots & \vdots \\
+\boldsymbol{\Theta}^{R1} & \cdots & \boldsymbol{\Theta}^{RR}
+\end{pmatrix}, \qquad
+\boldsymbol{\Theta}^{rs} \in \mathbb{R}^{N \times K}
+$$
+
+Element $\Theta^{rs}_{n,k}$ is the share of region $s$'s channel-$k$ aggregate demand sourced from sector $n$ of region $r$. Letting $\mathbf{f}^r = (c_r,\, g_r,\, id_r,\, id^g_r)^\top \in \mathbb{R}^K$ and $\mathbf{f} = (\mathbf{f}^1, \ldots, \mathbf{f}^R)^\top \in \mathbb{R}^{RK}$:
+
+$$
+\mathbf{fd} = \boldsymbol{\Theta}\, \mathbf{f}, \qquad fd_{r,n} = \sum_{s=1}^R \sum_{k \in \mathcal{K}} \Theta^{rs}_{n,k}\, f_{s,k}
+$$
+
+**Column exhaustion:** $\sum_{r,n} \Theta^{rs}_{n,k} = 1$ for each $(s,k)$ — region $s$'s channel-$k$ expenditure is fully allocated across all supplying regions and sectors.
+
+**Imports and exports are implicit:** no separate $\eta$ terms are needed. Off-diagonal column sums give imports directly:
+
+$$
+\text{imp}_{s,k} \equiv \sum_{n} \sum_{r \neq s} \Theta^{rs}_{n,k}\, f_{s,k}, \qquad
+\text{exp}_{r,k} \equiv \sum_{n} \sum_{s \neq r} \Theta^{rs}_{n,k}\, f_{s,k}
+$$
+
+The diagonal blocks $\boldsymbol{\Theta}^{rr}$ encode **domestic** sourcing (columns are $\boldsymbol{\beta}^{rr}, \boldsymbol{\sigma}^{rr}, \boldsymbol{\iota}^{rr}, \boldsymbol{\iota}^{g,rr}$, satisfying $\sum_n \Theta^{rr}_{n,k} < 1$ since some demand is imported); the off-diagonal blocks $\boldsymbol{\Theta}^{rs}$ ($r \neq s$) encode **cross-border** final goods flows by channel — the distinction between HH, government, and investment imports that aggregate $\eta$ parameters cannot capture.
 
 ---
 
@@ -445,7 +522,7 @@ Intermediate demand is $\mathbf{id} = A\mathbf{d}$, with element $id_{ri} = \sum
 $$
 \mathbf{d} = \mathbf{fd} + A\mathbf{d}
 \quad\Longrightarrow\quad
-\mathbf{d} = (I - A)^{-1}\mathbf{fd} \equiv L\,\mathbf{fd},
+\mathbf{d} = (I - A)^{-1}\mathbf{fd} \equiv L\,\mathbf{fd} = L\,\boldsymbol{\Theta}\,\mathbf{f},
 $$
 
 where $L \in \mathbb{R}^{RN\times RN}$ is the Leontief inverse with elements $l_{ri,sj}$: the total output of sector $(r,i)$ — direct and indirect across all IO rounds — required to deliver one unit of final demand for good $(s,j)$.
