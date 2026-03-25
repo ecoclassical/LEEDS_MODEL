@@ -1,0 +1,40 @@
+
+Attaching package: ‘dplyr’
+
+The following object is masked from ‘package:kableExtra’:
+
+    group_rows
+
+The following objects are masked from ‘package:stats’:
+
+    filter, lag
+
+The following objects are masked from ‘package:base’:
+
+    intersect, setdiff, setequal, union
+
+Using label, name, industry, type as id variables
+K = 54   N = 2   zlabs = Z1, Z2 
+Z1 FD channel shares: hh= NaN  gov= NaN  id= NaN  idg= NaN 
+Z2 FD channel shares: hh= NaN  gov= NaN  id= NaN  idg= NaN 
+
+==== ACCOUNTING CHECK ====
+Max absolute difference (d_new - d_old): NaN 
+Max relative difference: -Inf 
+Warning message:
+In max(abs((fd_mrio$d_new - fd_mrio$d_old)/fd_mrio$d_old), na.rm = TRUE) :
+  no non-missing arguments to max; returning -Inf
+Sum d_new Z1: NaN   Sum d_old Z1: 0 
+Sum d_new Z2: NaN   Sum d_old Z2: 0 
+
+First 6 rows of FD_MRIO:
+  region sector_j fd_dom_hh fd_xbr_hh d_new d_old
+1     Z1        1       NaN       NaN   NaN     0
+2     Z1        2       NaN       NaN   NaN     0
+3     Z1        3       NaN       NaN   NaN     0
+4     Z1        4       NaN       NaN   NaN     0
+5     Z1        5       NaN       NaN   NaN     0
+6     Z1        6       NaN       NaN   NaN     0
+
+Saved: /Users/parvulesco/Documents/R/LEEDS_MODEL/data/initial_state_2026_fullMRIO.xlsx 
+Saved accounting check: /Users/parvulesco/Documents/R/LEEDS_MODEL/data/fd_mrio_accounting_check.csv 

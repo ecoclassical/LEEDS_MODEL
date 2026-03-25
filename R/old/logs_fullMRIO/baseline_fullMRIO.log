@@ -1,0 +1,581 @@
+───────────────────────────────────── LEEDS_MODEL :: New simulation run ──────────────────────────────────────
+
+── Initialization ──
+ℹ Parameters ready
+
+── Production scenarios ──
+──────────────────────────────────────── Production Scenarios Loaded ─────────────────────────────────────────
+ℹ Parameters ready: nPeriods = 100, max.iterations = 100
+ℹ Scenario sanity: shock = 0, rho = 0.2, t.shock = 70, Z1_ce = 0, Z2_ce = 0
+ℹ Building A0/B0/A.t/B.t after production scenarios…
+ℹ max |B0 - A0| at init = 0
+
+── Markup calibration (t = 1) ──
+✔ Markup vector 'mu' calibrated at t = 1
+
+── Time loop ──
+ℹ Starting Gauss–Seidel iterations across 99 additional periods
+ℹ Logging to: /Users/parvulesco/Documents/R/LEEDS_MODEL/output/scenarios/logs_fullMRIO/baseline_fullMRIO.log
+ℹ Solving time periods   1% (t = 2 / 100)
+ℹ t = 2: starting iterations (max = 100)
+ℹ t = 2, iter = 25: mean score = 0.000992, error = 1.116
+ℹ t = 2, iter = 50: mean score = 2e-06, error = 5.719e-06
+ℹ t = 2, iter = 75: mean score = 0, error = 3.27e-11
+✔ t = 2: converged at iter = 79 with error = 4.772e-12
+ℹ Solving time periods   2% (t = 3 / 100)
+ℹ t = 3: starting iterations (max = 100)
+ℹ t = 3, iter = 25: mean score = 0.000486, error = 0.3177
+ℹ t = 3, iter = 50: mean score = 0, error = 2.711e-07
+✔ t = 3: converged at iter = 71 with error = 2.33e-10
+ℹ Solving time periods   3% (t = 4 / 100)
+ℹ t = 4: starting iterations (max = 100)
+ℹ t = 4, iter = 25: mean score = 0.000542, error = 0.4817
+ℹ t = 4, iter = 50: mean score = 0, error = 3.972e-07
+✔ t = 4: converged at iter = 71 with error = 6.114e-10
+ℹ Solving time periods   4% (t = 5 / 100)
+ℹ t = 5: starting iterations (max = 100)
+ℹ t = 5, iter = 25: mean score = 0.000924, error = 0.4915
+ℹ t = 5, iter = 50: mean score = 0, error = 3.856e-07
+✔ t = 5: converged at iter = 72 with error = 9.671e-10
+ℹ Solving time periods   5% (t = 6 / 100)
+ℹ t = 6: starting iterations (max = 100)
+ℹ t = 6, iter = 25: mean score = 0.002442, error = 0.478
+ℹ t = 6, iter = 50: mean score = 0, error = 3.759e-07
+✔ t = 6: converged at iter = 72 with error = 6.5e-10
+ℹ Solving time periods   6% (t = 7 / 100)
+ℹ t = 7: starting iterations (max = 100)
+ℹ t = 7, iter = 25: mean score = 0.000613, error = 0.4615
+ℹ t = 7, iter = 50: mean score = 0, error = 3.631e-07
+✔ t = 7: converged at iter = 73 with error = 5.114e-10
+ℹ Solving time periods   7% (t = 8 / 100)
+ℹ t = 8: starting iterations (max = 100)
+ℹ t = 8, iter = 25: mean score = 0.00056, error = 0.4455
+ℹ t = 8, iter = 50: mean score = 0, error = 3.394e-07
+✔ t = 8: converged at iter = 73 with error = 7.419e-10
+ℹ Solving time periods   8% (t = 9 / 100)
+ℹ t = 9: starting iterations (max = 100)
+ℹ t = 9, iter = 25: mean score = 0.000573, error = 0.4307
+ℹ t = 9, iter = 50: mean score = 0, error = 3.176e-07
+✔ t = 9: converged at iter = 74 with error = 9.024e-10
+ℹ Solving time periods   9% (t = 10 / 100)
+ℹ t = 10: starting iterations (max = 100)
+ℹ t = 10, iter = 25: mean score = 0.001607, error = 0.4144
+ℹ t = 10, iter = 50: mean score = 1e-06, error = 3.034e-07
+ℹ t = 10, iter = 75: mean score = 0, error = 8.475e-10
+✔ t = 10: converged at iter = 76 with error = 7.925e-10
+ℹ Solving time periods  10% (t = 11 / 100)
+ℹ t = 11: starting iterations (max = 100)
+ℹ t = 11, iter = 25: mean score = 0.000879, error = 0.4012
+ℹ t = 11, iter = 50: mean score = 1.3e-05, error = 2.902e-07
+ℹ t = 11, iter = 75: mean score = 0, error = 7.917e-10
+✔ t = 11: converged at iter = 89 with error = 7.625e-10
+ℹ Solving time periods  11% (t = 12 / 100)
+ℹ t = 12: starting iterations (max = 100)
+ℹ t = 12, iter = 25: mean score = 0.001195, error = 0.3893
+ℹ t = 12, iter = 50: mean score = 1e-06, error = 2.767e-07
+ℹ t = 12, iter = 75: mean score = 0, error = 8.272e-10
+✔ t = 12: converged at iter = 77 with error = 8.144e-10
+ℹ Solving time periods  12% (t = 13 / 100)
+ℹ t = 13: starting iterations (max = 100)
+ℹ t = 13, iter = 25: mean score = 0.000514, error = 0.3783
+ℹ t = 13, iter = 50: mean score = 0, error = 2.633e-07
+✔ t = 13: converged at iter = 74 with error = 8.578e-10
+ℹ Solving time periods  13% (t = 14 / 100)
+ℹ t = 14: starting iterations (max = 100)
+ℹ t = 14, iter = 25: mean score = 0.000434, error = 0.3682
+ℹ t = 14, iter = 50: mean score = 0, error = 2.546e-07
+✔ t = 14: converged at iter = 73 with error = 8.391e-10
+ℹ Solving time periods  14% (t = 15 / 100)
+ℹ t = 15: starting iterations (max = 100)
+ℹ t = 15, iter = 25: mean score = 0.000371, error = 0.3589
+ℹ t = 15, iter = 50: mean score = 0, error = 2.411e-07
+✔ t = 15: converged at iter = 72 with error = 9.495e-10
+ℹ Solving time periods  15% (t = 16 / 100)
+ℹ t = 16: starting iterations (max = 100)
+ℹ t = 16, iter = 25: mean score = 0.000347, error = 0.3502
+ℹ t = 16, iter = 50: mean score = 0, error = 2.357e-07
+✔ t = 16: converged at iter = 71 with error = 8.949e-10
+ℹ Solving time periods  16% (t = 17 / 100)
+ℹ t = 17: starting iterations (max = 100)
+ℹ t = 17, iter = 25: mean score = 0.000339, error = 0.3422
+ℹ t = 17, iter = 50: mean score = 0, error = 2.218e-07
+✔ t = 17: converged at iter = 70 with error = 1.062e-09
+ℹ Solving time periods  17% (t = 18 / 100)
+ℹ t = 18: starting iterations (max = 100)
+ℹ t = 18, iter = 25: mean score = 0.000314, error = 0.3348
+ℹ t = 18, iter = 50: mean score = 0, error = 2.203e-07
+✔ t = 18: converged at iter = 70 with error = 6.892e-10
+ℹ Solving time periods  18% (t = 19 / 100)
+ℹ t = 19: starting iterations (max = 100)
+ℹ t = 19, iter = 25: mean score = 3e-04, error = 0.328
+ℹ t = 19, iter = 50: mean score = 0, error = 2.194e-07
+✔ t = 19: converged at iter = 69 with error = 5.896e-10
+ℹ Solving time periods  19% (t = 20 / 100)
+ℹ t = 20: starting iterations (max = 100)
+ℹ t = 20, iter = 25: mean score = 0.000293, error = 0.3217
+ℹ t = 20, iter = 50: mean score = 0, error = 2.043e-07
+✔ t = 20: converged at iter = 69 with error = 1.142e-09
+ℹ Solving time periods  20% (t = 21 / 100)
+ℹ t = 21: starting iterations (max = 100)
+ℹ t = 21, iter = 25: mean score = 0.000294, error = 0.3159
+ℹ t = 21, iter = 50: mean score = 0, error = 1.902e-07
+✔ t = 21: converged at iter = 69 with error = 1.882e-09
+ℹ Solving time periods  21% (t = 22 / 100)
+ℹ t = 22: starting iterations (max = 100)
+ℹ t = 22, iter = 25: mean score = 0.00029, error = 0.3105
+ℹ t = 22, iter = 50: mean score = 0, error = 1.768e-07
+✔ t = 22: converged at iter = 69 with error = 2.813e-09
+ℹ Solving time periods  22% (t = 23 / 100)
+ℹ t = 23: starting iterations (max = 100)
+ℹ t = 23, iter = 25: mean score = 0.000284, error = 0.3055
+ℹ t = 23, iter = 50: mean score = 0, error = 1.642e-07
+✔ t = 23: converged at iter = 69 with error = 3.942e-09
+ℹ Solving time periods  23% (t = 24 / 100)
+ℹ t = 24: starting iterations (max = 100)
+ℹ t = 24, iter = 25: mean score = 0.000302, error = 0.3009
+ℹ t = 24, iter = 50: mean score = 1e-06, error = 1.523e-07
+✔ t = 24: converged at iter = 70 with error = 4.696e-09
+ℹ Solving time periods  24% (t = 25 / 100)
+ℹ t = 25: starting iterations (max = 100)
+ℹ t = 25, iter = 25: mean score = 0.000311, error = 0.2966
+ℹ t = 25, iter = 50: mean score = 1e-06, error = 1.523e-07
+✔ t = 25: converged at iter = 70 with error = 4.054e-09
+ℹ Solving time periods  25% (t = 26 / 100)
+ℹ t = 26: starting iterations (max = 100)
+ℹ t = 26, iter = 25: mean score = 0.00028, error = 0.2927
+ℹ t = 26, iter = 50: mean score = 1e-06, error = 1.527e-07
+✔ t = 26: converged at iter = 70 with error = 3.456e-09
+ℹ Solving time periods  26% (t = 27 / 100)
+ℹ t = 27: starting iterations (max = 100)
+ℹ t = 27, iter = 25: mean score = 0.00032, error = 0.289
+ℹ t = 27, iter = 50: mean score = 1e-06, error = 1.534e-07
+✔ t = 27: converged at iter = 71 with error = 3.235e-09
+ℹ Solving time periods  27% (t = 28 / 100)
+ℹ t = 28: starting iterations (max = 100)
+ℹ t = 28, iter = 25: mean score = 0.000273, error = 0.2857
+ℹ t = 28, iter = 50: mean score = 1e-06, error = 1.459e-07
+✔ t = 28: converged at iter = 71 with error = 3.937e-09
+ℹ Solving time periods  28% (t = 29 / 100)
+ℹ t = 29: starting iterations (max = 100)
+ℹ t = 29, iter = 25: mean score = 0.000266, error = 0.2825
+ℹ t = 29, iter = 50: mean score = 1e-06, error = 1.387e-07
+✔ t = 29: converged at iter = 71 with error = 4.719e-09
+ℹ Solving time periods  29% (t = 30 / 100)
+ℹ t = 30: starting iterations (max = 100)
+ℹ t = 30, iter = 25: mean score = 0.000264, error = 0.2797
+ℹ t = 30, iter = 50: mean score = 1e-06, error = 1.318e-07
+✔ t = 30: converged at iter = 71 with error = 5.586e-09
+ℹ Solving time periods  30% (t = 31 / 100)
+ℹ t = 31: starting iterations (max = 100)
+ℹ t = 31, iter = 25: mean score = 0.000265, error = 0.277
+ℹ t = 31, iter = 50: mean score = 1e-06, error = 1.253e-07
+✔ t = 31: converged at iter = 71 with error = 6.541e-09
+ℹ Solving time periods  31% (t = 32 / 100)
+ℹ t = 32: starting iterations (max = 100)
+ℹ t = 32, iter = 25: mean score = 0.000275, error = 0.2745
+ℹ t = 32, iter = 50: mean score = 1e-06, error = 1.189e-07
+✔ t = 32: converged at iter = 72 with error = 7.209e-09
+ℹ Solving time periods  32% (t = 33 / 100)
+ℹ t = 33: starting iterations (max = 100)
+ℹ t = 33, iter = 25: mean score = 0.000322, error = 0.2723
+ℹ t = 33, iter = 50: mean score = 1e-06, error = 1.182e-07
+✔ t = 33: converged at iter = 72 with error = 6.951e-09
+ℹ Solving time periods  33% (t = 34 / 100)
+ℹ t = 34: starting iterations (max = 100)
+ℹ t = 34, iter = 25: mean score = 0.000269, error = 0.2701
+ℹ t = 34, iter = 50: mean score = 1e-06, error = 1.176e-07
+✔ t = 34: converged at iter = 72 with error = 6.696e-09
+ℹ Solving time periods  34% (t = 35 / 100)
+ℹ t = 35: starting iterations (max = 100)
+ℹ t = 35, iter = 25: mean score = 0.000264, error = 0.2682
+ℹ t = 35, iter = 50: mean score = 1e-06, error = 1.171e-07
+✔ t = 35: converged at iter = 73 with error = 6.71e-09
+ℹ Solving time periods  35% (t = 36 / 100)
+ℹ t = 36: starting iterations (max = 100)
+ℹ t = 36, iter = 25: mean score = 0.000264, error = 0.2664
+ℹ t = 36, iter = 50: mean score = 1e-06, error = 1.128e-07
+✔ t = 36: converged at iter = 73 with error = 7.427e-09
+ℹ Solving time periods  36% (t = 37 / 100)
+ℹ t = 37: starting iterations (max = 100)
+ℹ t = 37, iter = 25: mean score = 0.000265, error = 0.2647
+ℹ t = 37, iter = 50: mean score = 1e-06, error = 1.086e-07
+✔ t = 37: converged at iter = 73 with error = 8.196e-09
+ℹ Solving time periods  37% (t = 38 / 100)
+ℹ t = 38: starting iterations (max = 100)
+ℹ t = 38, iter = 25: mean score = 0.000268, error = 0.2632
+ℹ t = 38, iter = 50: mean score = 1e-06, error = 1.045e-07
+✔ t = 38: converged at iter = 73 with error = 9.017e-09
+ℹ Solving time periods  38% (t = 39 / 100)
+ℹ t = 39: starting iterations (max = 100)
+ℹ t = 39, iter = 25: mean score = 0.000273, error = 0.2618
+ℹ t = 39, iter = 50: mean score = 1e-06, error = 1.006e-07
+✔ t = 39: converged at iter = 73 with error = 9.895e-09
+ℹ Solving time periods  39% (t = 40 / 100)
+ℹ t = 40: starting iterations (max = 100)
+ℹ t = 40, iter = 25: mean score = 0.000282, error = 0.2605
+ℹ t = 40, iter = 50: mean score = 2e-06, error = 9.672e-08
+✔ t = 40: converged at iter = 74 with error = 1.058e-08
+ℹ Solving time periods  40% (t = 41 / 100)
+ℹ t = 41: starting iterations (max = 100)
+ℹ t = 41, iter = 25: mean score = 0.000306, error = 0.2593
+ℹ t = 41, iter = 50: mean score = 2e-06, error = 9.561e-08
+✔ t = 41: converged at iter = 74 with error = 1.066e-08
+ℹ Solving time periods  41% (t = 42 / 100)
+ℹ t = 42: starting iterations (max = 100)
+ℹ t = 42, iter = 25: mean score = 0.000432, error = 0.2582
+ℹ t = 42, iter = 50: mean score = 2e-06, error = 9.456e-08
+ℹ t = 42, iter = 75: mean score = 0, error = 1.093e-08
+✔ t = 42: converged at iter = 75 with error = 1.093e-08
+ℹ Solving time periods  42% (t = 43 / 100)
+ℹ t = 43: starting iterations (max = 100)
+ℹ t = 43, iter = 25: mean score = 0.000415, error = 0.2571
+ℹ t = 43, iter = 50: mean score = 2e-06, error = 9.16e-08
+ℹ t = 43, iter = 75: mean score = 0, error = 1.17e-08
+✔ t = 43: converged at iter = 79 with error = 1.165e-08
+ℹ Solving time periods  43% (t = 44 / 100)
+ℹ t = 44: starting iterations (max = 100)
+ℹ t = 44, iter = 25: mean score = 0.000308, error = 0.2562
+ℹ t = 44, iter = 50: mean score = 2e-06, error = 8.925e-08
+ℹ t = 44, iter = 75: mean score = 0, error = 1.231e-08
+✔ t = 44: converged at iter = 75 with error = 1.231e-08
+ℹ Solving time periods  44% (t = 45 / 100)
+ℹ t = 45: starting iterations (max = 100)
+ℹ t = 45, iter = 25: mean score = 0.000298, error = 0.2553
+ℹ t = 45, iter = 50: mean score = 2e-06, error = 8.639e-08
+ℹ t = 45, iter = 75: mean score = 0, error = 1.316e-08
+✔ t = 45: converged at iter = 75 with error = 1.316e-08
+ℹ Solving time periods  45% (t = 46 / 100)
+ℹ t = 46: starting iterations (max = 100)
+ℹ t = 46, iter = 25: mean score = 0.000297, error = 0.2545
+ℹ t = 46, iter = 50: mean score = 3e-06, error = 8.359e-08
+ℹ t = 46, iter = 75: mean score = 0, error = 1.406e-08
+✔ t = 46: converged at iter = 75 with error = 1.406e-08
+ℹ Solving time periods  46% (t = 47 / 100)
+ℹ t = 47: starting iterations (max = 100)
+ℹ t = 47, iter = 25: mean score = 0.000299, error = 0.2538
+ℹ t = 47, iter = 50: mean score = 3e-06, error = 8.082e-08
+ℹ t = 47, iter = 75: mean score = 0, error = 1.501e-08
+✔ t = 47: converged at iter = 75 with error = 1.501e-08
+ℹ Solving time periods  47% (t = 48 / 100)
+ℹ t = 48: starting iterations (max = 100)
+ℹ t = 48, iter = 25: mean score = 0.000302, error = 0.2531
+ℹ t = 48, iter = 50: mean score = 3e-06, error = 7.81e-08
+ℹ t = 48, iter = 75: mean score = 0, error = 1.601e-08
+✔ t = 48: converged at iter = 76 with error = 1.584e-08
+ℹ Solving time periods  48% (t = 49 / 100)
+ℹ t = 49: starting iterations (max = 100)
+ℹ t = 49, iter = 25: mean score = 0.000308, error = 0.2525
+ℹ t = 49, iter = 50: mean score = 3e-06, error = 7.674e-08
+ℹ t = 49, iter = 75: mean score = 0, error = 1.644e-08
+✔ t = 49: converged at iter = 77 with error = 1.64e-08
+ℹ Solving time periods  49% (t = 50 / 100)
+ℹ t = 50: starting iterations (max = 100)
+ℹ t = 50, iter = 25: mean score = 0.000314, error = 0.2519
+ℹ t = 50, iter = 50: mean score = 4e-06, error = 7.44e-08
+ℹ t = 50, iter = 75: mean score = 0, error = 1.736e-08
+✔ t = 50: converged at iter = 77 with error = 1.732e-08
+ℹ Solving time periods  51% (t = 51 / 100)
+ℹ t = 51: starting iterations (max = 100)
+ℹ t = 51, iter = 25: mean score = 0.000322, error = 0.2513
+ℹ t = 51, iter = 50: mean score = 4e-06, error = 7.21e-08
+ℹ t = 51, iter = 75: mean score = 0, error = 1.833e-08
+✔ t = 51: converged at iter = 77 with error = 1.828e-08
+ℹ Solving time periods  52% (t = 52 / 100)
+ℹ t = 52: starting iterations (max = 100)
+ℹ t = 52, iter = 25: mean score = 0.000331, error = 0.2509
+ℹ t = 52, iter = 50: mean score = 4e-06, error = 6.981e-08
+ℹ t = 52, iter = 75: mean score = 0, error = 1.934e-08
+✔ t = 52: converged at iter = 77 with error = 1.929e-08
+ℹ Solving time periods  53% (t = 53 / 100)
+ℹ t = 53: starting iterations (max = 100)
+ℹ t = 53, iter = 25: mean score = 0.000341, error = 0.2504
+ℹ t = 53, iter = 50: mean score = 5e-06, error = 6.754e-08
+ℹ t = 53, iter = 75: mean score = 0, error = 2.04e-08
+✔ t = 53: converged at iter = 77 with error = 2.036e-08
+ℹ Solving time periods  54% (t = 54 / 100)
+ℹ t = 54: starting iterations (max = 100)
+ℹ t = 54, iter = 25: mean score = 0.000353, error = 0.25
+ℹ t = 54, iter = 50: mean score = 5e-06, error = 6.529e-08
+ℹ t = 54, iter = 75: mean score = 0, error = 2.152e-08
+✔ t = 54: converged at iter = 78 with error = 2.136e-08
+ℹ Solving time periods  55% (t = 55 / 100)
+ℹ t = 55: starting iterations (max = 100)
+ℹ t = 55, iter = 25: mean score = 0.000367, error = 0.2496
+ℹ t = 55, iter = 50: mean score = 6e-06, error = 6.375e-08
+ℹ t = 55, iter = 75: mean score = 0, error = 2.228e-08
+✔ t = 55: converged at iter = 78 with error = 2.212e-08
+ℹ Solving time periods  56% (t = 56 / 100)
+ℹ t = 56: starting iterations (max = 100)
+ℹ t = 56, iter = 25: mean score = 0.000383, error = 0.2493
+ℹ t = 56, iter = 50: mean score = 6e-06, error = 6.221e-08
+ℹ t = 56, iter = 75: mean score = 0, error = 2.307e-08
+✔ t = 56: converged at iter = 79 with error = 2.299e-08
+ℹ Solving time periods  57% (t = 57 / 100)
+ℹ t = 57: starting iterations (max = 100)
+ℹ t = 57, iter = 25: mean score = 0.000401, error = 0.249
+ℹ t = 57, iter = 50: mean score = 7e-06, error = 6.018e-08
+ℹ t = 57, iter = 75: mean score = 0, error = 2.421e-08
+✔ t = 57: converged at iter = 79 with error = 2.413e-08
+ℹ Solving time periods  58% (t = 58 / 100)
+ℹ t = 58: starting iterations (max = 100)
+ℹ t = 58, iter = 25: mean score = 0.000421, error = 0.2487
+ℹ t = 58, iter = 50: mean score = 8e-06, error = 5.815e-08
+ℹ t = 58, iter = 75: mean score = 0, error = 2.541e-08
+✔ t = 58: converged at iter = 79 with error = 2.533e-08
+ℹ Solving time periods  59% (t = 59 / 100)
+ℹ t = 59: starting iterations (max = 100)
+ℹ t = 59, iter = 25: mean score = 0.000444, error = 0.2484
+ℹ t = 59, iter = 50: mean score = 8e-06, error = 5.614e-08
+ℹ t = 59, iter = 75: mean score = 0, error = 2.666e-08
+✔ t = 59: converged at iter = 79 with error = 2.658e-08
+ℹ Solving time periods  60% (t = 60 / 100)
+ℹ t = 60: starting iterations (max = 100)
+ℹ t = 60, iter = 25: mean score = 0.000471, error = 0.2481
+ℹ t = 60, iter = 50: mean score = 9e-06, error = 5.413e-08
+ℹ t = 60, iter = 75: mean score = 0, error = 2.797e-08
+✔ t = 60: converged at iter = 80 with error = 2.781e-08
+ℹ Solving time periods  61% (t = 61 / 100)
+ℹ t = 61: starting iterations (max = 100)
+ℹ t = 61, iter = 25: mean score = 0.000501, error = 0.2479
+ℹ t = 61, iter = 50: mean score = 1e-05, error = 5.249e-08
+ℹ t = 61, iter = 75: mean score = 0, error = 2.907e-08
+✔ t = 61: converged at iter = 80 with error = 2.891e-08
+ℹ Solving time periods  62% (t = 62 / 100)
+ℹ t = 62: starting iterations (max = 100)
+ℹ t = 62, iter = 25: mean score = 0.000536, error = 0.2477
+ℹ t = 62, iter = 50: mean score = 1.1e-05, error = 5.085e-08
+ℹ t = 62, iter = 75: mean score = 0, error = 3.022e-08
+✔ t = 62: converged at iter = 81 with error = 3.011e-08
+ℹ Solving time periods  63% (t = 63 / 100)
+ℹ t = 63: starting iterations (max = 100)
+ℹ t = 63, iter = 25: mean score = 0.000577, error = 0.2475
+ℹ t = 63, iter = 50: mean score = 1.3e-05, error = 4.895e-08
+ℹ t = 63, iter = 75: mean score = 0, error = 3.163e-08
+✔ t = 63: converged at iter = 81 with error = 3.152e-08
+ℹ Solving time periods  64% (t = 64 / 100)
+ℹ t = 64: starting iterations (max = 100)
+ℹ t = 64, iter = 25: mean score = 0.000624, error = 0.2474
+ℹ t = 64, iter = 50: mean score = 1.4e-05, error = 4.707e-08
+ℹ t = 64, iter = 75: mean score = 0, error = 3.31e-08
+✔ t = 64: converged at iter = 81 with error = 3.298e-08
+ℹ Solving time periods  65% (t = 65 / 100)
+ℹ t = 65: starting iterations (max = 100)
+ℹ t = 65, iter = 25: mean score = 0.000681, error = 0.2472
+ℹ t = 65, iter = 50: mean score = 1.6e-05, error = 4.518e-08
+ℹ t = 65, iter = 75: mean score = 0, error = 3.463e-08
+✔ t = 65: converged at iter = 82 with error = 3.447e-08
+ℹ Solving time periods  66% (t = 66 / 100)
+ℹ t = 66: starting iterations (max = 100)
+ℹ t = 66, iter = 25: mean score = 0.000749, error = 0.2471
+ℹ t = 66, iter = 50: mean score = 1.8e-05, error = 4.349e-08
+ℹ t = 66, iter = 75: mean score = 0, error = 3.607e-08
+✔ t = 66: converged at iter = 83 with error = 3.594e-08
+ℹ Solving time periods  67% (t = 67 / 100)
+ℹ t = 67: starting iterations (max = 100)
+ℹ t = 67, iter = 25: mean score = 0.000837, error = 0.247
+ℹ t = 67, iter = 50: mean score = 2.2e-05, error = 4.167e-08
+ℹ t = 67, iter = 75: mean score = 0, error = 3.769e-08
+✔ t = 67: converged at iter = 85 with error = 3.756e-08
+ℹ Solving time periods  68% (t = 68 / 100)
+ℹ t = 68: starting iterations (max = 100)
+ℹ t = 68, iter = 25: mean score = 0.000962, error = 0.2468
+ℹ t = 68, iter = 50: mean score = 3.1e-05, error = 3.989e-08
+ℹ t = 68, iter = 75: mean score = 0, error = 3.937e-08
+✔ t = 68: converged at iter = 89 with error = 3.922e-08
+ℹ Solving time periods  69% (t = 69 / 100)
+ℹ t = 69: starting iterations (max = 100)
+ℹ t = 69, iter = 25: mean score = 0.001198, error = 0.2467
+ℹ t = 69, iter = 50: mean score = 4.2e-05, error = 3.813e-08
+ℹ t = 69, iter = 75: mean score = 0, error = 4.109e-08
+✔ t = 69: converged at iter = 91 with error = 4.094e-08
+ℹ Solving time periods  70% (t = 70 / 100)
+ℹ t = 70: starting iterations (max = 100)
+ℹ t = 70, iter = 25: mean score = 0.002494, error = 0.2466
+ℹ t = 70, iter = 50: mean score = 3.1e-05, error = 3.638e-08
+ℹ t = 70, iter = 75: mean score = 0, error = 4.289e-08
+✔ t = 70: converged at iter = 86 with error = 4.273e-08
+ℹ Solving time periods  71% (t = 71 / 100)
+ℹ t = 71: starting iterations (max = 100)
+ℹ t = 71, iter = 25: mean score = 0.00181, error = 0.2466
+ℹ t = 71, iter = 50: mean score = 3.2e-05, error = 3.467e-08
+ℹ t = 71, iter = 75: mean score = 0, error = 4.473e-08
+✔ t = 71: converged at iter = 85 with error = 4.458e-08
+ℹ Solving time periods  72% (t = 72 / 100)
+ℹ t = 72: starting iterations (max = 100)
+ℹ t = 72, iter = 25: mean score = 0.001397, error = 0.2465
+ℹ t = 72, iter = 50: mean score = 3.4e-05, error = 3.293e-08
+ℹ t = 72, iter = 75: mean score = 0, error = 4.672e-08
+✔ t = 72: converged at iter = 84 with error = 4.654e-08
+ℹ Solving time periods  73% (t = 73 / 100)
+ℹ t = 73: starting iterations (max = 100)
+ℹ t = 73, iter = 25: mean score = 0.001356, error = 0.2464
+ℹ t = 73, iter = 50: mean score = 3.8e-05, error = 3.126e-08
+ℹ t = 73, iter = 75: mean score = 0, error = 4.871e-08
+✔ t = 73: converged at iter = 84 with error = 4.852e-08
+ℹ Solving time periods  74% (t = 74 / 100)
+ℹ t = 74: starting iterations (max = 100)
+ℹ t = 74, iter = 25: mean score = 0.001383, error = 0.2464
+ℹ t = 74, iter = 50: mean score = 4.3e-05, error = 2.96e-08
+ℹ t = 74, iter = 75: mean score = 0, error = 5.078e-08
+✔ t = 74: converged at iter = 85 with error = 5.062e-08
+ℹ Solving time periods  75% (t = 75 / 100)
+ℹ t = 75: starting iterations (max = 100)
+ℹ t = 75, iter = 25: mean score = 0.001436, error = 0.2463
+ℹ t = 75, iter = 50: mean score = 5e-05, error = 2.79e-08
+ℹ t = 75, iter = 75: mean score = 0, error = 5.303e-08
+✔ t = 75: converged at iter = 85 with error = 5.286e-08
+ℹ Solving time periods  76% (t = 76 / 100)
+ℹ t = 76: starting iterations (max = 100)
+ℹ t = 76, iter = 25: mean score = 0.014304, error = 0.2463
+ℹ t = 76, iter = 50: mean score = 8.9e-05, error = 2.621e-08
+ℹ t = 76, iter = 75: mean score = 0, error = 5.538e-08
+✔ t = 76: converged at iter = 85 with error = 5.521e-08
+ℹ Solving time periods  77% (t = 77 / 100)
+ℹ t = 77: starting iterations (max = 100)
+ℹ t = 77, iter = 25: mean score = 0.011805, error = 0.2462
+ℹ t = 77, iter = 50: mean score = 2.4e-05, error = 2.454e-08
+ℹ t = 77, iter = 75: mean score = 0, error = 5.783e-08
+✔ t = 77: converged at iter = 81 with error = 5.768e-08
+ℹ Solving time periods  78% (t = 78 / 100)
+ℹ t = 78: starting iterations (max = 100)
+ℹ t = 78, iter = 25: mean score = 0.010421, error = 0.2462
+ℹ t = 78, iter = 50: mean score = 1.9e-05, error = 2.285e-08
+ℹ t = 78, iter = 75: mean score = 0, error = 6.047e-08
+✔ t = 78: converged at iter = 81 with error = 6.032e-08
+ℹ Solving time periods  79% (t = 79 / 100)
+ℹ t = 79: starting iterations (max = 100)
+ℹ t = 79, iter = 25: mean score = 0.00956, error = 0.2462
+ℹ t = 79, iter = 50: mean score = 1.7e-05, error = 2.118e-08
+ℹ t = 79, iter = 75: mean score = 0, error = 6.323e-08
+✔ t = 79: converged at iter = 81 with error = 6.308e-08
+ℹ Solving time periods  80% (t = 80 / 100)
+ℹ t = 80: starting iterations (max = 100)
+ℹ t = 80, iter = 25: mean score = 0.008994, error = 0.2462
+ℹ t = 80, iter = 50: mean score = 1.6e-05, error = 1.955e-08
+ℹ t = 80, iter = 75: mean score = 0, error = 6.612e-08
+✔ t = 80: converged at iter = 81 with error = 6.596e-08
+ℹ Solving time periods  81% (t = 81 / 100)
+ℹ t = 81: starting iterations (max = 100)
+ℹ t = 81, iter = 25: mean score = 0.00862, error = 0.2461
+ℹ t = 81, iter = 50: mean score = 1.6e-05, error = 1.795e-08
+ℹ t = 81, iter = 75: mean score = 0, error = 6.913e-08
+✔ t = 81: converged at iter = 81 with error = 6.897e-08
+ℹ Solving time periods  82% (t = 82 / 100)
+ℹ t = 82: starting iterations (max = 100)
+ℹ t = 82, iter = 25: mean score = 0.008389, error = 0.2461
+ℹ t = 82, iter = 50: mean score = 1.6e-05, error = 1.638e-08
+ℹ t = 82, iter = 75: mean score = 0, error = 7.228e-08
+✔ t = 82: converged at iter = 82 with error = 7.205e-08
+ℹ Solving time periods  83% (t = 83 / 100)
+ℹ t = 83: starting iterations (max = 100)
+ℹ t = 83, iter = 25: mean score = 0.008301, error = 0.2461
+ℹ t = 83, iter = 50: mean score = 1.7e-05, error = 1.497e-08
+ℹ t = 83, iter = 75: mean score = 0, error = 7.533e-08
+✔ t = 83: converged at iter = 83 with error = 7.514e-08
+ℹ Solving time periods  84% (t = 84 / 100)
+ℹ t = 84: starting iterations (max = 100)
+ℹ t = 84, iter = 25: mean score = 0.008471, error = 0.2461
+ℹ t = 84, iter = 50: mean score = 1.8e-05, error = 1.351e-08
+ℹ t = 84, iter = 75: mean score = 0, error = 7.869e-08
+✔ t = 84: converged at iter = 84 with error = 7.846e-08
+ℹ Solving time periods  85% (t = 85 / 100)
+ℹ t = 85: starting iterations (max = 100)
+ℹ t = 85, iter = 25: mean score = 0.01068, error = 0.2461
+ℹ t = 85, iter = 50: mean score = 2e-05, error = 1.216e-08
+ℹ t = 85, iter = 75: mean score = 0, error = 8.206e-08
+✔ t = 85: converged at iter = 85 with error = 8.185e-08
+ℹ Solving time periods  86% (t = 86 / 100)
+ℹ t = 86: starting iterations (max = 100)
+ℹ t = 86, iter = 25: mean score = 0.009121, error = 0.2461
+ℹ t = 86, iter = 50: mean score = 2.3e-05, error = 1.081e-08
+ℹ t = 86, iter = 75: mean score = 0, error = 8.568e-08
+✔ t = 86: converged at iter = 87 with error = 8.547e-08
+ℹ Solving time periods  87% (t = 87 / 100)
+ℹ t = 87: starting iterations (max = 100)
+ℹ t = 87, iter = 25: mean score = 0.00817, error = 0.2461
+ℹ t = 87, iter = 50: mean score = 3e-05, error = 9.522e-09
+ℹ t = 87, iter = 75: mean score = 0, error = 8.944e-08
+✔ t = 87: converged at iter = 88 with error = 8.921e-08
+ℹ Solving time periods  88% (t = 88 / 100)
+ℹ t = 88: starting iterations (max = 100)
+ℹ t = 88, iter = 25: mean score = 0.007935, error = 0.2461
+ℹ t = 88, iter = 50: mean score = 5e-05, error = 8.306e-09
+ℹ t = 88, iter = 75: mean score = 0, error = 9.332e-08
+✔ t = 88: converged at iter = 93 with error = 9.309e-08
+ℹ Solving time periods  89% (t = 89 / 100)
+ℹ t = 89: starting iterations (max = 100)
+ℹ t = 89, iter = 25: mean score = 0.007855, error = 0.2461
+ℹ t = 89, iter = 50: mean score = 0.000168, error = 7.143e-09
+ℹ t = 89, iter = 75: mean score = 0, error = 9.739e-08
+✔ t = 89: converged at iter = 93 with error = 9.716e-08
+ℹ Solving time periods  90% (t = 90 / 100)
+ℹ t = 90: starting iterations (max = 100)
+ℹ t = 90, iter = 25: mean score = 0.007851, error = 0.2461
+ℹ t = 90, iter = 50: mean score = 4.6e-05, error = 6.045e-09
+ℹ t = 90, iter = 75: mean score = 0, error = 1.016e-07
+✔ t = 90: converged at iter = 89 with error = 1.014e-07
+ℹ Solving time periods  91% (t = 91 / 100)
+ℹ t = 91: starting iterations (max = 100)
+ℹ t = 91, iter = 25: mean score = 0.007899, error = 0.2461
+ℹ t = 91, iter = 50: mean score = 3.9e-05, error = 5.017e-09
+ℹ t = 91, iter = 75: mean score = 0, error = 1.061e-07
+✔ t = 91: converged at iter = 87 with error = 1.059e-07
+ℹ Solving time periods  92% (t = 92 / 100)
+ℹ t = 92: starting iterations (max = 100)
+ℹ t = 92, iter = 25: mean score = 0.007994, error = 0.2462
+ℹ t = 92, iter = 50: mean score = 5.7e-05, error = 4.063e-09
+ℹ t = 92, iter = 75: mean score = 0, error = 1.108e-07
+✔ t = 92: converged at iter = 92 with error = 1.105e-07
+ℹ Solving time periods  93% (t = 93 / 100)
+ℹ t = 93: starting iterations (max = 100)
+ℹ t = 93, iter = 25: mean score = 0.008133, error = 0.2462
+ℹ t = 93, iter = 50: mean score = 0.000223, error = 3.198e-09
+ℹ t = 93, iter = 75: mean score = 0, error = 1.156e-07
+✔ t = 93: converged at iter = 99 with error = 1.153e-07
+ℹ Solving time periods  94% (t = 94 / 100)
+ℹ t = 94: starting iterations (max = 100)
+ℹ t = 94, iter = 25: mean score = 0.00832, error = 0.2462
+ℹ t = 94, iter = 50: mean score = 6.1e-05, error = 2.421e-09
+ℹ t = 94, iter = 75: mean score = 0, error = 1.206e-07
+✔ t = 94: converged at iter = 89 with error = 1.204e-07
+ℹ Solving time periods  95% (t = 95 / 100)
+ℹ t = 95: starting iterations (max = 100)
+ℹ t = 95, iter = 25: mean score = 0.008562, error = 0.2462
+ℹ t = 95, iter = 50: mean score = 0.000106, error = 1.737e-09
+ℹ t = 95, iter = 75: mean score = 0, error = 1.259e-07
+✔ t = 95: converged at iter = 97 with error = 1.256e-07
+ℹ Solving time periods  96% (t = 96 / 100)
+ℹ t = 96: starting iterations (max = 100)
+ℹ t = 96, iter = 25: mean score = 0.008868, error = 0.2462
+ℹ t = 96, iter = 50: mean score = 5.9e-05, error = 1.156e-09
+ℹ t = 96, iter = 75: mean score = 0, error = 1.314e-07
+✔ t = 96: converged at iter = 88 with error = 1.311e-07
+ℹ Solving time periods  97% (t = 97 / 100)
+ℹ t = 97: starting iterations (max = 100)
+ℹ t = 97, iter = 25: mean score = 0.009254, error = 0.2463
+ℹ t = 97, iter = 50: mean score = 6.6e-05, error = 6.869e-10
+ℹ t = 97, iter = 75: mean score = 0, error = 1.371e-07
+✔ t = 97: converged at iter = 91 with error = 1.368e-07
+ℹ Solving time periods  98% (t = 98 / 100)
+ℹ t = 98: starting iterations (max = 100)
+ℹ t = 98, iter = 25: mean score = 0.009744, error = 0.2463
+ℹ t = 98, iter = 50: mean score = 6.1e-05, error = 3.311e-10
+ℹ t = 98, iter = 75: mean score = 0, error = 1.431e-07
+✔ t = 98: converged at iter = 88 with error = 1.428e-07
+ℹ Solving time periods  99% (t = 99 / 100)
+ℹ t = 99: starting iterations (max = 100)
+ℹ t = 99, iter = 25: mean score = 0.01038, error = 0.2463
+ℹ t = 99, iter = 50: mean score = 6.7e-05, error = 1.013e-10
+ℹ t = 99, iter = 75: mean score = 0, error = 1.493e-07
+✔ t = 99: converged at iter = 88 with error = 1.49e-07
+ℹ Solving time periods 100% (t = 100 / 100)
+ℹ t = 100: starting iterations (max = 100)
+ℹ t = 100, iter = 25: mean score = 0.011231, error = 0.2463
+ℹ t = 100, iter = 50: mean score = 9.6e-05, error = 3.078e-12
+ℹ t = 100, iter = 75: mean score = 0, error = 1.558e-07
+✔ t = 100: converged at iter = 96 with error = 1.555e-07
+
+── Simulation completed ──
+✔ Total execution time: 4.144 mins
+ℹ Last non-NA simulated period: t = 100
+────────────────────────────────────────── LEEDS_MODEL run finished ──────────────────────────────────────────
