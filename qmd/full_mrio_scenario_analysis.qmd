@@ -67,7 +67,7 @@ variable.table <- read.csv(
   stringsAsFactors = FALSE
 )
 
-initial_filename <- file.path(dir_data, "initial_state_2026.xlsx")
+initial_filename <- file.path(dir_data, "full_mrio_initial_state.xlsx")
 stopifnot(file.exists(initial_filename))
 
 sector_list <- read.csv(
@@ -146,7 +146,7 @@ theme_set(
 # Baseline 
 
 ```{r simulation, warning = F, message = F}
-baseline <- run_or_load_baseline(initial, mvp.model)
+baseline <- run_or_load_baseline(initial, mvp.model, force = TRUE)
 ```
 
 ## Calibration
@@ -230,7 +230,7 @@ scenario_list[[n_shock]] <- scenario <- run_or_load_shock(
   n_shock,
   initial_shock,
   mvp.model,
-  force = FALSE
+  force = TRUE
 )
 ```
 
@@ -313,7 +313,7 @@ scenario_list[[n_shock]] <- scenario <- run_or_load_shock(
   n_shock,
   initial_shock,
   mvp.model,
-  force = FALSE
+  force = TRUE
 )
 
 initial_shock$pars['rho', 'value']
@@ -398,7 +398,7 @@ scenario_list[[n_shock]] <- scenario <- run_or_load_shock(
   n_shock,
   initial_shock,
   mvp.model,
-  force = FALSE
+  force = TRUE
 )
 ```
 
@@ -484,7 +484,7 @@ scenario_list[[n_shock]] <- scenario <- run_or_load_shock(
   n_shock,
   initial_shock,
   mvp.model,
-  force = FALSE
+  force = TRUE
 )
 ```
 
@@ -573,7 +573,7 @@ scenario_list[[n_shock]] <- scenario <- run_or_load_shock(
   n_shock,
   initial_shock,
   mvp.model,
-  force = FALSE
+  force = TRUE
 )
 ```
 
@@ -658,7 +658,7 @@ scenario_list[[n_shock]] <- scenario <- run_or_load_shock(
   n_shock,
   initial_shock,
   mvp.model,
-  force = FALSE
+  force = TRUE
 )
 ```
 
@@ -744,7 +744,7 @@ scenario_list[[n_shock]] <- scenario <- run_or_load_shock(
   n_shock,
   initial_shock,
   mvp.model,
-  force = FALSE
+  force = TRUE
 )
 
 scenario$para['rho']
@@ -837,7 +837,7 @@ scenario_list[[n_shock]] <- scenario <- run_or_load_shock(
   n_shock,
   initial_shock,
   mvp.model,
-  force = FALSE
+  force = TRUE
 )
 
 scenario$para['rho']
@@ -929,7 +929,7 @@ scenario_list[[n_shock]] <- scenario <- run_or_load_shock(
   n_shock,
   initial_shock,
   mvp.model,
-  force = FALSE
+  force = TRUE
 )
 
 scenario$para['rho']
@@ -1021,7 +1021,7 @@ scenario_list[[n_shock]] <- scenario <- run_or_load_shock(
   n_shock,
   initial_shock,
   mvp.model,
-  force = FALSE
+  force = TRUE
 )
 
 scenario$para['rho']
@@ -1113,7 +1113,7 @@ scenario_list[[n_shock]] <- scenario <- run_or_load_shock(
   n_shock,
   initial_shock,
   mvp.model,
-  force = FALSE
+  force = TRUE
 )
 
 scenario$para['rho']
@@ -1205,7 +1205,7 @@ scenario_list[[n_shock]] <- scenario <- run_or_load_shock(
   n_shock,
   initial_shock,
   mvp.model,
-  force = FALSE
+  force = TRUE
 )
 
 scenario$para['rho']
@@ -1299,7 +1299,7 @@ scenario_list[[n_shock]] <- scenario <- run_or_load_shock(
   n_shock,
   initial_shock,
   mvp.model,
-  force = FALSE
+  force = TRUE
 )
 
 scenario$para['rho']
@@ -1392,7 +1392,7 @@ scenario_list[[n_shock]] <- scenario <- run_or_load_shock(
   n_shock,
   initial_shock,
   mvp.model,
-  force = FALSE
+  force = TRUE
 )
 
 scenario$para['rho']

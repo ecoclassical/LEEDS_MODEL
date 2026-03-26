@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Oriol Vallès Codina">
-<meta name="dcterms.date" content="2026-03-24">
+<meta name="dcterms.date" content="2026-03-26">
 
 <title>Formal Setup</title>
 <style>
@@ -2508,16 +2508,22 @@ window.Quarto = {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#overview" id="toc-overview" class="nav-link active" data-scroll-target="#overview"><span class="header-section-number">1</span> Overview</a></li>
-  <li><a href="#scenario-registry" id="toc-scenario-registry" class="nav-link" data-scroll-target="#scenario-registry"><span class="header-section-number">2</span> Scenario Registry</a></li>
-  <li><a href="#setup" id="toc-setup" class="nav-link" data-scroll-target="#setup"><span class="header-section-number">3</span> Setup</a>
+  <li><a href="#setup" id="toc-setup" class="nav-link active" data-scroll-target="#setup"><span class="header-section-number">1</span> Setup</a>
   <ul class="collapse">
-  <li><a href="#mrio-table-structure" id="toc-mrio-table-structure" class="nav-link" data-scroll-target="#mrio-table-structure"><span class="header-section-number">3.1</span> MRIO Table Structure</a></li>
-  <li><a href="#final-demand" id="toc-final-demand" class="nav-link" data-scroll-target="#final-demand"><span class="header-section-number">3.2</span> Final Demand</a></li>
-  <li><a href="#io-system-and-gross-output" id="toc-io-system-and-gross-output" class="nav-link" data-scroll-target="#io-system-and-gross-output"><span class="header-section-number">3.3</span> IO System and Gross Output</a></li>
-  <li><a href="#final-demand-interventions" id="toc-final-demand-interventions" class="nav-link" data-scroll-target="#final-demand-interventions"><span class="header-section-number">3.4</span> Final Demand Interventions</a></li>
-  <li><a href="#intermediate-demand-interventions" id="toc-intermediate-demand-interventions" class="nav-link" data-scroll-target="#intermediate-demand-interventions"><span class="header-section-number">3.5</span> Intermediate Demand Interventions</a></li>
-  <li><a href="#unified-impact-formula" id="toc-unified-impact-formula" class="nav-link" data-scroll-target="#unified-impact-formula"><span class="header-section-number">3.6</span> Unified Impact Formula</a></li>
+  <li><a href="#intermediate-demand" id="toc-intermediate-demand" class="nav-link" data-scroll-target="#intermediate-demand"><span class="header-section-number">1.1</span> Intermediate Demand</a></li>
+  <li><a href="#final-demand" id="toc-final-demand" class="nav-link" data-scroll-target="#final-demand"><span class="header-section-number">1.2</span> Final Demand</a></li>
+  <li><a href="#io-balance-and-gross-output" id="toc-io-balance-and-gross-output" class="nav-link" data-scroll-target="#io-balance-and-gross-output"><span class="header-section-number">1.3</span> IO Balance and Gross Output</a></li>
+  <li><a href="#material-sectors-and-ecological-intensities" id="toc-material-sectors-and-ecological-intensities" class="nav-link" data-scroll-target="#material-sectors-and-ecological-intensities"><span class="header-section-number">1.4</span> Material Sectors and Ecological Intensities</a></li>
+  </ul></li>
+  <li><a href="#multi-region-input-output-structure" id="toc-multi-region-input-output-structure" class="nav-link" data-scroll-target="#multi-region-input-output-structure"><span class="header-section-number">2</span> Multi-Region Input-Output Structure</a>
+  <ul class="collapse">
+  <li><a href="#dimensions-and-the-full-mrio-system" id="toc-dimensions-and-the-full-mrio-system" class="nav-link" data-scroll-target="#dimensions-and-the-full-mrio-system"><span class="header-section-number">2.1</span> Dimensions and the Full MRIO System</a></li>
+  </ul></li>
+  <li><a href="#scenario-design" id="toc-scenario-design" class="nav-link" data-scroll-target="#scenario-design"><span class="header-section-number">3</span> Scenario Design</a>
+  <ul class="collapse">
+  <li><a href="#final-demand-interventions" id="toc-final-demand-interventions" class="nav-link" data-scroll-target="#final-demand-interventions"><span class="header-section-number">3.1</span> Final Demand Interventions</a></li>
+  <li><a href="#intermediate-demand-interventions" id="toc-intermediate-demand-interventions" class="nav-link" data-scroll-target="#intermediate-demand-interventions"><span class="header-section-number">3.2</span> Intermediate Demand Interventions</a></li>
+  <li><a href="#unified-impact-formula" id="toc-unified-impact-formula" class="nav-link" data-scroll-target="#unified-impact-formula"><span class="header-section-number">3.3</span> Unified Impact Formula</a></li>
   </ul></li>
   </ul>
 <div class="quarto-alternate-formats"><h2>Other Formats</h2><ul><li><a href="formal_setup.docx"><i class="bi bi-file-word"></i>MS Word</a></li></ul></div></nav>
@@ -2551,7 +2557,7 @@ window.Quarto = {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">March 24, 2026</p>
+      <p class="date">March 26, 2026</p>
     </div>
   </div>
   
@@ -2563,201 +2569,79 @@ window.Quarto = {
 </header>
 
 
-<section id="overview" class="level1" data-number="1">
-<h1 data-number="1"><span class="header-section-number">1</span> Overview</h1>
-<p>Our economy uses materials <span class="math inline">\(M = \{
-\text{food},\;
-\text{energy},\;
-\text{wood},\;
-\text{plastic},\;
-\text{pulp},\;
-\text{metal},\;
-\text{glass},\;
-\text{cement}
-\}\)</span>.</p>
-<p>Shifts towards economic circularity can be driven by final demand or by intermediate production substitutions. Interventions are modelled as redistribution operators governed by scalar parameter <span class="math inline">\(\rho \in [0,1]\)</span>, decreasing primary material use <span class="math inline">\(M_1\)</span> and increasing secondary material use <span class="math inline">\(M_2\)</span> either by:</p>
+<section id="setup" class="level1" data-number="1">
+<h1 data-number="1"><span class="header-section-number">1</span> Setup</h1>
+<p>Let <span class="math inline">\(r, s \in \{1, \ldots, R\}\)</span> index regions (<span class="math inline">\(R = 2\)</span>: <span class="math inline">\(r=1\)</span> EU, <span class="math inline">\(r=2\)</span> RoW) and <span class="math inline">\(i, j \in \{1, \ldots, N\}\)</span> index sectors (<span class="math inline">\(N = 54\)</span>). All vectors stack regions as <span class="math inline">\((\cdot^{1\top}, \cdot^{2\top})^\top\)</span> and have dimension <span class="math inline">\(RN = 108\)</span>.</p>
+<p>Our economy uses materials</p>
+<p><span class="math display">\[M = \{\text{food},\; \text{energy},\; \text{wood},\; \text{plastic},\; \text{pulp},\; \text{metal},\; \text{glass},\; \text{cement}\}\]</span></p>
+<p>organised in <strong>primary–secondary pairs</strong> <span class="math inline">\((m_1, m_2)\)</span> within each material type; we are primarily interested in primary material use <span class="math inline">\(M_1\)</span>.</p>
+<section id="intermediate-demand" class="level2" data-number="1.1">
+<h2 data-number="1.1" class="anchored" data-anchor-id="intermediate-demand"><span class="header-section-number">1.1</span> Intermediate Demand</h2>
+<p>Let <span class="math inline">\(\mathbf{x} \in \mathbb{R}^{RN}\)</span> denote gross output. Technical coefficients <span class="math inline">\(a_{ri,sj} \geq 0\)</span> give the input of good <span class="math inline">\((r,i)\)</span> required per unit of output of sector <span class="math inline">\((s,j)\)</span>, calibrated as <span class="math inline">\(a_{ri,sj} = Z_{ri,sj}/x_{sj}\)</span>. Stacked into the <span class="math inline">\(RN \times RN\)</span> matrix <span class="math inline">\(A\)</span>, intermediate demand is:</p>
+<p><span class="math display">\[Z_{ri,sj} = a_{ri,sj}\, x_{sj}, \qquad \mathbf{Z} = A\,\hat{\mathbf{x}}\]</span></p>
+<p>where <span class="math inline">\(\hat{\mathbf{x}} = \mathrm{diag}(\mathbf{x})\)</span>. Block <span class="math inline">\(A^{rs} \in \mathbb{R}^{N \times N}\)</span> collects inputs from region <span class="math inline">\(r\)</span>’s industries used by region <span class="math inline">\(s\)</span>’s industries; diagonal blocks (<span class="math inline">\(r=s\)</span>) are domestic intermediate flows, off-diagonal blocks (<span class="math inline">\(r \neq s\)</span>) are cross-border intermediate flows.</p>
+</section>
+<section id="final-demand" class="level2" data-number="1.2">
+<h2 data-number="1.2" class="anchored" data-anchor-id="final-demand"><span class="header-section-number">1.2</span> Final Demand</h2>
+<p><span class="math inline">\(K = 4\)</span> institutional channels allocate aggregate expenditure across sectors and across supplying regions:</p>
+<ol type="1">
+<li>Household consumption <span class="math inline">\(c_r\)</span> with sector shares <span class="math inline">\(\boldsymbol{\beta}^{rs}\)</span>,</li>
+<li>Government consumption <span class="math inline">\(g_r\)</span> with sector shares <span class="math inline">\(\boldsymbol{\sigma}^{rs}\)</span>,</li>
+<li>Private investment <span class="math inline">\(id_r\)</span> with sector shares <span class="math inline">\(\boldsymbol{\iota}^{rs}\)</span>, and</li>
+<li>Public investment <span class="math inline">\(id^g_r\)</span> with sector shares <span class="math inline">\(\boldsymbol{\iota}^{g,rs}\)</span>.</li>
+</ol>
+<p>The <strong>bilateral allocation shares</strong> <span class="math inline">\(\delta^{rs}_{n,k}\)</span> give the fraction of region <span class="math inline">\(s\)</span>’s channel-<span class="math inline">\(k\)</span> aggregate demand sourced from sector <span class="math inline">\(n\)</span> of region <span class="math inline">\(r\)</span>, distinguishing four dimensions:</p>
 <ul>
-<li>reallocating sector-level shares in <strong>final demand</strong> <span class="math inline">\(\mathbf{d}\)</span> from primary to secondary materials:
-<ul>
-<li>in <strong>consumption</strong>: by households <span class="math inline">\(c\)</span> and by government <span class="math inline">\(g\)</span></li>
-<li>in <strong>investment</strong>: private <span class="math inline">\(id\)</span> and public <span class="math inline">\(id^g\)</span>, or</li>
-</ul></li>
-<li>by changing input-output coefficients <span class="math inline">\(A\)</span> in <strong>intermediate production</strong>, substituting industrial material inputs from primary to secondary.</li>
+<li><strong>supplying region</strong> <span class="math inline">\(r\)</span>: where the good originates,</li>
+<li><strong>demanding region</strong> <span class="math inline">\(s\)</span>: where the institution resides,</li>
+<li><strong>supplying industry</strong> <span class="math inline">\(n\)</span>: which sector produces the good, and</li>
+<li><strong>demand channel</strong> <span class="math inline">\(k \in \mathcal{K}\)</span>: institutional type.</li>
 </ul>
+<p>Collecting bilateral share blocks <span class="math inline">\(\boldsymbol{\delta}^{rs} \equiv [\boldsymbol{\beta}^{rs},\, \boldsymbol{\sigma}^{rs},\, \boldsymbol{\iota}^{rs},\, \boldsymbol{\iota}^{g,rs}] \in \mathbb{R}^{N \times K}\)</span> into the full allocation matrix <span class="math inline">\(\boldsymbol{\Delta} \in \mathbb{R}^{RN \times RK}\)</span> and defining <span class="math inline">\(\mathbf{f} = (c_1, g_1, id_1, id^g_1, c_2, g_2, id_2, id^g_2)^\top \in \mathbb{R}^{RK}\)</span>:</p>
+<p><span class="math display">\[
+\boldsymbol{\Delta} =
+\begin{pmatrix} \boldsymbol{\delta}^{11} &amp; \boldsymbol{\delta}^{12} \\ \boldsymbol{\delta}^{21} &amp; \boldsymbol{\delta}^{22} \end{pmatrix},
+\qquad
+\mathbf{fd} = \boldsymbol{\Delta}\, \mathbf{f}, \qquad
+fd_{r,n} = \sum_{s=1}^R \sum_{k \in \mathcal{K}} \delta^{rs}_{n,k}\, f_{s,k}
+\]</span></p>
+<p>Column exhaustion: <span class="math inline">\(\sum_{r,n} \delta^{rs}_{n,k} = 1\)</span> — region <span class="math inline">\(s\)</span>’s channel-<span class="math inline">\(k\)</span> expenditure is fully allocated across all supplying regions and sectors. Diagonal blocks (<span class="math inline">\(r = s\)</span>) encode <strong>domestic</strong> sourcing; off-diagonal blocks (<span class="math inline">\(r \neq s\)</span>) encode <strong>cross-border</strong> final goods flows — each distinguished by channel. No separate import or export terms are required: bilateral flows are implicit in the off-diagonal column sums of <span class="math inline">\(\boldsymbol{\Delta}\)</span>.</p>
+</section>
+<section id="io-balance-and-gross-output" class="level2" data-number="1.3">
+<h2 data-number="1.3" class="anchored" data-anchor-id="io-balance-and-gross-output"><span class="header-section-number">1.3</span> IO Balance and Gross Output</h2>
+<p>The IO balance equates gross output to intermediate use plus final demand:</p>
+<p><span class="math display">\[
+\mathbf{x} = A\mathbf{x} + \mathbf{fd}
+\quad\Longrightarrow\quad
+\mathbf{x} = (I - A)^{-1}\mathbf{fd} \equiv L\,\mathbf{fd} = L\,\boldsymbol{\Delta}\,\mathbf{f}
+\]</span></p>
+<p>where <span class="math inline">\(L = (I - A)^{-1} \in \mathbb{R}^{RN \times RN}\)</span> is the <strong>Leontief inverse</strong> with elements <span class="math inline">\(l_{ri,sj}\)</span>: the total output of sector <span class="math inline">\((r,i)\)</span> — direct and indirect across all IO rounds — required per unit of final demand for good <span class="math inline">\((s,j)\)</span>.</p>
+<p><strong>Domestic vs. cross-border decomposition.</strong> Gross output of any sector <span class="math inline">\((r,i)\)</span> decomposes analytically into domestically-induced and foreign-demand-induced components:</p>
+<p><span class="math display">\[
+x_{r,i} = \underbrace{\sum_{j=1}^N l_{ri,rj}\, fd_{rj}}_{\text{domestic-demand-induced}} + \underbrace{\sum_{s \neq r}\sum_{j=1}^N l_{ri,sj}\, fd_{sj}}_{\text{foreign-demand-induced}}
+\]</span></p>
+<p>This decomposition requires no additional simulation variables — it is computed from the Leontief columns and <span class="math inline">\(\mathbf{fd}\)</span>.</p>
+</section>
+<section id="material-sectors-and-ecological-intensities" class="level2" data-number="1.4">
+<h2 data-number="1.4" class="anchored" data-anchor-id="material-sectors-and-ecological-intensities"><span class="header-section-number">1.4</span> Material Sectors and Ecological Intensities</h2>
+<p>For each material type <span class="math inline">\(m \in M\)</span>, sector <span class="math inline">\(m_1\)</span> produces the <strong>primary</strong> material and sector <span class="math inline">\(m_2\)</span> the <strong>secondary</strong> (recycled) substitute. Primary material use equals the gross output of the primary sector:</p>
+<p><span class="math display">\[
+x_{m_1} = \bigl(L\,\mathbf{fd}\bigr)_{m_1} = \sum_{s=1}^R \sum_{j=1}^N l_{m_1,sj}\, fd_{sj}
+= \sum_{s,j,k}\, l_{m_1,sj}\, \delta^{rs}_{j,k}\, f_{s,k}
+\]</span></p>
+<p>Ecological pressures are measured via intensity vectors <span class="math inline">\(\boldsymbol{\varepsilon}\)</span> (CO<span class="math inline">\(_2\)</span>-eq emissions), <span class="math inline">\(\boldsymbol{\lambda}\)</span> (land), <span class="math inline">\(\boldsymbol{\omega}\)</span> (water), <span class="math inline">\(\mathbf{m}\)</span> (material throughput) <span class="math inline">\(\in \mathbb{R}^{RN}\)</span> — physical pressure per unit of gross output:</p>
+<p><span class="math display">\[
+E^r = \boldsymbol{\varepsilon}^{r\top} \mathbf{x}^r, \quad
+\Lambda^r = \boldsymbol{\lambda}^{r\top} \mathbf{x}^r, \quad
+\Omega^r = \boldsymbol{\omega}^{r\top} \mathbf{x}^r, \quad
+\mathcal{M}^r = \mathbf{m}^{r\top} \mathbf{x}^r
+\]</span></p>
+<p>Each decomposes into domestic- and foreign-demand-induced components using the Leontief decomposition of <span class="math inline">\(\mathbf{x}^r\)</span> above, enabling cross-border responsibility accounting without additional simulation variables.</p>
 <hr>
 </section>
-<section id="scenario-registry" class="level1" data-number="2">
-<h1 data-number="2"><span class="header-section-number">2</span> Scenario Registry</h1>
-<div class="cell">
-<div class="cell-output-display">
-<div style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:600px; overflow-x: scroll; width:100%; ">
-<table class="table table-striped table-hover table-condensed caption-top table-sm small" data-quarto-postprocess="true">
-<caption>Scenario Registry</caption>
-<thead>
-<tr class="header">
-<th data-quarto-table-cell-role="th" style="text-align: left; position: sticky; top: 0; background-color: #FFFFFF;">shock</th>
-<th data-quarto-table-cell-role="th" style="text-align: left; position: sticky; top: 0; background-color: #FFFFFF;">domain</th>
-<th data-quarto-table-cell-role="th" style="text-align: left; position: sticky; top: 0; background-color: #FFFFFF;">sector</th>
-<th data-quarto-table-cell-role="th" style="text-align: left; position: sticky; top: 0; background-color: #FFFFFF;">transaction</th>
-<th data-quarto-table-cell-role="th" style="text-align: left; position: sticky; top: 0; background-color: #FFFFFF;">shift</th>
-<th data-quarto-table-cell-role="th" style="text-align: left; position: sticky; top: 0; background-color: #FFFFFF;">target</th>
-<th data-quarto-table-cell-role="th" style="text-align: left; position: sticky; top: 0; background-color: #FFFFFF;">from</th>
-<th data-quarto-table-cell-role="th" style="text-align: left; position: sticky; top: 0; background-color: #FFFFFF;">to</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: left;">1</td>
-<td style="text-align: left;">Final Demand</td>
-<td style="text-align: left;">Household</td>
-<td style="text-align: left;">Consumption</td>
-<td style="text-align: left;">Food</td>
-<td style="text-align: left;">beta</td>
-<td style="text-align: left;">7</td>
-<td style="text-align: left;">8</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">2</td>
-<td style="text-align: left;">Final Demand</td>
-<td style="text-align: left;">Household</td>
-<td style="text-align: left;">Consumption</td>
-<td style="text-align: left;">Energy</td>
-<td style="text-align: left;">beta</td>
-<td style="text-align: left;">31</td>
-<td style="text-align: left;">32</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">3</td>
-<td style="text-align: left;">Final Demand</td>
-<td style="text-align: left;">Government</td>
-<td style="text-align: left;">Consumption</td>
-<td style="text-align: left;">Energy</td>
-<td style="text-align: left;">sigma</td>
-<td style="text-align: left;">24</td>
-<td style="text-align: left;">25</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">4</td>
-<td style="text-align: left;">Final Demand</td>
-<td style="text-align: left;">Government</td>
-<td style="text-align: left;">Consumption</td>
-<td style="text-align: left;">Cement</td>
-<td style="text-align: left;">sigma</td>
-<td style="text-align: left;">17</td>
-<td style="text-align: left;">18</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">5</td>
-<td style="text-align: left;">Final Demand</td>
-<td style="text-align: left;">Firm</td>
-<td style="text-align: left;">Investment</td>
-<td style="text-align: left;">Energy</td>
-<td style="text-align: left;">iota</td>
-<td style="text-align: left;">24</td>
-<td style="text-align: left;">25</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">6</td>
-<td style="text-align: left;">Final Demand</td>
-<td style="text-align: left;">Firm</td>
-<td style="text-align: left;">Investment</td>
-<td style="text-align: left;">Plastics</td>
-<td style="text-align: left;">iota</td>
-<td style="text-align: left;">17</td>
-<td style="text-align: left;">18</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">7</td>
-<td style="text-align: left;">Intermediate Demand</td>
-<td style="text-align: left;">Firm</td>
-<td style="text-align: left;">Production</td>
-<td style="text-align: left;">Wood</td>
-<td style="text-align: left;">a</td>
-<td style="text-align: left;">11</td>
-<td style="text-align: left;">12</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">8</td>
-<td style="text-align: left;">Intermediate Demand</td>
-<td style="text-align: left;">Firm</td>
-<td style="text-align: left;">Production</td>
-<td style="text-align: left;">Pulp</td>
-<td style="text-align: left;">a</td>
-<td style="text-align: left;">13</td>
-<td style="text-align: left;">14</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">9</td>
-<td style="text-align: left;">Intermediate Demand</td>
-<td style="text-align: left;">Firm</td>
-<td style="text-align: left;">Production</td>
-<td style="text-align: left;">Plastics</td>
-<td style="text-align: left;">a</td>
-<td style="text-align: left;">17</td>
-<td style="text-align: left;">18</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">10</td>
-<td style="text-align: left;">Intermediate Demand</td>
-<td style="text-align: left;">Firm</td>
-<td style="text-align: left;">Production</td>
-<td style="text-align: left;">Metal</td>
-<td style="text-align: left;">a</td>
-<td style="text-align: left;">26</td>
-<td style="text-align: left;">27</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">11</td>
-<td style="text-align: left;">Intermediate Demand</td>
-<td style="text-align: left;">Firm</td>
-<td style="text-align: left;">Production</td>
-<td style="text-align: left;">Glass</td>
-<td style="text-align: left;">a</td>
-<td style="text-align: left;">21</td>
-<td style="text-align: left;">22</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">12</td>
-<td style="text-align: left;">Intermediate Demand</td>
-<td style="text-align: left;">Firm</td>
-<td style="text-align: left;">Production</td>
-<td style="text-align: left;">Cement</td>
-<td style="text-align: left;">a</td>
-<td style="text-align: left;">24</td>
-<td style="text-align: left;">25</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">13</td>
-<td style="text-align: left;">Intermediate Demand</td>
-<td style="text-align: left;">Firm</td>
-<td style="text-align: left;">Production</td>
-<td style="text-align: left;">Energy</td>
-<td style="text-align: left;">a</td>
-<td style="text-align: left;">31</td>
-<td style="text-align: left;">32</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">14</td>
-<td style="text-align: left;">Intermediate Demand</td>
-<td style="text-align: left;">Firm</td>
-<td style="text-align: left;">Production</td>
-<td style="text-align: left;">Construction</td>
-<td style="text-align: left;">a</td>
-<td style="text-align: left;">36</td>
-<td style="text-align: left;">37</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-</div>
-<hr>
 </section>
-<section id="setup" class="level1" data-number="3">
-<h1 data-number="3"><span class="header-section-number">3</span> Setup</h1>
-<p>Let <span class="math inline">\(r, s \in \{1, \ldots, R\}\)</span> index regions (<span class="math inline">\(R = 2\)</span>: <span class="math inline">\(r=1\)</span> EU, <span class="math inline">\(r=2\)</span> RoW) and <span class="math inline">\(i, j \in \{1, \ldots, N\}\)</span> index sectors (<span class="math inline">\(N = 54\)</span>). All vectors have dimension <span class="math inline">\(RN = 108\)</span>, stacking regions as <span class="math inline">\((\cdot_1^\top, \cdot_2^\top)^\top\)</span>.</p>
-<section id="mrio-table-structure" class="level2" data-number="3.1">
-<h2 data-number="3.1" class="anchored" data-anchor-id="mrio-table-structure"><span class="header-section-number">3.1</span> MRIO Table Structure</h2>
+<section id="multi-region-input-output-structure" class="level1" data-number="2">
+<h1 data-number="2"><span class="header-section-number">2</span> Multi-Region Input-Output Structure</h1>
 <p>The multi-regional input-output table partitions total output into intermediate flows and final demand across regions. Its block structure is:</p>
 <div class="cell">
 <div class="cell-output-display">
@@ -2970,112 +2854,89 @@ Investment
 </div>
 <p>Each block <span class="math inline">\(Z_{rs} \in \mathbb{R}^{N\times N}\)</span> records flows <strong>from</strong> the selling region <span class="math inline">\(r\)</span> <strong>to</strong> the buying region <span class="math inline">\(s\)</span>: element <span class="math inline">\(z_{ri,sj}\)</span> is the value of good <span class="math inline">\((r,i)\)</span> used as intermediate input by sector <span class="math inline">\((s,j)\)</span>. The FD block is also two-dimensional: diagonal sub-blocks (<span class="math inline">\(r = s\)</span>) are <strong>domestic</strong> final demand; off-diagonal sub-blocks (<span class="math inline">\(r \neq s\)</span>) are <strong>cross-border</strong> flows. Each row balances: <span class="math inline">\(\mathbf{d}_r = \sum_s Z_{rs}\mathbf{1} + \mathbf{fd}_r\)</span>.</p>
 <p>Value added decomposes column-wise into wages (<span class="math inline">\(W\)</span>), profits (<span class="math inline">\(P\)</span>), and net taxes (<span class="math inline">\(T\)</span>): <span class="math inline">\(\mathrm{VA}_r = W_r + P_r + T_r\)</span>, so <span class="math inline">\(d_{sj} = \sum_{r,i} z_{ri,sj} + \mathrm{VA}_{sj}\)</span>.</p>
-<p>Technical coefficients are defined column-wise from the intermediate blocks:</p>
+<section id="dimensions-and-the-full-mrio-system" class="level2" data-number="2.1">
+<h2 data-number="2.1" class="anchored" data-anchor-id="dimensions-and-the-full-mrio-system"><span class="header-section-number">2.1</span> Dimensions and the Full MRIO System</h2>
+<p>All vectors stack regions as <span class="math inline">\((\cdot^{Z1\top}, \cdot^{Z2\top})^\top\)</span> with dimension <span class="math inline">\(RN = 108\)</span>. The Leontief inverse <span class="math inline">\(L = (I - A)^{-1}\)</span> is <span class="math inline">\(RN \times RN = 108 \times 108\)</span>, and gross output <span class="math inline">\(\mathbf{x} \in \mathbb{R}^{108}\)</span> partitions as:</p>
 <p><span class="math display">\[
-a_{ri,sj} = \frac{z_{ri,sj}}{d_{sj}}, \qquad
-A = \begin{pmatrix} A_{11} &amp; A_{12} \\ A_{21} &amp; A_{22} \end{pmatrix} \in \mathbb{R}^{RN\times RN}.
+\mathbf{x} = \begin{pmatrix} \mathbf{x}^{Z1} \\ \mathbf{x}^{Z2} \end{pmatrix}, \qquad
+\mathbf{x}^{Z1} = (x_{Z1,1},\ldots,x_{Z1,54})^\top, \quad
+\mathbf{x}^{Z2} = (x_{Z2,1},\ldots,x_{Z2,54})^\top.
 \]</span></p>
-<hr>
-</section>
-<section id="final-demand" class="level2" data-number="3.2">
-<h2 data-number="3.2" class="anchored" data-anchor-id="final-demand"><span class="header-section-number">3.2</span> Final Demand</h2>
-<p>For each region <span class="math inline">\(r\)</span>, institutional channels <span class="math inline">\(K \in \{c,\, g,\, id,\, id^g\}\)</span> (household consumption, government consumption, private investment, public investment) contribute to the regional final demand vector. Define:</p>
-<ul>
-<li><span class="math inline">\(\boldsymbol{\varphi}_K^r \in \mathbb{R}^N\)</span>: sector share vector for channel <span class="math inline">\(K\)</span> in region <span class="math inline">\(r\)</span> (elements <span class="math inline">\(\varphi_{K,i}^r \geq 0\)</span>, <span class="math inline">\(\sum_i \varphi_{K,i}^r = 1\)</span>)</li>
-<li><span class="math inline">\(fd_K^r \in \mathbb{R}\)</span>: aggregate expenditure scalar for channel <span class="math inline">\(K\)</span> in region <span class="math inline">\(r\)</span></li>
-</ul>
-<p>The <strong>composite final demand vector</strong> stacks regional components:</p>
+<p>The final demand vector <span class="math inline">\(\mathbf{fd} = \boldsymbol{\Delta}\,\mathbf{f} \in \mathbb{R}^{108}\)</span> likewise partitions into two 54-blocks. Each block further decomposes bilaterally by consuming region:</p>
 <p><span class="math display">\[
-\mathbf{fd} = \begin{pmatrix} \mathbf{fd}^1 \\ \mathbf{fd}^2 \end{pmatrix} \in \mathbb{R}^{RN},
+fd_{Z1,n} = \underbrace{\sum_k \delta^{Z1,Z1}_{n,k}\,f_{Z1,k}}_{\text{Z1 institutions} \to \text{Z1 goods}}
+           + \underbrace{\sum_k \delta^{Z1,Z2}_{n,k}\,f_{Z2,k}}_{\text{Z2 institutions} \to \text{Z1 goods}},
 \qquad
-\mathbf{fd}^r = \sum_{K} \boldsymbol{\varphi}_K^r\, fd_K^r
-= \underbrace{\boldsymbol{\beta}^r}_{\boldsymbol{\varphi}_c^r} c^r
-+ \underbrace{\boldsymbol{\sigma}^r}_{\boldsymbol{\varphi}_g^r} g^r
-+ \underbrace{\boldsymbol{\iota}^r}_{\boldsymbol{\varphi}_{id}^r} id^r
-+ \underbrace{\boldsymbol{\iota}^{g,r}}_{\boldsymbol{\varphi}_{id^g}^r} id^{g,r}
+fd_{Z2,n} = \sum_k \delta^{Z2,Z1}_{n,k}\,f_{Z1,k} + \sum_k \delta^{Z2,Z2}_{n,k}\,f_{Z2,k}.
 \]</span></p>
-<p>The full final demand vector is therefore <span class="math inline">\(\mathbf{fd} = \sum_K \boldsymbol{\Phi}_K\, \mathbf{fd}_K\)</span> where <span class="math inline">\(\boldsymbol{\Phi}_K = \mathrm{blkdiag}(\boldsymbol{\varphi}_K^1, \boldsymbol{\varphi}_K^2)\)</span> is <span class="math inline">\(RN \times R\)</span> and <span class="math inline">\(\mathbf{fd}_K = (fd_K^1, fd_K^2)^\top\)</span>.</p>
+<p>The aggregate demand scalars <span class="math inline">\(\mathbf{f} = (c_{Z1}, g_{Z1}, id_{Z1}, id^g_{Z1}, c_{Z2}, g_{Z2}, id_{Z2}, id^g_{Z2})^\top \in \mathbb{R}^{RK=8}\)</span> remain scalar per channel per region. The full system is:</p>
+<p><span class="math display">\[
+\underbrace{\mathbf{x}}_{108} = \underbrace{L}_{108\times 108}\;\underbrace{\boldsymbol{\Delta}}_{108\times 8}\;\underbrace{\mathbf{f}}_{8}
+\]</span></p>
+<p>with the bilateral decomposition providing domestic- and foreign-demand-induced components of output without additional simulation variables.</p>
 <hr>
 </section>
-<section id="io-system-and-gross-output" class="level2" data-number="3.3">
-<h2 data-number="3.3" class="anchored" data-anchor-id="io-system-and-gross-output"><span class="header-section-number">3.3</span> IO System and Gross Output</h2>
-<p>Intermediate demand is <span class="math inline">\(\mathbf{id} = A\mathbf{d}\)</span>, with element <span class="math inline">\(id_{ri} = \sum_{s,j} a_{ri,sj}\, d_{sj}\)</span>. The IO balance for gross output <span class="math inline">\(\mathbf{d} \in \mathbb{R}^{RN}\)</span> is:</p>
-<p><span class="math display">\[
-\mathbf{d} = \mathbf{fd} + A\mathbf{d}
-\quad\Longrightarrow\quad
-\mathbf{d} = (I - A)^{-1}\mathbf{fd} \equiv L\,\mathbf{fd},
-\]</span></p>
-<p>where <span class="math inline">\(L \in \mathbb{R}^{RN\times RN}\)</span> is the Leontief inverse with elements <span class="math inline">\(l_{ri,sj}\)</span>: the total output of sector <span class="math inline">\((r,i)\)</span> — direct and indirect across all IO rounds — required to deliver one unit of final demand for good <span class="math inline">\((s,j)\)</span>.</p>
-<p>Element-wise: <span class="math inline">\(d_{ri} = \sum_{s,j} l_{ri,sj}\, fd_{sj}\)</span>.</p>
-<p>For primary sector 1 and secondary sector 2 in region <span class="math inline">\(r\)</span>, material use is:</p>
-<p><span class="math display">\[
-M_1^r = d_{r,1} = \sum_{s=1}^R\sum_{j=1}^N l_{r1,sj}\, fd_{sj}, \qquad
-M_2^r = d_{r,2} = \sum_{s=1}^R\sum_{j=1}^N l_{r2,sj}\, fd_{sj}.
-\]</span></p>
-<p>Total material use <span class="math inline">\(M^r = M_1^r + M_2^r = \sum_{sj}(l_{r1,sj}+l_{r2,sj})\,fd_{sj}\)</span>.</p>
-<hr>
 </section>
-<section id="final-demand-interventions" class="level2" data-number="3.4">
-<h2 data-number="3.4" class="anchored" data-anchor-id="final-demand-interventions"><span class="header-section-number">3.4</span> Final Demand Interventions</h2>
-<p>A CE substitution of intensity <span class="math inline">\(\rho\)</span> in region <span class="math inline">\(r\)</span> and channel <span class="math inline">\(K\)</span> shifts fraction <span class="math inline">\(\rho\)</span> of primary material final demand to secondary:</p>
+<section id="scenario-design" class="level1" data-number="3">
+<h1 data-number="3"><span class="header-section-number">3</span> Scenario Design</h1>
+<section id="final-demand-interventions" class="level2" data-number="3.1">
+<h2 data-number="3.1" class="anchored" data-anchor-id="final-demand-interventions"><span class="header-section-number">3.1</span> Final Demand Interventions</h2>
+<p>A CE substitution of intensity <span class="math inline">\(\rho\)</span> in region <span class="math inline">\(r\)</span> and channel <span class="math inline">\(k\)</span> shifts fraction <span class="math inline">\(\rho\)</span> of domestic primary material final demand to secondary. Writing <span class="math inline">\(\boldsymbol{\Delta}^{(k)}\)</span> for the shock to the allocation matrix in channel <span class="math inline">\(k\)</span>:</p>
 <p><span class="math display">\[
-\Delta fd_{r,1}^{(K)} = -\rho\,\varphi_{K,1}^r\,fd_K^r, \qquad
-\Delta fd_{r,2}^{(K)} = +\rho\,\varphi_{K,1}^r\,fd_K^r, \qquad
-\Delta fd_{si}^{(K)} = 0 \text{ otherwise,}
+\Delta\delta^{rr}_{1,k} = -\rho\,\delta^{rr}_{1,k}, \qquad
+\Delta\delta^{rr}_{2,k} = +\rho\,\delta^{rr}_{1,k}, \qquad
+\Delta\delta^{rs}_{n,k} = 0 \text{ otherwise,}
 \]</span></p>
-<p>so aggregate expenditure is preserved: <span class="math inline">\(\sum_{si}\Delta fd_{si}^{(K)} = 0\)</span>. Output responds via <span class="math inline">\(\Delta\mathbf{d} = L\,\Delta\mathbf{fd}\)</span>:</p>
+<p>which implies for final demand: <span class="math inline">\(\Delta fd_{r,1}^{(k)} = -\rho\,\delta^{rr}_{1,k}\,f_{r,k}\)</span>, <span class="math inline">\(\Delta fd_{r,2}^{(k)} = +\rho\,\delta^{rr}_{1,k}\,f_{r,k}\)</span>, preserving aggregate expenditure (<span class="math inline">\(\sum_{si}\Delta fd_{si}^{(k)} = 0\)</span>). Output responds via <span class="math inline">\(\Delta\mathbf{x} = L\,\Delta\mathbf{fd}\)</span>:</p>
 <p><span class="math display">\[
-\Delta M_1^r = \Delta d_{r,1} = \sum_{sj} l_{r1,sj}\,\Delta fd_{sj}
-= l_{r1,r1}\bigl(-\rho\,\varphi_{K,1}^r fd_K^r\bigr) + l_{r1,r2}\bigl(+\rho\,\varphi_{K,1}^r fd_K^r\bigr)
-= \rho\,\varphi_{K,1}^r fd_K^r\,(l_{r1,r2} - l_{r1,r1}).
+\Delta M_1^r = \Delta x_{r,1} = \sum_{sj} l_{r1,sj}\,\Delta fd_{sj}
+= l_{r1,r1}\bigl(-\rho\,\delta^{rr}_{1,k}\,f_{r,k}\bigr) + l_{r1,r2}\bigl(+\rho\,\delta^{rr}_{1,k}\,f_{r,k}\bigr)
+= \rho\,\delta^{rr}_{1,k}\,f_{r,k}\,(l_{r1,r2} - l_{r1,r1}).
 \]</span></p>
-<p>Summing over all final demand channels <span class="math inline">\(K\)</span>, with <span class="math inline">\(fd_{r,1} \equiv \sum_K \varphi_{K,1}^r fd_K^r\)</span> denoting total primary material final demand in region <span class="math inline">\(r\)</span>:</p>
+<p>Summing over all final demand channels <span class="math inline">\(k\)</span>, with <span class="math inline">\(fd_{r,1} \equiv \sum_k \delta^{rr}_{1,k}\,f_{r,k}\)</span> denoting total primary material final demand in region <span class="math inline">\(r\)</span>:</p>
 <p><span class="math display">\[
 \Delta M_1^r = \rho\, fd_{r,1}\,(l_{r1,r2} - l_{r1,r1}), \qquad
 \Delta M_2^r = \rho\, fd_{r,1}\,(l_{r2,r2} - l_{r2,r1}).
 \]</span></p>
 <hr>
 </section>
-<section id="intermediate-demand-interventions" class="level2" data-number="3.5">
-<h2 data-number="3.5" class="anchored" data-anchor-id="intermediate-demand-interventions"><span class="header-section-number">3.5</span> Intermediate Demand Interventions</h2>
+<section id="intermediate-demand-interventions" class="level2" data-number="3.2">
+<h2 data-number="3.2" class="anchored" data-anchor-id="intermediate-demand-interventions"><span class="header-section-number">3.2</span> Intermediate Demand Interventions</h2>
 <p>A CE substitution in intermediate production changes technical coefficients for all using sectors <span class="math inline">\(j\)</span> in <span class="math inline">\(\mathcal{J}\)</span>:</p>
 <p><span class="math display">\[
 \Delta a_{r1,sj} = -\rho\,a_{r1,sj}, \qquad
 \Delta a_{r2,sj} = +\rho\,a_{r1,sj}, \qquad
 \Delta a_{ri,sj} = 0 \text{ for } i\neq 1,2,
 \]</span></p>
-<p>preserving total input shares (<span class="math inline">\(a&#39;_{r1,sj}+a&#39;_{r2,sj} = a_{r1,sj}+a_{r2,sj}\)</span>). For small <span class="math inline">\(\rho\)</span>, the first-order output change is <span class="math inline">\(\Delta\mathbf{d} \approx L\,(\Delta A)\,\mathbf{d}\)</span>, giving:</p>
+<p>preserving total input shares (<span class="math inline">\(a&#39;_{r1,sj}+a&#39;_{r2,sj} = a_{r1,sj}+a_{r2,sj}\)</span>). For small <span class="math inline">\(\rho\)</span>, the first-order output change is <span class="math inline">\(\Delta\mathbf{x} \approx L\,(\Delta A)\,\mathbf{x}\)</span>, giving:</p>
 <p><span class="math display">\[
-\Delta M_1^r \approx \rho \sum_{j\in\mathcal{J}}\sum_s a_{r1,sj}\,d_{sj}\,(l_{r1,r2} - l_{r1,r1}), \qquad
-\Delta M_2^r \approx \rho \sum_{j\in\mathcal{J}}\sum_s a_{r1,sj}\,d_{sj}\,(l_{r2,r2} - l_{r2,r1}).
+\Delta M_1^r \approx \rho \sum_{j\in\mathcal{J}}\sum_s a_{r1,sj}\,x_{sj}\,(l_{r1,r2} - l_{r1,r1}), \qquad
+\Delta M_2^r \approx \rho \sum_{j\in\mathcal{J}}\sum_s a_{r1,sj}\,x_{sj}\,(l_{r2,r2} - l_{r2,r1}).
 \]</span></p>
-<p>The scale is now <span class="math inline">\(\sum_{j,s} a_{r1,sj}\,d_{sj}\)</span> — total intermediate use of primary material <span class="math inline">\((r,1)\)</span> across all using sectors — replacing the final demand scale <span class="math inline">\(fd_{r,1}\)</span>. The Leontief structural factors <span class="math inline">\((l_{r1,r2}-l_{r1,r1})\)</span> are identical in both cases.</p>
+<p>The scale is now <span class="math inline">\(\sum_{j,s} a_{r1,sj}\,x_{sj}\)</span> — total intermediate use of primary material <span class="math inline">\((r,1)\)</span> across all using sectors — replacing the final demand scale <span class="math inline">\(fd_{r,1}\)</span>. The Leontief structural factors <span class="math inline">\((l_{r1,r2}-l_{r1,r1})\)</span> are identical in both cases.</p>
 <hr>
 </section>
-<section id="unified-impact-formula" class="level2" data-number="3.6">
-<h2 data-number="3.6" class="anchored" data-anchor-id="unified-impact-formula"><span class="header-section-number">3.6</span> Unified Impact Formula</h2>
-<p>The IO accounting identity <span class="math inline">\(d_{r,1} = fd_{r,1} + \sum_{s,j} a_{r1,sj}\,d_{sj}\)</span> (gross output of primary = final demand + intermediate use) unifies both mechanisms. For the <strong>full CE</strong> case:</p>
+<section id="unified-impact-formula" class="level2" data-number="3.3">
+<h2 data-number="3.3" class="anchored" data-anchor-id="unified-impact-formula"><span class="header-section-number">3.3</span> Unified Impact Formula</h2>
+<p>The IO accounting identity <span class="math inline">\(x_{r,1} = fd_{r,1} + \sum_{s,j} a_{r1,sj}\,x_{sj}\)</span> (gross output of primary = final demand + intermediate use) unifies both mechanisms. Letting <span class="math inline">\(\boldsymbol{\Delta}\mathbf{f}\)</span> denote the scenario shock to final demand aggregates (either via <span class="math inline">\(\Delta\boldsymbol{\delta}^{rr}\)</span> for final-demand shocks or via <span class="math inline">\(\Delta A\)</span> for intermediate shocks), the full-CE impact formula is:</p>
 <p><span class="math display">\[
 \boxed{
-\Delta M_1^r = \rho\,d_{r,1}\,(l_{r1,r2} - l_{r1,r1}), \qquad
-\Delta M_2^r = \rho\,d_{r,1}\,(l_{r2,r2} - l_{r2,r1})
+\Delta M_1^r = \rho\,x_{r,1}\,(l_{r1,r2} - l_{r1,r1}), \qquad
+\Delta M_2^r = \rho\,x_{r,1}\,(l_{r2,r2} - l_{r2,r1})
 }
 \]</span></p>
 <p>The Leontief 2×2 block <span class="math inline">\(\begin{pmatrix}l_{r1,r1} &amp; l_{r1,r2}\\l_{r2,r1} &amp; l_{r2,r2}\end{pmatrix}\)</span> is near-diagonal for any primary–secondary pair: <span class="math inline">\(l_{r1,r1}\approx l_{r2,r2}\approx 1\)</span> (self-referential diagonal) and <span class="math inline">\(l_{r1,r2}\approx l_{r2,r1}\approx 0\)</span> (primary and secondary do not feed into each other). Hence:</p>
 <p><span class="math display">\[
 (l_{r1,r2}-l_{r1,r1})\approx -1, \qquad (l_{r2,r2}-l_{r2,r1})\approx +1, \qquad \Delta M^r \approx 0.
 \]</span></p>
-<p>The CE intervention <strong>reduces primary material use by <span class="math inline">\(\approx \rho\,d_{r,1}\)</span>, increases secondary by <span class="math inline">\(\approx \rho\,d_{r,1}\)</span>, and leaves total material throughput approximately unchanged</strong>. For <strong>partial portfolios</strong> engaging a subset of channels, <span class="math inline">\(d_{r,1}\)</span> is replaced by the relevant channel volume:</p>
+<p>The CE intervention <strong>reduces primary material use by <span class="math inline">\(\approx \rho\,x_{r,1}\)</span>, increases secondary by <span class="math inline">\(\approx \rho\,x_{r,1}\)</span>, and leaves total material throughput approximately unchanged</strong>. For <strong>partial portfolios</strong> engaging a subset of channels, <span class="math inline">\(x_{r,1}\)</span> is replaced by the relevant channel volume:</p>
 <p><span class="math display">\[
 \Delta M_1^r \;=\; \rho \cdot \underbrace{\Bigl[
-  \underbrace{fd_{r,1}^c}_{\substack{\text{household}}}
-  + \underbrace{fd_{r,1}^g}_{\substack{\text{government}}}
-  + \underbrace{fd_{r,1}^{id}}_{\substack{\text{private inv.}}}
-  + \underbrace{fd_{r,1}^{id^g}}_{\substack{\text{public inv.}}}
-  + \underbrace{\textstyle\sum_{s,j} a_{r1,sj}\,d_{sj}}_{\text{firm input demand}}
-\Bigr]}_{\displaystyle =\;d_{r,1}\;\text{(full CE)}} \cdot \underbrace{(l_{r1,r2} - l_{r1,r1})}_{\approx\,-1}
+  \underbrace{\textstyle\sum_k \delta^{rr}_{1,k}\,f_{r,k}}_{\text{final demand channels}}
+  + \underbrace{\textstyle\sum_{s,j} a_{r1,sj}\,x_{sj}}_{\text{intermediate input demand}}
+\Bigr]}_{\displaystyle =\;x_{r,1}\;\text{(full CE)}} \cdot \underbrace{(l_{r1,r2} - l_{r1,r1})}_{\approx\,-1}
 \]</span></p>
-<p>Because <span class="math inline">\((l_{r1,r2}-l_{r1,r1})\approx -1\)</span> is constant across all material pairs, <strong>the ranking of CE interventions reduces entirely to a ranking of the demand channel volumes</strong>, which are measured empirically in the Descriptive Analytics section.</p>
+<p>Because <span class="math inline">\((l_{r1,r2}-l_{r1,r1})\approx -1\)</span> is constant across all material pairs, <strong>the ranking of CE interventions reduces entirely to a ranking of the scale factor</strong> — the relevant channel volume from <span class="math inline">\(\boldsymbol{\Delta}\mathbf{f}\)</span> — which is measured empirically in the Descriptive Analytics section.</p>
 <p><strong>Caveat — emission impacts are not governed by the <span class="math inline">\(\approx -1\)</span> factor.</strong> That result applies only to primary material output (one row of <span class="math inline">\(L\)</span>). Emission impacts require summing the Leontief column difference across <em>all</em> upstream sectors <span class="math inline">\((s,k)\)</span> weighted by their emission intensities: <span class="math inline">\(\sum_{s,k} \varepsilon_{sk}(l_{r1,sk}^{\text{sec}} - l_{r1,sk}^{\text{pri}})\)</span>. This sum can be positive even when <span class="math inline">\((l_{r1,r2}-l_{r1,r1})\approx -1\)</span>, as the Metals structural rebound demonstrates.</p>
 </section>
 </section>

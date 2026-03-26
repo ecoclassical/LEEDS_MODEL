@@ -25,10 +25,10 @@ mvp.model <- function(t, y, parms, A.mat, B.mat) {
     sc = sc
   )
 
-  sim[zk.lab("beta_Z1"),   i] <- delta_eff$beta_Z1
-  sim[zk.lab("sigma_Z1"),  i] <- delta_eff$sigma_Z1
-  sim[zk.lab("iota_Z1"),   i] <- delta_eff$iota_Z1
-  sim[zk.lab("iota_g_Z1"), i] <- delta_eff$iota_g_Z1
+  sim[zk.lab("beta"), i] <- delta_eff$beta
+  sim[zk.lab("sigma"), i] <- delta_eff$sigma
+  sim[zk.lab("iota"), i] <- delta_eff$iota
+  sim[zk.lab("iota_g"), i] <- delta_eff$iota_g
 
   # ---- Shock gating (A-adjustment starts at t.shock) ----
 
@@ -64,10 +64,8 @@ mvp.model <- function(t, y, parms, A.mat, B.mat) {
 
   # Speed of Adjustment to CE
   sim[z.lab('gamma_A'), i] <- parms[z.lab('gammaA0')] +
-    sim[z.lab('g'), i - 1] * c(
-      sum(sim[paste0('Z1_gammaA1-', 1:K), i] * sim[paste0('Z1_sigma_Z1-', 1:K), i]),
-      sum(sim[paste0('Z2_gammaA1-', 1:K), i] * sim[paste0('Z2_sigma_Z2-', 1:K), i])
-    )
+    sim[z.lab('g'), i - 1] *
+      zk.sum(sim[zk.lab('gammaA1'), i] * sim[zk.lab('sigma'), i])
 
   #### HOUSEHOLDS ####
 
@@ -181,16 +179,14 @@ mvp.model <- function(t, y, parms, A.mat, B.mat) {
   #### PRODUCTION FIRMS ####
 
   # Final Demand Vector in Real Terms
-  sim[zk.lab('d'), i] <-
-    sim[zk.lab('beta_Z1'), i] *
-    sim['Z1_c', i] +
-    sim[zk.lab('beta_Z2'), i] * sim['Z2_c', i] +
-    sim[zk.lab('sigma_Z1'), i] * sim['Z1_g', i] +
-    sim[zk.lab('sigma_Z2'), i] * sim['Z2_g', i] +
-    sim[zk.lab('iota_Z1'), i] * sim['Z1_id', i] +
-    sim[zk.lab('iota_Z2'), i] * sim['Z2_id', i] +
-    sim[zk.lab('iota_g_Z1'), i] * sim['Z1_id_g', i] +
-    sim[zk.lab('iota_g_Z2'), i] * sim['Z2_id_g', i]
+  sim[zk.lab('d'), i] = sim[zk.lab('beta'), i] *
+    rep(sim[z.lab('c'), i], each = K) +
+    sim[zk.lab('sigma'), i] * rep(sim[z.lab('g'), i], each = K) +
+    sim[zk.lab('iota'), i] * rep(sim[z.lab('id'), i], each = K) +
+    sim[zk.lab('iota_g'), i] * rep(sim[z.lab('id_g'), i], each = K) +
+    sim[unlist(lapply(rev(zlabs), function(z) paste0(z, '_eta-', 1:K))), i] *
+      rep(sim[z.lab('rex'), i], each = K) -
+    sim[zk.lab('eta'), i] * rep(sim[z.lab('imp'), i], each = K)
 
   # sim[zk.lab('d'), i] = sim[zk.lab('beta'), i] *
   #   rep(sim[z.lab('c'), i], each = K) +
@@ -398,14 +394,14 @@ mvp.model <- function(t, y, parms, A.mat, B.mat) {
     sim[zk.lab('yd_j'), i] -
     sim[zk.lab('t_j'), i]
 
-  # Total VAT Revenue — consuming-jurisdiction: each region applies its own rates
-  # to all goods it buys regardless of origin (rates replicated across both supply blocs)
-  vat_Z1 <- rep(sim[paste0('Z1_vat-', 1:K), i], 2)
-  vat_Z2 <- rep(sim[paste0('Z2_vat-', 1:K), i], 2)
-  sim[z.lab('vat_rev'), i] <- c(
-    sim['Z1_c', i] * sum(sim[zk.lab('p'), i] * vat_Z1 * sim[zk.lab('beta_Z1'), i] / (1 + vat_Z1)),
-    sim['Z2_c', i] * sum(sim[zk.lab('p'), i] * vat_Z2 * sim[zk.lab('beta_Z2'), i] / (1 + vat_Z2))
-  )
+  # Total VAT Revenue
+  sim[z.lab('vat_rev'), i] <- sim[z.lab('c'), i] *
+    zk.sum(
+      sim[zk.lab('p'), i] *
+        sim[zk.lab('vat'), i] *
+        sim[zk.lab('beta'), i] /
+        (1 + sim[zk.lab('vat'), i])
+    )
 
   # Total Import Tariffs Revenue
   # Z1_tar_rev[,i] = t((Z2_xr[,i] * Z2_p[,i] * Z1_tar[,i]) / (I_col[,i] + Z1_tar[,i])) %*% (Z1_eta[,i]*Z1_tot_imp[,i])
@@ -587,28 +583,18 @@ mvp.model <- function(t, y, parms, A.mat, B.mat) {
     (1 + sim[zk.lab('vat'), i])
 
   # Average Price of Domestic Consumption
-  sim[z.lab('pa'), i] <- c(
-    sum(sim[zk.lab('p'), i] * sim[zk.lab('beta_Z1'), i]),
-    sum(sim[zk.lab('p'), i] * sim[zk.lab('beta_Z2'), i])
-  )
+  sim[z.lab('pa'), i] <- zk.sum(sim[zk.lab('p'), i] * sim[zk.lab('beta'), i])
 
   # Average Price of Investment
-  sim[z.lab('pid'), i] <- c(
-    sum(sim[zk.lab('p'), i] * sim[zk.lab('iota_Z1'), i]),
-    sum(sim[zk.lab('p'), i] * sim[zk.lab('iota_Z2'), i])
-  )
+  sim[z.lab('pid'), i] <- zk.sum(sim[zk.lab('p'), i] * sim[zk.lab('iota'), i])
 
   # Average Price of Government Investment
-  sim[z.lab('pid_g'), i] <- c(
-    sum(sim[zk.lab('p'), i] * sim[zk.lab('iota_g_Z1'), i]),
-    sum(sim[zk.lab('p'), i] * sim[zk.lab('iota_g_Z2'), i])
+  sim[z.lab('pid_g'), i] <- zk.sum(
+    sim[zk.lab('p'), i] * sim[zk.lab('iota_g'), i]
   )
 
   # Average Price of Government Spending
-  sim[z.lab('pg'), i] <- c(
-    sum(sim[zk.lab('p'), i] * sim[zk.lab('sigma_Z1'), i]),
-    sum(sim[zk.lab('p'), i] * sim[zk.lab('sigma_Z2'), i])
-  )
+  sim[z.lab('pg'), i] <- zk.sum(sim[zk.lab('p'), i] * sim[zk.lab('sigma'), i])
 
   # Average Price of Import of Area 1 #NEW ----- CHECK TARIFFS!
   sim[z.lab('pim'), i] <- zk.sum(
@@ -668,8 +654,7 @@ mvp.model <- function(t, y, parms, A.mat, B.mat) {
       sim[zk.lab('dc'), i - 1]
   )
   sim[zk.lab('dc'), i] <- sim[zk.lab('dc'), i - 1] + # Stock of Durable Consumption Goods
-    sim[zk.lab('beta_Z1'), i] * sim['Z1_c', i] +
-    sim[zk.lab('beta_Z2'), i] * sim['Z2_c', i] -
+    sim[zk.lab('beta'), i] * rep(sim[z.lab('c'), i], each = K) -
     sim[zk.lab('zeta_dc'), i - 1] * sim[zk.lab('dc'), i - 1]
   # sim[z.lab('kh'), i] <- sim[z.lab('kh'), i - 1] + sim[z.lab('x_mat'), i] -         # Socioeconomic Stock
   #   sim[z.lab('dis'), i]

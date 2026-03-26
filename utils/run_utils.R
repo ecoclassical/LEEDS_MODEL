@@ -1,4 +1,9 @@
-run_or_load_baseline <- function(initial, model_fun, baseline_file = baseline_filename, force = FALSE) {
+run_or_load_baseline <- function(
+  initial,
+  model_fun,
+  baseline_file = baseline_filename,
+  force = FALSE
+) {
   if (file.exists(baseline_file) && !force) {
     message("✔ Loading cached baseline")
     return(readRDS(baseline_file))
@@ -301,7 +306,7 @@ compute.target <- function(sim, select.target.vars = target.vars) {
 
 #### function loads new initial values ####
 load.init <- function(identif) {
-  #identif <- 'flexible_/data/initial_values_july31_jbf_corrected_aug5.xlsx'
+  # identif <- initial_filename
   initial <- list(
     variables = list(
       global = openxlsx::read.xlsx(identif, sheet = 'global.vars'),

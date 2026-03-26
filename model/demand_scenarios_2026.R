@@ -69,77 +69,79 @@ compute_all_delta_eff <- function(
   sc_row <- sc[sc$shock == shock, , drop = FALSE]
   if (nrow(sc_row) != 1) {
     return(list(
-      beta = sim[zk.lab("beta"), i],
-      sigma = sim[zk.lab("sigma"), i],
-      iota = sim[zk.lab("iota"), i],
-      iota_g = sim[zk.lab("iota_g"), i]
+      beta_Z1   = sim[zk.lab("beta_Z1"),   i],
+      sigma_Z1  = sim[zk.lab("sigma_Z1"),  i],
+      iota_Z1   = sim[zk.lab("iota_Z1"),   i],
+      iota_g_Z1 = sim[zk.lab("iota_g_Z1"), i]
     ))
   }
 
   target <- as.character(sc_row$target[[1]])
 
-  # IMPORTANT: use lagged (t-1) vector as the base so the shock doesn't compound
-  beta_base <- sim[zk.lab("beta"), 1]
-  sigma_base <- sim[zk.lab("sigma"), 1]
-  iota_base <- sim[zk.lab("iota"), 1]
-  iota_g_base <- sim[zk.lab("iota_g"), 1]
+  # IMPORTANT: use initial (t=1) vector as the base so the shock doesn't compound
+  beta_base    <- sim[zk.lab("beta_Z1"),   1]
+  sigma_base   <- sim[zk.lab("sigma_Z1"),  1]
+  iota_base    <- sim[zk.lab("iota_Z1"),   1]
+  iota_g_base  <- sim[zk.lab("iota_g_Z1"), 1]
 
   list(
-    beta = if (target == "beta") {
+    beta_Z1 = if (target == "beta") {
+      # domestic bloc (Z1 consumers of Z1 goods)
+      tmp <- compute_delta_eff(
+        shock, "beta", rho, t, t_shock,
+        delta_current = beta_base, sc = sc,
+        prefix = "Z1_beta_Z1"
+      )
+      # cross-border bloc (Z2 consumers of Z1 goods)
       compute_delta_eff(
-        shock,
-        "beta",
-        rho,
-        t,
-        t_shock,
-        delta_current = beta_base,
-        sc = sc,
-        prefix = "Z1_beta"
+        shock, "beta", rho, t, t_shock,
+        delta_current = tmp, sc = sc,
+        prefix = "Z2_beta_Z1"
       )
     } else {
       beta_base
     },
 
-    sigma = if (target == "sigma") {
+    sigma_Z1 = if (target == "sigma") {
+      tmp <- compute_delta_eff(
+        shock, "sigma", rho, t, t_shock,
+        delta_current = sigma_base, sc = sc,
+        prefix = "Z1_sigma_Z1"
+      )
       compute_delta_eff(
-        shock,
-        "sigma",
-        rho,
-        t,
-        t_shock,
-        delta_current = sigma_base,
-        sc = sc,
-        prefix = "Z1_sigma"
+        shock, "sigma", rho, t, t_shock,
+        delta_current = tmp, sc = sc,
+        prefix = "Z2_sigma_Z1"
       )
     } else {
       sigma_base
     },
 
-    iota = if (target == "iota") {
+    iota_Z1 = if (target == "iota") {
+      tmp <- compute_delta_eff(
+        shock, "iota", rho, t, t_shock,
+        delta_current = iota_base, sc = sc,
+        prefix = "Z1_iota_Z1"
+      )
       compute_delta_eff(
-        shock,
-        "iota",
-        rho,
-        t,
-        t_shock,
-        delta_current = iota_base,
-        sc = sc,
-        prefix = "Z1_iota"
+        shock, "iota", rho, t, t_shock,
+        delta_current = tmp, sc = sc,
+        prefix = "Z2_iota_Z1"
       )
     } else {
       iota_base
     },
 
-    iota_g = if (target == "iota_g") {
+    iota_g_Z1 = if (target == "iota_g") {
+      tmp <- compute_delta_eff(
+        shock, "iota_g", rho, t, t_shock,
+        delta_current = iota_g_base, sc = sc,
+        prefix = "Z1_iota_g_Z1"
+      )
       compute_delta_eff(
-        shock,
-        "iota_g",
-        rho,
-        t,
-        t_shock,
-        delta_current = iota_g_base,
-        sc = sc,
-        prefix = "Z1_iota_g"
+        shock, "iota_g", rho, t, t_shock,
+        delta_current = tmp, sc = sc,
+        prefix = "Z2_iota_g_Z1"
       )
     } else {
       iota_g_base

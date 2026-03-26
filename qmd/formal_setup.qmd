@@ -74,17 +74,17 @@ The **bilateral allocation shares** $\delta^{rs}_{n,k}$ give the fraction of reg
 - **supplying industry** $n$: which sector produces the good, and
 - **demand channel** $k \in \mathcal{K}$: institutional type.
 
-Collecting bilateral share blocks $\boldsymbol{\delta}^{rs} \equiv [\boldsymbol{\beta}^{rs},\, \boldsymbol{\sigma}^{rs},\, \boldsymbol{\iota}^{rs},\, \boldsymbol{\iota}^{g,rs}] \in \mathbb{R}^{N \times K}$ into the full allocation matrix $\boldsymbol{\Delta} \in \mathbb{R}^{RN \times RK}$ and defining $\mathbf{f} = (c_1, g_1, id_1, id^g_1, c_2, g_2, id_2, id^g_2)^\top \in \mathbb{R}^{RK}$:
+Collecting bilateral share blocks $\boldsymbol{\delta}^{rs} \equiv [\boldsymbol{\beta}^{rs},\, \boldsymbol{\sigma}^{rs},\, \boldsymbol{\iota}^{rs},\, \boldsymbol{\iota}^{g,rs}] \in \mathbb{R}^{N \times K}$ into the full allocation matrix $\boldsymbol{\Psi} \in \mathbb{R}^{RN \times RK}$ and defining $\mathbf{f} = (c_1, g_1, id_1, id^g_1, c_2, g_2, id_2, id^g_2)^\top \in \mathbb{R}^{RK}$:
 
 $$
-\boldsymbol{\Delta} =
+\boldsymbol{\Psi} =
 \begin{pmatrix} \boldsymbol{\delta}^{11} & \boldsymbol{\delta}^{12} \\ \boldsymbol{\delta}^{21} & \boldsymbol{\delta}^{22} \end{pmatrix},
 \qquad
-\mathbf{fd} = \boldsymbol{\Delta}\, \mathbf{f}, \qquad
+\mathbf{fd} = \boldsymbol{\Psi}\, \mathbf{f}, \qquad
 fd_{r,n} = \sum_{s=1}^R \sum_{k \in \mathcal{K}} \delta^{rs}_{n,k}\, f_{s,k}
 $$
 
-Column exhaustion: $\sum_{r,n} \delta^{rs}_{n,k} = 1$ — region $s$'s channel-$k$ expenditure is fully allocated across all supplying regions and sectors. Diagonal blocks ($r = s$) encode **domestic** sourcing; off-diagonal blocks ($r \neq s$) encode **cross-border** final goods flows — each distinguished by channel. No separate import or export terms are required: bilateral flows are implicit in the off-diagonal column sums of $\boldsymbol{\Delta}$.
+Column exhaustion: $\sum_{r,n} \delta^{rs}_{n,k} = 1$ — region $s$'s channel-$k$ expenditure is fully allocated across all supplying regions and sectors. Diagonal blocks ($r = s$) encode **domestic** sourcing; off-diagonal blocks ($r \neq s$) encode **cross-border** final goods flows — each distinguished by channel. No separate import or export terms are required: bilateral flows are implicit in the off-diagonal column sums of $\boldsymbol{\Psi}$.
 
 ## IO Balance and Gross Output
 
@@ -93,7 +93,7 @@ The IO balance equates gross output to intermediate use plus final demand:
 $$
 \mathbf{x} = A\mathbf{x} + \mathbf{fd}
 \quad\Longrightarrow\quad
-\mathbf{x} = (I - A)^{-1}\mathbf{fd} \equiv L\,\mathbf{fd} = L\,\boldsymbol{\Delta}\,\mathbf{f}
+\mathbf{x} = (I - A)^{-1}\mathbf{fd} \equiv L\,\mathbf{fd} = L\,\boldsymbol{\Psi}\,\mathbf{f}
 $$
 
 where $L = (I - A)^{-1} \in \mathbb{R}^{RN \times RN}$ is the **Leontief inverse** with elements $l_{ri,sj}$: the total output of sector $(r,i)$ — direct and indirect across all IO rounds — required per unit of final demand for good $(s,j)$.
@@ -450,115 +450,56 @@ Each block $Z_{rs} \in \mathbb{R}^{N\times N}$ records flows **from** the sellin
 
 Value added decomposes column-wise into wages ($W$), profits ($P$), and net taxes ($T$): $\mathrm{VA}_r = W_r + P_r + T_r$, so $d_{sj} = \sum_{r,i} z_{ri,sj} + \mathrm{VA}_{sj}$.
 
-Technical coefficients are defined column-wise from the intermediate blocks:
+## Dimensions and the Full MRIO System
+
+All vectors stack regions as $(\cdot^{Z1\top}, \cdot^{Z2\top})^\top$ with dimension $RN = 108$. The Leontief inverse $L = (I - A)^{-1}$ is $RN \times RN = 108 \times 108$, and gross output $\mathbf{x} \in \mathbb{R}^{108}$ partitions as:
 
 $$
-a_{ri,sj} = \frac{z_{ri,sj}}{d_{sj}}, \qquad
-A = \begin{pmatrix} A_{11} & A_{12} \\ A_{21} & A_{22} \end{pmatrix} \in \mathbb{R}^{RN\times RN}.
+\mathbf{x} = \begin{pmatrix} \mathbf{x}^{Z1} \\ \mathbf{x}^{Z2} \end{pmatrix}, \qquad
+\mathbf{x}^{Z1} = (x_{Z1,1},\ldots,x_{Z1,54})^\top, \quad
+\mathbf{x}^{Z2} = (x_{Z2,1},\ldots,x_{Z2,54})^\top.
 $$
+
+The final demand vector $\mathbf{fd} = \boldsymbol{\Psi}\,\mathbf{f} \in \mathbb{R}^{108}$ likewise partitions into two 54-blocks. Each block further decomposes bilaterally by consuming region:
+
+$$
+fd_{Z1,n} = \underbrace{\sum_k \delta^{Z1,Z1}_{n,k}\,f_{Z1,k}}_{\text{Z1 institutions} \to \text{Z1 goods}}
+           + \underbrace{\sum_k \delta^{Z1,Z2}_{n,k}\,f_{Z2,k}}_{\text{Z2 institutions} \to \text{Z1 goods}},
+\qquad
+fd_{Z2,n} = \sum_k \delta^{Z2,Z1}_{n,k}\,f_{Z1,k} + \sum_k \delta^{Z2,Z2}_{n,k}\,f_{Z2,k}.
+$$
+
+The aggregate demand scalars $\mathbf{f} = (c_{Z1}, g_{Z1}, id_{Z1}, id^g_{Z1}, c_{Z2}, g_{Z2}, id_{Z2}, id^g_{Z2})^\top \in \mathbb{R}^{RK=8}$ remain scalar per channel per region. The full system is:
+
+$$
+\underbrace{\mathbf{x}}_{108} = \underbrace{L}_{108\times 108}\;\underbrace{\boldsymbol{\Psi}}_{108\times 8}\;\underbrace{\mathbf{f}}_{8}
+$$
+
+with the bilateral decomposition providing domestic- and foreign-demand-induced components of output without additional simulation variables.
 
 ---
 
-## Final Demand
-
-*Final demand* $\mathbf{fd} \in \mathbb{R}^{RN}$ is defined sector-by-sector across all $RN$ region–sector pairs, with $R$ regions and $N$ sectors each. For each region $r$, $K = 4$ institutional channels allocate aggregate expenditure across sectors:
-
-1. Household consumption $c_r$ with sector-level shares $\boldsymbol{\beta}_r$,
-2. Government consumption $g_r$ with sector-level shares $\boldsymbol{\sigma}_r$,
-3. Private investment $id_r$ with sector-level shares $\boldsymbol{\iota}_r$, and
-4. Public investment $id^g_r$ with sector-level shares $\boldsymbol{\iota}^g_r$.
-
-Stacking the $N$-dimensional sub-vectors across regions:
-
-$$
-\mathbf{fd} = \begin{pmatrix} \mathbf{fd}^1 \\ \vdots \\ \mathbf{fd}^R \end{pmatrix}, \qquad
-\mathbf{fd}^r =
-\begin{pmatrix} \beta_{r,1} \\ \vdots \\ \beta_{r,N} \end{pmatrix} c_r
-+
-\begin{pmatrix} \sigma_{r,1} \\ \vdots \\ \sigma_{r,N} \end{pmatrix} g_r
-+
-\begin{pmatrix} \iota_{r,1} \\ \vdots \\ \iota_{r,N} \end{pmatrix} id_r
-+
-\begin{pmatrix} \iota^g_{r,1} \\ \vdots \\ \iota^g_{r,N} \end{pmatrix} id^g_r
-$$
-
-where $\beta_{r,n}, \sigma_{r,n}, \iota_{r,n}, \iota^g_{r,n} \geq 0$ with $\sum_n \beta_{r,n} = \cdots = 1$ for each $r$.
-
-**Full MRIO.** The per-region formula above is the *domestic-only* special case. In the multi-regional setting, region $s$'s institutions also buy final goods from region $r \neq s$. Rather than appending separate import and export terms, the MRIO approach encodes all bilateral flows directly in a single **allocation matrix** $\boldsymbol{\Theta} \in \mathbb{R}^{RN \times RK}$:
-
-$$
-\boldsymbol{\Theta} =
-\begin{pmatrix}
-\boldsymbol{\Theta}^{11} & \cdots & \boldsymbol{\Theta}^{1R} \\
-\vdots & \ddots & \vdots \\
-\boldsymbol{\Theta}^{R1} & \cdots & \boldsymbol{\Theta}^{RR}
-\end{pmatrix}, \qquad
-\boldsymbol{\Theta}^{rs} \in \mathbb{R}^{N \times K}
-$$
-
-Element $\Theta^{rs}_{n,k}$ is the share of region $s$'s channel-$k$ aggregate demand sourced from sector $n$ of region $r$. Letting $\mathbf{f}^r = (c_r,\, g_r,\, id_r,\, id^g_r)^\top \in \mathbb{R}^K$ and $\mathbf{f} = (\mathbf{f}^1, \ldots, \mathbf{f}^R)^\top \in \mathbb{R}^{RK}$:
-
-$$
-\mathbf{fd} = \boldsymbol{\Theta}\, \mathbf{f}, \qquad fd_{r,n} = \sum_{s=1}^R \sum_{k \in \mathcal{K}} \Theta^{rs}_{n,k}\, f_{s,k}
-$$
-
-**Column exhaustion:** $\sum_{r,n} \Theta^{rs}_{n,k} = 1$ for each $(s,k)$ — region $s$'s channel-$k$ expenditure is fully allocated across all supplying regions and sectors.
-
-**Imports and exports are implicit:** no separate $\eta$ terms are needed. Off-diagonal column sums give imports directly:
-
-$$
-\text{imp}_{s,k} \equiv \sum_{n} \sum_{r \neq s} \Theta^{rs}_{n,k}\, f_{s,k}, \qquad
-\text{exp}_{r,k} \equiv \sum_{n} \sum_{s \neq r} \Theta^{rs}_{n,k}\, f_{s,k}
-$$
-
-The diagonal blocks $\boldsymbol{\Theta}^{rr}$ encode **domestic** sourcing (columns are $\boldsymbol{\beta}^{rr}, \boldsymbol{\sigma}^{rr}, \boldsymbol{\iota}^{rr}, \boldsymbol{\iota}^{g,rr}$, satisfying $\sum_n \Theta^{rr}_{n,k} < 1$ since some demand is imported); the off-diagonal blocks $\boldsymbol{\Theta}^{rs}$ ($r \neq s$) encode **cross-border** final goods flows by channel — the distinction between HH, government, and investment imports that aggregate $\eta$ parameters cannot capture.
-
----
-
-## IO System and Gross Output
-
-Intermediate demand is $\mathbf{id} = A\mathbf{d}$, with element $id_{ri} = \sum_{s,j} a_{ri,sj}\, d_{sj}$. The IO balance for gross output $\mathbf{d} \in \mathbb{R}^{RN}$ is:
-
-$$
-\mathbf{d} = \mathbf{fd} + A\mathbf{d}
-\quad\Longrightarrow\quad
-\mathbf{d} = (I - A)^{-1}\mathbf{fd} \equiv L\,\mathbf{fd} = L\,\boldsymbol{\Theta}\,\mathbf{f},
-$$
-
-where $L \in \mathbb{R}^{RN\times RN}$ is the Leontief inverse with elements $l_{ri,sj}$: the total output of sector $(r,i)$ — direct and indirect across all IO rounds — required to deliver one unit of final demand for good $(s,j)$.
-
-Element-wise: $d_{ri} = \sum_{s,j} l_{ri,sj}\, fd_{sj}$.
-
-For primary sector 1 and secondary sector 2 in region $r$, material use is:
-
-$$
-M_1^r = d_{r,1} = \sum_{s=1}^R\sum_{j=1}^N l_{r1,sj}\, fd_{sj}, \qquad
-M_2^r = d_{r,2} = \sum_{s=1}^R\sum_{j=1}^N l_{r2,sj}\, fd_{sj}.
-$$
-
-Total material use $M^r = M_1^r + M_2^r = \sum_{sj}(l_{r1,sj}+l_{r2,sj})\,fd_{sj}$.
-
----
+# Scenario Design
 
 ## Final Demand Interventions
 
-A CE substitution of intensity $\rho$ in region $r$ and channel $K$ shifts fraction $\rho$ of primary material final demand to secondary:
+A CE substitution of intensity $\rho$ in region $r$ and channel $k$ shifts fraction $\rho$ of domestic primary material final demand to secondary. Writing $\Delta\boldsymbol{\Psi}^{(k)}$ for the shock to the allocation matrix in channel $k$:
 
 $$
-\Delta fd_{r,1}^{(K)} = -\rho\,\varphi_{K,1}^r\,fd_K^r, \qquad
-\Delta fd_{r,2}^{(K)} = +\rho\,\varphi_{K,1}^r\,fd_K^r, \qquad
-\Delta fd_{si}^{(K)} = 0 \text{ otherwise,}
+\Delta\delta^{rr}_{1,k} = -\rho\,\delta^{rr}_{1,k}, \qquad
+\Delta\delta^{rr}_{2,k} = +\rho\,\delta^{rr}_{1,k}, \qquad
+\Delta\delta^{rs}_{n,k} = 0 \text{ otherwise,}
 $$
 
-so aggregate expenditure is preserved: $\sum_{si}\Delta fd_{si}^{(K)} = 0$. Output responds via $\Delta\mathbf{d} = L\,\Delta\mathbf{fd}$:
+which implies for final demand: $\Delta fd_{r,1}^{(k)} = -\rho\,\delta^{rr}_{1,k}\,f_{r,k}$, $\Delta fd_{r,2}^{(k)} = +\rho\,\delta^{rr}_{1,k}\,f_{r,k}$, preserving aggregate expenditure ($\sum_{si}\Delta fd_{si}^{(k)} = 0$). Output responds via $\Delta\mathbf{x} = L\,\Delta\mathbf{fd}$:
 
 $$
-\Delta M_1^r = \Delta d_{r,1} = \sum_{sj} l_{r1,sj}\,\Delta fd_{sj}
-= l_{r1,r1}\bigl(-\rho\,\varphi_{K,1}^r fd_K^r\bigr) + l_{r1,r2}\bigl(+\rho\,\varphi_{K,1}^r fd_K^r\bigr)
-= \rho\,\varphi_{K,1}^r fd_K^r\,(l_{r1,r2} - l_{r1,r1}).
+\Delta M_1^r = \Delta x_{r,1} = \sum_{sj} l_{r1,sj}\,\Delta fd_{sj}
+= l_{r1,r1}\bigl(-\rho\,\delta^{rr}_{1,k}\,f_{r,k}\bigr) + l_{r1,r2}\bigl(+\rho\,\delta^{rr}_{1,k}\,f_{r,k}\bigr)
+= \rho\,\delta^{rr}_{1,k}\,f_{r,k}\,(l_{r1,r2} - l_{r1,r1}).
 $$
 
-Summing over all final demand channels $K$, with $fd_{r,1} \equiv \sum_K \varphi_{K,1}^r fd_K^r$ denoting total primary material final demand in region $r$:
+Summing over all final demand channels $k$, with $fd_{r,1} \equiv \sum_k \delta^{rr}_{1,k}\,f_{r,k}$ denoting total primary material final demand in region $r$:
 
 $$
 \Delta M_1^r = \rho\, fd_{r,1}\,(l_{r1,r2} - l_{r1,r1}), \qquad
@@ -577,25 +518,25 @@ $$
 \Delta a_{ri,sj} = 0 \text{ for } i\neq 1,2,
 $$
 
-preserving total input shares ($a'_{r1,sj}+a'_{r2,sj} = a_{r1,sj}+a_{r2,sj}$). For small $\rho$, the first-order output change is $\Delta\mathbf{d} \approx L\,(\Delta A)\,\mathbf{d}$, giving:
+preserving total input shares ($a'_{r1,sj}+a'_{r2,sj} = a_{r1,sj}+a_{r2,sj}$). For small $\rho$, the first-order output change is $\Delta\mathbf{x} \approx L\,(\Delta A)\,\mathbf{x}$, giving:
 
 $$
-\Delta M_1^r \approx \rho \sum_{j\in\mathcal{J}}\sum_s a_{r1,sj}\,d_{sj}\,(l_{r1,r2} - l_{r1,r1}), \qquad
-\Delta M_2^r \approx \rho \sum_{j\in\mathcal{J}}\sum_s a_{r1,sj}\,d_{sj}\,(l_{r2,r2} - l_{r2,r1}).
+\Delta M_1^r \approx \rho \sum_{j\in\mathcal{J}}\sum_s a_{r1,sj}\,x_{sj}\,(l_{r1,r2} - l_{r1,r1}), \qquad
+\Delta M_2^r \approx \rho \sum_{j\in\mathcal{J}}\sum_s a_{r1,sj}\,x_{sj}\,(l_{r2,r2} - l_{r2,r1}).
 $$
 
-The scale is now $\sum_{j,s} a_{r1,sj}\,d_{sj}$ — total intermediate use of primary material $(r,1)$ across all using sectors — replacing the final demand scale $fd_{r,1}$. The Leontief structural factors $(l_{r1,r2}-l_{r1,r1})$ are identical in both cases.
+The scale is now $\sum_{j,s} a_{r1,sj}\,x_{sj}$ — total intermediate use of primary material $(r,1)$ across all using sectors — replacing the final demand scale $fd_{r,1}$. The Leontief structural factors $(l_{r1,r2}-l_{r1,r1})$ are identical in both cases.
 
 ---
 
 ## Unified Impact Formula
 
-The IO accounting identity $d_{r,1} = fd_{r,1} + \sum_{s,j} a_{r1,sj}\,d_{sj}$ (gross output of primary = final demand + intermediate use) unifies both mechanisms. For the **full CE** case:
+The IO accounting identity $x_{r,1} = fd_{r,1} + \sum_{s,j} a_{r1,sj}\,x_{sj}$ (gross output of primary = final demand + intermediate use) unifies both mechanisms. Letting $\Delta\mathbf{f}$ denote the scenario shock to final demand aggregates (either via $\Delta\boldsymbol{\delta}^{rr}$ for final-demand shocks or via $\Delta A$ for intermediate shocks), the full-CE impact formula is:
 
 $$
 \boxed{
-\Delta M_1^r = \rho\,d_{r,1}\,(l_{r1,r2} - l_{r1,r1}), \qquad
-\Delta M_2^r = \rho\,d_{r,1}\,(l_{r2,r2} - l_{r2,r1})
+\Delta M_1^r = \rho\,x_{r,1}\,(l_{r1,r2} - l_{r1,r1}), \qquad
+\Delta M_2^r = \rho\,x_{r,1}\,(l_{r2,r2} - l_{r2,r1})
 }
 $$
 
@@ -605,18 +546,15 @@ $$
 (l_{r1,r2}-l_{r1,r1})\approx -1, \qquad (l_{r2,r2}-l_{r2,r1})\approx +1, \qquad \Delta M^r \approx 0.
 $$
 
-The CE intervention **reduces primary material use by $\approx \rho\,d_{r,1}$, increases secondary by $\approx \rho\,d_{r,1}$, and leaves total material throughput approximately unchanged**. For **partial portfolios** engaging a subset of channels, $d_{r,1}$ is replaced by the relevant channel volume:
+The CE intervention **reduces primary material use by $\approx \rho\,x_{r,1}$, increases secondary by $\approx \rho\,x_{r,1}$, and leaves total material throughput approximately unchanged**. For **partial portfolios** engaging a subset of channels, $x_{r,1}$ is replaced by the relevant channel volume:
 
 $$
 \Delta M_1^r \;=\; \rho \cdot \underbrace{\Bigl[
-  \underbrace{fd_{r,1}^c}_{\substack{\text{household}}}
-  + \underbrace{fd_{r,1}^g}_{\substack{\text{government}}}
-  + \underbrace{fd_{r,1}^{id}}_{\substack{\text{private inv.}}}
-  + \underbrace{fd_{r,1}^{id^g}}_{\substack{\text{public inv.}}}
-  + \underbrace{\textstyle\sum_{s,j} a_{r1,sj}\,d_{sj}}_{\text{firm input demand}}
-\Bigr]}_{\displaystyle =\;d_{r,1}\;\text{(full CE)}} \cdot \underbrace{(l_{r1,r2} - l_{r1,r1})}_{\approx\,-1}
+  \underbrace{\textstyle\sum_k \delta^{rr}_{1,k}\,f_{r,k}}_{\text{final demand channels}}
+  + \underbrace{\textstyle\sum_{s,j} a_{r1,sj}\,x_{sj}}_{\text{intermediate input demand}}
+\Bigr]}_{\displaystyle =\;x_{r,1}\;\text{(full CE)}} \cdot \underbrace{(l_{r1,r2} - l_{r1,r1})}_{\approx\,-1}
 $$
 
-Because $(l_{r1,r2}-l_{r1,r1})\approx -1$ is constant across all material pairs, **the ranking of CE interventions reduces entirely to a ranking of the demand channel volumes**, which are measured empirically in the Descriptive Analytics section.
+Because $(l_{r1,r2}-l_{r1,r1})\approx -1$ is constant across all material pairs, **the ranking of CE interventions reduces entirely to a ranking of the scale factor** — the relevant channel volume ($\Delta\mathbf{f}$ for final-demand shocks, $\Delta A \cdot \mathbf{x}$ for intermediate shocks) — which is measured empirically in the Descriptive Analytics section.
 
 **Caveat — emission impacts are not governed by the $\approx -1$ factor.** That result applies only to primary material output (one row of $L$). Emission impacts require summing the Leontief column difference across *all* upstream sectors $(s,k)$ weighted by their emission intensities: $\sum_{s,k} \varepsilon_{sk}(l_{r1,sk}^{\text{sec}} - l_{r1,sk}^{\text{pri}})$. This sum can be positive even when $(l_{r1,r2}-l_{r1,r1})\approx -1$, as the Metals structural rebound demonstrates.

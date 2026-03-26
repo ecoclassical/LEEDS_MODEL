@@ -1,3 +1,90 @@
+plot_target_fit <- function(
+  target_result,
+  title    = "Baseline Calibration",
+  output   = "output/baseline_fit.png",
+  width    = 12, height = 7, dpi = 150
+) {
+  var_labels <- c(
+    c          = "Consumption",   id         = "Investment",
+    g          = "Gov Spending",  rex        = "Exports",
+    imp        = "Imports",       M_TOT_int  = "Material Use",
+    fd         = "Final Demand",  va         = "Value Added",
+    go         = "Gross Output",  gdef       = "Gov Deficit",
+    debt_gdp   = "Debt / GDP",    b_s        = "Net Worth"
+  )
+
+  df <- as.data.frame(t(target_result$table), stringsAsFactors = FALSE)
+  df$variable <- rownames(df)
+  df$ratio    <- as.numeric(df$ratio)
+  df$value    <- as.numeric(df$value)
+  df$target_v <- as.numeric(df$target)
+  df$region   <- ifelse(startsWith(df$variable, "Z1"), "EU (Z1)", "RoW (Z2)")
+  df$var_name <- sub("^Z[12]_", "", df$variable)
+  df$label    <- ifelse(
+    !is.na(var_labels[df$var_name]),
+    var_labels[df$var_name],
+    df$var_name
+  )
+
+  # Cap extreme ratios (gdef ≈ ±27) for display; annotate them
+  cap <- 2.5
+  df$ratio_disp  <- pmax(pmin(df$ratio, cap), -cap)
+  df$out_of_range <- abs(df$ratio) > cap
+  df$annot       <- ifelse(df$out_of_range, sprintf("%.1f×", df$ratio), NA_character_)
+
+  # Colour: green if within 5%, amber within 15%, red otherwise
+  df$fit_band <- cut(
+    abs(df$ratio - 1),
+    breaks = c(0, 0.05, 0.15, Inf),
+    labels = c("good (±5%)", "ok (±15%)", "poor (>15%)")
+  )
+
+  p <- ggplot(df, aes(
+    x     = ratio_disp,
+    y     = reorder(label, ratio_disp),
+    color = fit_band,
+    shape = region
+  )) +
+    geom_vline(xintercept = 1, linetype = "dashed", linewidth = 0.6,
+               color = "grey50") +
+    geom_segment(aes(x = 1, xend = ratio_disp,
+                     yend = reorder(label, ratio_disp)),
+                 linewidth = 0.5, alpha = 0.4) +
+    geom_point(size = 3.5) +
+    geom_text(
+      aes(label = annot), na.rm = TRUE,
+      hjust = -0.25, size = 3, fontface = "italic"
+    ) +
+    facet_wrap(~region, ncol = 2) +
+    scale_color_manual(
+      values = c("good (±5%)" = "#2ca25f",
+                 "ok (±15%)"  = "#fe9929",
+                 "poor (>15%)"= "#d7191c"),
+      name = "Calibration"
+    ) +
+    scale_shape_manual(values = c("EU (Z1)" = 16, "RoW (Z2)" = 17),
+                       guide = "none") +
+    scale_x_continuous(
+      limits = c(NA, cap + 0.4),
+      labels = scales::label_number(accuracy = 0.01)
+    ) +
+    labs(
+      title    = title,
+      subtitle = sprintf(
+        "Total fit: %.4f  |  Target fit: %.4f  (lower = better)",
+        target_result$total.fit, target_result$fitness
+      ),
+      x = "Simulated / Target  (capped at ±2.5; labelled if beyond)",
+      y = NULL
+    ) +
+    theme_leeds() +
+    theme(legend.position = "bottom", panel.grid.minor = element_blank())
+
+  ggsave(output, p, width = width, height = height, dpi = dpi)
+  message("Saved: ", output)
+  invisible(p)
+}
+
 theme_leeds <- function() {
   theme_minimal() +
     theme(
@@ -89,12 +176,21 @@ view.shock <- function(
   # Build labels: e.g. "Z1_beta-31", "Z2_beta-31", ...
   shock.labels <- paste0(rep(zlabs, each = length(shock.vars)), "_", shock.vars)
 
+  # Bilateral MRIO fallback: "Z1_beta-31" -> "Z1_beta_Z1-31" etc.
   missing <- setdiff(shock.labels, rownames(res$simulation))
   if (length(missing) > 0) {
-    stop(
-      "view.shock(): missing labels in res$simulation: ",
-      paste(missing, collapse = ", ")
+    shock.labels <- gsub(
+      "_(beta|sigma|iota_g|iota)-",
+      "_\\1_Z1-",
+      shock.labels
     )
+    still.missing <- setdiff(shock.labels, rownames(res$simulation))
+    if (length(still.missing) > 0) {
+      stop(
+        "view.shock(): missing labels in res$simulation: ",
+        paste(still.missing, collapse = ", ")
+      )
+    }
   }
 
   df <- res$simulation[shock.labels, , drop = FALSE] %>%
