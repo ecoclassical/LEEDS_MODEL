@@ -1,55 +1,55 @@
-sector_code,label
-1,Agriculture
-2,Animal<br>Farming
-3,"Forestry,<br>Logging"
-4,Fishing
-5,Fossil-Fuel<br>Extraction
-6,Mining
-7,Meat
-8,Other<br>Food
-9,Tobacco
-10,Textiles
-11,Wood
-12,Wood<br>Re-processing
-13,Pulp
-14,Pulp<br>Re-processing
-15,Paper
-16,Fossil-Fuel<br>Processing
-17,Plastics
-18,Plastics<br>Re-processing
-19,Chemicals
-20,"Rubber, Plastic<br>Products"
-21,Glass
-22,Glass<br>Re-processing
-23,Other Non-metallic<br>Mineral Products
-24,Cement
-25,Clinker<br>Re-processing
-26,Metals
-27,Metals<br>Re-processing
-28,Durable<br>Goods
-29,Furniture
-30,Recycling
-31,Fossil-Fuel<br>Electricity
-32,Renewable<br>Electricity
-33,"Energy Transmission,<br>Distribution"
-34,Gas
-35,Water
-36,Construction
-37,Construction<br>Re-processing
-38,"Vehicle Sale,<br>Maintenance,  Repair"
-39,Vehicle<br>Fuel Sale
-40,"Retail, Wholesale<br>Trade"
-41,Leisure
-42,Transport
-43,Professional<br>Services
-44,Real<br>Estate
-45,"Machine, Equipment<br>Renting"
-46,R&D
-47,"Public Administration,<br>Defence"
-48,Education
-49,"Health,<br>Social Work"
-50,Waste<br>Incineration
-51,"Biogas,<br>Composting"
-52,Waste<br>Water
-53,Waste<br>Landfill
-54,Other<br>Services
+sector_code,label,mario_label
+1,Agriculture,Agriculture
+2,Animal<br>Farming,Animal Farming
+3,"Forestry,<br>Logging","Forestry, logging and related service activities (02)"
+4,Fishing,"Fishing, operating of fish hatcheries and fish farms; service activities incidental to fishing (05)"
+5,Fossil-Fuel<br>Extraction,Extraction of Fossil-Fuels
+6,Mining,Mining & Quarrying of raw materials
+7,Meat,Processing of meat
+8,Other<br>Food,Processing of other food&beverage
+9,Tobacco,Manufacture of tobacco products (16)
+10,Textiles,Manufacture of textiles
+11,Wood,"Manufacture of wood and of products of wood and cork, except furniture; manufacture of articles of straw and plaiting materials (20)"
+12,Wood<br>Re-processing,Re-processing of secondary wood material into new wood material
+13,Pulp,Pulp
+14,Pulp<br>Re-processing,Re-processing of secondary paper into new pulp
+15,Paper,Paper
+16,Fossil-Fuel<br>Processing,Processing of Fossil Fuels
+17,Plastics,"Plastics, basic"
+18,Plastics<br>Re-processing,Re-processing of secondary plastic into new plastic
+19,Chemicals,Manufacture of Chemicals
+20,"Rubber, Plastic<br>Products",Manufacture of rubber and plastic products (25)
+21,Glass,Manufacture of glass and glass products
+22,Glass<br>Re-processing,Re-processing of secondary glass into new glass
+23,Other Non-metallic<br>Mineral Products,Manufacture of other non-metallic mineral products
+24,Cement,"Manufacture of cement, lime and plaster"
+25,Clinker<br>Re-processing,Re-processing of ash into clinker
+26,Metals,Manufacture of Metals
+27,Metals<br>Re-processing,Re-processing of Metals
+28,Durable<br>Goods,Manufacture of durable goods
+29,Furniture,"Manufacture of furniture; manufacturing n.e.c. (36)"
+30,Recycling,Recycling
+31,Fossil-Fuel<br>Electricity,Production of electricity by fossil fuels
+32,Renewable<br>Electricity,Production of electricity by renewable energy
+33,"Energy Transmission,<br>Distribution",Transmission & Distribution
+34,Gas,"Manufacture of gas; distribution of gaseous fuels through mains"
+35,Water,Water
+36,Construction,Construction (45)
+37,Construction<br>Re-processing,Re-processing of secondary construction material into aggregates
+38,"Vehicle Sale,<br>Maintenance,  Repair","Sale, maintenance, repair of motor vehicles, motor vehicles parts, motorcycles, motor cycles parts and accessoiries"
+39,Vehicle<br>Fuel Sale,Retail sale of automotive fuel
+40,"Retail, Wholesale<br>Trade",Retail & Wholesale trade
+41,Leisure,Leisure Services
+42,Transport,Transport
+43,Professional<br>Services,KIBS
+44,Real<br>Estate,Real estate activities (70)
+45,"Machine, Equipment<br>Renting","Renting of machinery and equipment without operator and of personal and household goods (71)"
+46,R&D,Research and development (73)
+47,"Public Administration,<br>Defence","Public administration and defence; compulsory social security (75)"
+48,Education,Education (80)
+49,"Health,<br>Social Work",Health and social work (85)
+50,Waste<br>Incineration,Incineration of Waste
+51,"Biogas,<br>Composting",Biogas & Composting
+52,Waste<br>Water,Waste water
+53,Waste<br>Landfill,Landfill of Waste
+54,Other<br>Services,Other Services

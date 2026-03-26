@@ -6,7 +6,7 @@
 [baseline] ── Production scenarios ──
 [baseline] ──────────────────────────────────────── Production Scenarios Loaded ─────────────────────────────────────────
 [baseline] ℹ Parameters ready: nPeriods = 100, max.iterations = 100
-[baseline] ℹ Scenario sanity: shock = 0, rho = 0.9, t.shock = 70, Z1_ce = 0, Z2_ce = 0
+[baseline] ℹ Scenario sanity: shock = 0, rho = 0.25, t.shock = 70, Z1_ce = 0, Z2_ce = 0
 [baseline] ℹ Building A0/B0/A.t/B.t after production scenarios…
 [baseline] ℹ max |B0 - A0| at init = 0
 [baseline] 
@@ -575,6 +575,6 @@
 [baseline] ✔ t = 100: converged at iter = 87 with error = 1.633e-06
 [baseline] 
 [baseline] ── Simulation completed ──
-[baseline] ✔ Total execution time: 4.05 mins
+[baseline] ✔ Total execution time: 3.908 mins
 [baseline] ℹ Last non-NA simulated period: t = 100
 [baseline] ────────────────────────────────────────── LEEDS_MODEL run finished ──────────────────────────────────────────

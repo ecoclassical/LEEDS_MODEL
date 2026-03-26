@@ -1,0 +1,160 @@
+---
+title: "Scenario Discussion"
+subtitle: "Circular Economy Transitions in a Two-Region MRIO-SFC Model"
+author:
+  - name: "Oriol Vallès Codina"
+    affiliation: "Johns Hopkins University, Net Zero Industrial Policy Lab"
+date: "`r Sys.Date()`"
+format:
+  html:
+    toc: true
+    toc_float: true
+    self-contained: true
+    page-layout: full
+execute:
+  echo: false
+  working-dir: ..
+---
+
+## Overview
+
+This section synthesises the simulation results across thirteen circular economy scenarios (Scenarios 1–13), evaluated in a two-region (EU as Z1, Rest of World as Z2) Multi-Regional Input-Output Stock-Flow Consistent (MRIO-SFC) model. The analysis covers four dimensions: macroeconomic performance, social and distributional outcomes, ecological effects, and EU–RoW asymmetries.
+
+The model is estimated at the 54-sector level for each region (108 sectors total), using bilateral final demand allocation matrices $\boldsymbol{\Psi}$ linking each consuming region's institutional channels (household consumption, government, investment) to all 108 supplying sectors. Each CE scenario applies a substitution intensity $\rho = 0.2$ at period $t^* = 70$, redirecting spending or production inputs from a primary material sector to its secondary (recycled) counterpart.
+
+---
+
+::: {.callout-note}
+## Key findings
+
+Two distinct transition regimes emerge across the thirteen scenarios:
+
+1. **Intermediate production restructuring (Scenarios 7–13)** delivers the **strongest ecological gains** but is **contractionary and distributionally regressive** in the EU, with pronounced and asymmetric spillovers to RoW. The bilateral MRIO structure reveals that part of the EU's apparent ecological improvement is partially offset by reallocated demand on RoW production.
+
+2. **Final demand reallocation (Scenarios 1–6)** has **low leverage**: macro, social, and ecological effects are small, and cross-border spillovers are limited. The bilateral demand channel confirms these scenarios generate only marginal compositional shifts in trade flows.
+
+The dominant structural trade-off is: **stronger ecological improvement tends to coincide with stronger macro-social contraction**. No scenario in the 1–13 range resolves this tension. Deep CE transition therefore requires complementary stabilisation policy if ecological gains are not to be purchased at the cost of employment and distributional equity.
+:::
+
+---
+
+## Summary Matrix
+
+Legend: **++** strongly positive, **+** positive, **0** small/neutral, **−** negative, **−−** strongly negative, **±** mixed/asymmetric.
+
+| Scenario group | Output (EU) | Employment (EU) | Inequality (EU) | External balance (EU) | Ecology (EU) | RoW spillovers | EU–RoW symmetry |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| **Final demand shifts (1–6)** | **− / 0** | **− / 0** | **0** | **+ / 0** | **+ / 0** | Mostly **0** | **Mostly symmetric** |
+| **Intermediate production shifts (7–13)** | **− to −−** | **− to −−** | **−** | **±** | **+ to ++** | Mixed; often **asymmetric** | **Asymmetric** |
+| **Energy production shift (13)** *(subset)* | **−−** | **−−** | **−−** | **±** | **++** | RoW employment **−** | **Most asymmetric** |
+
+---
+
+# A. Final Demand Shifts (Scenarios 1–6)
+
+Scenarios 1–6 reallocate EU household and government final demand away from primary material or energy sectors toward secondary alternatives. In the bilateral MRIO framework, the shock operates on the domestic sub-bloc of the allocation matrix $\boldsymbol{\Psi}$ — specifically, $\delta^{Z1,Z1}_{1,k}$ falls and $\delta^{Z1,Z1}_{2,k}$ rises for the targeted channel $k$. The cross-border sub-bloc ($\delta^{Z2,Z1}_{n,k}$) adjusts in parallel, reducing RoW demand for Z1 primary material goods by the same proportion.
+
+### Macroeconomic Effects (EU)
+
+- Gross output: small decline or near-neutral across all six scenarios.
+- Investment: slight decline, reflecting lower demand multipliers through secondary sectors.
+- Fiscal balance: mild deterioration as reduced output modestly narrows the tax base.
+- Trade and current account: slight improvement in several scenarios as lower primary material demand reduces import content of consumption.
+
+The compositional nature of the shock — shifting within the consumption basket without expanding its aggregate size — explains the limited macroeconomic bite. The aggregate demand scalar $f_{Z1,c}$ is unchanged; only its sectoral allocation $\boldsymbol{\beta}_{Z1}$ shifts.
+
+### Social Effects (EU)
+
+- Employment: slight decline, closely tracking the output contraction.
+- Distributional effects: minimal. Wage and profit shares remain broadly stable across all six scenarios.
+- The limited size of the shock in value terms (secondary sectors have smaller output multipliers in the primary-to-secondary substitution range) contains the distributional transmission.
+
+### Ecological Effects (EU)
+
+- Emissions: slight decrease.
+- Material extraction: modest decline.
+- Effects are proportional to the share of primary material sectors in the targeted demand channel.
+
+### Cross-Border Effects
+
+The bilateral MRIO structure confirms that final demand shifts have limited cross-border reach. The RoW faces only marginal reductions in export demand for primary material goods — less than the EU-side effect because $\delta^{Z2,Z1}_{n,k}$ (Z2 consumer demand for Z1 goods) is itself small in absolute terms. Employment and distribution in RoW are broadly unchanged.
+
+**Overall profile:** Low leverage. Small ecological improvement at minor macro and social cost. Cross-border effects are negligible. These scenarios are insufficient to drive meaningful CE transition on their own.
+
+---
+
+# B. Intermediate Production Shifts (Scenarios 7–13)
+
+Scenarios 7–13 restructure the technical coefficients of EU production — reducing the use of primary material inputs (wood, pulp, plastics, metal, glass, cement, fossil energy) and increasing the use of their secondary counterparts. In matrix terms, $\Delta a_{Z1,1,sj} < 0$ and $\Delta a_{Z1,2,sj} > 0$ for all using sectors $j$ in each scenario. Because the A-matrix is 108×108 and includes Z2 sectors as users of Z1 intermediate goods, the shock propagates through the full bilateral Leontief system.
+
+### Macroeconomic Effects (EU)
+
+- Gross output: declines across all seven scenarios, with the energy shift (Scenario 13) generating the largest contraction.
+- Investment: falls. Capital goods production is heavily intermediate-input intensive, so the recomposition of input bundles lowers the derived demand for investment goods.
+- Government deficit: worsens as output and employment fall, reducing tax revenues.
+- Trade and current account: mixed across scenarios. Some show modest external improvement (import intensity falls with material use); others show deterioration as output-driven exports fall.
+
+The output contraction reflects the structural logic of the ΔM formula: $(l_{r1,r2} - l_{r1,r1}) \approx -1$, meaning primary material reduction transmits nearly one-for-one to reduced gross output of the primary sector and all its downstream IO linkages.
+
+### Social Effects (EU)
+
+- Employment: falls more sharply than in final demand scenarios, consistent with the stronger output contraction.
+- Wage share: declines in most intermediate scenarios. Profit share rises in several cases, most prominently in the energy shift.
+- The distributional channel runs through employment intensity: secondary material sectors tend to be less labour-intensive than the primary sectors they replace, so the same value of output supports fewer jobs.
+
+The energy shift (Scenario 13) produces the strongest regressive pattern — the largest employment decline, the sharpest wage-share compression, and the most pronounced profit-share increase. This reflects the structural weight of fossil fuel sectors in the EU economy and their high backward linkages.
+
+### Ecological Effects (EU)
+
+- Emissions: significant decline across all seven scenarios.
+- Material extraction: substantial decrease, with metal and energy shifts generating the largest reductions.
+- Land and water use: fall in line with reduced material throughput.
+
+Intermediate production restructuring delivers the strongest ecological gains in the model. The structural logic is direct: the A-matrix shock reduces the material intensity of every sector that uses the targeted input, creating a cascade of reduced extraction through the Leontief multiplier.
+
+### Cross-Border Effects and EU–RoW Asymmetries
+
+The bilateral MRIO framework reveals that EU–RoW spillovers are non-trivial and asymmetric in the intermediate production scenarios:
+
+- **RoW employment**: declines modestly in most intermediate scenarios, more sharply in the energy scenario. EU production restructuring reduces Z1's demand for Z2 intermediate exports (captured through off-diagonal Leontief entries $l_{Z2,i,Z1,j}$), directly contracting RoW gross output.
+- **RoW distributional effects**: attenuated relative to EU but present, particularly in energy and metals.
+- **Ecological leakage**: in several scenarios, the EU ecological improvement is partially offset by shifts in RoW production patterns. When EU demand for primary materials falls, global primary material prices adjust and RoW producers may face demand contraction that reduces their own emissions — but may also face incentives to redirect primary output to non-EU markets. The current model abstracts from relative price adjustment in RoW markets, so the leakage channel is a first-order partial equilibrium estimate.
+- **Burden asymmetry**: the cross-border sub-bloc of $\boldsymbol{\Psi}$ — $\delta^{Z1,Z2}_{n,k}$ — is small for primary materials but non-negligible for energy. The energy shift therefore produces the most asymmetric EU–RoW outcome: EU ecological gains come partly from reduced energy imports from RoW, whose energy export revenues decline.
+
+**Overall profile:** Contractionary and distributionally regressive in the EU, with meaningful ecological gains. RoW faces employment and income contraction. The bilateral MRIO structure is essential for quantifying the cross-border transmission, which single-region or aggregate IO models would miss.
+
+---
+
+# C. Structural Trade-Offs and the Trilemma
+
+The 13-scenario space reveals a persistent **triple dilemma** among ecological improvement, macroeconomic stability, and social equity:
+
+**Ecological improvement ↔ Macro contraction.** Every scenario that generates meaningful ecological gains (material use, emissions) also generates output and employment contraction in the EU. The Leontief structural factor $(l_{r1,r2} - l_{r1,r1}) \approx -1$ that drives ecological improvement is the same factor that drives gross output reduction. They are structurally inseparable under the current technology matrix.
+
+**Macro contraction ↔ Distributional regression.** When output falls, employment falls disproportionately in sectors with lower labour intensity than the primary sectors they replace. The wage share falls and the profit share rises, concentrating the macro cost on workers. This is strongest in intermediate production shifts, particularly energy.
+
+**Ecological improvement ↔ EU–RoW asymmetry.** The bilateral MRIO structure reveals that EU ecological gains are partly purchased through reduced demand for RoW exports — particularly energy. The stronger the EU's domestic ecological improvement, the more its RoW trading partners face demand contraction for the goods they have historically exported. There is no scenario in 1–13 where strong EU ecological improvement coincides with neutral or positive RoW employment outcomes.
+
+These three tensions define the structural constraint facing CE policy in the model. They are not the result of parameter calibration but of the IO technology matrix itself — the relative position of primary and secondary sectors in the Leontief inverse.
+
+---
+
+# D. Policy Implications
+
+The simulation results suggest several policy design principles:
+
+1. **Intermediate production restructuring requires fiscal stabilisation.** Because the strongest ecological gains come with output and employment contraction, CE industrial policy must be paired with automatic stabilisers or targeted labour market support to prevent the transition from being regressive.
+
+2. **Final demand reallocation alone is insufficient.** Scenarios 1–6 confirm that consumer-side CE policies (labelling, green consumption incentives) produce only marginal ecological improvement. The leverage of production-side restructuring is categorically larger.
+
+3. **Cross-border effects require coordinated policy.** The EU–RoW asymmetries identified in intermediate scenarios — particularly energy — imply that EU unilateral CE restructuring transfers economic costs to RoW partners. Border carbon adjustment or international coordination mechanisms are necessary to prevent burden shifting.
+
+4. **Energy restructuring is the highest-leverage, highest-risk scenario.** Scenario 13 delivers the strongest ecological gains but the sharpest social regression and the most asymmetric cross-border burden. It requires the most robust complementary policy response.
+
+---
+
+# Overall Conclusion
+
+The model identifies a structural tension between ecological improvement and macro-social stability that no scenario in the 1–13 range resolves without additional policy support. Final demand reallocation has low leverage. Intermediate production restructuring delivers strong ecological gains at the cost of output, employment, and distributional equity — with real consequences for RoW through the bilateral demand system. The bilateral MRIO framework is not incidental to this finding: it is precisely the cross-border transmission — made explicit by the off-diagonal blocks of $\boldsymbol{\Psi}$ and $L$ — that reveals how EU ecological gains are partially borne by RoW trading partners.
+
+Deep circular economy transition therefore requires not only production restructuring but a coordinated package of complementary fiscal, labour market, and international policy instruments. In their absence, the ecological trilemma remains binding.

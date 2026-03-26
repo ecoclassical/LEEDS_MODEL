@@ -146,7 +146,7 @@ theme_set(
 # Baseline 
 
 ```{r simulation, warning = F, message = F}
-baseline <- run_or_load_baseline(initial, mvp.model, force = TRUE)
+baseline <- run_or_load_baseline(initial, mvp.model, force = FALSE)
 ```
 
 ## Calibration
@@ -230,7 +230,7 @@ scenario_list[[n_shock]] <- scenario <- run_or_load_shock(
   n_shock,
   initial_shock,
   mvp.model,
-  force = TRUE
+  force = FALSE
 )
 ```
 
@@ -313,7 +313,7 @@ scenario_list[[n_shock]] <- scenario <- run_or_load_shock(
   n_shock,
   initial_shock,
   mvp.model,
-  force = TRUE
+  force = FALSE
 )
 
 initial_shock$pars['rho', 'value']
@@ -398,7 +398,7 @@ scenario_list[[n_shock]] <- scenario <- run_or_load_shock(
   n_shock,
   initial_shock,
   mvp.model,
-  force = TRUE
+  force = FALSE
 )
 ```
 
@@ -484,7 +484,7 @@ scenario_list[[n_shock]] <- scenario <- run_or_load_shock(
   n_shock,
   initial_shock,
   mvp.model,
-  force = TRUE
+  force = FALSE
 )
 ```
 
@@ -573,7 +573,7 @@ scenario_list[[n_shock]] <- scenario <- run_or_load_shock(
   n_shock,
   initial_shock,
   mvp.model,
-  force = TRUE
+  force = FALSE
 )
 ```
 
@@ -658,7 +658,7 @@ scenario_list[[n_shock]] <- scenario <- run_or_load_shock(
   n_shock,
   initial_shock,
   mvp.model,
-  force = TRUE
+  force = FALSE
 )
 ```
 
@@ -744,7 +744,7 @@ scenario_list[[n_shock]] <- scenario <- run_or_load_shock(
   n_shock,
   initial_shock,
   mvp.model,
-  force = TRUE
+  force = FALSE
 )
 
 scenario$para['rho']
@@ -837,7 +837,7 @@ scenario_list[[n_shock]] <- scenario <- run_or_load_shock(
   n_shock,
   initial_shock,
   mvp.model,
-  force = TRUE
+  force = FALSE
 )
 
 scenario$para['rho']
@@ -929,7 +929,7 @@ scenario_list[[n_shock]] <- scenario <- run_or_load_shock(
   n_shock,
   initial_shock,
   mvp.model,
-  force = TRUE
+  force = FALSE
 )
 
 scenario$para['rho']
@@ -1021,7 +1021,7 @@ scenario_list[[n_shock]] <- scenario <- run_or_load_shock(
   n_shock,
   initial_shock,
   mvp.model,
-  force = TRUE
+  force = FALSE
 )
 
 scenario$para['rho']
@@ -1113,7 +1113,7 @@ scenario_list[[n_shock]] <- scenario <- run_or_load_shock(
   n_shock,
   initial_shock,
   mvp.model,
-  force = TRUE
+  force = FALSE
 )
 
 scenario$para['rho']
@@ -1205,7 +1205,7 @@ scenario_list[[n_shock]] <- scenario <- run_or_load_shock(
   n_shock,
   initial_shock,
   mvp.model,
-  force = TRUE
+  force = FALSE
 )
 
 scenario$para['rho']
@@ -1299,7 +1299,7 @@ scenario_list[[n_shock]] <- scenario <- run_or_load_shock(
   n_shock,
   initial_shock,
   mvp.model,
-  force = TRUE
+  force = FALSE
 )
 
 scenario$para['rho']
@@ -1381,102 +1381,6 @@ scenario_analysis_plot(
 
 ___
 
-## 14 | Construction Shift
-
-```{r shock.run.14}
-# Shock Selection and Run
-initial_shock <- initial
-n_shock <- initial_shock$pars['shock', 'value'] <- 14
-
-scenario_list[[n_shock]] <- scenario <- run_or_load_shock(
-  n_shock,
-  initial_shock,
-  mvp.model,
-  force = TRUE
-)
-
-scenario$para['rho']
-```
-
-```{r end_run}
-beepr::beep(3)
-```
-
-### Visualize Shocked Coefficients
-
-```{r shock.view.14}
-#| fig-width: 6
-#| fig-height: 4
-
-pairs <- data.frame(
-  row = sc %>%
-    filter(shock == n_shock) %>%
-    select(from, to) %>%
-    rep(2) %>%
-    unlist,
-  col = c(31, 31, 32, 32)
-)
-
-view.A(
-  scenario,
-  pairs,
-  title = paste(
-    sc %>% filter(shock == n_shock) %>% pull(shift),
-    "input-output coefficients"
-  )
-)
-```
-
-### Visualize Impacts
-
-```{r shock.visualize.scaled.14}
-#| fig-width: 8
-#| fig-height: 4
-
-p.selected.vars <- plot_selected_vars(
-  baseline = baseline,
-  scenario = scenario,
-  selected.list = selected.list,
-  shock_title = sc$display_name[n_shock],
-  t_shock = initial$pars["t.shock", "value"],
-  print_blocks = TRUE
-)
-
-p.selected.vars
-```
-
-### Summary Visualization
-
-```{r summary.table.14}
-#| fig-width: 10
-#| fig-height: 10
-
-scenario.table <- shock.summary(
-  baseline,
-  shock.run = scenario,
-  t_ = c(t.shock + 1, t.shock + 7, t.shock + 20),
-  t_names = c('Immediate', 'Short.Term', 'Long.Term')
-)
-
-write.csv(scenario.table, get_table_filename(n_shock), row.names = FALSE)
-
-scenario.table <- read.csv(get_table_filename(n_shock))
-
-scenario_analysis_plot(
-  shock_df = scenario.table,
-  shock_title = sc$display_name[n_shock],
-  variable.table = variable.table,
-  shock_subtitle = paste0(
-    'Shock Parameter ρ = ',
-    initial_shock$pars['rho', 'value'],
-    ". Teal = positive change, red = negative change (relative to baseline)"
-  )
-)
-
-```
-
-___
-
 # Scenario Comparison
 
 ```{r comparison} 
@@ -1519,7 +1423,8 @@ scenario.tables <- scenario_tables_list %>%
 df <- scenario.tables |>
   dplyr::select(-Name) |> # drop old category column
   dplyr::left_join(lookup, by = "Variable") %>%
-  filter(!is.na(Name))
+  filter(!is.na(Name)) %>%
+  filter(!grepl('Construction', scenario))
 ```
 
 ## Immediate | Short Term | Long Term
@@ -1541,24 +1446,7 @@ p <- build_policy_comparison_plot(
 p
 ```
 
-```{r comparison_plot_2}
-#| fig-width: 10
-#| fig-height: 21
-#| fig-cap: "Comparison of Circular Transition Scenarios without Construction"
-
-p_2 <- build_policy_comparison_plot(
-  df = df %>% filter(!grepl('Construction', scenario)),
-  variable.table = variable.table,
-  sc = sc,
-  workspace_dir = workspace_dir,
-  filename = "p_comparison_terms_2.pdf",
-  rho = initial_shock$pars['rho', 'value']
-)
-
-p_2
-```
-
-## Time Average 
+## Time Average
 
 ```{r comparison_avg_plot}
 #| fig-width: 10
@@ -1577,22 +1465,6 @@ p_avg <- build_policy_comparison_plot_avg_terms(
 p_avg
 ```
 
-```{r comparison_avg_plot_2}
-#| fig-width: 10
-#| fig-height: 21
-#| fig-cap: "Comparison of Circular Transition Scenarios without Construction"
-
-p_avg_2 <- build_policy_comparison_plot_avg_terms(
-  df = df %>% filter(!grepl('Construction', scenario)),
-  variable.table = variable.table,
-  sc = sc,
-  workspace_dir = workspace_dir,
-  filename = "p_comparison_avg_terms_2.pdf",
-  rho = initial_shock$pars['rho', 'value']
-)
-
-p_avg_2
-```
 
 ```{r all_run}
 cat("done\n")
