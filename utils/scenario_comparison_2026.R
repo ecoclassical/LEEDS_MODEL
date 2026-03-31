@@ -4,7 +4,13 @@ build_policy_comparison_plot <- function(
   sc = NULL,
   workspace_dir = NULL,
   filename = "p_comparison.pdf",
-  rho = 0.2
+  rho = 0.2,
+  colors = NULL,
+  region_filter = NULL,   # "EU", "RoW", or NULL (both)
+  title = "Comparison of Circular Transition Scenarios",
+  ncol = 1,
+  var_name_order = NULL,  # optional character vector of `name` values in desired facet row order
+  col_assignment = NULL   # integer vector length == n_categories: which column each category goes to (1 or 2)
 ) {
   # ---- helper ----
   replace_second_space <- function(x) {
@@ -54,16 +60,24 @@ build_policy_comparison_plot <- function(
     ) %>%
     dplyr::left_join(sc, by = "shock")
 
+  # ---- optional region filter ----
+  if (!is.null(region_filter)) {
+    dff <- dff %>% dplyr::filter(region == region_filter)
+  }
+
   # ---- display engineering ----
   dff <- dff %>%
     dplyr::mutate(
-      display_name = paste0(
-        sapply(name, replace_second_space),
-        "\n(",
-        variable,
-        ", ",
-        unit,
-        ")"
+      display_name = ifelse(
+        !is.na(name) & grepl("\n", name, fixed = TRUE),
+        name,
+        paste0(
+          ifelse(is.na(name), variable, sapply(name, replace_second_space)),
+          "\n(",
+          variable,
+          ifelse(!is.na(unit) & nzchar(unit), paste0(", ", unit), ""),
+          ")"
+        )
       ),
       display_scenario = stringr::str_replace(
         scenario,
@@ -72,6 +86,21 @@ build_policy_comparison_plot <- function(
       )
     ) %>%
     dplyr::filter(!is.na(value))
+
+  # ---- optional facet row ordering ----
+  if (!is.null(var_name_order)) {
+    name_map <- dff %>% dplyr::distinct(name, display_name)
+    ordered_levels <- vapply(var_name_order, function(n) {
+      idx <- which(name_map$name == n)
+      if (length(idx) > 0) name_map$display_name[idx[1]] else NA_character_
+    }, character(1))
+    ordered_levels <- ordered_levels[!is.na(ordered_levels)]
+    # Prepend all other display_names not in var_name_order so they keep their order
+    all_levels <- unique(as.character(dff$display_name))
+    full_levels <- c(setdiff(all_levels, ordered_levels), ordered_levels)
+    dff <- dff %>%
+      dplyr::mutate(display_name = factor(display_name, levels = full_levels))
+  }
 
   # ---- FIX NUMERIC ORDERING ----
   dff <- dff %>%
@@ -85,6 +114,24 @@ build_policy_comparison_plot <- function(
 
   cats <- unique(dff$category)
 
+  # Build color scale (per-scenario, keyed by shock integer if colors provided)
+  if (!is.null(colors)) {
+    level_map <- dff %>%
+      dplyr::distinct(shock, display_scenario) %>%
+      dplyr::mutate(color = colors[as.character(shock)])
+    color_vec <- setNames(level_map$color, as.character(level_map$display_scenario))
+    fill_scale <- ggplot2::scale_fill_manual(values = color_vec, drop = FALSE)
+  } else {
+    fill_scale <- ggplot2::scale_fill_discrete(drop = FALSE)
+  }
+
+  # ---- facet formula: drop region column when filtering to one region ----
+  facet_formula <- if (is.null(region_filter)) {
+    display_name ~ domain + region
+  } else {
+    display_name ~ domain
+  }
+
   dodge <- ggplot2::position_dodge2(width = 0.8, preserve = "single")
 
   plots <- lapply(cats, function(cc) {
@@ -96,9 +143,9 @@ build_policy_comparison_plot <- function(
         position = dodge,
         width = 0.7
       ) +
-      ggplot2::scale_fill_discrete(drop = FALSE) +
-      ggplot2::facet_grid(display_name ~ domain + region, scales = "free_y") +
-      ggplot2::labs(title = cc, y = NULL, x = NULL, fill = "Scenario") +
+      fill_scale +
+      ggplot2::facet_grid(facet_formula, scales = "free_y") +
+      ggplot2::labs(title = cc, y = "% deviation from baseline", x = NULL, fill = "Scenario") +
       ggplot2::geom_hline(
         yintercept = 0,
         linetype = "dashed",
@@ -106,27 +153,71 @@ build_policy_comparison_plot <- function(
       )
   })
 
-  p.comparison <- patchwork::wrap_plots(
-    plots,
-    ncol = 1,
-    guides = "collect"
-  ) &
-    ggplot2::theme(
-      legend.position = "top",
-      plot.title = element_text(size = 14)
-    ) &
-    ggplot2::guides(fill = ggplot2::guide_legend(nrow = 5, byrow = TRUE))
+  # ---- subtitle ----
+  subtitle_text <- paste0("Shock Parameter \u03c1 = ", rho)
 
-  p.comparison <- p.comparison +
-    patchwork::plot_annotation(
-      title = "Comparison of Circular Transition Scenarios",
-      subtitle = paste0("Shock Parameter \u03c1 = ", rho),
-      theme = ggplot2::theme(
-        plot.title = ggplot2::element_text(size = 20, face = "bold"),
-        plot.subtitle = ggplot2::element_text(size = 14),
-        plot.title.position = "plot"
-      )
+  annotation <- patchwork::plot_annotation(
+    title = title,
+    subtitle = subtitle_text,
+    theme = ggplot2::theme(
+      plot.title = ggplot2::element_text(size = 24, face = "bold"),
+      plot.subtitle = ggplot2::element_text(size = 17),
+      plot.title.position = "plot"
     )
+  )
+
+  if (!is.null(col_assignment) && length(col_assignment) == length(plots)) {
+    # Compute per-category variable counts for proportional heights
+    cat_vars <- sapply(cats, function(cc)
+      length(unique(dff$display_name[dff$category == cc])))
+
+    # Left column: no legend, proportional heights
+    left_idx   <- which(col_assignment == 1)
+    left_plots <- lapply(plots[left_idx], function(p)
+      p + ggplot2::theme(
+        legend.position = "none",
+        plot.title = ggplot2::element_text(size = 17)
+      ))
+    col_left <- patchwork::wrap_plots(
+      left_plots,
+      ncol    = 1,
+      heights = cat_vars[left_idx]
+    )
+
+    # Right column: single collected legend, proportional heights, spacing between entries
+    right_idx   <- which(col_assignment == 2)
+    right_plots <- lapply(plots[right_idx], function(p)
+      p + ggplot2::theme(
+        legend.position      = "right",
+        plot.title           = ggplot2::element_text(size = 17),
+        legend.title         = ggplot2::element_text(size = 13),
+        legend.text          = ggplot2::element_text(size = 11),
+        legend.key.height    = ggplot2::unit(0.5, "cm"),
+        legend.key.spacing.y = ggplot2::unit(0.2, "cm")
+      ) +
+      ggplot2::guides(fill = ggplot2::guide_legend(ncol = 1, byrow = TRUE)))
+    col_right <- patchwork::wrap_plots(
+      right_plots,
+      ncol    = 1,
+      heights = cat_vars[right_idx],
+      guides  = "collect"
+    )
+
+    p.comparison <- (col_left | col_right) + annotation
+  } else {
+    p.comparison <- patchwork::wrap_plots(
+      plots,
+      ncol   = ncol,
+      guides = "collect"
+    ) &
+      ggplot2::theme(
+        legend.position = "right",
+        plot.title = ggplot2::element_text(size = 17)
+      ) &
+      ggplot2::guides(fill = ggplot2::guide_legend(ncol = 1))
+
+    p.comparison <- p.comparison + annotation
+  }
 
   # ---- optional save ----
   if (!is.null(workspace_dir)) {
@@ -150,7 +241,8 @@ build_policy_comparison_plot_avg_terms <- function(
   workspace_dir = NULL,
   filename = "p_comparison_avg_terms.pdf",
   avg_fun = function(x) mean(x, na.rm = TRUE),
-  rho = 0.2
+  rho = 0.2,
+  colors = NULL
 ) {
   # ---- helper ----
   replace_second_space <- function(x) {
@@ -196,13 +288,16 @@ build_policy_comparison_plot_avg_terms <- function(
   # ---- display engineering ----
   dff <- dff %>%
     dplyr::mutate(
-      display_name = paste0(
-        sapply(name, replace_second_space),
-        "\n(",
-        variable,
-        ", ",
-        unit,
-        ")"
+      display_name = ifelse(
+        !is.na(name) & grepl("\n", name, fixed = TRUE),
+        name,
+        paste0(
+          ifelse(is.na(name), variable, sapply(name, replace_second_space)),
+          "\n(",
+          variable,
+          ifelse(!is.na(unit) & nzchar(unit), paste0(", ", unit), ""),
+          ")"
+        )
       ),
       display_scenario = stringr::str_replace(
         scenario,

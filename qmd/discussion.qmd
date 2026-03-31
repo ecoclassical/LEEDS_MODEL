@@ -1,0 +1,360 @@
+---
+title: "Scenario Discussions"
+subtitle: "Updated with ρ = 0.2 (0.05 for Construction Sc5, Sc14) simulation results"
+author: "Oriol Vallès Codina"
+date: today
+format:
+  html:
+    toc: true
+    toc-depth: 2
+    page-layout: full
+    self-contained: true
+---
+
+All percentage changes are relative to baseline at Long Term (t = 90, i.e., t_shock + 20) unless stated.
+Z1 = EU, Z2 = RoW.
+
+---
+
+# Final Demand Scenarios
+
+## Sc1 | Household Food Shift (ρ = 0.2)
+
+**Key simulation results (Long Term):**
+
+| Variable | EU (Z1) LT | RoW (Z2) LT |
+|---|---|---|
+| Output (y) | −0.04% | +0.006% |
+| Employment (n) | −0.086% | +0.007% |
+| Wage share (shw) | −0.026% | — |
+| Profit share (shp) | +0.046% | — |
+| Current account (cab) | −0.706% | — |
+| Gov. debt (b_s) | +0.18% | — |
+| Materials (mat) | −0.507% | — |
+| Emissions (emis) | −0.418% | — |
+| Recycling (rec) | +0.012% | — |
+
+Household consumption dominates the food sector's demand profile at 68.5% (23.7 billion EUR out of 34.5 billion total at t = 70), making this the one final-demand scenario where the targeted channel genuinely represents the primary mode of sectoral activation. The intervention reallocates household expenditure from Meat and Animal Products (sector 7) to Other Food (sector 8 equivalent), engaging the largest demand channel directly.
+
+The employment effect (n = −0.086% long-run, the largest among all final-demand scenarios) is explained by the sectoral employment intensity differential: Meat has a higher n/x ratio than Other Food. Substituting output from a high-employment-intensity sector to a lower one mechanically reduces aggregate employment even when total expenditure is held constant. This is a composition effect embedded in the IO structure, not a scale effect. The wage share declines (−0.026%) and profit share rises (+0.046%), confirming that the composition effect is regressive at the distributional margin.
+
+Material savings (mat = −0.507%) and emission reductions (emis = −0.418%) are the largest among final-demand scenarios, reflecting the high absolute scale of the household food channel.
+
+The cross-border pattern is asymmetric: Z2 employment rises +0.007% as EU food demand shifts toward sectors with higher RoW import content. The current account deteriorates for Z1 (−0.706%) as the reallocation increases EU import intensity at the margin, while government debt rises slightly (+0.18%), reflecting the demand contraction's fiscal drag.
+
+Food is therefore the one final-demand scenario where a genuine employment-ecology trade-off exists. The CE transition reduces material throughput at the cost of a modest employment contraction — a distributional tension that consumption-based CE instruments for food must explicitly address.
+
+---
+
+## Sc2 | Household Energy Shift (ρ = 0.2)
+
+**Key simulation results (Long Term):**
+
+| Variable | EU (Z1) LT | RoW (Z2) LT |
+|---|---|---|
+| Output (y) | 0% | −0.009% |
+| Employment (n) | −0.001% | −0.008% |
+| Wage share (shw) | −0.043% | — |
+| Profit share (shp) | +0.075% | — |
+| Current account (cab) | +1.012% | — |
+| Gov. debt (b_s) | −0.104% | +0.038% |
+| Materials (mat) | −0.015% | — |
+| Emissions (emis) | −0.782% | −0.015% |
+| Recycling (rec) | −1.554% | — |
+
+Household consumption represents only 30.9% of energy sector demand (6.9 billion EUR of the 22.2 billion total at t = 70), while intermediate demand dominates at 66.5% (14.8 billion). The household channel is structurally subordinate for energy CE.
+
+Despite this limited channel reach, Scenario 2 produces the strongest ecological effect among all final-demand scenarios: emissions fall −0.782% long-run and recycling activity contracts −1.554% (the latter a technical artefact of how renewable energy flows are classified in the model). The mechanism is the emission intensity differential, the largest in the scenario set: ε₃₁ = 2771 for fossil energy versus ε₃₂ = 843 for renewable/secondary energy, a 3.3:1 ratio. Even a modest absolute reallocation generates large emission savings because each unit of primary energy foregone avoids a disproportionately large emission burden. Material change is minimal (−0.015%), confirming that the ecological effect is emissions-specific rather than a broad material throughput reduction.
+
+The current account improves substantially (+1.012%) reflecting the EU's structural import dependency on fossil energy. Employment is near-zero (−0.001%), indicating similar employment intensities between fossil and renewable energy sectors in aggregate. Distributional effects are mildly regressive (shw −0.043%, shp +0.075%), consistent with the capital-intensive character of renewable energy production.
+
+The cross-border pattern is symmetric contraction: Z2 employment and output both fall (−0.008% and −0.009%), unlike the opposite-sign Food scenario. Government debt falls in Z1 (b_s −0.104%) — improved EU fiscal space from reduced fossil import bills — while Z2 debt rises (+0.038%), reflecting lost fossil export revenues for RoW energy exporters.
+
+The contrast with Scenario 13 (energy production substitution) is instructive. Scenario 13 engages the 66.5% intermediate channel and produces emission reductions of −1.563% — roughly double this scenario's effect, consistent with the 2.1:1 ratio of intermediate to household channel scale. The household energy intervention is real but submaximal; production-side instruments remain the primary lever for energy CE.
+
+---
+
+## Sc3 | Household Wood Shift (ρ = 0.2)
+
+**Key simulation results (Long Term):**
+
+| Variable | EU (Z1) LT | RoW (Z2) LT |
+|---|---|---|
+| Employment (n) | −0.003% | — |
+| Materials (mat) | −0.036% | — |
+| Emissions (emis) | −0.001% | — |
+| Recycling (rec) | −0.005% | — |
+
+Household consumption accounts for only 11.5% of wood sector demand (1.1 billion EUR of the 9.2 billion total at t = 70), while intermediate demand dominates at 80.8% (7.4 billion). The household channel is structurally marginal for wood — the precise inverse of the food scenario.
+
+Simulation effects are near-zero across all dimensions. Even at ρ = 0.2, the absolute household wood shock engages approximately 0.22 billion EUR of demand, compared to the 7.4 billion intermediate channel that remains untouched. Material savings (−0.036% long-run) and emission reductions (−0.001%) are the smallest in the FD scenario group, consistent with the portfolio scale prediction. The cross-border impact is essentially zero.
+
+The contrast with Scenario 7 (wood production substitution) is the central analytical point. Scenario 7 engages the 80.8% intermediate channel and produces mat = −0.234% long-run — roughly consistent with a channel scale 7× larger. A household-oriented wood CE campaign (reclaimed furniture, recycled wood products) engages a structurally marginal demand channel. Production-side instruments — redesigning the intermediate input mix in wood-intensive industries — are the appropriate first-order instrument for wood CE.
+
+---
+
+## Sc4 | Government Plastics Shift (ρ = 0.2)
+
+**Key simulation results (Long Term):**
+
+| Variable | EU (Z1) LT | RoW (Z2) LT |
+|---|---|---|
+| Output (y) | −0.02% | +0.007% |
+| Employment (n) | −0.018% | +0.006% |
+| Wage share (shw) | −0.009% | — |
+| Profit share (shp) | +0.015% | — |
+| Current account (cab) | −0.697% | — |
+| Gov. debt (b_s) | +0.139% | — |
+| Materials (mat) | +0.012% | +0.012% |
+| Emissions (emis) | −0.045% | +0.022% |
+| Recycling (rec) | −0.123% | — |
+
+This scenario represents the most analytically significant finding among all final-demand interventions. For plastics, government consumption constitutes 48.9% of total sector demand (11.9 billion EUR of the 24.3 billion total at t = 70) — exceeding the intermediate demand share of 44.0% (10.7 billion). This is unique among all material sectors: plastics is the only case where a final-demand channel rivals the production-side intermediate flows in absolute scale.
+
+The simulation results confirm the analytic prediction. The slight material increase (mat = +0.012%) reflects that secondary plastics (Recycled Plastics, sector 18) has higher intermediate throughput requirements per unit of output, so substituting secondary for primary in government procurement increases the volume of intermediate flows even as primary material extraction falls. Emission savings (−0.045%) are directionally correct given near-equal intensities (ε₁₇ = 152.1, ε₁₈ = 146.0). Recycling activity contracts (−0.123%) mechanically as procurement substitution activates the secondary sector at the expense of the primary.
+
+The cross-border pattern is notable: Z2 output and employment both rise slightly (+0.007%, +0.006%), in the opposite direction to Z1 — meaning EU government plastics procurement shifts demand toward sectors with higher RoW import content. Z2 emissions also rise (+0.022%), suggesting that the global production of the goods whose procurement shifts toward recycled plastics is more emission-intensive in RoW. The current account deteriorates (−0.697%) and Z1 government debt rises (+0.139%), consistent with the modest EU output contraction.
+
+The policy implication is direct: government procurement circularity mandates constitute a genuine first-order CE instrument for plastics, not a symbolic complement to production-side regulation. The comparison with Scenario 9 (plastics production substitution, 10.7 billion intermediate channel) confirms that the two channels are nearly equal in scale and comparable in effect magnitude, meaning an effective plastics CE strategy requires both instruments operating simultaneously.
+
+---
+
+## Sc5 | Firm Construction Shift (ρ = 0.05)
+
+**Key simulation results (Long Term):**
+
+| Variable | EU (Z1) LT | RoW (Z2) LT |
+|---|---|---|
+| Output (y) | −0.176% | −0.03% |
+| Employment (n) | +0.029% | −0.028% |
+| Wage share (shw) | −0.066% | — |
+| Profit share (shp) | +0.114% | — |
+| Current account (cab) | +2.876% | — |
+| Gov. debt (b_s) | −0.336% | — |
+| Materials (mat) | −0.84% | — |
+| Emissions (emis) | +5.188% | +0.047% |
+| Recycling (rec) | −0.167% | — |
+
+Construction sector demand is dominated by fixed investment at 66.7% (88.7 billion EUR of the 133.0 billion total at t = 70), making it overwhelmingly an investment-driven sector. This scenario targets firm-level substitution in construction inputs — engaging the intermediate and household channels (~43 billion) at ρ = 0.05 (a reduced shock parameter reflecting imperfect substitutability between circular and conventional construction). This is the smallest ρ in the FD scenario group, yet the scenario still generates some of the largest macro effects in the set due to construction's sheer size.
+
+The most striking result is the large emission increase (+5.188% long-run), the largest in magnitude across all FD scenarios. Despite material savings (mat = −0.84%) — confirming that secondary construction uses less material throughput — the emission intensity of secondary construction inputs (renovation, material reuse, retrofit techniques) is higher than primary construction at the model's current calibration. This reflects the energy-intensive nature of demolition, reclamation, and processing of secondary building materials, which involves more labour and energy per unit of output than new-build at scale.
+
+The employment effect is positive for EU (+0.029%) — the only FD scenario showing employment expansion — but negative for RoW (−0.028%). This is the clearest EU-RoW employment sign asymmetry among FD scenarios: secondary construction activity is domestically labour-intensive (benefiting EU workers) but reduces demand for imported construction materials and components (reducing RoW activity). The current account improves substantially (+2.876%) and EU government debt falls (−0.336%), reflecting the strong import substitution effect.
+
+The distributional structure is regressive: the wage share falls (−0.066%) and profit share rises (+0.114%), suggesting secondary construction activity is more concentrated in higher-profit-margin specialist firms than conventional new-build.
+
+The investment channel — 88.7 billion at fixed investment — remains entirely unaddressed by this scenario. An investment-channel construction scenario (ρ applied to iota rather than intermediate demand) would be the highest-leverage construction CE intervention by a large margin, but lies outside the current scenario set.
+
+---
+
+## Sc6 | Firm Metal Fixed Investment Shift (ρ = 0.2)
+
+**Key simulation results (Long Term):**
+
+| Variable | EU (Z1) LT | RoW (Z2) LT |
+|---|---|---|
+| Output (y) | +0.001% | — |
+| Employment (n) | +0.001% | −0.001% |
+| Materials (mat) | −0.024% | — |
+| Emissions (emis) | +0.009% | — |
+| Recycling (rec) | −0.005% | — |
+
+Metal's demand profile is almost entirely intermediate at 95.3% (20.9 billion EUR of the 21.9 billion total at t = 70), with fixed investment contributing only 2.7% (0.6 billion). This scenario targets the firm-level final demand for metals — the investment channel — which at ρ = 0.2 engages approximately 0.12 billion EUR in substitution. This is by far the smallest absolute shock scale in the FD scenario group.
+
+Simulation results confirm the portfolio scale prediction: near-zero effects across all macro, social, and ecological dimensions. Material savings (−0.024%) are the smallest among production scenarios. Critically, the emission effect is positive (+0.009%), reflecting the structural emission rebound: secondary metals (EAF scrap steel, ε₂₇ = 429.9) are more emission-intensive than primary metals (blast furnace, ε₂₆ = 276.5). Even at this tiny scale, the rebound is directionally present.
+
+This scenario illustrates two simultaneous limitations: a channel scale problem (fixed investment is a marginal lever for metals) and a direction problem (the emission rebound makes larger-scale versions counterproductive absent complementary electricity decarbonisation). The relevant policy instrument for metals CE is the intermediate production channel (Scenario 10, 20.9 billion), not the investment channel.
+
+---
+
+# Intermediate Demand Scenarios
+
+## Sc7 | Wood Production Shift (ρ = 0.2)
+
+**Key simulation results (Long Term):**
+
+| Variable | EU (Z1) LT | RoW (Z2) LT |
+|---|---|---|
+| Output (y) | −0.004% | — |
+| Employment (n) | −0.02% | — |
+| Current account (cab) | −0.03% | — |
+| Materials (mat) | −0.234% | — |
+| Emissions (emis) | −0.008% | — |
+| Recycling (rec) | −0.028% | — |
+
+The production substitution scenario correctly targets the dominant demand channel: intermediate demand constitutes 80.8% of total wood sector demand (7.4 billion EUR of the 9.2 billion total at t = 70). This is the appropriate instrument for wood CE — in stark contrast to Scenario 3 (household wood shift), which engages only the 11.5% household channel.
+
+Material savings reach mat = −0.234% long-run, exceeding the material savings of all final-demand wood scenarios by an order of magnitude consistent with the channel scale ratio (~7:1). The A-matrix shock redirects intermediate wood inputs from primary Sawmilling and Wood Products (sector 11) to secondary Wood Reuse/Recycling (sector 12), propagating through all wood-using intermediate sectors.
+
+Employment effects are modest (n = −0.02%), reflecting a small employment intensity differential between primary and secondary wood sectors. Gross output falls minimally (−0.004%), placing this scenario in the ecologically-improving, macro-neutral regime typical of intermediate production scenarios with limited economy-wide cascades. Emission savings are small (−0.008%) because wood's emission intensity differential between primary and secondary is modest relative to energy or cement.
+
+The cross-border impact is near-zero: Z2 variables show essentially no response, indicating wood production substitution is a predominantly domestic restructuring with limited bilateral trade consequences. The absolute scale of the effect is bounded by the wood sector's size: with 7.4 billion intermediate demand at ρ = 0.2, the shock engages approximately 1.5 billion EUR.
+
+---
+
+## Sc8 | Pulp Production Shift (ρ = 0.2)
+
+**Key simulation results (Long Term):**
+
+| Variable | EU (Z1) LT | RoW (Z2) LT |
+|---|---|---|
+| Output (y) | −0.001% | — |
+| Employment (n) | −0.006% | — |
+| Materials (mat) | −0.015% | — |
+| Emissions (emis) | −0.026% | — |
+| Recycling (rec) | −0.031% | — |
+
+Pulp and paper production substitution targets the dominant intermediate channel. Despite correct structural targeting, simulation effects are very small (mat = −0.015%, n = −0.006% long-run), reflecting pulp's limited absolute scale in the EU economy. Notably, emissions fall (−0.026%), confirming that recycled pulp/paper production has lower emission intensity than primary pulp, unlike the emission rebound seen in metals or the near-neutral effect in cement.
+
+The core constraint is portfolio scale: even though the production shock correctly engages the intermediate channel, the absolute magnitude of pulp intermediate flows is small relative to the overall economy. This illustrates the portfolio scale principle precisely: a correctly-targeted instrument on a small sector produces smaller economy-wide effects than a less-well-targeted instrument on a large sector.
+
+The near-zero cross-border effects confirm that pulp CE is essentially a domestic EU restructuring with no significant bilateral trade consequences at this scale.
+
+---
+
+## Sc9 | Plastics Production Shift (ρ = 0.2)
+
+**Key simulation results (Long Term):**
+
+| Variable | EU (Z1) LT | RoW (Z2) LT |
+|---|---|---|
+| Output (y) | −0.015% | +0.006% |
+| Employment (n) | −0.013% | +0.006% |
+| Wage share (shw) | −0.008% | — |
+| Profit share (shp) | +0.014% | — |
+| Current account (cab) | −0.555% | — |
+| Materials (mat) | +0.012% | +0.011% |
+| Emissions (emis) | −0.035% | +0.006% |
+| Recycling (rec) | −0.1% | — |
+
+The plastics production scenario targets the intermediate channel (Int = 44.0%, 10.7 billion EUR of the 24.3 billion total at t = 70) — correctly identified as a high-leverage channel. However, for plastics specifically, government procurement at 48.9% (11.9 billion) is nearly equal in scale. The production scenario therefore engages approximately 44% of total plastics demand, leaving the government channel unaddressed.
+
+The material increase (mat = +0.012%) reflects that secondary plastics (Recycled Plastics, sector 18) has higher intermediate throughput requirements per unit of output, so A-matrix substitution increases the volume of intermediates flowing through the economy even as primary material extraction falls. Recycling activity contracts (−0.1%) mechanically as the production substitution activates the secondary sector, reducing the need for separate recycling flows. Emissions fall modestly (−0.035%).
+
+The cross-border pattern shows opposite signs: Z2 output and employment rise (+0.006% each) while Z1 falls (−0.015%). This is similar to the Food pattern: the plastics production restructuring shifts EU demand toward sectors with higher RoW import content at the margin, generating a spillover expansion in RoW. The current account deteriorates for Z1 (−0.555%), consistent with this import-intensity effect.
+
+The critical comparison is with Scenario 4 (government plastics shift): both channels are nearly equal in scale (Sc9: 10.7B intermediate; Sc4: 11.9B government procurement), and the simulation magnitudes are accordingly comparable. An effective plastics CE policy requires both instruments operating simultaneously.
+
+---
+
+## Sc10 | Metal Production Shift (ρ = 0.2)
+
+**Key simulation results (Long Term):**
+
+| Variable | EU (Z1) LT | RoW (Z2) LT |
+|---|---|---|
+| Output (y) | +0.047% | −0.012% |
+| Employment (n) | +0.028% | −0.013% |
+| Wage share (shw) | −0.029% | — |
+| Profit share (shp) | +0.05% | — |
+| Current account (cab) | +1.442% | — |
+| Gov. debt (b_s) | −0.164% | +0.043% |
+| Materials (mat) | −0.756% | — |
+| Emissions (emis) | +0.27% | −0.019% |
+| Recycling (rec) | −0.169% | — |
+
+The metal production scenario is the most analytically distinctive outcome in the simulation set. It is the only production scenario showing expansionary macroeconomic effects: gross output increases (+0.047% long-run), employment rises (+0.028%), and material savings are substantial (mat = −0.756%). Simultaneously, emissions increase (+0.27%) — the structural rebound that makes this scenario the clearest illustration of the CE trilemma operating in a perverse direction.
+
+The expansionary mechanism operates through the A-matrix. Secondary metals (Metals Reprocessing, sector 27, primarily EAF scrap-based steel) has a substantially lower A-matrix row-sum (0.238) compared to primary metals (sector 26, blast furnace steel, row-sum 0.545). Substituting secondary for primary in the A-matrix frees intermediate resources that become available for other production throughout the economy, generating a net expansion in aggregate output and employment. This is the exact inverse of the typical production substitution pattern.
+
+The emission rebound has a precisely identified mechanism: ε₂₇ = 429.9 (Metals Reprocessing) versus ε₂₆ = 276.5 (primary metals). EAF-based steel requires large quantities of fossil-fuel electricity upstream. The higher electricity intensity of secondary metals propagates through the Leontief inverse to the high-emission fossil energy sector (ε₃₁ = 2771), amplifying the rebound. Gaining one unit of secondary metal output costs more in upstream emission than losing one unit of primary output saves.
+
+The cross-border pattern is the sharpest sign asymmetry in the scenario set: Z1 expands (+0.047% output, +0.028% employment) while Z2 contracts (−0.012%, −0.013%). Z1 government debt falls substantially (−0.164%) and the current account improves markedly (+1.442%), while Z2 debt rises (+0.043%), reflecting reduced EU demand for imported primary metal inputs. The distributional effect is mildly regressive (shw −0.029%, shp +0.05%).
+
+The policy implication is direct: metals CE transitions require simultaneous electricity grid decarbonisation to reverse the emission rebound. Without cleaner electricity, substituting recycled for primary steel reduces material throughput and expands macro activity while increasing emissions — satisfying the economic arm of the trilemma while failing the ecological arm.
+
+---
+
+## Sc11 | Glass Production Shift (ρ = 0.2)
+
+**Key simulation results (Long Term):**
+
+| Variable | EU (Z1) LT | RoW (Z2) LT |
+|---|---|---|
+| Employment (n) | +0.001% | −0.001% |
+| Current account (cab) | +0.116% | — |
+| Gov. debt (b_s) | −0.012% | — |
+| Materials (mat) | −0.165% | — |
+| Emissions (emis) | +0.003% | −0.002% |
+| Recycling (rec) | +0.013% | — |
+
+Glass production substitution correctly targets the dominant intermediate channel (Int = 96.6% of the 2.0 billion total at t = 70). The production scenario engages effectively the entire glass demand base. Yet simulation effects are near-zero across macro, social, and ecological dimensions, with the exception of a modest material saving (mat = −0.165% long-run).
+
+The explanation is portfolio scale. Glass total demand at t = 70 is 2.0 billion EUR — the smallest sector in the scenario set by absolute scale. At ρ = 0.2, the shock engages approximately 0.4 billion EUR.
+
+Two subtle findings deserve note. First, the emission effect is marginally positive (+0.003%), suggesting secondary glass (recycled cullet) has slightly higher upstream emission intensity than primary glass at current calibration — consistent with the energy-intensive re-melting process for cullet. This is directionally similar to metals (where the rebound is much larger) but at negligible scale. Second, EU employment is marginally positive (+0.001%) while Z2 is marginally negative (−0.001%), indicating a very slight domestic employment gain from restructuring away from imported primary glass inputs. The current account improves slightly (+0.116%) and EU debt falls slightly (−0.012%).
+
+---
+
+## Sc12 | Cement Production Shift (ρ = 0.2)
+
+**Key simulation results (Long Term):**
+
+| Variable | EU (Z1) LT | RoW (Z2) LT |
+|---|---|---|
+| Output (y) | +0.005% | — |
+| Employment (n) | −0.002% | — |
+| Current account (cab) | −0.019% | — |
+| Materials (mat) | −0.037% | — |
+| Emissions (emis) | +0.004% | — |
+| Recycling (rec) | −0.044% | — |
+
+Cement production substitution engages the dominant intermediate channel (Int = 96.4% of the 9.2 billion total at t = 70). Yet simulation effects are near-zero.
+
+The explanation is the intersection of scale and emission intensity. Total cement demand (9.2 billion) is modest, generating a shock scale of approximately 1.8 billion at ρ = 0.2. More importantly, the emission intensity differential is near-zero: ε₂₄ = 1254.8 for primary cement (clinker-based) versus ε₂₅ = 1278.1 for secondary cement (blended cements, supplementary cementitious materials). The emission intensities are effectively equal — and secondary cement is marginally more intensive — so even a correctly-scaled production shock in the right channel produces no directional emission improvement. The simulation confirms this: emissions rise slightly (+0.004%). Material savings (−0.037%) are proportionate to the small sector scale.
+
+This result reflects a genuine technical characteristic of current cement production. Producing supplementary cementitious materials (fly ash, blast furnace slag, calcined clays) involves significant upstream thermal and processing energy. Unlike plastics or energy, cement's secondary pathway does not deliver a clear emission advantage under current EU production conditions. Cement CE remains a priority for sector-level decarbonisation — particularly through clinker substitution — but its aggregate emission leverage is bounded by the near-equivalence of primary and secondary emission intensities at the current technological frontier.
+
+---
+
+## Sc13 | Energy Production Shift (ρ = 0.2)
+
+**Key simulation results (Long Term):**
+
+| Variable | EU (Z1) LT | RoW (Z2) LT |
+|---|---|---|
+| Output (y) | −0.007% | −0.016% |
+| Employment (n) | −0.01% | −0.014% |
+| Wage share (shw) | −0.081% | — |
+| Profit share (shp) | +0.141% | — |
+| Current account (cab) | +1.805% | — |
+| Gov. debt (b_s) | −0.12% | +0.05% |
+| Materials (mat) | −0.037% | — |
+| Emissions (emis) | −1.563% | −0.027% |
+| Recycling (rec) | −3.094% | — |
+
+The energy production scenario delivers the largest ecological gains in the simulation set: emissions fall −1.563% long-run, recycling activity contracts −3.094% (a technical artefact of renewable energy classification in the model), and the current account improves +1.805%. This scenario correctly targets the dominant intermediate channel (Int = 66.5%, 14.8 billion EUR of the 22.2 billion total at t = 70) and combines this with the largest emission intensity differential in the set (ε₃₁ = 2771 vs ε₃₂ = 843, ratio 3.3:1). The product of scale and intensity differential places this scenario in a different order of magnitude from all other interventions.
+
+The current account improvement (+1.805%) reflects EU structural import dependency on fossil energy: as the A-matrix shifts toward renewable-electricity-intensive production, EU import requirements for fossil inputs fall. This is the most pronounced external-balance effect in the scenario set after Scenario 5.
+
+The distributional effects are clearly regressive: wage share falls −0.081% long-run, profit share rises +0.141%. The primary fossil-fuel sector is relatively labour-intensive in its upstream supply chain, while the renewable energy sector is more capital- and investment-intensive. The CE energy transition displaces labour in favour of capital — a distributional outcome consistent with the broader literature on green transition costs.
+
+The cross-border pattern confirms the fiscal asymmetry: EU government debt falls (b_s −0.12%) as the EU fiscal base strengthens through import substitution, while Z2 debt rises (+0.05%) as RoW fossil energy exporters lose revenues. Both Z1 and Z2 employment contract (−0.01% and −0.014% long-run), but RoW contracts more — the most pronounced cross-regional employment asymmetry in the production scenario group. EU energy CE is the highest-leverage domestic CE intervention while being simultaneously the most internationally asymmetric: reducing EU fossil fuel imports reduces income for RoW energy exporters. The combination of maximum ecological leverage, maximum current account improvement, distributionally regressive domestic effects, and significant RoW employment contraction makes this the clearest illustration of the multi-dimensional trilemma.
+
+---
+
+## Sc14 | Construction Production Shift (ρ = 0.05)
+
+**Key simulation results (Long Term):**
+
+| Variable | EU (Z1) LT | RoW (Z2) LT |
+|---|---|---|
+| Output (y) | −0.055% | −0.011% |
+| Employment (n) | +0.01% | −0.011% |
+| Wage share (shw) | −0.042% | — |
+| Profit share (shp) | +0.073% | — |
+| Current account (cab) | +1.081% | — |
+| Gov. debt (b_s) | −0.057% | +0.033% |
+| Materials (mat) | −0.351% | — |
+| Emissions (emis) | +2.152% | — |
+| Recycling (rec) | −0.072% | — |
+
+The construction production scenario targets the intermediate channel for circular construction techniques (Int = 30.1%, 40.0 billion EUR of the 133.0 billion total at t = 70). At ρ = 0.05 — calibrated to reflect the imperfect substitutability of circular construction for conventional new-build — the shock engages approximately 2.0 billion EUR. Fixed investment at 66.7% (88.7 billion) remains unaddressed.
+
+The most striking result is the large emission increase (+2.152% long-run), structurally analogous to Scenario 5 (Construction FD, +5.188%): both construction scenarios show emission increases despite material savings. The consistent finding across Sc5 and Sc14 points to a structural feature of secondary construction in the model — renovation, reclamation, and circular construction techniques are more energy- and therefore more emission-intensive per unit of output than conventional new-build at current calibration. This is a substantively important finding: the widespread assumption that circular construction reduces both materials and emissions does not hold in the model as calibrated on EU IO data, where the upstream energy intensity of secondary construction is sufficiently high to reverse the emission direction.
+
+EU employment is marginally positive (+0.01%) — consistent with the labour-intensive character of renovation and secondary construction — while RoW employment falls (−0.011%). This asymmetric sign pattern (EU +, RoW −) mirrors Scenario 5 and reflects the domestic employment intensity of circular construction activity relative to conventional construction's higher imported-component content. The current account improves (+1.081%) and EU government debt falls (−0.057%).
+
+The distributional effect is regressive (shw −0.042%, shp +0.073%), consistent with secondary construction being more concentrated in specialist high-margin firms.
+
+The cross-material cascade effects expected for construction are a distinguishing feature: construction is the dominant intermediate purchaser of cement, metals, and glass simultaneously. A CE transition in construction input mix propagates through multiple material supply chains at once. The comparison with Scenario 5 (FD construction shift) is analytically important: Scenario 5 engages the demand side (firms requesting more circular construction services), while Scenario 14 engages the supply side (construction firms restructuring their input mix). Both leave the dominant fixed investment channel unaddressed. The full policy case for circular construction requires a complementary investment channel intervention — public investment in renovation and circular infrastructure — at which point the scenario would dwarf all others in the set by absolute economic scale.

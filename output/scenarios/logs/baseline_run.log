@@ -76,7 +76,7 @@
 [baseline] ✔ t = 12: converged at iter = 67 with error = 1.03e-09
 [baseline] ℹ Solving time periods  12% (t = 13 / 100)
 [baseline] ℹ t = 13: starting iterations (max = 100)
-[baseline] ℹ t = 13, iter = 25: mean score = 0.000303, error = 0.3575
+[baseline] ℹ t = 13, iter = 25: mean score = 0.000302, error = 0.3575
 [baseline] ℹ t = 13, iter = 50: mean score = 0, error = 1.872e-07
 [baseline] ✔ t = 13: converged at iter = 67 with error = 2.452e-09
 [baseline] ℹ Solving time periods  13% (t = 14 / 100)
@@ -329,7 +329,7 @@
 [baseline] ✔ t = 59: converged at iter = 79 with error = 2.799e-07
 [baseline] ℹ Solving time periods  60% (t = 60 / 100)
 [baseline] ℹ t = 60: starting iterations (max = 100)
-[baseline] ℹ t = 60, iter = 25: mean score = 3e-04, error = 0.2515
+[baseline] ℹ t = 60, iter = 25: mean score = 0.000299, error = 0.2515
 [baseline] ℹ t = 60, iter = 50: mean score = 8e-06, error = 3.114e-08
 [baseline] ℹ t = 60, iter = 75: mean score = 0, error = 2.928e-07
 [baseline] ✔ t = 60: converged at iter = 79 with error = 2.925e-07
@@ -455,7 +455,7 @@
 [baseline] ✔ t = 80: converged at iter = 83 with error = 6.942e-07
 [baseline] ℹ Solving time periods  81% (t = 81 / 100)
 [baseline] ℹ t = 81: starting iterations (max = 100)
-[baseline] ℹ t = 81, iter = 25: mean score = 0.008298, error = 0.2507
+[baseline] ℹ t = 81, iter = 25: mean score = 0.008297, error = 0.2507
 [baseline] ℹ t = 81, iter = 50: mean score = 5.8e-05, error = 2.388e-07
 [baseline] ℹ t = 81, iter = 75: mean score = 0, error = 7.252e-07
 [baseline] ✔ t = 81: converged at iter = 90 with error = 7.246e-07
@@ -485,7 +485,7 @@
 [baseline] ✔ t = 85: converged at iter = 85 with error = 8.599e-07
 [baseline] ℹ Solving time periods  86% (t = 86 / 100)
 [baseline] ℹ t = 86: starting iterations (max = 100)
-[baseline] ℹ t = 86, iter = 25: mean score = 0.008173, error = 0.2508
+[baseline] ℹ t = 86, iter = 25: mean score = 0.008172, error = 0.2508
 [baseline] ℹ t = 86, iter = 50: mean score = 0.000149, error = 3.422e-07
 [baseline] ℹ t = 86, iter = 75: mean score = 0, error = 8.982e-07
 [baseline] ✔ t = 86: converged at iter = 96 with error = 8.976e-07
@@ -575,6 +575,6 @@
 [baseline] ✔ t = 100: converged at iter = 87 with error = 1.633e-06
 [baseline] 
 [baseline] ── Simulation completed ──
-[baseline] ✔ Total execution time: 3.908 mins
+[baseline] ✔ Total execution time: 4.076 mins
 [baseline] ℹ Last non-NA simulated period: t = 100
 [baseline] ────────────────────────────────────────── LEEDS_MODEL run finished ──────────────────────────────────────────

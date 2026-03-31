@@ -9,7 +9,7 @@ Columns: `Immediate.Z1 / Short.Z1 / Long.Z1 | Immediate.Z2 / Short.Z2 / Long.Z2`
 
 ---
 
-## Scenario 1 | Household Food Shift (Meat → Other Food, β 7→8)
+## Scenario 1 | HH Food Shift (Meat → Other Food, β 7→8, ρ=0.2)
 
 | Category | Variable | Imm.Z1 | ST.Z1 | LT.Z1 | Imm.Z2 | ST.Z2 | LT.Z2 |
 |----------|----------|--------|-------|-------|--------|-------|-------|
@@ -21,7 +21,6 @@ Columns: `Immediate.Z1 / Short.Z1 / Long.Z1 | Immediate.Z2 / Short.Z2 / Long.Z2`
 | Macro | cab | -0.61 | -0.71 | -0.88 | -0.61 | -0.71 | -0.88 |
 | Macro | tb | -0.36 | -0.34 | -0.34 | -0.36 | -0.34 | -0.34 |
 | Social | n | **-0.11** | **-0.11** | **-0.11** | 0 | +0.01 | +0.01 |
-| Social | nf | -0.11 | -0.11 | -0.11 | 0 | +0.01 | +0.01 |
 | Social | shp | +0.04 | +0.05 | +0.06 | 0 | 0 | 0 |
 | Social | shw | -0.02 | -0.03 | -0.03 | 0 | 0 | 0 |
 | Ecology | x_mat | -0.37 | -0.37 | -0.37 | 0 | +0.01 | +0.01 |
@@ -30,11 +29,11 @@ Columns: `Immediate.Z1 / Short.Z1 / Long.Z1 | Immediate.Z2 / Short.Z2 / Long.Z2`
 | Ecology | emis | -0.52 | -0.52 | -0.52 | 0 | 0 | 0 |
 | Ecology | water | -0.52 | -0.52 | -0.52 | 0 | 0 | 0 |
 
-**Note:** Employment effect is large (−0.11%) relative to other final demand scenarios. Driven by (a) large beta share of Meat (3.84%) and (b) high employment intensity of Meat vs Other Food (n/x = 5.37 vs 4.35). Also notable: meaningful ecological savings (mat −0.63%, land −0.52%).
+**Note:** Largest employment effect among all FD scenarios (−0.11%). Driven by large β share of Meat (3.84%) and high employment intensity differential (n/x: Meat 5.37 vs Other Food 4.35). Meaningful ecological savings (mat −0.63%, emis −0.52%). Z2 slight positive spillover.
 
 ---
 
-## Scenario 2 | Household Energy Shift (Fossil → Renewable, β 31→32)
+## Scenario 2 | HH Energy Shift (Fossil → Renewable, β 31→32, ρ=0.2)
 
 | Category | Variable | Imm.Z1 | ST.Z1 | LT.Z1 | Imm.Z2 | ST.Z2 | LT.Z2 |
 |----------|----------|--------|-------|-------|--------|-------|-------|
@@ -49,17 +48,17 @@ Columns: `Immediate.Z1 / Short.Z1 / Long.Z1 | Immediate.Z2 / Short.Z2 / Long.Z2`
 | Ecology | emis | -1.00 | -0.99 | -0.98 | -0.01 | -0.02 | -0.02 |
 | Ecology | rec | -1.96 | -1.95 | -1.94 | -0.07 | -0.07 | -0.07 |
 
-**Note:** Strongest ecological effect among final demand scenarios (emis −1%). Positive current account effect (energy import substitution). Slight employment improvement over time.
+**Note:** Strongest ecological effect among FD scenarios (emis −1.0%). Positive current account (energy import substitution). Near-neutral employment. Z2 mild contraction (energy export revenue loss).
 
 ---
 
-## Scenario 3 | Government Energy Shift (σ 24→25) — **Near-zero effect**
+## Scenario 3 | HH Wood Shift (β 11→12, ρ=0.2) — Near-zero
 
-All variables ≈ 0. Target sector has negligible share in government consumption allocation vector.
+All macro/social ≈ 0. Only minor material reduction (mat −0.04%). Wood sector has negligible household consumption share.
 
 ---
 
-## Scenario 4 | Government Cement Shift (σ 17→18)
+## Scenario 4 | Gov Plastics Shift (σ 17→18, ρ=0.2)
 
 | Category | Variable | Imm.Z1 | ST.Z1 | LT.Z1 | Imm.Z2 | ST.Z2 | LT.Z2 |
 |----------|----------|--------|-------|-------|--------|-------|-------|
@@ -69,17 +68,41 @@ All variables ≈ 0. Target sector has negligible share in government consumptio
 | Ecology | emis | -0.05 | -0.05 | -0.06 | +0.02 | +0.03 | +0.03 |
 | Ecology | rec | -0.15 | -0.15 | -0.15 | -0.02 | -0.02 | -0.02 |
 
-**Note:** Mixed ecological signal — emissions down in Z1 but slight increase in Z2 (leakage via land/emis).
+**Note:** Mixed ecological signal — emissions down in Z1 but slight increase in Z2 (leakage).
 
 ---
 
-## Scenarios 5–6 | Firm Investment Shifts — **Near-zero effect**
+## Scenario 5 | Firm Construction Shift (ι 36→37, ρ=0.05) — EMISSION REBOUND
 
-Both ≈ 0 across all variables. Investment allocation shifts have negligible effect at ρ = 0.2 given small absolute sector shares.
+| Category | Variable | Imm.Z1 | ST.Z1 | LT.Z1 | Imm.Z2 | ST.Z2 | LT.Z2 |
+|----------|----------|--------|-------|-------|--------|-------|-------|
+| Macro | c | +0.03 | +0.04 | +0.08 | -0.01 | -0.02 | -0.02 |
+| Macro | go | -0.18 | -0.20 | -0.19 | -0.02 | -0.03 | -0.03 |
+| Macro | id | -0.12 | -0.23 | -0.27 | 0 | -0.02 | -0.03 |
+| Macro | gdef | +1.75 | +2.85 | +5.59 | +4.16 | +6.59 | +7.64 |
+| Macro | cab | +2.32 | +2.58 | +2.88 | +2.32 | +2.58 | +2.88 |
+| Macro | tb | +1.41 | +1.59 | +1.44 | +1.41 | +1.59 | +1.44 |
+| Social | n | +0.03 | +0.02 | +0.03 | -0.02 | -0.02 | -0.03 |
+| Social | shp | -0.01 | +0.06 | +0.11 | -0.01 | 0 | 0 |
+| Social | shw | 0 | -0.03 | -0.07 | 0 | 0 | 0 |
+| Ecology | x_mat | -0.55 | -0.58 | -0.57 | -0.03 | -0.04 | -0.05 |
+| Ecology | mat | -0.82 | -0.85 | -0.84 | -0.03 | -0.04 | -0.05 |
+| Ecology | **land** | **+5.19** | **+5.17** | **+5.19** | +0.06 | +0.05 | +0.05 |
+| Ecology | **emis** | **+5.19** | **+5.17** | **+5.19** | +0.06 | +0.05 | +0.05 |
+| Ecology | **water** | **+5.19** | **+5.17** | **+5.19** | +0.06 | +0.05 | +0.05 |
+| Ecology | rec | -0.16 | -0.18 | -0.17 | -0.04 | -0.05 | -0.05 |
+
+**Note:** Structural rebound — secondary construction sector is more emission/land/water-intensive than primary. Material savings (mat −0.84%) are more than offset by ecological damage from shifting to a more emission-intensive process. Gross investment falls (id −0.27%) but consumption rises (+0.08%), net employment slightly positive in Z1 (+0.03%), negative in Z2 (−0.03%). Strong positive current account effect (+2.88%).
 
 ---
 
-## Scenario 7 | Wood Shift (A-matrix 11→12)
+## Scenario 6 | Firm Metal Investment Shift (ι 26→27, ρ=0.2) — Near-zero
+
+All macro/social ≈ 0. Firm investment in Metal has negligible sector share. Minor ecological effects (mat −0.02%, emis +0.01% — slight rebound signal).
+
+---
+
+## Scenario 7 | Wood Production Shift (A-matrix 11→12, ρ=0.2)
 
 | Category | Variable | Imm.Z1 | ST.Z1 | LT.Z1 | Imm.Z2 | ST.Z2 | LT.Z2 |
 |----------|----------|--------|-------|-------|--------|-------|-------|
@@ -88,15 +111,17 @@ Both ≈ 0 across all variables. Investment allocation shifts have negligible ef
 | Ecology | x_mat | -0.04 | -0.13 | -0.19 | 0 | 0 | 0 |
 | Ecology | mat | -0.07 | -0.20 | -0.29 | 0 | 0 | 0 |
 
----
-
-## Scenario 8 | Pulp Shift (A-matrix 13→14) — **Small effect**
-
-All variables small (≤ 0.04% long-term). Wood/pulp sectors have small A-matrix share.
+**Note:** Moderate material savings (mat −0.29% LT), small employment decline (−0.02%). Most contained production shock.
 
 ---
 
-## Scenario 9 | Plastics Shift (A-matrix 17→18)
+## Scenario 8 | Pulp Production Shift (A-matrix 13→14, ρ=0.2) — Small
+
+All variables ≤ 0.04% LT. Pulp sector has minimal A-matrix weight.
+
+---
+
+## Scenario 9 | Plastics Production Shift (A-matrix 17→18, ρ=0.2)
 
 | Category | Variable | Imm.Z1 | ST.Z1 | LT.Z1 | Imm.Z2 | ST.Z2 | LT.Z2 |
 |----------|----------|--------|-------|-------|--------|-------|-------|
@@ -106,11 +131,11 @@ All variables small (≤ 0.04% long-term). Wood/pulp sectors have small A-matrix
 | Ecology | rec | -0.03 | -0.08 | -0.12 | 0 | -0.01 | -0.01 |
 | Ecology | mat | 0 | +0.01 | +0.02 | 0 | +0.01 | +0.01 |
 
-**Note:** Small mat *increase* (secondary plastics sector has higher material throughput than primary).
+**Note:** Small mat *increase* — secondary plastics sector has higher material throughput than primary (partial rebound).
 
 ---
 
-## Scenario 10 | Metal Shift (A-matrix 26→27) — **Anomalous: expansionary + mixed ecology**
+## Scenario 10 | Metal Production Shift (A-matrix 26→27, ρ=0.2) — ANOMALOUS: expansionary + mixed ecology
 
 | Category | Variable | Imm.Z1 | ST.Z1 | LT.Z1 | Imm.Z2 | ST.Z2 | LT.Z2 |
 |----------|----------|--------|-------|-------|--------|-------|-------|
@@ -126,23 +151,23 @@ All variables small (≤ 0.04% long-term). Wood/pulp sectors have small A-matrix
 | Ecology | emis | +0.08 | +0.22 | +0.34 | 0 | -0.01 | -0.02 |
 | Ecology | rec | -0.05 | -0.15 | -0.21 | -0.01 | -0.02 | -0.03 |
 
-**Note:** Secondary metal sector has lower material and extraction requirements than primary — driving the expansion. But secondary metal is more land and emissions intensive (mining, processing), so land/emis increase. Z2 faces employment/income contraction (asymmetric burden). This is a structural rebound case (l₁₂ > l₁₁ for some dimensions).
+**Note:** Expansionary (EU Z1 expands, RoW Z2 contracts — asymmetric sign reversal). Material savings large (mat −0.94% LT) but land/emis *increase* (+0.34% LT) — structural rebound in those dimensions because secondary metal has higher land/emissions intensity. Z2 faces employment contraction (−0.02% LT).
 
 ---
 
-## Scenario 11 | Glass Shift (A-matrix 21→22) — **Negligible effect**
+## Scenario 11 | Glass Production Shift (A-matrix 21→22, ρ=0.2) — Negligible
 
-All macro/social ≈ 0. Small mat reduction (−0.21% LT). Glass sector has small A-matrix share.
-
----
-
-## Scenario 12 | Cement Shift (A-matrix 24→25) — **Negligible effect**
-
-All macro/social ≈ 0. Small material reduction (−0.05% LT). Cement sector small relative to economy.
+All macro/social ≈ 0. Small mat reduction (−0.21% LT). Glass sector too small in A-matrix.
 
 ---
 
-## Scenario 13 | Energy Shift (A-matrix 31→32)
+## Scenario 12 | Cement Production Shift (A-matrix 24→25, ρ=0.2) — Negligible
+
+All macro/social ≈ 0. Small material reduction (−0.05% LT). Cement sector small.
+
+---
+
+## Scenario 13 | Energy Production Shift (A-matrix 31→32, ρ=0.2) — HIGHEST LEVERAGE
 
 | Category | Variable | Imm.Z1 | ST.Z1 | LT.Z1 | Imm.Z2 | ST.Z2 | LT.Z2 |
 |----------|----------|--------|-------|-------|--------|-------|-------|
@@ -160,4 +185,27 @@ All macro/social ≈ 0. Small material reduction (−0.05% LT). Cement sector sm
 | Ecology | rec | -0.93 | -2.66 | -3.87 | -0.03 | -0.10 | -0.15 |
 | Ecology | water | -0.47 | -1.35 | -1.95 | -0.01 | -0.02 | -0.03 |
 
-**Note:** Strongest ecological gains (emis −1.95% LT). Positive current account (import energy substitution). Profit share rises (wage share falls) — distributionally regressive. Z2 faces employment and income decline (asymmetric burden: EU gains ecological improvement partly by reducing energy imports from RoW). Government balance improves markedly (reduced energy subsidy/tax base shift).
+**Note:** Strongest ecological gains (emis −1.95% LT). Positive CAB (+2.26%) and TB (+1.39%). Fiscal dividend large (gdef +3.63% Z1, +5.28% Z2). But distributionally regressive: wage share −0.10%, profit share +0.18%. Z2 employment falls (−0.02% LT) — EU gains partly by reducing energy imports from RoW. Most asymmetric outcome.
+
+---
+
+## Scenario 14 | Construction Production Shift (A-matrix 36→37, ρ=0.05) — EMISSION REBOUND
+
+| Category | Variable | Imm.Z1 | ST.Z1 | LT.Z1 | Imm.Z2 | ST.Z2 | LT.Z2 |
+|----------|----------|--------|-------|-------|--------|-------|-------|
+| Macro | c | +0.01 | +0.01 | +0.03 | 0 | 0 | -0.01 |
+| Macro | go | -0.01 | -0.06 | -0.08 | 0 | -0.01 | -0.01 |
+| Macro | id | -0.01 | -0.06 | -0.11 | 0 | 0 | -0.01 |
+| Macro | gdef | +0.82 | +0.30 | +1.30 | +0.14 | +1.57 | +2.79 |
+| Macro | cab | +0.10 | +0.66 | +1.08 | +0.10 | +0.66 | +1.08 |
+| Macro | tb | +0.15 | +0.48 | +0.66 | +0.15 | +0.48 | +0.66 |
+| Social | n | +0.01 | +0.01 | +0.01 | 0 | -0.01 | -0.01 |
+| Social | shp | +0.02 | +0.03 | +0.07 | 0 | 0 | 0 |
+| Social | shw | -0.01 | -0.02 | -0.04 | 0 | 0 | 0 |
+| Ecology | x_mat | -0.05 | -0.16 | -0.24 | 0 | -0.01 | -0.02 |
+| Ecology | mat | -0.08 | -0.24 | -0.35 | 0 | -0.01 | -0.02 |
+| Ecology | **land** | **+0.52** | **+1.47** | **+2.15** | 0 | -0.01 | -0.01 |
+| Ecology | **emis** | **+0.52** | **+1.47** | **+2.15** | 0 | -0.01 | -0.01 |
+| Ecology | **water** | **+0.52** | **+1.47** | **+2.15** | 0 | -0.01 | -0.01 |
+
+**Note:** Same structural rebound as Sc5 — secondary construction is more emission/land-intensive. Despite material savings (mat −0.35%), emissions grow +2.15% LT. Slightly expansionary (n +0.01%). Z2 effects minimal.

@@ -3,8 +3,8 @@
 "Macroeconomic","va",0,0,0,0,0,0
 "Macroeconomic","go",0,0,0,0,0,0
 "Macroeconomic","id",0,0,0,0,0,0
-"Macroeconomic","gdef",-0.02,-0.06,-0.08,-0.01,-0.04,-0.07
-"Macroeconomic","cab",-0.01,-0.02,-0.03,-0.01,-0.02,-0.03
+"Macroeconomic","gdef",-0.02,-0.05,-0.06,-0.01,-0.03,-0.06
+"Macroeconomic","cab",0,-0.01,-0.02,0,-0.01,-0.02
 "Macroeconomic","tb",0,-0.01,-0.01,0,-0.01,-0.01
 "Social","n",0,0,-0.01,0,0,0
 "Social","nf",0,0,-0.01,0,0,0
@@ -14,11 +14,11 @@
 "Debt.and.Wealth","lf",0,0,-0.01,0,0,0
 "Debt.and.Wealth","v",0,0,0,0,0,0
 "Debt.and.Wealth","k",0,0,0,0,0,0
-"Debt.and.Wealth","b_s",0,0,0.01,0,0,0
-"Ecological","x_mat",-0.01,-0.02,-0.03,0,0,0
+"Debt.and.Wealth","b_s",0,0,0,0,0,0
+"Ecological","x_mat",-0.01,-0.01,-0.02,0,0,0
 "Ecological","land",-0.01,-0.02,-0.03,0,0,0
-"Ecological","mat",0,-0.01,-0.02,0,0,0
-"Ecological","rec",-0.01,-0.03,-0.04,0,0,0
+"Ecological","mat",0,-0.01,-0.01,0,0,0
+"Ecological","rec",-0.01,-0.02,-0.03,0,0,0
 "Ecological","emis",-0.01,-0.02,-0.03,0,0,0
 "Ecological","wa",0,0,0,0,0,0
 "Ecological","water",-0.01,-0.02,-0.03,0,0,0

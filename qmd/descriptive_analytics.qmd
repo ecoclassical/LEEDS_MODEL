@@ -20,6 +20,7 @@ format:
     toc: true
     toc-depth: 3
     number-sections: true
+prefer-html: true
 execute:
   echo: false
   warning: false

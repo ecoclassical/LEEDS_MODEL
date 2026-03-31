@@ -39,8 +39,9 @@ run_or_load_shock <- function(n_shock, initial, model_fun, force = FALSE) {
   }
 
   rho_val <- suppressWarnings(as.numeric(sc_row$rho[[1]]))
+  if (!is.na(rho_val)) initial$pars['rho', 'value'] <- rho_val
 
-  # Try your common column names, but don’t break if missing
+  # Try your common column names, but don't break if missing
   z1_val <- if ("Z1_ce" %in% names(sc_row)) {
     as.character(sc_row$Z1_ce[[1]])
   } else {

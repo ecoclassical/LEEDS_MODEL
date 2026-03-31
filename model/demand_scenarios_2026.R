@@ -33,8 +33,8 @@ compute_delta_eff <- function(
     return(delta_current) # no applicable row (or ambiguous) => no change
   }
 
-  from <- as.integer(sc_row$from[[1]])
-  to <- as.integer(sc_row$to[[1]])
+  from <- as.integer(sc_row$primary[[1]])
+  to <- as.integer(sc_row$secondary[[1]])
 
   from_name <- paste0(prefix, "-", from)
   to_name <- paste0(prefix, "-", to)

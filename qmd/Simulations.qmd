@@ -1,0 +1,1934 @@
+---
+title: "Simulation Results"
+subtitle: "Individual Scenario Runs — Appendix"
+author:
+  - name: "Oriol Vallès Codina"
+    affiliation: "Johns Hopkins University, Net Zero Industrial Policy Lab, Department of Political Science"
+    email: 
+      - "oriolvallescodina@gmail.com"
+date: "`r Sys.Date()`"
+format:
+  html:
+    toc: true
+    toc_float: true
+    self-contained: true
+    page-layout: full
+    css: fullwidth.css
+execute:
+  echo: false
+  working-dir: ..
+---
+
+# Initialization
+
+The initial values and variables are loaded from the file stored in variable `identif` in a different structure as before.
+
+```{r packages, warning = F, message = F}
+library(tidyverse)
+library(igraph)
+library(qgraph)
+library(visNetwork)
+library(scales)
+```
+
+```{r init, warning = F, message = F}
+# -----------------------------
+# Robust project root detection
+# -----------------------------
+qmd_in <- knitr::current_input()
+
+if (!is.null(qmd_in) && nzchar(qmd_in)) {
+  qmd_path <- normalizePath(qmd_in, winslash = "/")
+  root <- normalizePath(file.path(dirname(qmd_path), ".."), winslash = "/")
+  root_method <- "knitr::current_input()"
+} else {
+  # Fallback for interactive execution / sourcing
+  wd0 <- normalizePath(getwd(), winslash = "/")
+  root <- if (basename(wd0) == "qmd") {
+    normalizePath("..", winslash = "/")
+  } else {
+    wd0
+  }
+  root_method <- "getwd() fallback"
+}
+
+# -----------------------------
+# Canonical directories
+# -----------------------------
+model_dir <- file.path(root, "model")
+utils_dir <- file.path(root, "utils")
+dir_data <- file.path(root, "data")
+
+# -----------------------------
+# Core inputs
+# -----------------------------
+variable.table <- read.csv(
+  file.path(dir_data, "Variable_Definitions.csv"),
+  stringsAsFactors = FALSE
+)
+
+initial_filename <- file.path(dir_data, "full_mrio_initial_state.xlsx")
+stopifnot(file.exists(initial_filename))
+
+sector_list <- read.csv(
+  file.path(dir_data, "sector_list.csv"),
+  stringsAsFactors = FALSE
+) %>%
+  mutate(label = gsub("<br>", " ", label))
+
+# -----------------------------
+## workspace dirs
+# -----------------------------
+workspace_dir <- file.path(root, "output", "scenarios")
+dir.create(workspace_dir, showWarnings = FALSE, recursive = TRUE)
+
+dir_runs <- file.path(workspace_dir, "shock_runs")
+dir_tables <- file.path(workspace_dir, "shock_tables")
+dir_logs <- file.path(workspace_dir, "logs")
+dir_long <- file.path(workspace_dir, "shock_long")
+dir_cache <- file.path(workspace_dir, "scenario_cache")
+dir_rds <- file.path(workspace_dir, "rds_files")
+
+invisible(lapply(
+  list(dir_runs, dir_tables, dir_logs, dir_long, dir_cache, dir_rds),
+  dir.create,
+  showWarnings = FALSE,
+  recursive = TRUE
+))
+
+# -----------------------------
+# Source utilities + model code
+# -----------------------------
+
+source(file.path(model_dir, "bootstrap_2026.R"))
+
+# --- Load initial state ---
+initial <- load.init(initial_filename)
+```
+
+```{r filenames}
+# ---- Workspace filenames (generated / cached) ----
+baseline_filename <- file.path(workspace_dir, "full_mrio_baseline_2026.RDS")
+target_filename <- file.path(workspace_dir, "target_values.xlsx")
+scenario_filename <- file.path(dir_data, "scenarios.csv")
+
+sc <- read.csv(file = scenario_filename)
+
+get_shock_filename <- function(n) {
+  file.path(dir_runs, paste0("shock_", n, "_run.RDS"))
+}
+get_table_filename <- function(n) {
+  file.path(dir_tables, paste0("shock_", n, "_table.csv"))
+}
+get_log_filename <- function(n) {
+  file.path(dir_logs, paste0("shock_", n, "_run.log"))
+}
+```
+
+```{r theme}
+theme_leeds <- function() {
+  theme_grey() +
+    theme(
+      plot.title = element_text(face = "bold", size = 14),
+      legend.title = element_text(face = "bold"),
+      strip.text.y = element_text(angle = 0),
+      plot.subtitle = element_text(face = "italic", size = 10),
+      strip.text.y.right = element_text(angle = 0)
+    )
+}
+
+theme_set(
+  theme_leeds()
+)
+```
+
+
+# Baseline 
+
+```{r simulation, warning = F, message = F}
+baseline <- run_or_load_baseline(initial, mvp.model, force = FALSE)
+```
+
+## Calibration
+
+Target values are loaded in format long (`target.set`) and wide (`target.table.0`). Units are divided by 10,000 for convenience.
+
+```{r calibration}
+#### LOAD TARGET VALUES ####
+
+target.list <- load.target(target_filename, variable.table)
+target.table <- target.list$wide
+target.set <- target.list$long
+target.vars <- target.set$var.label
+target.set$target <- baseline$simulation[
+  target.set$var,
+  baseline$initial$pars['nPeriods', 'value']
+]
+target.set$ratio <- round(target.set$target / target.set$value, 2)
+
+compute.target(baseline)
+```
+
+## Visualization
+
+```{r variable_selection} 
+#| fig-width: 7
+#| fig-height: 4
+
+# Variable Selection
+selected.list <- list(
+  Macroeconomic = c('c', 'va', 'go', 'id', 'gdef', 'cab', 'tb'),
+  Social = c('n', 'nf', 'shp', 'shw'),
+  Debt.and.Wealth = c('lh', 'lf', 'v', 'k', 'b_s'),
+  Ecological = c('x_mat', 'land', 'mat', 'rec', 'emis', 'wa', 'water')
+)
+
+plot.selected.by_group(baseline, selected.list)
+```
+
+___
+
+# Scenarios to Analyze
+
+```{r scenarios.table}
+sc %>%
+  select(-display_name) %>%
+  kable(
+    caption = "Scenario Registry",
+    align = "l",
+    escape = TRUE
+  ) %>%
+  kable_styling(
+    full_width = FALSE,
+    bootstrap_options = c("striped", "hover", "condensed"),
+    font_size = 12
+  ) %>%
+  scroll_box(width = "100%", height = "600px")
+
+scenario_list <- list()
+
+# Time Period Selection
+t.shock <- initial$pars['t.shock', 'value'] # shock time period
+t0 <- 55 # initial time period for visualization
+tf <- initial$pars['nPeriods', 'value'] # final time period for visualization
+```
+
+___
+
+___
+
+# Simulation Overview
+
+```{r simulation_overview, echo=FALSE, message=FALSE, warning=FALSE}
+# Read all 14 cached shock tables and build a compact results summary
+overview_vars <- c('go', 'n', 'emis', 'mat', 'cab')
+
+all_tables <- lapply(1:14, function(n) {
+  tbl <- tryCatch(read.csv(get_table_filename(n)), error = function(e) NULL)
+  if (is.null(tbl)) return(NULL)
+  tbl %>%
+    dplyr::filter(Variable %in% overview_vars) %>%
+    dplyr::select(Variable, Long.Term.Z1, Long.Term.Z2) %>%
+    tidyr::pivot_wider(names_from = Variable,
+                       values_from = c(Long.Term.Z1, Long.Term.Z2)) %>%
+    dplyr::mutate(shock = n)
+})
+
+overview_df <- dplyr::bind_rows(all_tables) %>%
+  dplyr::left_join(sc %>% dplyr::select(shock, display_name, domain, rho), by = "shock") %>%
+  dplyr::select(shock, display_name, domain, rho,
+                Long.Term.Z1_go, Long.Term.Z1_n,
+                Long.Term.Z1_emis, Long.Term.Z1_mat, Long.Term.Z1_cab,
+                Long.Term.Z2_n, Long.Term.Z2_emis) %>%
+  dplyr::rename(
+    `#` = shock,
+    Scenario = display_name,
+    Domain = domain,
+    `ρ` = rho,
+    `EU Output` = Long.Term.Z1_go,
+    `EU Employ.` = Long.Term.Z1_n,
+    `EU Emis.` = Long.Term.Z1_emis,
+    `EU Mat.` = Long.Term.Z1_mat,
+    `EU CAB` = Long.Term.Z1_cab,
+    `RoW Employ.` = Long.Term.Z2_n,
+    `RoW Emis.` = Long.Term.Z2_emis
+  )
+
+overview_df %>%
+  kable(
+    caption = "Simulation Overview — Long-Term Effects (% deviation from baseline, t\* + 20)",
+    digits = 3,
+    align = c("c","l","l","c","r","r","r","r","r","r","r")
+  ) %>%
+  kable_styling(
+    full_width = TRUE,
+    bootstrap_options = c("striped", "hover", "condensed"),
+    font_size = 11
+  ) %>%
+  pack_rows("Final Demand (Scenarios 1–6)", 1, 6) %>%
+  pack_rows("Intermediate Demand (Scenarios 7–14)", 7, 14)
+```
+
+
+# Final Demand Scenarios
+
+## 1 | Household Food Shift
+
+```{r shock.run}
+# Shock Selection and Run
+initial_shock <- initial
+n_shock <- initial_shock$pars['shock', 'value'] <- 1
+
+sc$rho[n_shock]
+
+scenario_list[[n_shock]] <- scenario <- run_or_load_shock(
+  n_shock,
+  initial_shock,
+  mvp.model,
+  force = FALSE
+)
+```
+
+### Visualize Shocked Variables
+
+```{r shock.view}
+#| fig-width: 6
+#| fig-height: 2
+
+view.shock(
+  scenario,
+  shock.vars = paste(
+    sc$target[n_shock],
+    sc[n_shock, c('primary', 'secondary')] %>% unlist,
+    sep = '-'
+  ),
+  shock.sectors = sc[n_shock, c('primary', 'secondary')] %>% unlist,
+  shock.title = sc$display_name[n_shock]
+)
+```
+
+### Visualize Impacts
+
+```{r shock.visualize.scaled}
+#| fig-width: 8
+#| fig-height: 4
+
+p.selected.vars <- plot_selected_vars(
+  baseline = baseline,
+  scenario = scenario,
+  selected.list = selected.list,
+  shock_title = sc$display_name[n_shock],
+  t_shock = initial$pars["t.shock", "value"],
+  print_blocks = TRUE
+)
+
+p.selected.vars
+```
+
+### Summary Visualization
+
+```{r summary.table.1}
+#| fig-width: 10
+#| fig-height: 10
+
+scenario.table <- shock.summary(
+  baseline,
+  shock.run = scenario,
+  t_ = c(t.shock + 1, t.shock + 7, t.shock + 20),
+  t_names = c('Immediate', 'Short.Term', 'Long.Term')
+)
+
+# kable(diet.table, booktabs = T)
+write.csv(scenario.table, get_table_filename(n_shock), row.names = FALSE)
+
+scenario.table <- read.csv(get_table_filename(n_shock))
+
+scenario_analysis_plot(
+  shock_df = scenario.table,
+  shock_title = sc$display_name[n_shock],
+  variable.table = variable.table,
+  shock_subtitle = paste0(
+    'Shock Parameter ρ = ',
+    sc$rho[n_shock],
+    ". Teal = positive change, red = negative change (relative to baseline)"
+  )
+)
+```
+
+### Discussion
+
+```{r, echo=FALSE}
+scenario.table |>
+  dplyr::filter(Variable %in% c('go', 'n', 'shw', 'shp', 'gdef', 'cab', 'mat', 'emis', 'land', 'water', 'rec')) |>
+  dplyr::rename(
+    Category = Name,
+    `EU Imm.`  = Immediate.Z1,
+    `EU ST`    = Short.Term.Z1,
+    `EU LT`    = Long.Term.Z1,
+    `RoW Imm.` = Immediate.Z2,
+    `RoW ST`   = Short.Term.Z2,
+    `RoW LT`   = Long.Term.Z2
+  ) |>
+  kable(caption = "Key simulation results (% deviation from baseline)", digits = 3) |>
+  kable_styling(full_width = FALSE,
+                bootstrap_options = c("striped", "condensed"),
+                font_size = 11)
+```
+
+
+Household consumption dominates the food sector's demand profile at 68.5% (23.7 billion EUR out of 34.5 billion total at t=70), making this the one final-demand scenario where the targeted channel genuinely represents the primary mode of sectoral activation. The intervention reallocates household expenditure from Meat and Animal Products (sector 7) to Other Food (sector 3 equivalent), engaging the largest demand channel directly.
+
+The employment effect (n = −0.086% long-run, the largest among all final-demand scenarios) is explained by the sectoral employment intensity differential: Meat has an n/x ratio of 5.37 versus 4.35 for Other Food. Substituting output from a high-employment-intensity sector to a lower one mechanically reduces aggregate employment even when total expenditure is held constant. This is not a scale effect but a composition effect embedded in the IO structure. Gross output falls −0.04% long-run; the wage share declines −0.026% while the profit share rises +0.046%, confirming that the composition effect is regressive at the distributional margin — lower-intensity sectors are relatively more capital-intensive.
+
+Material savings (mat = −0.507% long-run) and emission reductions (emis = −0.418% long-run) are the largest among final-demand scenarios, reflecting the high absolute scale of the household food channel. The slight profit share gain (shp = +0.046%) reflects that the secondary food sectors have marginally higher profit intensity, consistent with structural differences between livestock processing and other food manufacturing.
+
+The cross-border pattern is one of asymmetric sign reversal on the employment axis: Z2 employment rises +0.007% long-run as EU food demand composition shifts toward sectors with higher RoW import content. The current account deteriorates for Z1 (−0.706% long-run) — the reallocation increases EU import intensity at the margin — while government debt rises slightly in Z1 (+0.18%) reflecting the demand contraction's fiscal drag.
+
+Food is therefore the one final-demand scenario where a genuine employment-ecology trade-off exists. The CE transition reduces material throughput at the cost of a modest employment contraction — a distributional tension that consumption-based CE instruments for food must explicitly address, in contrast to the energy or plastics final-demand scenarios where employment effects are negligible.
+
+___
+
+## 2 | Household Energy Shift
+
+```{r shock.run.2}
+# Shock Selection and Run
+initial_shock <- initial
+n_shock <- initial_shock$pars['shock', 'value'] <- 2
+
+scenario_list[[n_shock]] <- scenario <- run_or_load_shock(
+  n_shock,
+  initial_shock,
+  mvp.model,
+  force = FALSE
+)
+
+sc$rho[n_shock]
+```
+
+### Visualize Shocked Variables
+
+```{r shock.view.2}
+#| fig-width: 6
+#| fig-height: 2
+
+view.shock(
+  scenario,
+  shock.vars = paste(
+    sc$target[n_shock],
+    sc[n_shock, c('primary', 'secondary')] %>% unlist,
+    sep = '-'
+  ),
+  shock.sectors = sc[n_shock, c('primary', 'secondary')] %>% unlist,
+  shock.title = sc$display_name[n_shock]
+)
+```
+
+### Visualize Impacts
+
+```{r shock.visualize.scaled.2}
+#| fig-width: 8
+#| fig-height: 4
+
+p.selected.vars <- plot_selected_vars(
+  baseline = baseline,
+  scenario = scenario,
+  selected.list = selected.list,
+  shock_title = sc$display_name[n_shock],
+  t_shock = initial$pars["t.shock", "value"],
+  print_blocks = TRUE
+)
+
+p.selected.vars
+```
+
+```{r summary.table.2}
+#| fig-width: 10
+#| fig-height: 10
+
+scenario.table <- shock.summary(
+  baseline,
+  shock.run = scenario,
+  t_ = c(t.shock + 1, t.shock + 7, t.shock + 20),
+  t_names = c('Immediate', 'Short.Term', 'Long.Term')
+)
+
+# kable(energy.table, booktabs = T)
+write.csv(scenario.table, get_table_filename(n_shock), row.names = FALSE)
+
+scenario.table <- read.csv(get_table_filename(n_shock))
+
+scenario_analysis_plot(
+  shock_df = scenario.table,
+  shock_title = sc$display_name[n_shock],
+  variable.table = variable.table,
+  shock_subtitle = paste0(
+    'Shock Parameter ρ = ',
+    sc$rho[n_shock],
+    ". Teal = positive change, red = negative change (relative to baseline)"
+  )
+)
+```
+
+### Discussion
+
+```{r, echo=FALSE}
+scenario.table |>
+  dplyr::filter(Variable %in% c('go', 'n', 'shw', 'shp', 'gdef', 'cab', 'mat', 'emis', 'land', 'water', 'rec')) |>
+  dplyr::rename(
+    Category = Name,
+    `EU Imm.`  = Immediate.Z1,
+    `EU ST`    = Short.Term.Z1,
+    `EU LT`    = Long.Term.Z1,
+    `RoW Imm.` = Immediate.Z2,
+    `RoW ST`   = Short.Term.Z2,
+    `RoW LT`   = Long.Term.Z2
+  ) |>
+  kable(caption = "Key simulation results (% deviation from baseline)", digits = 3) |>
+  kable_styling(full_width = FALSE,
+                bootstrap_options = c("striped", "condensed"),
+                font_size = 11)
+```
+
+
+Household consumption represents only 30.9% of energy sector demand (6.9 billion EUR of the 22.2 billion total at t=70), while intermediate demand dominates at 66.5% (14.8 billion). By targeting the household channel, Scenario 2 engages less than a third of total energy demand — a structurally subordinate lever for energy CE.
+
+Despite this limited channel reach, Scenario 2 produces the strongest ecological effect among all final-demand scenarios: emissions fall −0.782% long-run and recycling activity contracts −1.554% (the latter a technical model artefact of how renewable energy flows are classified). The mechanism is the emission intensity differential, the largest in the scenario set: ε₃₁ = 2771 for fossil energy versus ε₃₂ = 843 for renewable/secondary energy, a ratio of 3.3:1. Even a relatively small absolute reallocation generates large emission savings because each unit of primary energy foregone avoids a disproportionately large emission burden. Material change is minimal (−0.015% long-run), confirming that the ecological effect here is emissions-specific, not a broad material throughput reduction.
+
+The current account improves substantially (+1.012% long-run) reflecting the EU's structural import dependency on fossil energy. Substituting domestic renewable production for imported fossil inputs improves the external balance, making this one of two scenarios (alongside Scenario 13) with pronounced external-balance effects. Employment is near-zero (−0.001% long-run), indicating the secondary energy sector employs at roughly the same intensity as the primary sector in aggregate. Distributional effects are mildly regressive (shw −0.043%, shp +0.075%), consistent with the capital-intensive character of renewable energy production relative to fossil.
+
+The cross-border pattern is distinctive: Z2 employment and output both fall modestly (−0.008% and −0.009% long-run), making this one of few FD scenarios with symmetric contraction in both regions rather than opposite signs. Government debt falls in Z1 (b_s −0.104%) — consistent with improved EU fiscal space from reduced fossil import bills — while Z2 debt rises slightly (+0.038%), reflecting lost fossil export revenues.
+
+The contrast with Scenario 13 (energy production substitution) is instructive. Scenario 13 engages the 66.5% intermediate channel and produces emission reductions of −1.563% — roughly double this scenario's effect, consistent with the ratio of intermediate to household channel scale (~2.1:1). This validates the portfolio scale principle: the ecological leverage of the household energy intervention is real but submaximal, bounded by the household channel's 30.9% share of total energy demand. Production-side instruments remain the primary lever for energy CE; household behaviour change is a meaningful but structurally secondary complement.
+
+___
+
+## 3 | Household Wood Shift
+
+```{r shock.run.3}
+# Shock Selection and Run
+initial_shock <- initial
+n_shock <- initial_shock$pars['shock', 'value'] <- 3
+
+sc$rho[n_shock]
+
+scenario_list[[n_shock]] <- scenario <- run_or_load_shock(
+  n_shock,
+  initial_shock,
+  mvp.model,
+  force = FALSE
+)
+```
+
+### Visualize Shocked Variables
+
+```{r shock.view.3}
+#| fig-width: 6
+#| fig-height: 2
+
+view.shock(
+  scenario,
+  shock.vars = paste(
+    sc$target[n_shock],
+    sc[n_shock, c('primary', 'secondary')] %>% unlist,
+    sep = '-'
+  ),
+  shock.sectors = sc[n_shock, c('primary', 'secondary')] %>% unlist,
+  shock.title = sc$display_name[n_shock]
+)
+```
+
+### Visualize Impacts
+
+```{r shock.visualize.scaled.3}
+#| fig-width: 8
+#| fig-height: 4
+
+p.selected.vars <- plot_selected_vars(
+  baseline = baseline,
+  scenario = scenario,
+  selected.list = selected.list,
+  shock_title = sc$display_name[n_shock],
+  t_shock = initial$pars["t.shock", "value"],
+  print_blocks = TRUE
+)
+
+p.selected.vars
+```
+
+### Summary Visualization
+
+```{r summary.table.3}
+#| fig-width: 10
+#| fig-height: 10
+
+scenario.table <- shock.summary(
+  baseline,
+  shock.run = scenario,
+  t_ = c(t.shock + 1, t.shock + 7, t.shock + 20),
+  t_names = c('Immediate', 'Short.Term', 'Long.Term')
+)
+
+# kable(diet.table, booktabs = T)
+write.csv(scenario.table, get_table_filename(n_shock), row.names = FALSE)
+
+scenario.table <- read.csv(get_table_filename(n_shock))
+
+scenario_analysis_plot(
+  shock_df = scenario.table,
+  shock_title = sc$display_name[n_shock],
+  variable.table = variable.table,
+  shock_subtitle = paste0(
+    'Shock Parameter ρ = ',
+    sc$rho[n_shock],
+    ". Teal = positive change, red = negative change (relative to baseline)"
+  )
+)
+
+```
+
+### Discussion
+
+```{r, echo=FALSE}
+scenario.table |>
+  dplyr::filter(Variable %in% c('go', 'n', 'shw', 'shp', 'gdef', 'cab', 'mat', 'emis', 'land', 'water', 'rec')) |>
+  dplyr::rename(
+    Category = Name,
+    `EU Imm.`  = Immediate.Z1,
+    `EU ST`    = Short.Term.Z1,
+    `EU LT`    = Long.Term.Z1,
+    `RoW Imm.` = Immediate.Z2,
+    `RoW ST`   = Short.Term.Z2,
+    `RoW LT`   = Long.Term.Z2
+  ) |>
+  kable(caption = "Key simulation results (% deviation from baseline)", digits = 3) |>
+  kable_styling(full_width = FALSE,
+                bootstrap_options = c("striped", "condensed"),
+                font_size = 11)
+```
+
+
+Household consumption accounts for only 11.5% of wood sector demand (1.1 billion EUR of the 9.2 billion total at t=70), while intermediate demand dominates at 80.8% (7.4 billion). The household channel is structurally marginal for wood — the precise inverse of the food scenario.
+
+Simulation effects are near-zero across all dimensions (n = −0.003%, mat = −0.036%, emis = −0.001% long-run), consistent with the portfolio scale prediction. At ρ = 0.2, the absolute household wood shock engages approximately 0.22 billion EUR of demand, compared to the 7.4 billion intermediate channel that remains untouched. Cross-border effects are essentially zero in both Z1 and Z2.
+
+The contrast with Scenario 7 (wood production substitution) is the central analytical point. Scenario 7 engages the 80.8% intermediate channel directly and produces mat = −0.234% long-run — roughly consistent with a channel scale 7× larger. A household-oriented wood CE campaign engages a structurally marginal demand channel. Production-side instruments — redesigning the intermediate input mix in wood-intensive industries — are the appropriate first-order instrument for wood CE.
+
+___
+
+## 4 | Government Plastics Shift
+
+```{r shock.run.4}
+# Shock Selection and Run
+initial_shock <- initial
+n_shock <- initial_shock$pars['shock', 'value'] <- 4
+
+sc$rho[n_shock]
+
+scenario_list[[n_shock]] <- scenario <- run_or_load_shock(
+  n_shock,
+  initial_shock,
+  mvp.model,
+  force = FALSE
+)
+```
+
+### Visualize Shocked Variables
+
+```{r shock.view.4}
+#| fig-width: 6
+#| fig-height: 2
+
+view.shock(
+  scenario,
+  shock.vars = paste(
+    sc$target[n_shock],
+    sc[n_shock, c('primary', 'secondary')] %>% unlist,
+    sep = '-'
+  ),
+  shock.sectors = sc[n_shock, c('primary', 'secondary')] %>% unlist,
+  shock.title = sc$display_name[n_shock]
+)
+```
+
+### Visualize Impacts
+
+```{r shock.visualize.scaled.4}
+#| fig-width: 8
+#| fig-height: 4
+
+p.selected.vars <- plot_selected_vars(
+  baseline = baseline,
+  scenario = scenario,
+  selected.list = selected.list,
+  shock_title = sc$display_name[n_shock],
+  t_shock = initial$pars["t.shock", "value"],
+  print_blocks = TRUE
+)
+
+p.selected.vars
+```
+
+### Summary Visualization
+
+```{r summary.table.4}
+#| fig-width: 10
+#| fig-height: 10
+
+scenario.table <- shock.summary(
+  baseline,
+  shock.run = scenario,
+  t_ = c(t.shock + 1, t.shock + 7, t.shock + 20),
+  t_names = c('Immediate', 'Short.Term', 'Long.Term')
+)
+
+# kable(diet.table, booktabs = T)
+write.csv(scenario.table, get_table_filename(n_shock), row.names = FALSE)
+
+scenario.table <- read.csv(get_table_filename(n_shock))
+
+scenario_analysis_plot(
+  shock_df = scenario.table,
+  shock_title = sc$display_name[n_shock],
+  variable.table = variable.table,
+  shock_subtitle = paste0(
+    'Shock Parameter ρ = ',
+    sc$rho[n_shock],
+    ". Teal = positive change, red = negative change (relative to baseline)"
+  )
+)
+```
+
+### Discussion
+
+```{r, echo=FALSE}
+scenario.table |>
+  dplyr::filter(Variable %in% c('go', 'n', 'shw', 'shp', 'gdef', 'cab', 'mat', 'emis', 'land', 'water', 'rec')) |>
+  dplyr::rename(
+    Category = Name,
+    `EU Imm.`  = Immediate.Z1,
+    `EU ST`    = Short.Term.Z1,
+    `EU LT`    = Long.Term.Z1,
+    `RoW Imm.` = Immediate.Z2,
+    `RoW ST`   = Short.Term.Z2,
+    `RoW LT`   = Long.Term.Z2
+  ) |>
+  kable(caption = "Key simulation results (% deviation from baseline)", digits = 3) |>
+  kable_styling(full_width = FALSE,
+                bootstrap_options = c("striped", "condensed"),
+                font_size = 11)
+```
+
+
+This scenario represents the most analytically significant finding among all final-demand interventions. For plastics, government consumption constitutes 48.9% of total sector demand (11.9 billion EUR of the 24.3 billion total at t=70) — exceeding the intermediate demand share of 44.0% (10.7 billion). This is unique among all material sectors analysed: plastics is the only case where a final-demand channel rivals or surpasses production-side intermediate flows in absolute scale.
+
+The simulation confirms the analytic prediction: material throughput shows a marginal increase (mat = +0.012% long-run), emissions fall slightly (emis = −0.045%), recycling activity falls (rec = −0.123%), and employment contracts modestly (n = −0.018%). The slight material increase reflects that secondary plastics (Recycled Plastics, sector 18) has higher intermediate throughput requirements per unit of output, so substituting secondary for primary plastic in government procurement increases the volume of intermediate flows needed to deliver the same final demand vector. The emission saving, while small, is directionally correct given near-equal intensities (ε₁₇ = 152.1, ε₁₈ = 146.0).
+
+The cross-border pattern is notable: Z2 output and employment both rise slightly (+0.007%, +0.006% long-run), opposite to Z1 — government plastics procurement shifts EU demand toward sectors with higher RoW import content. Z2 emissions also rise marginally (+0.022%). The EU current account deteriorates (−0.697% long-run) and Z1 government debt rises (+0.139%), consistent with the modest EU output contraction.
+
+The policy implication is direct: government procurement circularity mandates constitute a genuine first-order CE instrument for plastics. With 11.9 billion EUR flowing through government procurement, a ρ = 0.2 reallocation engages approximately 2.4 billion EUR in substitution. The comparison with Scenario 9 (plastics production substitution, 10.7 billion intermediate channel) shows that the two channels are nearly equal in scale and comparable in effect magnitude. An effective plastics CE strategy requires both instruments operating simultaneously — unique among all material sectors, where a single dominant channel typically concentrates the policy leverage.
+
+___
+
+
+## 5 | Firm Construction Shift
+
+```{r shock.run.5}
+# Shock Selection and Run
+initial_shock <- initial
+n_shock <- initial_shock$pars['shock', 'value'] <- 5
+
+sc$rho[n_shock]
+
+scenario_list[[n_shock]] <- scenario <- run_or_load_shock(
+  n_shock,
+  initial_shock,
+  mvp.model,
+  force = FALSE
+)
+```
+
+### Visualize Shocked Variables
+
+```{r shock.view.5}
+#| fig-width: 6
+#| fig-height: 2
+
+view.shock(
+  scenario,
+  shock.vars = paste(
+    sc$target[n_shock],
+    sc[n_shock, c('primary', 'secondary')] %>% unlist,
+    sep = '-'
+  ),
+  shock.sectors = sc[n_shock, c('primary', 'secondary')] %>% unlist,
+  shock.title = sc$display_name[n_shock]
+)
+```
+
+### Visualize Impacts
+
+```{r shock.visualize.scaled.5}
+#| fig-width: 8
+#| fig-height: 4
+
+p.selected.vars <- plot_selected_vars(
+  baseline = baseline,
+  scenario = scenario,
+  selected.list = selected.list,
+  shock_title = sc$display_name[n_shock],
+  t_shock = initial$pars["t.shock", "value"],
+  print_blocks = TRUE
+)
+
+p.selected.vars
+```
+
+### Summary Visualization
+
+```{r summary.table.5}
+#| fig-width: 10
+#| fig-height: 10
+
+scenario.table <- shock.summary(
+  baseline,
+  shock.run = scenario,
+  t_ = c(t.shock + 1, t.shock + 7, t.shock + 20),
+  t_names = c('Immediate', 'Short.Term', 'Long.Term')
+)
+
+# kable(diet.table, booktabs = T)
+write.csv(scenario.table, get_table_filename(n_shock), row.names = FALSE)
+
+scenario.table <- read.csv(get_table_filename(n_shock))
+
+scenario_analysis_plot(
+  shock_df = scenario.table,
+  shock_title = sc$display_name[n_shock],
+  variable.table = variable.table,
+  shock_subtitle = paste0(
+    'Shock Parameter ρ = ',
+    sc$rho[n_shock],
+    ". Teal = positive change, red = negative change (relative to baseline)"
+  )
+)
+```
+
+### Discussion
+
+```{r, echo=FALSE}
+scenario.table |>
+  dplyr::filter(Variable %in% c('go', 'n', 'shw', 'shp', 'gdef', 'cab', 'mat', 'emis', 'land', 'water', 'rec')) |>
+  dplyr::rename(
+    Category = Name,
+    `EU Imm.`  = Immediate.Z1,
+    `EU ST`    = Short.Term.Z1,
+    `EU LT`    = Long.Term.Z1,
+    `RoW Imm.` = Immediate.Z2,
+    `RoW ST`   = Short.Term.Z2,
+    `RoW LT`   = Long.Term.Z2
+  ) |>
+  kable(caption = "Key simulation results (% deviation from baseline)", digits = 3) |>
+  kable_styling(full_width = FALSE,
+                bootstrap_options = c("striped", "condensed"),
+                font_size = 11)
+```
+
+
+Construction sector demand is dominated by fixed investment at 66.7% (88.7 billion EUR of the 133.0 billion total at t=70). This scenario targets firm-level substitution in construction inputs at ρ = 0.05 — a reduced shock parameter reflecting imperfect substitutability between circular and conventional construction. Despite the small ρ, construction's sheer size means the shock engages approximately 2.2 billion EUR of the ~43 billion intermediate + household channel.
+
+The most striking result is the large emission increase (+5.188% long-run) despite material savings (mat = −0.840%). Secondary construction inputs (renovation materials, reclaimed components, retrofit techniques) are more energy-intensive per unit of output than conventional new-build at current calibration, generating a large upstream emission cost. This finding is consistent across both construction scenarios (Sc5 and Sc14) and points to a structural feature of circular construction under current EU energy conditions: material circularity does not automatically entail emission reduction when the secondary pathway requires substantially more energy processing.
+
+EU employment is positive (+0.029% long-run) — the only FD scenario showing employment expansion — because renovation and secondary construction are domestically labour-intensive. Z2 employment falls (−0.028%), reflecting reduced demand for imported construction materials and components. This EU-gains / RoW-loses employment asymmetry is the clearest sign reversal among FD scenarios. The current account improves markedly (+2.876%) and EU government debt falls substantially (−0.336%).
+
+The distributional structure is regressive: wage share falls (−0.066%), profit share rises (+0.114%), suggesting secondary construction is more concentrated in higher-margin specialist firms.
+
+The investment channel — 88.7 billion — remains entirely unaddressed. An investment-channel construction scenario would be the highest-leverage CE intervention in this sector by a large margin.
+
+___
+
+## 6 | Firm Metal Shift
+
+```{r shock.run.6}
+# Shock Selection and Run
+initial_shock <- initial
+n_shock <- initial_shock$pars['shock', 'value'] <- 6
+
+sc$rho[n_shock]
+
+scenario_list[[n_shock]] <- scenario <- run_or_load_shock(
+  n_shock,
+  initial_shock,
+  mvp.model,
+  force = FALSE
+)
+```
+
+### Visualize Shocked Variables
+
+```{r shock.view.6}
+#| fig-width: 6
+#| fig-height: 2
+
+view.shock(
+  scenario,
+  shock.vars = paste(
+    sc$target[n_shock],
+    sc[n_shock, c('primary', 'secondary')] %>% unlist,
+    sep = '-'
+  ),
+  shock.sectors = sc[n_shock, c('primary', 'secondary')] %>% unlist,
+  shock.title = sc$display_name[n_shock]
+)
+```
+
+### Visualize Impacts
+
+```{r shock.visualize.scaled.6}
+#| fig-width: 8
+#| fig-height: 4
+
+p.selected.vars <- plot_selected_vars(
+  baseline = baseline,
+  scenario = scenario,
+  selected.list = selected.list,
+  shock_title = sc$display_name[n_shock],
+  t_shock = initial$pars["t.shock", "value"],
+  print_blocks = TRUE
+)
+
+p.selected.vars
+```
+
+### Summary Visualization
+
+```{r summary.table.6}
+#| fig-width: 10
+#| fig-height: 10
+
+scenario.table <- shock.summary(
+  baseline,
+  shock.run = scenario,
+  t_ = c(t.shock + 1, t.shock + 7, t.shock + 20),
+  t_names = c('Immediate', 'Short.Term', 'Long.Term')
+)
+
+# kable(diet.table, booktabs = T)
+write.csv(scenario.table, get_table_filename(n_shock), row.names = FALSE)
+
+scenario.table <- read.csv(get_table_filename(n_shock))
+
+scenario_analysis_plot(
+  shock_df = scenario.table,
+  shock_title = sc$display_name[n_shock],
+  variable.table = variable.table,
+  shock_subtitle = paste0(
+    'Shock Parameter ρ = ',
+    sc$rho[n_shock],
+    ". Teal = positive change, red = negative change (relative to baseline)"
+  )
+)
+```
+
+### Discussion
+
+```{r, echo=FALSE}
+scenario.table |>
+  dplyr::filter(Variable %in% c('go', 'n', 'shw', 'shp', 'gdef', 'cab', 'mat', 'emis', 'land', 'water', 'rec')) |>
+  dplyr::rename(
+    Category = Name,
+    `EU Imm.`  = Immediate.Z1,
+    `EU ST`    = Short.Term.Z1,
+    `EU LT`    = Long.Term.Z1,
+    `RoW Imm.` = Immediate.Z2,
+    `RoW ST`   = Short.Term.Z2,
+    `RoW LT`   = Long.Term.Z2
+  ) |>
+  kable(caption = "Key simulation results (% deviation from baseline)", digits = 3) |>
+  kable_styling(full_width = FALSE,
+                bootstrap_options = c("striped", "condensed"),
+                font_size = 11)
+```
+
+
+Metal's demand profile is almost entirely intermediate at 95.3% (20.9 billion EUR of the 21.9 billion total at t=70), with fixed investment contributing only 2.7% (0.6 billion). This scenario targets the firm-level final demand for metals — the investment channel — which at ρ = 0.2 engages approximately 0.12 billion EUR in substitution. This is by far the smallest absolute shock scale in the FD scenario group.
+
+Simulation results confirm the portfolio scale prediction: near-zero effects across all dimensions (y = +0.001%, n = +0.001%, mat = −0.024% long-run). Critically, the emission effect is positive (+0.009%), reflecting the structural emission rebound even at this tiny scale: secondary metals (EAF scrap steel, ε₂₇ = 429.9) are more emission-intensive than primary metals (blast furnace, ε₂₆ = 276.5). The rebound is directionally present even when the absolute scale is negligible.
+
+This scenario illustrates two simultaneous limitations: a channel scale problem (fixed investment is a marginal lever for metals at 2.7% of total demand) and a direction problem (the emission rebound makes larger-scale versions counterproductive absent complementary electricity decarbonisation). The rebound mechanism is quantified at full intermediate scale in Scenario 10.
+
+___
+
+
+# Intermediate Demand Scenarios 
+
+## 7 | Wood Shift
+
+```{r shock.run.7}
+# Shock Selection and Run
+initial_shock <- initial
+n_shock <- initial_shock$pars['shock', 'value'] <- 7
+
+scenario_list[[n_shock]] <- scenario <- run_or_load_shock(
+  n_shock,
+  initial_shock,
+  mvp.model,
+  force = FALSE
+)
+
+scenario$para['rho']
+```
+
+### Visualize Shocked Coefficients
+
+```{r shock.view.7}
+#| fig-width: 6
+#| fig-height: 4
+
+pairs <- data.frame(
+  row = sc %>%
+    filter(shock == n_shock) %>%
+    select(primary, secondary) %>%
+    rep(2) %>%
+    unlist,
+  col = c(31, 31, 32, 32)
+)
+
+view.A(
+  scenario,
+  pairs,
+  title = paste(
+    sc %>% filter(shock == n_shock) %>% pull(shift),
+    "input-output coefficients"
+  )
+)
+```
+
+### Visualize Impacts
+
+```{r shock.visualize.scaled.7}
+#| fig-width: 8
+#| fig-height: 4
+
+p.selected.vars <- plot_selected_vars(
+  baseline = baseline,
+  scenario = scenario,
+  selected.list = selected.list,
+  shock_title = sc$display_name[n_shock],
+  t_shock = initial$pars["t.shock", "value"],
+  print_blocks = TRUE
+)
+
+p.selected.vars
+```
+
+### Summary Visualization
+
+```{r summary.table.7}
+#| fig-width: 10
+#| fig-height: 10
+
+scenario.table <- shock.summary(
+  baseline,
+  shock.run = scenario,
+  t_ = c(t.shock + 1, t.shock + 7, t.shock + 20),
+  t_names = c('Immediate', 'Short.Term', 'Long.Term')
+)
+
+# kable(shock_3_table, booktabs = T)
+write.csv(scenario.table, get_table_filename(n_shock), row.names = FALSE)
+
+scenario.table <- read.csv(get_table_filename(n_shock))
+
+scenario_analysis_plot(
+  shock_df = scenario.table,
+  shock_title = sc$display_name[n_shock],
+  variable.table = variable.table,
+  shock_subtitle = paste0(
+    'Shock Parameter ρ = ',
+    sc$rho[n_shock],
+    ". Teal = positive change, red = negative change (relative to baseline)"
+  )
+)
+
+```
+
+### Discussion
+
+```{r, echo=FALSE}
+scenario.table |>
+  dplyr::filter(Variable %in% c('go', 'n', 'shw', 'shp', 'gdef', 'cab', 'mat', 'emis', 'land', 'water', 'rec')) |>
+  dplyr::rename(
+    Category = Name,
+    `EU Imm.`  = Immediate.Z1,
+    `EU ST`    = Short.Term.Z1,
+    `EU LT`    = Long.Term.Z1,
+    `RoW Imm.` = Immediate.Z2,
+    `RoW ST`   = Short.Term.Z2,
+    `RoW LT`   = Long.Term.Z2
+  ) |>
+  kable(caption = "Key simulation results (% deviation from baseline)", digits = 3) |>
+  kable_styling(full_width = FALSE,
+                bootstrap_options = c("striped", "condensed"),
+                font_size = 11)
+```
+
+
+The production substitution scenario for wood correctly targets the dominant demand channel: intermediate demand constitutes 80.8% of total wood sector demand (7.4 billion EUR of the 9.2 billion total at t=70). This is the appropriate instrument for wood CE — in stark contrast to Scenario 3 (household wood shift), which engages only the 11.5% household channel.
+
+The simulation confirms the structural prediction: material savings reach mat = −0.234% long-run, exceeding the material savings of all final-demand wood scenarios by an order of magnitude consistent with the channel scale ratio (~7:1). The A-matrix shock redirects intermediate wood inputs from primary Sawmilling and Wood Products (sector 11) to secondary Wood Reuse/Recycling (sector 12), propagating through all wood-using intermediate sectors. Emission savings are modest (−0.008%) because the wood emission intensity differential between primary and secondary sectors is small relative to energy or plastics.
+
+Employment effects are modest (n = −0.02% long-run), reflecting a small employment intensity differential between primary and secondary wood sectors. Gross output falls minimally (−0.004%), placing this scenario in the ecologically-improving, macro-neutral regime typical of intermediate production scenarios. Cross-border impacts are near-zero, confirming wood CE is a predominantly domestic EU restructuring with limited bilateral trade consequences.
+
+The absolute scale is bounded by the wood sector's size: with 7.4 billion intermediate demand at ρ = 0.2, the shock engages approximately 1.5 billion EUR. The contrast with metals (20.9 billion) and energy (14.8 billion) intermediate scenarios explains why wood production substitution yields stronger material savings than final-demand wood interventions but remains below the most economically significant production scenarios.
+
+___
+
+## 8 | Pulp Shift
+
+```{r shock.run.8}
+# Shock Selection and Run
+initial_shock <- initial
+n_shock <- initial_shock$pars['shock', 'value'] <- 8
+
+scenario_list[[n_shock]] <- scenario <- run_or_load_shock(
+  n_shock,
+  initial_shock,
+  mvp.model,
+  force = FALSE
+)
+
+scenario$para['rho']
+```
+
+### Visualize Shocked Coefficients
+
+```{r shock.view.8}
+#| fig-width: 6
+#| fig-height: 4
+
+pairs <- data.frame(
+  row = sc %>%
+    filter(shock == n_shock) %>%
+    select(primary, secondary) %>%
+    rep(2) %>%
+    unlist,
+  col = c(31, 31, 32, 32)
+)
+
+view.A(
+  scenario,
+  pairs,
+  title = paste(
+    sc %>% filter(shock == n_shock) %>% pull(shift),
+    "input-output coefficients"
+  )
+)
+```
+
+### Visualize Impacts
+
+```{r shock.visualize.scaled.8}
+#| fig-width: 8
+#| fig-height: 4
+
+p.selected.vars <- plot_selected_vars(
+  baseline = baseline,
+  scenario = scenario,
+  selected.list = selected.list,
+  shock_title = sc$display_name[n_shock],
+  t_shock = initial$pars["t.shock", "value"],
+  print_blocks = TRUE
+)
+
+p.selected.vars
+```
+
+### Summary Visualization
+
+```{r summary.table.8}
+#| fig-width: 10
+#| fig-height: 10
+
+scenario.table <- shock.summary(
+  baseline,
+  shock.run = scenario,
+  t_ = c(t.shock + 1, t.shock + 7, t.shock + 20),
+  t_names = c('Immediate', 'Short.Term', 'Long.Term')
+)
+
+write.csv(scenario.table, get_table_filename(n_shock), row.names = FALSE)
+
+scenario.table <- read.csv(get_table_filename(n_shock))
+
+scenario_analysis_plot(
+  shock_df = scenario.table,
+  shock_title = sc$display_name[n_shock],
+  variable.table = variable.table,
+  shock_subtitle = paste0(
+    'Shock Parameter ρ = ',
+    sc$rho[n_shock],
+    ". Teal = positive change, red = negative change (relative to baseline)"
+  )
+)
+
+```
+
+### Discussion
+
+```{r, echo=FALSE}
+scenario.table |>
+  dplyr::filter(Variable %in% c('go', 'n', 'shw', 'shp', 'gdef', 'cab', 'mat', 'emis', 'land', 'water', 'rec')) |>
+  dplyr::rename(
+    Category = Name,
+    `EU Imm.`  = Immediate.Z1,
+    `EU ST`    = Short.Term.Z1,
+    `EU LT`    = Long.Term.Z1,
+    `RoW Imm.` = Immediate.Z2,
+    `RoW ST`   = Short.Term.Z2,
+    `RoW LT`   = Long.Term.Z2
+  ) |>
+  kable(caption = "Key simulation results (% deviation from baseline)", digits = 3) |>
+  kable_styling(full_width = FALSE,
+                bootstrap_options = c("striped", "condensed"),
+                font_size = 11)
+```
+
+
+Pulp and paper production substitution targets the dominant intermediate channel. Despite correct structural targeting, simulation effects are very small (mat = −0.015%, n = −0.006%, emis = −0.026% long-run), reflecting pulp's limited absolute scale in the EU economy. Notably, emissions *fall* (−0.026%), confirming that recycled pulp/paper production has lower emission intensity than primary pulp — unlike the emission rebound in metals, glass, cement, or construction. Cross-border effects are near-zero.
+
+The core constraint is portfolio scale: even though the production shock correctly engages the intermediate channel, the absolute magnitude of pulp intermediate flows is small relative to the overall economy. A correctly-targeted instrument on a small sector produces smaller economy-wide effects than a less-well-targeted instrument on a large sector — the portfolio scale principle in operation.
+
+The near-zero aggregate effects should not be interpreted as indicating pulp CE is unimportant. Within the pulp and paper supply chain, absolute material and emission savings from recycled paper substitution are significant at the sector level. The macroeconomic aggregation masks this sectoral significance; extended sectoral analysis would recover meaningful within-sector effects.
+
+___
+
+## 9 | Plastics Shift
+
+```{r shock.run.9}
+# Shock Selection and Run
+initial_shock <- initial
+n_shock <- initial_shock$pars['shock', 'value'] <- 9
+
+scenario_list[[n_shock]] <- scenario <- run_or_load_shock(
+  n_shock,
+  initial_shock,
+  mvp.model,
+  force = FALSE
+)
+
+scenario$para['rho']
+```
+
+### Visualize Shocked Coefficients
+
+```{r shock.view.9}
+#| fig-width: 6
+#| fig-height: 4
+
+pairs <- data.frame(
+  row = sc %>%
+    filter(shock == n_shock) %>%
+    select(primary, secondary) %>%
+    rep(2) %>%
+    unlist,
+  col = c(31, 31, 32, 32)
+)
+
+view.A(
+  scenario,
+  pairs,
+  title = paste(
+    sc %>% filter(shock == n_shock) %>% pull(shift),
+    "input-output coefficients"
+  )
+)
+```
+
+### Visualize Impacts
+
+```{r shock.visualize.scaled.9}
+#| fig-width: 8
+#| fig-height: 4
+
+p.selected.vars <- plot_selected_vars(
+  baseline = baseline,
+  scenario = scenario,
+  selected.list = selected.list,
+  shock_title = sc$display_name[n_shock],
+  t_shock = initial$pars["t.shock", "value"],
+  print_blocks = TRUE
+)
+
+p.selected.vars
+```
+
+### Summary Visualization
+
+```{r summary.table.9}
+#| fig-width: 10
+#| fig-height: 10
+
+scenario.table <- shock.summary(
+  baseline,
+  shock.run = scenario,
+  t_ = c(t.shock + 1, t.shock + 7, t.shock + 20),
+  t_names = c('Immediate', 'Short.Term', 'Long.Term')
+)
+
+write.csv(scenario.table, get_table_filename(n_shock), row.names = FALSE)
+
+scenario.table <- read.csv(get_table_filename(n_shock))
+
+scenario_analysis_plot(
+  shock_df = scenario.table,
+  shock_title = sc$display_name[n_shock],
+  variable.table = variable.table,
+  shock_subtitle = paste0(
+    'Shock Parameter ρ = ',
+    sc$rho[n_shock],
+    ". Teal = positive change, red = negative change (relative to baseline)"
+  )
+)
+
+```
+
+### Discussion
+
+```{r, echo=FALSE}
+scenario.table |>
+  dplyr::filter(Variable %in% c('go', 'n', 'shw', 'shp', 'gdef', 'cab', 'mat', 'emis', 'land', 'water', 'rec')) |>
+  dplyr::rename(
+    Category = Name,
+    `EU Imm.`  = Immediate.Z1,
+    `EU ST`    = Short.Term.Z1,
+    `EU LT`    = Long.Term.Z1,
+    `RoW Imm.` = Immediate.Z2,
+    `RoW ST`   = Short.Term.Z2,
+    `RoW LT`   = Long.Term.Z2
+  ) |>
+  kable(caption = "Key simulation results (% deviation from baseline)", digits = 3) |>
+  kable_styling(full_width = FALSE,
+                bootstrap_options = c("striped", "condensed"),
+                font_size = 11)
+```
+
+
+The plastics production scenario targets the intermediate channel (Int = 44.0%, 10.7 billion EUR of the 24.3 billion total at t=70) — a correctly-identified high-leverage channel. However, for plastics specifically, the intermediate channel does not dominate: government procurement at 48.9% (11.9 billion) is nearly equal in scale. The production scenario therefore engages approximately 44% of total plastics demand, leaving the government procurement channel (48.9%) unaddressed.
+
+The simulation shows small effects: a marginal material increase (mat = +0.012% long-run), slight emission reduction (emis = −0.035%), recycling contraction (rec = −0.100% long-run), and modest employment loss (n = −0.013%). The material increase reflects that secondary plastics has higher intermediate throughput requirements per unit of output, so A-matrix substitution increases the volume of intermediates flowing through the economy even as primary material extraction falls. The recycling contraction is mechanically consistent: the production substitution directly activates sector 18 at the expense of sector 17.
+
+The cross-border pattern shows opposite signs: Z2 output and employment rise (+0.006% each) while Z1 falls (−0.015%), similar to the Food scenario. The plastics production restructuring shifts EU demand toward sectors with higher RoW import content, generating a spillover expansion in Z2. The EU current account deteriorates (−0.555%), consistent with the import-intensity effect.
+
+The critical comparison is with Scenario 4 (government plastics shift, 11.9 billion). Both channels are nearly equal in scale and the simulation magnitudes are accordingly comparable. An effective plastics CE policy requires both instruments operating simultaneously — A-matrix mandates targeting industrial intermediate substitution and procurement mandates targeting government purchasing.
+
+___
+
+## 10 | Metal Shift
+
+```{r shock.run.10}
+# Shock Selection and Run
+initial_shock <- initial
+n_shock <- initial_shock$pars['shock', 'value'] <- 10
+
+scenario_list[[n_shock]] <- scenario <- run_or_load_shock(
+  n_shock,
+  initial_shock,
+  mvp.model,
+  force = FALSE
+)
+
+scenario$para['rho']
+```
+
+### Visualize Shocked Coefficients
+
+```{r shock.view.10}
+#| fig-width: 6
+#| fig-height: 4
+
+pairs <- data.frame(
+  row = sc %>%
+    filter(shock == n_shock) %>%
+    select(primary, secondary) %>%
+    rep(2) %>%
+    unlist,
+  col = c(31, 31, 32, 32)
+)
+
+view.A(
+  scenario,
+  pairs,
+  title = paste(
+    sc %>% filter(shock == n_shock) %>% pull(shift),
+    "input-output coefficients"
+  )
+)
+```
+
+### Visualize Impacts
+
+```{r shock.visualize.scaled.10}
+#| fig-width: 8
+#| fig-height: 4
+
+p.selected.vars <- plot_selected_vars(
+  baseline = baseline,
+  scenario = scenario,
+  selected.list = selected.list,
+  shock_title = sc$display_name[n_shock],
+  t_shock = initial$pars["t.shock", "value"],
+  print_blocks = TRUE
+)
+
+p.selected.vars
+```
+
+### Summary Visualization
+
+```{r summary.table.10}
+#| fig-width: 10
+#| fig-height: 10
+
+scenario.table <- shock.summary(
+  baseline,
+  shock.run = scenario,
+  t_ = c(t.shock + 1, t.shock + 7, t.shock + 20),
+  t_names = c('Immediate', 'Short.Term', 'Long.Term')
+)
+
+write.csv(scenario.table, get_table_filename(n_shock), row.names = FALSE)
+
+scenario.table <- read.csv(get_table_filename(n_shock))
+
+scenario_analysis_plot(
+  shock_df = scenario.table,
+  shock_title = sc$display_name[n_shock],
+  variable.table = variable.table,
+  shock_subtitle = paste0(
+    'Shock Parameter ρ = ',
+    sc$rho[n_shock],
+    ". Teal = positive change, red = negative change (relative to baseline)"
+  )
+)
+
+```
+
+### Discussion
+
+```{r, echo=FALSE}
+scenario.table |>
+  dplyr::filter(Variable %in% c('go', 'n', 'shw', 'shp', 'gdef', 'cab', 'mat', 'emis', 'land', 'water', 'rec')) |>
+  dplyr::rename(
+    Category = Name,
+    `EU Imm.`  = Immediate.Z1,
+    `EU ST`    = Short.Term.Z1,
+    `EU LT`    = Long.Term.Z1,
+    `RoW Imm.` = Immediate.Z2,
+    `RoW ST`   = Short.Term.Z2,
+    `RoW LT`   = Long.Term.Z2
+  ) |>
+  kable(caption = "Key simulation results (% deviation from baseline)", digits = 3) |>
+  kable_styling(full_width = FALSE,
+                bootstrap_options = c("striped", "condensed"),
+                font_size = 11)
+```
+
+
+The metal production scenario is the most analytically distinctive outcome in the simulation set. It is the only production scenario showing expansionary macroeconomic effects: gross output increases (+0.047% long-run), employment rises (+0.028%), and material savings are substantial (mat = −0.756%). Simultaneously, emissions increase (+0.27%) — the structural rebound that makes this scenario the clearest illustration of the CE trilemma operating in a perverse direction.
+
+The expansionary mechanism operates through the A-matrix. Secondary metals (Metals Reprocessing, sector 27, primarily EAF scrap-based steel) has a substantially lower A-matrix row-sum (0.238) compared to primary metals (sector 26, blast furnace steel, row-sum 0.545). Substituting secondary for primary in the A-matrix frees intermediate resources available for other production throughout the economy, generating a net expansion. This is the exact inverse of the typical production substitution pattern.
+
+The emission rebound has a precisely identified mechanism: ε₂₇ = 429.9 versus ε₂₆ = 276.5. EAF-based steel requires large quantities of fossil-fuel electricity upstream. The higher electricity intensity propagates through the Leontief inverse to the high-emission fossil energy sector (ε₃₁ = 2771), amplifying the rebound. Gaining one unit of secondary metal output costs more in upstream emission than losing one unit of primary output saves.
+
+The cross-border pattern is the sharpest sign asymmetry in the scenario set: Z1 expands (+0.047% output, +0.028% employment) while Z2 contracts (−0.012%, −0.013%). EU government debt falls substantially (b_s −0.164%) and the current account improves markedly (+1.442%), while Z2 debt rises (+0.043%), reflecting reduced EU demand for imported primary metal inputs. The distributional effect is mildly regressive (shw −0.029%, shp +0.050%).
+
+Metals CE transitions require simultaneous electricity grid decarbonisation to reverse the emission rebound. Without cleaner electricity, substituting recycled for primary steel satisfies the economic arm of the trilemma while failing the ecological arm.
+
+___
+
+## 11 | Glass Shift
+
+```{r shock.run.11}
+# Shock Selection and Run
+initial_shock <- initial
+n_shock <- initial_shock$pars['shock', 'value'] <- 11
+
+scenario_list[[n_shock]] <- scenario <- run_or_load_shock(
+  n_shock,
+  initial_shock,
+  mvp.model,
+  force = FALSE
+)
+
+scenario$para['rho']
+```
+
+### Visualize Shocked Coefficients
+
+```{r shock.view.11}
+#| fig-width: 6
+#| fig-height: 4
+
+pairs <- data.frame(
+  row = sc %>%
+    filter(shock == n_shock) %>%
+    select(primary, secondary) %>%
+    rep(2) %>%
+    unlist,
+  col = c(31, 31, 32, 32)
+)
+
+view.A(
+  scenario,
+  pairs,
+  title = paste(
+    sc %>% filter(shock == n_shock) %>% pull(shift),
+    "input-output coefficients"
+  )
+)
+```
+
+### Visualize Impacts
+
+```{r shock.visualize.scaled.11}
+#| fig-width: 8
+#| fig-height: 4
+
+p.selected.vars <- plot_selected_vars(
+  baseline = baseline,
+  scenario = scenario,
+  selected.list = selected.list,
+  shock_title = sc$display_name[n_shock],
+  t_shock = initial$pars["t.shock", "value"],
+  print_blocks = TRUE
+)
+
+p.selected.vars
+```
+
+### Summary Visualization
+
+```{r summary.table.11}
+#| fig-width: 10
+#| fig-height: 10
+
+scenario.table <- shock.summary(
+  baseline,
+  shock.run = scenario,
+  t_ = c(t.shock + 1, t.shock + 7, t.shock + 20),
+  t_names = c('Immediate', 'Short.Term', 'Long.Term')
+)
+
+write.csv(scenario.table, get_table_filename(n_shock), row.names = FALSE)
+
+scenario.table <- read.csv(get_table_filename(n_shock))
+
+scenario_analysis_plot(
+  shock_df = scenario.table,
+  shock_title = sc$display_name[n_shock],
+  variable.table = variable.table,
+  shock_subtitle = paste0(
+    'Shock Parameter ρ = ',
+    sc$rho[n_shock],
+    ". Teal = positive change, red = negative change (relative to baseline)"
+  )
+)
+
+```
+
+### Discussion
+
+```{r, echo=FALSE}
+scenario.table |>
+  dplyr::filter(Variable %in% c('go', 'n', 'shw', 'shp', 'gdef', 'cab', 'mat', 'emis', 'land', 'water', 'rec')) |>
+  dplyr::rename(
+    Category = Name,
+    `EU Imm.`  = Immediate.Z1,
+    `EU ST`    = Short.Term.Z1,
+    `EU LT`    = Long.Term.Z1,
+    `RoW Imm.` = Immediate.Z2,
+    `RoW ST`   = Short.Term.Z2,
+    `RoW LT`   = Long.Term.Z2
+  ) |>
+  kable(caption = "Key simulation results (% deviation from baseline)", digits = 3) |>
+  kable_styling(full_width = FALSE,
+                bootstrap_options = c("striped", "condensed"),
+                font_size = 11)
+```
+
+
+Glass production substitution correctly targets the dominant intermediate channel (Int = 96.6% of the 2.0 billion total at t=70). The production scenario engages effectively the entire glass demand base. Yet simulation effects are near-zero across all macro, social, and ecological dimensions, with the exception of a modest material saving (mat = −0.165% long-run).
+
+The explanation is portfolio scale. Glass total demand at t=70 is 2.0 billion EUR — the smallest sector in the scenario set by absolute scale. At ρ = 0.2, the shock engages approximately 0.4 billion EUR.
+
+Two subtle findings deserve note. First, the emission effect is marginally positive (+0.003%), suggesting secondary glass (recycled cullet) has slightly higher upstream emission intensity than primary glass at current calibration — consistent with the energy-intensive re-melting process. This is directionally similar to metals but at negligible scale. Second, EU employment is marginally positive (+0.001%) while Z2 is marginally negative (−0.001%), indicating a slight domestic employment gain from restructuring away from imported primary glass inputs. The current account improves slightly (+0.116%).
+
+The near-zero aggregate effects are a feature of economy-wide aggregation, not a statement about sector-level viability. Glass recycling (cullet) is technically well-established in the EU; the aggregate invisibility reflects portfolio scale constraints, not technical infeasibility.
+
+___
+
+## 12 | Cement Shift
+
+```{r shock.run.12}
+# Shock Selection and Run
+initial_shock <- initial
+n_shock <- initial_shock$pars['shock', 'value'] <- 12
+
+scenario_list[[n_shock]] <- scenario <- run_or_load_shock(
+  n_shock,
+  initial_shock,
+  mvp.model,
+  force = FALSE
+)
+
+scenario$para['rho']
+```
+
+### Visualize Shocked Coefficients
+
+```{r shock.view.12}
+#| fig-width: 6
+#| fig-height: 4
+
+pairs <- data.frame(
+  row = sc %>%
+    filter(shock == n_shock) %>%
+    select(primary, secondary) %>%
+    rep(2) %>%
+    unlist,
+  col = c(31, 31, 32, 32)
+)
+
+view.A(
+  scenario,
+  pairs,
+  title = paste(
+    sc %>% filter(shock == n_shock) %>% pull(shift),
+    "input-output coefficients"
+  )
+)
+```
+
+### Visualize Impacts
+
+```{r shock.visualize.scaled.12}
+#| fig-width: 8
+#| fig-height: 4
+
+p.selected.vars <- plot_selected_vars(
+  baseline = baseline,
+  scenario = scenario,
+  selected.list = selected.list,
+  shock_title = sc$display_name[n_shock],
+  t_shock = initial$pars["t.shock", "value"],
+  print_blocks = TRUE
+)
+
+p.selected.vars
+```
+
+### Summary Visualization
+
+
+```{r summary.table.12}
+#| fig-width: 10
+#| fig-height: 10
+
+scenario.table <- shock.summary(
+  baseline,
+  shock.run = scenario,
+  t_ = c(t.shock + 1, t.shock + 7, t.shock + 20),
+  t_names = c('Immediate', 'Short.Term', 'Long.Term')
+)
+
+write.csv(scenario.table, get_table_filename(n_shock), row.names = FALSE)
+
+scenario.table <- read.csv(get_table_filename(n_shock))
+
+scenario_analysis_plot(
+  shock_df = scenario.table,
+  shock_title = sc$display_name[n_shock],
+  variable.table = variable.table,
+  shock_subtitle = paste0(
+    'Shock Parameter ρ = ',
+    sc$rho[n_shock],
+    ". Teal = positive change, red = negative change (relative to baseline)"
+  )
+)
+
+```
+
+### Discussion
+
+```{r, echo=FALSE}
+scenario.table |>
+  dplyr::filter(Variable %in% c('go', 'n', 'shw', 'shp', 'gdef', 'cab', 'mat', 'emis', 'land', 'water', 'rec')) |>
+  dplyr::rename(
+    Category = Name,
+    `EU Imm.`  = Immediate.Z1,
+    `EU ST`    = Short.Term.Z1,
+    `EU LT`    = Long.Term.Z1,
+    `RoW Imm.` = Immediate.Z2,
+    `RoW ST`   = Short.Term.Z2,
+    `RoW LT`   = Long.Term.Z2
+  ) |>
+  kable(caption = "Key simulation results (% deviation from baseline)", digits = 3) |>
+  kable_styling(full_width = FALSE,
+                bootstrap_options = c("striped", "condensed"),
+                font_size = 11)
+```
+
+
+Cement production substitution engages the dominant intermediate channel (Int = 96.4% of the 9.2 billion total at t=70). The production scenario targets effectively all cement demand. Yet simulation effects are near-zero.
+
+The explanation is the intersection of scale and emission intensity. Total cement demand (9.2 billion) is modest, generating a shock scale of approximately 1.8 billion at ρ = 0.2. More importantly, the emission intensity differential is near-zero: ε₂₄ = 1254.8 for primary cement (clinker-based) versus ε₂₅ = 1278.1 for secondary cement (blended cements, supplementary cementitious materials). Secondary cement is marginally *more* emission-intensive than primary, so even a correctly-scaled production shock in the right channel produces no directional emission improvement. The simulation confirms: emissions rise slightly (+0.004%). Material savings (mat = −0.037%) reflect the small sector scale.
+
+This result reflects a genuine technical characteristic of current SCM production. Producing supplementary cementitious materials involves significant upstream thermal and processing energy. Unlike plastics or energy, cement's secondary pathway does not deliver a clear emission advantage under current EU production conditions. Cement CE remains a priority for sector-level decarbonisation — particularly through clinker substitution — but its aggregate emission leverage is bounded by the near-equivalence of primary and secondary intensities at the current technological frontier.
+
+
+___
+
+## 13 | Energy Shift
+
+```{r shock.run.13}
+# Shock Selection and Run
+initial_shock <- initial
+n_shock <- initial_shock$pars['shock', 'value'] <- 13
+
+scenario_list[[n_shock]] <- scenario <- run_or_load_shock(
+  n_shock,
+  initial_shock,
+  mvp.model,
+  force = FALSE
+)
+
+scenario$para['rho']
+```
+
+### Visualize Shocked Coefficients
+
+```{r shock.view.13}
+#| fig-width: 6
+#| fig-height: 4
+
+pairs <- data.frame(
+  row = sc %>%
+    filter(shock == n_shock) %>%
+    select(primary, secondary) %>%
+    rep(2) %>%
+    unlist,
+  col = c(31, 31, 32, 32)
+)
+
+view.A(
+  scenario,
+  pairs,
+  title = paste(
+    sc %>% filter(shock == n_shock) %>% pull(shift),
+    "input-output coefficients"
+  )
+)
+```
+
+### Visualize Impacts
+
+```{r shock.visualize.scaled.13}
+#| fig-width: 8
+#| fig-height: 4
+
+p.selected.vars <- plot_selected_vars(
+  baseline = baseline,
+  scenario = scenario,
+  selected.list = selected.list,
+  shock_title = sc$display_name[n_shock],
+  t_shock = initial$pars["t.shock", "value"],
+  print_blocks = TRUE
+)
+
+p.selected.vars
+```
+
+### Summary Visualization
+
+```{r summary.table.13}
+#| fig-width: 10
+#| fig-height: 10
+
+scenario.table <- shock.summary(
+  baseline,
+  shock.run = scenario,
+  t_ = c(t.shock + 1, t.shock + 7, t.shock + 20),
+  t_names = c('Immediate', 'Short.Term', 'Long.Term')
+)
+
+write.csv(scenario.table, get_table_filename(n_shock), row.names = FALSE)
+
+scenario.table <- read.csv(get_table_filename(n_shock))
+
+scenario_analysis_plot(
+  shock_df = scenario.table,
+  shock_title = sc$display_name[n_shock],
+  variable.table = variable.table,
+  shock_subtitle = paste0(
+    'Shock Parameter ρ = ',
+    sc$rho[n_shock],
+    ". Teal = positive change, red = negative change (relative to baseline)"
+  )
+)
+
+```
+
+### Discussion
+
+```{r, echo=FALSE}
+scenario.table |>
+  dplyr::filter(Variable %in% c('go', 'n', 'shw', 'shp', 'gdef', 'cab', 'mat', 'emis', 'land', 'water', 'rec')) |>
+  dplyr::rename(
+    Category = Name,
+    `EU Imm.`  = Immediate.Z1,
+    `EU ST`    = Short.Term.Z1,
+    `EU LT`    = Long.Term.Z1,
+    `RoW Imm.` = Immediate.Z2,
+    `RoW ST`   = Short.Term.Z2,
+    `RoW LT`   = Long.Term.Z2
+  ) |>
+  kable(caption = "Key simulation results (% deviation from baseline)", digits = 3) |>
+  kable_styling(full_width = FALSE,
+                bootstrap_options = c("striped", "condensed"),
+                font_size = 11)
+```
+
+
+The energy production scenario delivers the largest ecological gains in the simulation set: emissions fall −1.563% long-run, recycling activity contracts −3.094% (a technical artefact of renewable energy classification in the model), and the current account improves +1.805%. This scenario correctly targets the dominant intermediate channel (Int = 66.5%, 14.8 billion EUR of the 22.2 billion total at t=70) and combines this with the largest emission intensity differential in the set (ε₃₁ = 2771 vs ε₃₂ = 843, ratio 3.3:1). The product of scale and intensity differential places this scenario in a different order of magnitude from all other interventions.
+
+The current account improvement (+1.805% long-run) reflects EU structural import dependency on fossil energy: as the A-matrix shifts toward renewable-electricity-intensive production, EU import requirements for fossil inputs fall. The recycling contraction (−3.094%) is a technical artefact: certain renewable energy flows are classified through the recycling aggregate in the model, so the transition changes measured recycling without indicating reduced circularity.
+
+The distributional effects are clearly regressive: wage share falls −0.081%, profit share rises +0.141%. The primary fossil-fuel sector is relatively labour-intensive in its upstream supply chain, while the renewable energy sector is more capital- and investment-intensive. The CE energy transition displaces labour in favour of capital. EU government debt falls (b_s −0.12%) as the EU fiscal base strengthens through import substitution, while Z2 debt rises (+0.05%) as RoW fossil energy exporters lose revenues.
+
+Both Z1 and Z2 employment contract (−0.010% and −0.014% long-run), with RoW contracting more — the most pronounced cross-regional employment asymmetry in the production scenario group. EU energy CE is the highest-leverage domestic CE intervention while being simultaneously the most internationally asymmetric: reducing EU fossil fuel imports directly reduces income for RoW energy exporters. The combination of maximum ecological leverage, maximum current account improvement, distributionally regressive domestic effects, and significant RoW employment contraction makes this the clearest illustration of the multi-dimensional trilemma in the scenario set.
+
+
+___
+
+## 14 | Construction Shift
+
+```{r shock.run.14}
+# Shock Selection and Run
+initial_shock <- initial
+n_shock <- initial_shock$pars['shock', 'value'] <- 14
+
+scenario_list[[n_shock]] <- scenario <- run_or_load_shock(
+  n_shock,
+  initial_shock,
+  mvp.model,
+  force = FALSE
+)
+
+scenario$para['rho']
+```
+
+### Visualize Shocked Coefficients
+
+```{r shock.view.14}
+#| fig-width: 6
+#| fig-height: 4
+
+pairs <- data.frame(
+  row = sc %>%
+    filter(shock == n_shock) %>%
+    select(primary, secondary) %>%
+    rep(2) %>%
+    unlist,
+  col = c(36, 36, 37, 37)
+)
+
+view.A(
+  scenario,
+  pairs,
+  title = paste(
+    sc %>% filter(shock == n_shock) %>% pull(shift),
+    "input-output coefficients"
+  )
+)
+```
+
+### Visualize Impacts
+
+```{r shock.visualize.scaled.14}
+#| fig-width: 8
+#| fig-height: 4
+
+p.selected.vars <- plot_selected_vars(
+  baseline = baseline,
+  scenario = scenario,
+  selected.list = selected.list,
+  shock_title = sc$display_name[n_shock],
+  t_shock = initial$pars["t.shock", "value"],
+  print_blocks = TRUE
+)
+
+p.selected.vars
+```
+
+### Summary Visualization
+
+```{r summary.table.14}
+#| fig-width: 10
+#| fig-height: 10
+
+scenario.table <- shock.summary(
+  baseline,
+  shock.run = scenario,
+  t_ = c(t.shock + 1, t.shock + 7, t.shock + 20),
+  t_names = c('Immediate', 'Short.Term', 'Long.Term')
+)
+
+write.csv(scenario.table, get_table_filename(n_shock), row.names = FALSE)
+
+scenario.table <- read.csv(get_table_filename(n_shock))
+
+scenario_analysis_plot(
+  shock_df = scenario.table,
+  shock_title = sc$display_name[n_shock],
+  variable.table = variable.table,
+  shock_subtitle = paste0(
+    'Shock Parameter ρ = ',
+    sc$rho[n_shock],
+    ". Teal = positive change, red = negative change (relative to baseline)"
+  )
+)
+```
+
+### Discussion
+
+```{r, echo=FALSE}
+scenario.table |>
+  dplyr::filter(Variable %in% c('go', 'n', 'shw', 'shp', 'gdef', 'cab', 'mat', 'emis', 'land', 'water', 'rec')) |>
+  dplyr::rename(
+    Category = Name,
+    `EU Imm.`  = Immediate.Z1,
+    `EU ST`    = Short.Term.Z1,
+    `EU LT`    = Long.Term.Z1,
+    `RoW Imm.` = Immediate.Z2,
+    `RoW ST`   = Short.Term.Z2,
+    `RoW LT`   = Long.Term.Z2
+  ) |>
+  kable(caption = "Key simulation results (% deviation from baseline)", digits = 3) |>
+  kable_styling(full_width = FALSE,
+                bootstrap_options = c("striped", "condensed"),
+                font_size = 11)
+```
+
+
+The construction production scenario targets the intermediate channel for circular construction techniques (Int = 30.1%, 40.0 billion EUR of the 133.0 billion total at t=70) at ρ = 0.05, engaging approximately 2.0 billion EUR. Fixed investment at 66.7% (88.7 billion) remains unaddressed.
+
+The most striking result is the large emission increase (+2.152% long-run) despite material savings (mat = −0.351%). This mirrors Scenario 5 (Construction FD, +5.188%): both construction scenarios show emission increases. The consistent finding across Sc5 and Sc14 points to a structural feature of circular construction under current EU calibration — renovation, reclamation, and circular construction techniques are more energy-intensive per unit of output than conventional new-build, generating large upstream emission costs that outweigh the material savings in the emission accounts.
+
+EU employment is marginally positive (+0.010%) — consistent with the labour-intensive character of renovation and secondary construction — while Z2 employment falls (−0.011%). This EU-gains / RoW-loses asymmetry mirrors Scenario 5. The current account improves (+1.081%) and EU government debt falls (−0.057%). The distributional effect is regressive (shw −0.042%, shp +0.073%).
+
+The cross-material cascade effects are a distinguishing feature: construction is the dominant intermediate purchaser of cement, metals, and glass simultaneously. A CE transition in construction input mix propagates through multiple material supply chains at once. The comparison with Scenario 5 is analytically important: Scenario 5 engages the demand side (firms requesting circular construction services), while Scenario 14 engages the supply side (construction firms restructuring their input mix). Both leave the dominant fixed investment channel unaddressed.
+
+The full policy case for circular construction requires a complementary investment channel intervention — public investment in renovation and circular infrastructure — at which point the scenario would dwarf all others in the set by absolute economic scale.
+
+___
+

@@ -24,8 +24,8 @@ production_scenarios <- function(
     initial$pars['Z2_ce', 'value'] <- as.numeric(para[["Z2_ce"]])
 
     sc_row <- sc[sc$shock == shock, , drop = FALSE]
-    from <- as.integer(sc_row$from[[1]])
-    to <- as.integer(sc_row$to[[1]])
+    from <- as.integer(sc_row$primary[[1]])
+    to <- as.integer(sc_row$secondary[[1]])
 
     # 1) Set CE in para (mvp.model reads parms["Z1_ce"], parms["Z2_ce"])
     para[c("Z1_ce", "Z2_ce")] <- c(1, 0)

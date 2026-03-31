@@ -1,0 +1,73 @@
+---
+title: "Scenario Registry"
+format:
+  pdf:
+    keep-tex: false
+    geometry: margin=2cm
+    fontsize: 11pt
+execute:
+  echo: false
+  warning: false
+  message: false
+  working-dir: ..
+---
+
+```{r}
+library(tidyverse)
+library(knitr)
+library(kableExtra)
+
+qmd_in <- knitr::current_input()
+if (!is.null(qmd_in) && nzchar(qmd_in)) {
+  qmd_path <- normalizePath(qmd_in, winslash = "/")
+  root <- normalizePath(file.path(dirname(qmd_path), ".."), winslash = "/")
+} else {
+  wd0  <- normalizePath(getwd(), winslash = "/")
+  root <- if (basename(wd0) == "qmd") normalizePath("..", winslash = "/") else wd0
+}
+
+sc <- read.csv(file.path(root, "data", "scenarios.csv"))
+
+sc |>
+  dplyr::select(shock, domain, sector, transaction, shift, rho) |>
+  dplyr::mutate(
+    domain = dplyr::recode(domain,
+      "Final Demand"        = "Final Demand",
+      "Intermediate Demand" = "Intermediate Demand"
+    ),
+    rho = ifelse(rho == 0.05, "0.05$^{\\dagger}$", "0.20")
+  ) |>
+  dplyr::rename(
+    `\\#`          = shock,
+    Domain         = domain,
+    Sector         = sector,
+    Channel        = transaction,
+    Material       = shift,
+    `$\\rho$`      = rho
+  ) |>
+  knitr::kable(
+    format    = "latex",
+    booktabs  = TRUE,
+    linesep   = c(rep("", 5), "\\addlinespace", rep("", 6)),
+    escape    = FALSE,
+    caption   = "Scenario Registry",
+    label     = "tab:scenarios",
+    align     = c("c","l","l","l","l","c")
+  ) |>
+  kableExtra::kable_styling(
+    latex_options = c("hold_position"),
+    font_size     = 10
+  ) |>
+  kableExtra::column_spec(1, width = "0.4cm") |>
+  kableExtra::column_spec(2, width = "3.2cm") |>
+  kableExtra::column_spec(3, width = "2.2cm") |>
+  kableExtra::column_spec(4, width = "2.8cm") |>
+  kableExtra::column_spec(5, width = "2.2cm") |>
+  kableExtra::column_spec(6, width = "0.8cm") |>
+  kableExtra::footnote(
+    general           = "$^{\\\\dagger}$ Construction scenarios use $\\\\rho = 0.05$ (smaller shock) due to the larger scale of the investment channel.",
+    general_title     = "",
+    escape            = FALSE,
+    footnote_as_chunk = TRUE
+  )
+```

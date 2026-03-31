@@ -33,7 +33,7 @@ aggregate,commercial.banks,f_b,10B.EUR,Bank Profit
 aggregate,govt.central.bank,g,10B.EUR,Government Spending
 aggregate,govt.central.bank,t,10B.EUR,Tax Payments
 aggregate,govt.central.bank,gdef,10B.EUR,Government Deficit
-aggregate,govt.central.bank,b_s,10B.EUR,Supply of Government Bills (Government Debt)
+aggregate,govt.central.bank,b_s,10B EUR,Government Debt
 aggregate,govt.central.bank,a_s,10B.EUR,Central Bank Advances: Supply
 aggregate,govt.central.bank,h_s,10B.EUR,Supply of Cash Money
 aggregate,govt.central.bank,p_or,10B.EUR,Price of Reserves
