@@ -1,0 +1,56 @@
+---
+format:
+  pdf:
+    geometry:
+      - top=25mm
+      - bottom=25mm
+      - left=30mm
+      - right=30mm
+    fontsize: 11pt
+    linestretch: 1.4
+    keep-tex: false
+    include-in-header:
+      text: |
+        \usepackage{booktabs}
+        \usepackage{xcolor}
+        \usepackage{array}
+        \definecolor{jhublue}{RGB}{0,45,114}
+        \pagestyle{empty}
+execute:
+  echo: false
+  warning: false
+  message: false
+---
+
+\begin{center}
+{\large\bfseries Suggested Reviewers}\\[4pt]
+{\normalsize\itshape The transition to a sustainable economy is not sustainable:\\
+an ecological macroeconomic analysis of climate policy, the circular economy, and global inequality}\\[6pt]
+{\small Oriol Vallès Codina, José Bruno R.\,T. Fevereiro, Andrea Genovese,\\
+Annina Kaltenbrunner, Effie Kesidou, Marco Veronese Passarella}
+\end{center}
+
+\vspace{1em}
+\hrule
+\vspace{1.2em}
+
+The authors suggest the following reviewers as having relevant expertise in ecological macroeconomics, post-Keynesian modelling, input-output analysis, and circular economy policy. None of the suggested reviewers have a conflict of interest with the authors or this manuscript.
+
+\vspace{1em}
+
+\begin{tabular}{p{5cm} p{8.5cm}}
+\toprule
+\textbf{Reviewer} & \textbf{Details} \\
+\midrule
+\textbf{Dr.\ Guilherme Spinato Morlin} &
+  Expertise in post-Keynesian macroeconomics, income distribution, and ecological macroeconomic modelling. Relevant to the SFC dynamics and distributional analysis of the paper. \\[8pt]
+\textbf{Dr.\ David Cano} &
+  Expertise in input-output analysis and environmental economics. Relevant to the MRIO accounting framework and ecological footprint methodology. \\[8pt]
+\textbf{Dr.\ Giuliano Yajima} &
+  Expertise in stock-flow consistent modelling, open-economy macroeconomics, and international monetary economics. Relevant to the two-region SFC structure and cross-border transmission analysis. \\
+\bottomrule
+\end{tabular}
+
+\vspace{1.5em}
+
+\noindent\textit{Note: Affiliation details and contact information should be verified and completed by the corresponding author prior to submission.}

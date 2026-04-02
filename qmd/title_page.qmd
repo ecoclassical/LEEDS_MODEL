@@ -1,0 +1,140 @@
+---
+format:
+  pdf:
+    geometry:
+      - top=30mm
+      - bottom=25mm
+      - left=30mm
+      - right=30mm
+    fontsize: 11pt
+    linestretch: 1.4
+    keep-tex: false
+    include-in-header:
+      text: |
+        \usepackage{xcolor}
+        \usepackage{titlesec}
+        \usepackage{booktabs}
+        \definecolor{ecogreen}{RGB}{0,100,60}
+        \titleformat{\section}{\large\bfseries\color{ecogreen}}{}{0em}{}[\titlerule]
+        \titleformat{\subsection}{\normalsize\bfseries}{}{0em}{}
+execute:
+  echo: false
+  warning: false
+  message: false
+---
+
+\begin{center}
+{\Large\bfseries The transition to a sustainable economy is not sustainable:\\[4pt]
+an ecological macroeconomic analysis of climate policy,\\[4pt]
+the circular economy, and global inequality}
+
+\vspace{1.4em}
+
+{\normalsize
+Oriol Vallès Codina\textsuperscript{1,*} \quad
+José Bruno R. T. Fevereiro\textsuperscript{2} \quad
+Andrea Genovese\textsuperscript{3} \\[6pt]
+Annina Kaltenbrunner\textsuperscript{4} \quad
+Effie Kesidou\textsuperscript{5} \quad
+Marco Veronese Passarella\textsuperscript{6}
+}
+
+\vspace{0.8em}
+
+{\small\itshape
+\textsuperscript{1}Department of Political Science \& Net Zero Industrial Policy Lab, Johns Hopkins University, Baltimore, MD, USA\\[2pt]
+\textsuperscript{2}Banco Nacional de Desenvolvimento Econômico e Social (BNDES --- Brazilian Development Bank), Rio de Janeiro, Brazil\\[2pt]
+\textsuperscript{3}Salford Business School, University of Salford, Salford, UK\\[2pt]
+\textsuperscript{4}Leeds University Business School, University of Leeds, Leeds, UK\\[2pt]
+\textsuperscript{5}School of Management, University of Bath, Bath, UK\\[2pt]
+\textsuperscript{6}Department of Industrial and Information Engineering and Economics, University of L'Aquila, L'Aquila, Italy\\[6pt]
+\textsuperscript{*}\textbf{Corresponding author:} Oriol Vallès Codina. E-mail: \texttt{ovalles1@jhu.edu}; \texttt{oriolvallescodina@gmail.com}
+}
+\end{center}
+
+\vspace{0.5em}
+\hrule
+\vspace{1em}
+
+# Abstract
+
+Circular economy policies are promoted as a pathway to reduce material throughput, emissions, and resource use. Yet, their macroeconomic and transnational effects remain poorly understood. This paper develops a two-region ecological macroeconomic model that integrates multi-regional input–output structure with stock–flow consistent dynamics, calibrated for the European Union (EU) and the Rest of the World (RoW). The study analyses circular economy transitions in the context of EU-RoW ecologically unequal exchange through a channel-based framework, distinguishing between interventions operating via final demand, intermediate production, and investment. Results show that the effectiveness of circular economy policies depends on the scale and structure of the demand channels they target. Final-demand interventions are impactful only when they engage dominant sectoral channels (such as household consumption in food or government procurement in plastics), while intermediate-production restructuring delivers stronger ecological improvements, but at the cost of modest contractions in output and employment. This pattern, however, is not uniform: in metals, circular production reduces material use and expands economic activity while increasing emissions due to higher upstream energy intensity. By contrast, energy restructuring delivers the largest emission reductions due to both scale and intensity differentials. Finally, investment-driven transitions can generate large macroeconomic effects but may also entail adverse environmental outcomes under current technological conditions. Overall, the analysis shows that circular economy transitions generate systematic transnational trade-offs across regions, sectors, and policy channels. Effective policy therefore requires coordinated, channel-specific strategies that align circularity with decarbonisation, macroeconomic stabilisation, and international equity.
+
+# Keywords
+
+circular economy; multi-regional input-output; stock-flow consistent model; ecologically unequal exchange; cross-border spillovers; income distribution; material extraction; global supply chains
+
+# Highlights
+
+\begin{itemize}
+  \item Two-region MRIO-SFC model tracks CE policies across EU and Rest of World
+  \item CE effectiveness depends on scale and structure of targeted demand channel
+  \item Four cross-border transmission regimes identified: Symmetric --- Mutual Contraction and Production Leakage; Asymmetric --- Competitive Displacement and Fossil-Fuel Collapse
+  \item Production CE transitions improve EU ecological outcomes while worsening EU labour income share and RoW fiscal balance, widening within- and between-region inequality
+  \item CE trilemma: no scenario simultaneously achieves ecological improvement, macroeconomic stability, and social equity
+\end{itemize}
+
+\vspace{0.5em}
+
+# Manuscript Information
+
+\begin{tabular}{ll}
+\toprule
+\textbf{Item} & \textbf{Detail} \\
+\midrule
+Target journal    & \textit{Ecological Economics} \\
+Special issue     & Ecological Macroeconomics Modelling: Exploring Alternative Futures \\
+Manuscript type   & Research article \\
+Word count (excl.\ references \& SM) & 8{,}993 words (7{,}286 body prose + 1{,}707 captions/tables) \\
+Number of figures & 9 \\
+Number of tables  & 4 (+ 3 in Supplementary Material) \\
+Supplementary material & Yes (Appendices A1--A3) \\
+\bottomrule
+\end{tabular}
+
+\vspace{1em}
+
+\begin{tabular}{lr}
+\toprule
+\textbf{Section} & \textbf{Word count} \\
+\midrule
+1.\ Introduction          & 1{,}363 \\
+2.\ Model Overview        & 1{,}454 \\
+3.\ Descriptive Statistics & 882 \\
+4.\ Scenario Design       & 809 \\
+5.\ Scenario Analysis     & 650 \\
+6.\ Scenario Discussion   & 1{,}479 \\
+7.\ Conclusions           & 649 \\
+\midrule
+\textbf{Body Prose} & \textbf{7{,}286} \\
+\midrule
+Figure captions (8 figures) & 909 \\
+Table captions (4 tables)   & 510 \\
+Table cell content          & 288 \\
+\midrule
+\textbf{Total (incl.\ captions \& tables)} & \textbf{8{,}993} \\
+\bottomrule
+\end{tabular}
+
+\vspace{1em}
+
+# Author Contributions (CRediT)
+
+\textbf{Oriol Vallès Codina:} Conceptualisation, Methodology, Software, Formal Analysis, Writing – Original Draft, Writing – Review \& Editing, Visualisation, Project Administration.
+\textbf{José Bruno R. T. Fevereiro:} Conceptualisation, Methodology, Writing – Review \& Editing.
+\textbf{Andrea Genovese:} Writing – Review \& Editing, Supervision.
+\textbf{Annina Kaltenbrunner:} Conceptualisation, Writing – Review \& Editing, Supervision.
+\textbf{Effie Kesidou:} Writing – Review \& Editing, Supervision.
+\textbf{Marco Veronese Passarella:} Conceptualisation, Methodology, Writing – Review \& Editing, Supervision.
+
+# Declaration of Competing Interests
+
+The authors declare no competing financial or non-financial interests.
+
+# Funding
+
+This work was conducted in the context of the EU-funded Horizon 2020 project JUST2CE (Grant agreement No. 101003491). The views expressed are those of the authors and do not necessarily reflect those of the European Commission or BNDES.
+
+# Acknowledgements
+
+The authors thank participants at the \textit{Ecological Macroeconomics} workshop and the JUST2CE project consortium for helpful feedback on earlier drafts. All remaining errors are our own.

@@ -429,12 +429,23 @@ The full Leontief solution is:
 
 $$\mathbf{x} = (I - A)^{-1}\,\boldsymbol{\Phi}\,\mathbf{f} = L\,\boldsymbol{\Phi}\,\mathbf{f} \tag{2.2}$$
 
-CE scenarios modify either $A$ (intermediate production shocks) or $\boldsymbol{\Phi}$ (final-demand shocks: channel shares $\boldsymbol{\phi}^{(r,k)}$ shifted from primary to secondary sectors). The empirical content of $\boldsymbol{\beta}^{(r)},\boldsymbol{\sigma}^{(r)},\boldsymbol{\iota}^{(r)}$ across sectors is documented in the figures below: Figure 1 decomposes channel volumes (entries of $B,\Sigma,I$) for the eight primary and secondary material pairs that our economy uses, $M = \{\text{food, energy, wood, plastics, pulp, paper, metals, glass, cement, construction materials}\}$; Figure 2 isolates EU import demand from RoW (the cross-border sub-blocks $\boldsymbol{\beta}_{21},\boldsymbol{\sigma}_{21},\boldsymbol{\iota}_{21}$); Figure 3 traces full supply-chain upstream requirements via the Leontief inverse $L$.
+CE scenarios modify either $A$ (intermediate production shocks) or $\boldsymbol{\Phi}$ (final-demand shocks: channel shares $\boldsymbol{\phi}^{(r,k)}$ shifted from primary to secondary sectors). The empirical content of $\boldsymbol{\beta}^{(r)},\boldsymbol{\sigma}^{(r)},\boldsymbol{\iota}^{(r)}$ across sectors is documented in the figures below: Figure 1 decomposes channel volumes (entries of $B,\Sigma,I$) for the eight primary and secondary material pairs that our economy uses:
+$$M = \{\text{food, energy, wood, plastics, pulp, paper, metals, glass, cement, construction materials}\}$$
+
+Figure 2 isolates EU import demand from RoW (the cross-border sub-blocks $\boldsymbol{\beta}_{21},\boldsymbol{\sigma}_{21},\boldsymbol{\iota}_{21}$); Figure 3 traces full supply-chain upstream requirements via the Leontief inverse $L$.
 
 ### Demand Structure and Channel Architecture
 
-```{r fig-demand-structure, fig.cap="Gross output decomposition for primary and secondary material sectors across EU and RoW. Columns: EU Domestic, EU Cross-border, RoW Domestic, RoW Cross-border demand. Rows: Primary vs Secondary. Bars stacked by institutional demand channel. Source: EXIOBASE 3 v3.8.2, calibrated at t = 70.", fig.scap="Gross output decomposition by material sector and institutional demand channel.", out.width="100%"}
+```{=latex}
+\captionsetup[figure]{font=footnotesize,labelfont=bf}
+```
+
+```{r fig-demand-structure, fig.cap="Gross output decomposition for primary and secondary material sectors across EU and RoW. Columns: EU Domestic, EU Cross-border, RoW Domestic, RoW Cross-border demand. Rows: Primary vs Secondary. Bars stacked by institutional demand channel. Source: EXIOBASE 3 v3.8.2, calibrated at t = 70.", fig.scap="Gross output decomposition by material sector and institutional demand channel.", out.width="100%", out.height="0.4\\textheight", fig.pos="t"}
 knitr::include_graphics(file.path(fig_png, "demand", "p_demand_structure.png"))
+```
+
+```{=latex}
+\captionsetup[figure]{font=normalsize,labelfont=normalfont}
 ```
 
 Figure 1 decomposes gross output for all eight material pairs — where carbon energy and meat are the primary sectors and renewable energy and other food are the secondary sectors — by institutional demand channel (household consumption, government consumption, firm investment, public investment, and firm intermediate consumption) across four regional flow dimensions. Across most industrial materials, firm intermediate consumption dominates both domestic production and EU import demand, making production-side restructuring the primary CE instrument for these sectors: cement, glass, metals, and pulp are overwhelmingly activated through firm intermediate consumption (93–96% of EU gross output), so that final demand channels are structurally small and demand-side instruments cannot substitute for production-side restructuring. Three sectors diverge from this pattern. Food is the only material where household consumption dominates (65% of EU domestic output), making it the one sector where consumer-facing intervention engages the primary demand channel directly. Energy is structurally intermediate: approximately two-thirds of total demand is driven by industrial intermediate procurement of fossil-fuel electricity, confirming that industrial energy procurement, not consumer behaviour, is the primary driver of fossil-fuel electricity demand. Plastics is analytically exceptional: while approximately 55% of output serves final demand, this component is dominated by government consumption rather than households, making circular public procurement the primary demand-side CE instrument for this material.
@@ -442,7 +453,7 @@ Figure 1 decomposes gross output for all eight material pairs — where carbon e
 
 ### Cross-Border Trade Structure and Transmission Channels
 
-```{r fig-import-decomp, fig.cap="EU import demand from RoW decomposed by sector and institutional demand channel. Includes firm intermediate consumption, household consumption, government consumption, and firm investment. Top 20 sectors by total import demand. Source: EXIOBASE 3 v3.8.2, calibrated at t = 70.", fig.scap="EU import demand from RoW decomposed by sector and institutional demand channel.", out.width="65%", fig.align="center"}
+```{r fig-import-decomp, fig.cap="EU import demand from RoW decomposed by sector and institutional demand channel. Includes firm intermediate consumption, household consumption, government consumption, and firm investment. Top 20 sectors by total import demand. Source: EXIOBASE 3 v3.8.2, calibrated at t = 70.", fig.scap="EU import demand from RoW decomposed by sector and institutional demand channel.", out.width="65%", fig.align="center", fig.pos="t"}
 knitr::include_graphics(file.path(fig_png, "demand", "p_import_decomp.png"))
 ```
 
@@ -450,7 +461,11 @@ Figure 2 maps EU import demand from RoW by sector and institutional channel — 
 
 EU import demand is concentrated in firm intermediate purchases of fossil energy and industrial materials sourced from the Rest of the World, establishing the cross-border transmission channels through which CE transitions propagate employment, trade-balance, and ecological effects across regions. Full supply-chain accounting — presented in Figure 3 — reveals that fossil-fuel extraction and processing dominate the upstream input requirements of primary energy, while metals carries the largest aggregate upstream footprint across all material sectors, explaining why the metals CE scenario generates a carbon emission rebound rather than savings.
 
-```{r fig-leontief, fig.cap="Full supply-chain upstream input requirements for EU primary material sectors, showing which upstream sectors k sustain each material sector's gross output across all orders of IO interdependence. Fossil-fuel extraction dominates the energy column — the structural basis for the fossil-import collapse in Sc13; animal farming dominates food — explaining food's domestically-contained household channel; secondary metal production draws heavily on fossil electricity upstream — the mechanism behind the structural emission rebound in Sc10. Source: EXIOBASE 3 v3.8.2, calibrated at t = 70.", fig.scap="Full supply-chain upstream input requirements for EU primary material sectors.", out.width="100%"}
+```{=latex}
+\captionsetup[figure]{font=normalsize,labelfont=bf}
+```
+
+```{r fig-leontief, fig.cap="Full supply-chain upstream input requirements for EU primary material sectors, showing which upstream sectors k sustain each material sector's gross output across all orders of IO interdependence. Fossil-fuel extraction dominates the energy column — the structural basis for the fossil-import collapse in Sc13; animal farming dominates food — explaining food's domestically-contained household channel; secondary metal production draws heavily on fossil electricity upstream — the mechanism behind the structural emission rebound in Sc10. Source: EXIOBASE 3 v3.8.2, calibrated at t = 70.", fig.scap="Full supply-chain upstream input requirements for EU primary material sectors.", out.width="100%", fig.pos="t"}
 knitr::include_graphics(file.path(fig_png, "leontief", "p_leontief_primary_heatmap_eu_pure_abs.png"))
 ```
 
@@ -559,7 +574,7 @@ $$\Delta M_1 = \rho\cdot\Omega\cdot(l_{12} - l_{11}), \qquad \Delta M_2 = \rho\c
 
 $$\Delta M = \rho\cdot\Omega\cdot\bigl[(l_{12}+l_{22}) - (l_{11}+l_{21})\bigr] \tag{3.5}$$
 
-where the **scale factor** $\Omega$ equals $\phi_1\,f^z$ for final-demand shocks and $a_{1j}\,x_j$ (summed over using sectors $j$) for intermediate-demand shocks, and $l_{rs}$ are elements of the Leontief inverse $L$. Because $(l_{12}-l_{11})\approx -1$ across all material pairs, the ranking of scenarios by ecological impact reduces to a ranking of $\Omega$ — the volume of the demand channel engaged by the policy instrument. The Leontief structural factor is a near-uniform multiplier; channel scale is the decisive variable. Full derivation and multi-sector extension are in Appendix 3. Table 2 lists all 14 scenarios; Table 3 summarises the key long-term findings.
+where the **demand scale factor** $\Omega$ equals $\phi_1\,f^z$ for final-demand shocks and $a_{1j}\,x_j$ (summed over using sectors $j$) for intermediate-demand shocks, and $l_{rs}$ are elements of the Leontief inverse $L$. Because $(l_{12}-l_{11})\approx -1$ across all material pairs, the ranking of scenarios by ecological impact reduces to a ranking of $\Omega$ — the volume of the demand channel engaged by the policy instrument. The Leontief structural factor is a near-uniform multiplier; channel scale is the decisive variable. Full derivation and multi-sector extension are in Appendix 3. Table 2 lists all 14 scenarios; Table 3 summarises the key long-term findings.
 
 ```{r fig-cross-border, fig.scap="Long-run EU vs.\\ RoW deviations from baseline across 14 CE scenarios.", fig.cap="Long-term (t+20) percentage deviation from baseline for EU (Z1, x-axis) and RoW (Z2, y-axis) under each of the 14 CE scenarios. Point colour identifies the scenario; the semi-transparent halo indicates the transmission pattern (Fossil Import Collapse, Competitive Displacement, Production Leakage, Construction Rebound, or Symmetric Contraction). The diagonal reference line marks the 45° locus of symmetric effects. The bottom-right panel (Dual Inequality) shows scenarios on the EU wage share versus RoW public debt axes, with the upper-left quadrant indicating dual regressivity — simultaneous within-EU functional income compression and cross-border fiscal deterioration in the periphery. All deviations are expressed as percentages relative to the no-policy baseline trajectory.", out.width="100%"}
 knitr::include_graphics(file.path(root, "output", "png", "p_cross_border_asymmetry.png"))
