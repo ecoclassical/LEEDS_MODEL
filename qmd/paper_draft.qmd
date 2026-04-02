@@ -393,11 +393,11 @@ if (knitr::is_html_output() || knitr::is_latex_output()) {
 **Multi-region input-output equilibrium** in supply and demand can be written as the $\mathbf{x} \in \mathbb{R}^{RN \times 1}$ supply or gross output vector equal to the sum of intermediate demand $Z \in \mathbb{R}^{RN \times RN}$ and final demand $Y \in \mathbb{R}^{RN \times RK}$, with $R = \{EU,RoW\} = 2$ regions, $N=54$ sectors, and $K = \{c,g,id\} = 3$ institutional channels:
 
 $$\begin{aligned}
-\begin{pmatrix}\mathbf{x}_{(1)}\\\mathbf{x}_{(2)}\end{pmatrix} &= \mathbf{x} = \mathbf{d} = Z + Y\\[4pt]
+\begin{pmatrix}\mathbf{x}_{(1)}\\\mathbf{x}_{(2)}\end{pmatrix} &= \mathbf{x} = \mathbf{d} = Z + Y =\\[4pt]
 &= \underbrace{\begin{pmatrix}Z_{11} & Z_{12}\\Z_{21} & Z_{22}\end{pmatrix}}_{\text{intermediate demand}}
 + \underbrace{\begin{pmatrix}C_1\\C_2\end{pmatrix}}_{\text{HH cons.}}
 + \underbrace{\begin{pmatrix}G_1\\G_2\end{pmatrix}}_{\text{Govt.}}
-+ \underbrace{\begin{pmatrix}I_1\\I_2\end{pmatrix}}_{\text{Firm inv.}}\\[8pt]
++ \underbrace{\begin{pmatrix}I_1\\I_2\end{pmatrix}}_{\text{Firm inv.}} =\\[8pt]
 &= \underbrace{\begin{pmatrix}A_{11} & A_{12}\\A_{21} & A_{22}\end{pmatrix}}_{A\;=\;Z\hat{x}^{-1}}
 \begin{pmatrix}\mathbf{x}_{(1)}\\\mathbf{x}_{(2)}\end{pmatrix}
 +\underbrace{\begin{pmatrix}\boldsymbol{\beta}_{11} & \boldsymbol{\beta}_{12}\\\boldsymbol{\beta}_{21} & \boldsymbol{\beta}_{22}\end{pmatrix}}_{B\;\in\;\mathbb{R}^{2N\times2}}
@@ -405,7 +405,7 @@ $$\begin{aligned}
 +\underbrace{\begin{pmatrix}\boldsymbol{\sigma}_{11} & \boldsymbol{\sigma}_{12}\\\boldsymbol{\sigma}_{21} & \boldsymbol{\sigma}_{22}\end{pmatrix}}_{\Sigma\;\in\;\mathbb{R}^{2N\times2}}
 \begin{pmatrix}g_1\\g_2\end{pmatrix}
 +\underbrace{\begin{pmatrix}\boldsymbol{\iota}_{11} & \boldsymbol{\iota}_{12}\\\boldsymbol{\iota}_{21} & \boldsymbol{\iota}_{22}\end{pmatrix}}_{I\;\in\;\mathbb{R}^{2N\times2}}
-\begin{pmatrix}id_1\\id_2\end{pmatrix}\\[8pt]
+\begin{pmatrix}id_1\\id_2\end{pmatrix} =\\[8pt]
 &= A\mathbf{x} + \underbrace{\bigl[\,B\quad\Sigma\quad I\,\bigr]}_{\boldsymbol{\Phi}\;\in\;\mathbb{R}^{2N\times6}}
 \underbrace{\begin{pmatrix}c_1\\c_2\\g_1\\g_2\\id_1\\id_2\end{pmatrix}}_{\mathbf{f}\;=\;\operatorname{vec}(\mathbf{F})\;\in\;\mathbb{R}^{6}}
 = A\mathbf{x} + \boldsymbol{\Phi}\,\mathbf{f}
