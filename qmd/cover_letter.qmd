@@ -33,7 +33,7 @@ execute:
 
 \vspace{1.8em}
 
-`r format(Sys.Date(), "%B %d, %Y")`
+April 3, 2026
 
 \vspace{1em}
 
