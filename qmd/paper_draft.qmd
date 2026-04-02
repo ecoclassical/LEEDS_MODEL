@@ -21,7 +21,7 @@ author:
   - name: "Marco Veronese Passarella"
     affiliations:
       - "Department of Industrial and Information Engineering and Economics, University of L'Aquila"
-date: "`r Sys.Date()`"
+date: "April 2, 2026"
 format:
   html:
     toc: true
@@ -120,6 +120,15 @@ if (!is.null(qmd_in) && nzchar(qmd_in)) {
 fig_png <- file.path(root, "output", "png")
 fig_cmp <- file.path(root, "output", "png", "comparison")
 sc <- read.csv(file.path(root, "data", "scenarios.csv"))
+
+# Helper: inject LaTeX short caption into kableExtra output for List of Tables
+inject_short_cap <- function(tbl, short_cap) {
+  tbl_str <- as.character(tbl)
+  tbl_str <- sub("\\\\caption\\{",
+                 paste0("\\\\caption[", short_cap, "]{"),
+                 tbl_str)
+  knitr::asis_output(tbl_str)
+}
 ```
 
 ::: {.content-visible when-format="html"}
@@ -358,7 +367,8 @@ if (knitr::is_html_output() || knitr::is_latex_output()) {
       escape = FALSE,
       bold = TRUE
     ) |>
-    kableExtra::landscape()
+    kableExtra::landscape() |>
+    inject_short_cap("MRIO accounting framework.")
 } else {
   mrio_tbl |>
     knitr::kable(
@@ -380,26 +390,26 @@ if (knitr::is_html_output() || knitr::is_latex_output()) {
 }
 ```
 
-**IO balance and final-demand algebra.** The MRIO supply–demand equilibrium expresses the $2N \times 1$ gross output vector $\mathbf{x}$ as the sum of intermediate demand and three final-demand channels, then collapses to the Leontief form:
+**Multi-region input-output equilibrium.** The $\mathbf{x} \in \mathbb{R}^{2N\times1}$ gross output vector equals the sum of intermediate demand $Z \in \mathbb{R}^{2N\times2N}$ and final demand $Y \in \mathbb{R}^{2N\times RK}$, with $R=2$ regions (EU, RoW), $N=54$ sectors, and $K=3$ institutional channels ($c,g,id$):
 
 $$\begin{aligned}
-\mathbf{x} = \begin{pmatrix}\mathbf{x}^{(1)}\\\mathbf{x}^{(2)}\end{pmatrix}
+\mathbf{x} = \begin{pmatrix}\mathbf{x}_{(1)}\\\mathbf{x}_{(2)}\end{pmatrix} = \mathbf{d} = Z + Y
 &= \underbrace{\begin{pmatrix}Z_{11} & Z_{12}\\Z_{21} & Z_{22}\end{pmatrix}\mathbf{1}}_{\text{intermediate demand}}
 + \underbrace{\begin{pmatrix}\mathbf{C}_1\\\mathbf{C}_2\end{pmatrix}}_{\text{HH cons.}}
 + \underbrace{\begin{pmatrix}\mathbf{G}_1\\\mathbf{G}_2\end{pmatrix}}_{\text{Govt.}}
 + \underbrace{\begin{pmatrix}\mathbf{Id}_1\\\mathbf{Id}_2\end{pmatrix}}_{\text{Firm inv.}}\\[8pt]
 &= \underbrace{\begin{pmatrix}A_{11} & A_{12}\\A_{21} & A_{22}\end{pmatrix}}_{A\;=\;Z\hat{x}^{-1}}
-\begin{pmatrix}\mathbf{x}^{(1)}\\\mathbf{x}^{(2)}\end{pmatrix}
+\begin{pmatrix}\mathbf{x}_{(1)}\\\mathbf{x}_{(2)}\end{pmatrix}
 +\underbrace{\begin{pmatrix}\boldsymbol{\beta}_{11} & \boldsymbol{\beta}_{12}\\\boldsymbol{\beta}_{21} & \boldsymbol{\beta}_{22}\end{pmatrix}}_{B\;\in\;\mathbb{R}^{2N\times2}}
 \begin{pmatrix}c_1\\c_2\end{pmatrix}
 +\underbrace{\begin{pmatrix}\boldsymbol{\sigma}_{11} & \boldsymbol{\sigma}_{12}\\\boldsymbol{\sigma}_{21} & \boldsymbol{\sigma}_{22}\end{pmatrix}}_{\Sigma\;\in\;\mathbb{R}^{2N\times2}}
 \begin{pmatrix}g_1\\g_2\end{pmatrix}
 +\underbrace{\begin{pmatrix}\boldsymbol{\iota}_{11} & \boldsymbol{\iota}_{12}\\\boldsymbol{\iota}_{21} & \boldsymbol{\iota}_{22}\end{pmatrix}}_{I\;\in\;\mathbb{R}^{2N\times2}}
 \begin{pmatrix}id_1\\id_2\end{pmatrix}\\[8pt]
-&= A\mathbf{x} + \underbrace{\bigl[\,B\quad\Sigma\quad I\,\bigr]}_{\boldsymbol{\Phi}\;\in\;\mathbb{R}^{2N\times6}}\,
-\operatorname{vec}\!\underbrace{\begin{pmatrix}c_1 & g_1 & id_1 \\ c_2 & g_2 & id_2\end{pmatrix}}_{\mathbf{F}\;\in\;\mathbb{R}^{2\times 3}}
-= A\mathbf{x} + \boldsymbol{\Phi}\,\mathbf{f} \tag{2.1}
-\end{aligned}$$
+&= A\mathbf{x} + \underbrace{\bigl[\,B\quad\Sigma\quad I\,\bigr]}_{\boldsymbol{\Phi}\;\in\;\mathbb{R}^{2N\times6}}
+\underbrace{\begin{pmatrix}c_1\\c_2\\g_1\\g_2\\id_1\\id_2\end{pmatrix}}_{\mathbf{f}\;=\;\operatorname{vec}(\mathbf{F})\;\in\;\mathbb{R}^{6}}
+= A\mathbf{x} + \boldsymbol{\Phi}\,\mathbf{f}
+\end{aligned} \tag{2.1}$$
 
 where $Z_{rs}\in\mathbb{R}^{N\times N}$ is the intermediate flow matrix from region $r$ to $s$, $A_{rs}=Z_{rs}\hat{x}_s^{-1}$, $\boldsymbol{\beta}_{sr}\in\mathbb{R}^N$ collects HH expenditure shares of spending region $r$ sourced from region $s$ (analogously $\boldsymbol{\sigma}_{sr},\boldsymbol{\iota}_{sr}$), and $\mathbf{f}=\operatorname{vec}(\mathbf{F})\in\mathbb{R}^{6}$ stacks the $2\times3$ regional expenditure matrix $\mathbf{F}$ column-major; $\boldsymbol{\Phi}=[\,B\;\Sigma\;I\,]\in\mathbb{R}^{2N\times6}$ is the **allocation matrix** with columns $\boldsymbol{\phi}^{(r,k)}$ for channel $k \in \{c,g,id\}$ and region $r$.
 
@@ -492,7 +502,8 @@ if (knitr::is_html_output() || knitr::is_latex_output()) {
     kableExtra::column_spec(9, width = "1.0cm") |>
     kableExtra::group_rows("Final Demand",        1,  6, bold = TRUE, italic = FALSE) |>
     kableExtra::group_rows("Intermediate Demand", 7, 14, bold = TRUE, italic = FALSE) |>
-    kableExtra::landscape()
+    kableExtra::landscape() |>
+    inject_short_cap("Scenario registry.")
 } else {
   sc_tbl |>
     knitr::kable(caption = reg_cap,
@@ -586,7 +597,7 @@ if (knitr::is_html_output() || knitr::is_latex_output()) {
     kableExtra::column_spec(2, width = "13cm") |>
     kableExtra::group_rows("Final Demand",        1,  6, bold = TRUE, italic = FALSE) |>
     kableExtra::group_rows("Intermediate Demand", 7, 14, bold = TRUE, italic = FALSE)
-  if (knitr::is_latex_output()) kableExtra::landscape(kbl_smry) else kbl_smry
+  if (knitr::is_latex_output()) kableExtra::landscape(kbl_smry) |> inject_short_cap("Scenario summary: simulation findings.") else kbl_smry
 } else {
   smry |>
     knitr::kable(caption = smry_cap,
@@ -747,7 +758,8 @@ if (knitr::is_html_output() || knitr::is_latex_output()) {
     kableExtra::group_rows("Asymmetric", 3, 5,
                            bold = TRUE, italic = FALSE, hline_before = TRUE,
                            extra_latex_after = "\\addlinespace[2pt]")
-  kableExtra::landscape(kbl_smry3)
+  kableExtra::landscape(kbl_smry3) |>
+    inject_short_cap("Circular economy transmission regimes.")
 } else {
   regime_tbl |>
     knitr::kable(caption = reg_cap3,
