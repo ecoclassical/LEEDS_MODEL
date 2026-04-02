@@ -390,14 +390,14 @@ if (knitr::is_html_output() || knitr::is_latex_output()) {
 }
 ```
 
-**Multi-region input-output equilibrium.** The $\mathbf{x} \in \mathbb{R}^{2N\times1}$ gross output vector equals the sum of intermediate demand $Z \in \mathbb{R}^{2N\times2N}$ and final demand $Y \in \mathbb{R}^{2N\times RK}$, with $R=2$ regions (EU, RoW), $N=54$ sectors, and $K=3$ institutional channels ($c,g,id$):
+**Multi-region input-output equilibrium** in supply and demand can be written as the $\mathbf{x} \in \mathbb{R}^{RN \times 1}$ supply or gross output vector equal to the sum of intermediate demand $Z \in \mathbb{R}^{RN \times RN}$ and final demand $Y \in \mathbb{R}^{RN \times RK}$, with $R = \{EU,RoW\} = 2$ regions, $N=54$ sectors, and $K = \{c,g,id\} = 3$ institutional channels:
 
 $$\begin{aligned}
-\mathbf{x} = \begin{pmatrix}\mathbf{x}_{(1)}\\\mathbf{x}_{(2)}\end{pmatrix} = \mathbf{d} = Z + Y
-&= \underbrace{\begin{pmatrix}Z_{11} & Z_{12}\\Z_{21} & Z_{22}\end{pmatrix}\mathbf{1}}_{\text{intermediate demand}}
-+ \underbrace{\begin{pmatrix}\mathbf{C}_1\\\mathbf{C}_2\end{pmatrix}}_{\text{HH cons.}}
-+ \underbrace{\begin{pmatrix}\mathbf{G}_1\\\mathbf{G}_2\end{pmatrix}}_{\text{Govt.}}
-+ \underbrace{\begin{pmatrix}\mathbf{Id}_1\\\mathbf{Id}_2\end{pmatrix}}_{\text{Firm inv.}}\\[8pt]
+\begin{pmatrix}\mathbf{x}_{(1)}\\\mathbf{x}_{(2)}\end{pmatrix} &= \mathbf{x} = \mathbf{d} = Z + Y\\[4pt]
+&= \underbrace{\begin{pmatrix}Z_{11} & Z_{12}\\Z_{21} & Z_{22}\end{pmatrix}}_{\text{intermediate demand}}
++ \underbrace{\begin{pmatrix}C_1\\C_2\end{pmatrix}}_{\text{HH cons.}}
++ \underbrace{\begin{pmatrix}G_1\\G_2\end{pmatrix}}_{\text{Govt.}}
++ \underbrace{\begin{pmatrix}I_1\\I_2\end{pmatrix}}_{\text{Firm inv.}}\\[8pt]
 &= \underbrace{\begin{pmatrix}A_{11} & A_{12}\\A_{21} & A_{22}\end{pmatrix}}_{A\;=\;Z\hat{x}^{-1}}
 \begin{pmatrix}\mathbf{x}_{(1)}\\\mathbf{x}_{(2)}\end{pmatrix}
 +\underbrace{\begin{pmatrix}\boldsymbol{\beta}_{11} & \boldsymbol{\beta}_{12}\\\boldsymbol{\beta}_{21} & \boldsymbol{\beta}_{22}\end{pmatrix}}_{B\;\in\;\mathbb{R}^{2N\times2}}
