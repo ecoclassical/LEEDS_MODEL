@@ -419,17 +419,11 @@ $$\begin{aligned}
 
 where
 
-- $Z_{rs}\in\mathbb{R}^{N\times N}$ is the intermediate flow matrix from region $r$ to $s$,
-- $A_{rs}=Z_{rs}\hat{x}_s^{-1}$ is the $RN \times RN$ matrix of multi-region input-output coefficients,
-- $\boldsymbol{\beta}_{sr}\in\mathbb{R}^N$ with full matrix
-
-    $$B = \begin{pmatrix}\boldsymbol{\beta}_{11} & \boldsymbol{\beta}_{12}\\\boldsymbol{\beta}_{21} & \boldsymbol{\beta}_{22}\end{pmatrix} = \begin{pmatrix}\beta_{11,1} & \beta_{12,1} \\ \vdots & \vdots \\ \beta_{11,N} & \beta_{12,N} \\ \beta_{21,1} & \beta_{22,1} \\ \vdots & \vdots \\ \beta_{21,N} & \beta_{22,N}\end{pmatrix} \in\mathbb{R}^{RN\times R}$$
-
-    is the region-, sector-level household consumption share, where $\beta_{sr,i}$ is the share of spending region $r$'s household demand sourced from sector $i$ in region $s$,
-- $\boldsymbol{\sigma}_{sr}\in\mathbb{R}^N$ (full matrix $\Sigma\in\mathbb{R}^{RN\times R}$, defined analogously to $B$) is the region-, sector-level government spending share,
-- $\boldsymbol{\iota}_{sr}\in\mathbb{R}^N$ (full matrix $I\in\mathbb{R}^{RN\times R}$, defined analogously to $B$) is the region-, sector-level firm investment share,
-- $\mathbf{f} \in\mathbb{R}^{RK\times1}$ stacks the $R\times K$ final demand component matrix $\mathbf{F}$ by region $r$ and institutional channel $k$,
-- $\boldsymbol{\Phi}=(B\;\Sigma\;I)\in\mathbb{R}^{RN\times RK}$ is the $RN\times RK$ demand allocation share matrix at region level $r$, industry $i$, institutional channel $k$.
+- $Z_{sr}\in\mathbb{R}^{N\times N}$ is the intermediate flow matrix from supplying region $s$ to demanding region $r$,
+- $A_{rs}=Z_{sr}\hat{x}_r^{-1}$ is the $RN \times RN$ matrix of multi-region input-output coefficients $a_{si,rj}$,
+- $B = \begin{pmatrix}\boldsymbol{\beta}_{11} & \boldsymbol{\beta}_{12}\\\boldsymbol{\beta}_{21} & \boldsymbol{\beta}_{22}\end{pmatrix}\in\mathbb{R}^{RN\times R}$ is the block matrix of column-vector components $\beta_{si,r}$, the household consumption share demanded by region $r$ and supplied by industry $i$ in region $s$; $\Sigma$ and $I$ follow the same structure for government spending and firm investment,
+- $\mathbf{f} \in\mathbb{R}^{RK\times1}$ stacks the $R\times K$ final demand component matrix $\mathbf{F}$ by region $r$ and institutional channel $k \in \{c,\,i,\,g\}$ (household consumption, firm investment, government spending),
+- $\boldsymbol{\Phi}=(B\;\Sigma\;I)\in\mathbb{R}^{RN\times RK}$ is the $RN\times RK$ demand allocation share matrix, with entry $\phi_{si,r,k}$ the share of channel-$k$ spending of region $r$ sourced from industry $i$ in region $s$.
 
 The full Leontief solution is:
 
