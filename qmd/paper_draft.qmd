@@ -1,0 +1,1010 @@
+---
+title: "The transition to a sustainable economy is not sustainable: an ecological macroeconomic analysis of climate policy, the circular economy, and global inequality"
+author:
+  - name: "Oriol Vallès Codina"
+    affiliations:
+      - "Department of Political Science & Net Zero Industrial Policy Lab, Johns Hopkins University, Baltimore, MD, USA"
+    corresponding: true
+    email: "ovalles1@jh.edu"
+  - name: "José Bruno R. T. Fevereiro"
+    affiliations:
+      - "Banco Nacional de Desenvolvimento Econômico e Social (BNDES — Brazilian Development Bank), Rio de Janeiro, Brazil"
+  - name: "Andrea Genovese"
+    affiliations:
+      - "Salford Business School, University of Salford"
+  - name: "Annina Kaltenbrunner"
+    affiliations:
+      - "Leeds University Business School"
+  - name: "Effie Kesidou"
+    affiliations:
+      - "School of Management, University of Bath"
+  - name: "Marco Veronese Passarella"
+    affiliations:
+      - "Department of Industrial and Information Engineering and Economics, University of L'Aquila"
+date: "`r Sys.Date()`"
+format:
+  html:
+    toc: true
+    toc-float: true
+    toc-depth: 3
+    self-contained: true
+    page-layout: full
+    css: fullwidth.css
+    number-sections: true
+  docx:
+    toc: true
+    toc-depth: 3
+    number-sections: true
+  pdf:
+    toc: true
+    toc-depth: 3
+    lof: true
+    lot: true
+    number-sections: true
+    keep-tex: false
+    geometry:
+      - top=25mm
+      - bottom=25mm
+      - left=25mm
+      - right=25mm
+    fontsize: 11pt
+    linestretch: 1.5
+    include-in-header:
+      text: |
+        \usepackage{rotating}
+        \usepackage{pdflscape}
+        \usepackage{caption}
+        \captionsetup[figure]{font=it,labelfont=it}
+        \captionsetup[table]{font=bf,labelfont=bf}
+        \usepackage{xcolor}
+        \usepackage{colortbl}
+        \usepackage{etoolbox}
+        \AtBeginEnvironment{tabular}{\linespread{0.85}\selectfont}
+        \AtBeginEnvironment{longtable}{\linespread{0.85}\selectfont}
+        \usepackage{multirow}
+        \usepackage{makecell}
+        \usepackage{float}
+        \usepackage{titling}
+        \pretitle{%
+          \begin{center}\textit{MANUSCRIPT DRAFT}\\\vspace{0.5em}\LARGE\bfseries
+        }
+        \posttitle{\par\end{center}\vskip 0.5em}
+        \AtBeginDocument{%
+          \author{%
+            Oriol Vall\`{e}s Codina\textsuperscript{1,*} \and
+            Jos\'{e} Bruno R. T. Fevereiro\textsuperscript{2} \and
+            Andrea Genovese\textsuperscript{3} \and
+            Annina Kaltenbrunner\textsuperscript{4} \and
+            Effie Kesidou\textsuperscript{5} \and
+            Marco Veronese Passarella\textsuperscript{6}%
+          }%
+        }
+    include-before-body:
+      text: |
+        \begin{center}
+        \small\itshape
+        \textsuperscript{1}Department of Political Science \& Net Zero Industrial Policy Lab, Johns Hopkins University, Baltimore, MD, USA\\[3pt]
+        \textsuperscript{2}Banco Nacional de Desenvolvimento Econ\^{o}mico e Social (BNDES --- Brazilian Development Bank), Rio de Janeiro, Brazil\\[3pt]
+        \textsuperscript{3}Salford Business School, University of Salford, Salford, UK\\[3pt]
+        \textsuperscript{4}Leeds University Business School, University of Leeds, Leeds, UK\\[3pt]
+        \textsuperscript{5}School of Management, University of Bath, Bath, UK\\[3pt]
+        \textsuperscript{6}Department of Industrial and Information Engineering and Economics, University of L'Aquila, L'Aquila, Italy\\[6pt]
+        \textsuperscript{*}Corresponding author: \texttt{ovalles1@jhu.edu}; \texttt{oriolvallescodina@gmail.com}
+        \end{center}
+        \vspace{1.5em}
+prefer-html: true
+execute:
+  echo: false
+  warning: false
+  message: false
+---
+
+```{r setup, include=FALSE}
+library(tidyverse)
+library(knitr)
+library(kableExtra)
+
+qmd_in <- knitr::current_input()
+if (!is.null(qmd_in) && nzchar(qmd_in)) {
+  qmd_path <- normalizePath(qmd_in, winslash = "/")
+  root <- normalizePath(file.path(dirname(qmd_path), ".."), winslash = "/")
+} else {
+  wd0 <- normalizePath(getwd(), winslash = "/")
+  root <- if (basename(wd0) == "qmd") {
+    normalizePath("..", winslash = "/")
+  } else {
+    wd0
+  }
+}
+
+fig_png <- file.path(root, "output", "png")
+fig_cmp <- file.path(root, "output", "png", "comparison")
+sc <- read.csv(file.path(root, "data", "scenarios.csv"))
+```
+
+::: {.content-visible when-format="html"}
+<p style="text-align:center; font-style:italic; font-size:0.95em; margin-bottom:0.2em;">MANUSCRIPT DRAFT</p>
+:::
+
+---
+
+## Abstract {.unnumbered}
+
+Circular economy policies are promoted as a pathway to reduce material throughput, emissions, and resource use. Yet, their macroeconomic and transnational effects remain poorly understood. This paper develops a two-region ecological macroeconomic model that integrates multi-regional input–output structure with stock–flow consistent dynamics, calibrated for the European Union (EU) and the Rest of the World (RoW). The study analyses circular economy transitions in the context of EU-RoW ecologically unequal exchange through a channel-based framework, distinguishing between interventions operating via final demand, intermediate production, and investment. Results show that the effectiveness of circular economy policies depends on the scale and structure of the demand channels they target. Final-demand interventions are impactful only when they engage dominant sectoral channels (such as household consumption in food or government procurement in plastics), while intermediate-production restructuring delivers stronger ecological improvements, but at the cost of modest contractions in output and employment. This pattern, however, is not uniform: in metals, circular production reduces material use and expands economic activity while increasing emissions due to higher upstream energy intensity. By contrast, energy restructuring delivers the largest emission reductions due to both scale and intensity differentials. Finally, investment-driven transitions can generate large macroeconomic effects but may also entail adverse environmental outcomes under current technological conditions. Overall, the analysis shows that circular economy transitions generate systematic transnational trade-offs across regions, sectors, and policy channels. Effective policy therefore requires coordinated, channel-specific strategies that align circularity with decarbonisation, macroeconomic stabilisation, and international equity.
+
+**Keywords:** circular economy; multi-regional input-output; stock-flow consistent model; ecologically unequal exchange; cross-border spillovers; income distribution; material extraction; global supply chains
+
+**Highlights:**
+
+- Two-region MRIO-SFC model tracks CE policies across EU and Rest of World
+- CE effectiveness depends on scale and structure of targeted demand channel
+- Intermediate production restructuring yields stronger gains than demand shifts
+- Production CE transitions contract RoW while improving EU ecological outcomes
+- No CE scenario achieves joint ecological, macroeconomic, and social gains
+
+---
+
+## Introduction
+
+The transition to sustainability is nowadays understood to go beyond the energy transition, requiring the adoption of circular-economy (CE) strategies that seek to reduce material throughput, as well as emissions, increasing efficiency in resource use (Geissdoerfer et al., 2017; Korhonen et al., 2018). In recent years, the global policy landscape has begun to shift from high-level "roadmaps" to legally binding regulations and sector-specific enforcement (Barrie et al., 2024). Results from most academic studies, conducting ex-ante analysis, have projected positive environmental and socio-economic impacts of the adoption of CE strategies, especially at the national or regional level (Aguilar-Hernandez et al., 2018; Fevereiro et al., 2025).
+
+Yet, the effects of a circular transition cannot be assessed only in the country where policy is legislated. This is because supply chains, trade relations, and financial hierarchies connect countries and regions asymmetrically. This implies that policies designed for cleaner production and consumption in advanced economies may reallocate costs, demand pressures, and ecological burdens across countries rather than resolve them globally (Wiedmann et al., 2015; Dorninger et al., 2021). Moreover, recent research suggests that circularity and decarbonisation do not necessarily move together, since circular initiatives can generate energy-intensive processes, upstream emission increases, or burden-shifting across supply chains when they are not coordinated with broader net-zero strategies (Arranz et al., 2026).
+
+Circular transitions occur within a global economy that is characterised by unequal ecological exchange, persistent structural asymmetries, and monetary and financial constraints (Hornborg, 2009; Hickel et al., 2022). The literature on ecologically unequal exchange shows that environmental improvements in high-income economies are typically associated with the externalisation of extraction, energy use, labour, and waste-intensive production through trade and global value chains (Wiedmann et al., 2015; Dorninger et al., 2021). This implies that CE policies cannot be assessed only using domestic indicators of efficiency or decarbonisation. Ecological gains in the centre might actually rely on the continued ecological appropriation of labour, land, energy, and materials from the periphery (Lenzen et al., 2012; Hickel et al., 2022). Additionally, research on degrowth and global dependency indicates that ecological transition is driven by a "twin problem": the material excesses of the Global North make transformation necessary, while North–South dependencies constrain the policy space and development opportunities of the Global South (Gräbner-Radkowitsch and Strunk, 2023; Hickel, 2020).
+
+In this context, ecological macroeconomic modelling offers a complementary perspective: climate policies introduced in the centre may generate contractionary pressures, external imbalances, and financial instability in the periphery, especially when policy coordination is weak and structural asymmetries remain unchanged (Althouse et al., 2020; Campiglio et al., 2018). For example, Fevereiro and Lowe (2025) show that different types of green transition strategies in the Global North lead to lower GDP and employment and worsening trade balances in the Global South under existing patterns of specialisation. Furthermore, the current international monetary and financial system limits the ability of many countries in the Global South to absorb shocks, sustain green investment, or pursue autonomous transition strategies, even where "green" finance is available (Svartzman and Althouse, 2020; Volz et al., 2015).
+
+Yet CE policy is often analyzed from technical or managerial perspectives that emphasize recycling, efficiency, product-life extension, or demand shifts (Kirchherr et al., 2017; Geissdoerfer et al., 2017). Less attention is paid to the structural relations through which environmental benefits and socio-economic costs are distributed internationally, and to the fact that different CE channels do not have the same macroeconomic or ecological effects. We argue, therefore, that the question is not whether circular-economy practices reduce emissions or material extraction in isolation, but under what conditions they do so, for whom, through which demand and production channels, and with what distributional consequences across regions. Specifically, the ecological, social and macroeconomic effectiveness of CE policies in the context of ecologically unequal exchange is contingent on whether they operate through final demand, intermediate production, or investment dynamics — a channel-based distinction that existing open-economy CE analyses have not systematically pursued.
+
+Addressing such complex research gaps requires a framework that simultaneously tracks sector-level demand channels, cross-border material and financial flows, macroeconomic dynamics, and ecological extensions — a combination that existing approaches provide only partially. Static multi-regional IO models capture cross-border ecological footprints but are silent on income distribution, financial balances, and demand-driven contractions (Wiedmann et al., 2015; Dorninger et al., 2021). Ecological stock-flow consistent models capture macro-financial dynamics and distributional effects but aggregate production into representative sectors, making it impossible to distinguish demand channels or CE substitution pathways (Dafermos et al., 2018; Carnevali et al., 2019). Two-region SFC models without IO structure capture cross-regional financial asymmetries but cannot distinguish material types or the channel architecture that governs policy leverage (Althouse et al., 2020; Fevereiro and Lowe, 2025).
+
+We address this gap through a two-region ecological macroeconomic model, which combines all four dimensions in the global context of the transition to a circular economy, combining multi-regional input–output structure and stock–flow consistent dynamics, calibrated for the European Union and the Rest of the World using EXIOBASE 2011 data and 54 industries covering eight basic materials — food, energy, wood, plastics, pulp, glass, cement, and construction — each disaggregated into a primary (virgin, resource-intensive) and a secondary (resource-efficient) production sector. By combining ecological and input-output extensions with a macro-financial two-region framework, the model allows us to analyse complex circular-economy scenarios as structurally differentiated demand transition regimes rather than isolated technical shocks (Leontief, 1941; Aguilar-Hernandez et al., 2018; Fevereiro et al., 2025).
+
+We simulate 14 circular economy transition scenarios, each targeting a different primary-to-secondary substitution pathway and varying systematically by demand channel (final demand, intermediate production, investment) and institutional sectors (households, government, firms). Model simulations show how dynamic sector-level changes in final demand, intermediate production, and sectoral expansion affect value added, employment, income distribution, fiscal and current-account balances, emissions, and material extraction domestically and across borders. In doing so, we examine how circular-economy policies generate transnational socio-ecological trade-offs and cross-regional macro-financial asymmetries.
+
+Our results identify three structural patterns. First, the effectiveness of CE policy depends on the scale of the demand channel engaged: household food transitions generate the largest final-demand employment and material effects, government procurement is the primary CE lever for plastics, and consumer energy behaviour is structurally secondary to industrial procurement as a climate instrument. Second, intermediate production restructuring delivers stronger ecological gains — energy restructuring is the highest-leverage scenario in both emissions and primary material extraction — but generates modest macroeconomic contractions; metals is the exception, expanding output while reducing material throughput, yet producing a structural emissions rebound through the higher fossil-electricity intensity of secondary steel production. Third, most CE scenarios are distributionally regressive along two simultaneous dimensions: within the EU, mark-up pricing transfers the output contraction disproportionately to the wage bill; across borders, the same transitions deteriorate fiscal positions in the periphery and — in the energy scenario — generate a sustained rise in peripheral public debt as fossil export revenues permanently collapse.
+
+Across the full scenario set, four distinct cross-border transmission patterns emerge — symmetric material contraction, competitive displacement, fossil-import collapse, and production leakage — trade-offs that are structurally embedded in the global production system and invisible to single-region frameworks. In symmetric contraction, both regions contract proportionally as secondary sectors require fewer intermediate inputs per unit of output, generating shared ecological gains at a shared macroeconomic cost. In competitive displacement, EU secondary-sector expansion directly substitutes for RoW primary exports, compressing peripheral output and employment while the core captures the productivity gain. In fossil-import collapse, the EU energy transition permanently eliminates fossil-fuel export revenues on which peripheral fiscal systems depend, generating a sustained rise in RoW public debt that deepens sovereign vulnerabilities already associated with financialised peripherality. In production leakage, the higher import content of secondary sectors means that part of the CE demand shift flows back to RoW as intermediate inputs, creating a partial positive spillover that partially offsets — but does not reverse — the core's material savings. Each pattern implies a distinct distributional settlement between centre and periphery, and the policy implications differ accordingly.
+
+This paper contributes to the ecological economics literature in three ways. First, it integrates circular-economy analysis with ecological macroeconomics in an open-economy, multi-regional framework. Second, it introduces a channel-based perspective that distinguishes between final-demand, intermediate-production, and investment-driven transition pathways. Third, it demonstrates that circular-economy policies generate systematic transnational trade-offs structurally embedded in the global production system. The findings suggest that an effective and just transition requires channel-specific, coordinated policy that simultaneously addresses circularity, decarbonisation, and the international asymmetries through which ecological costs are displaced.
+
+Following this introduction, Section 1 provides an overview of the model; Section 2 describes the multi-regional input-output structure of demand; Section 3 presents the scenarios; Section 4 discusses the simulation results and their policy implications; and Section 5 provides conclusions and avenues for further research.
+
+---
+
+## Model Overview
+
+### Background and Literature Overview
+
+In recent years, several authors (e.g., Hardt and O'Neill, 2017; Bimpizas-Pinis et al., 2023; Fevereiro et al., 2025) have identified the combination of input-output (IO) analysis and stock-flow consistent (SFC) modelling as one of the most promising approaches for developing models assessing the economy-ecology nexus, including Circular Economy (CE) transition scenarios. IO models are analytical tools used to represent and quantify the interdependencies between different industries of a capitalist economy (e.g., Leontief, 1936, 1941). More specifically, IO models illustrate how changes in one industry, such as increased production or consumption, affect other industries through a system of interconnected inputs and outputs, providing insights into the overall economic impact of alternative shocks and policies (De Boer et al., 2021). On the other hand, SFC models can be considered a specific class of 'system dynamics' tools that replicate the dynamics of a financially sophisticated economy (e.g., Godley and Lavoie, 2007; Caverzasi and Godin, 2015; Nikiforos and Zezza, 2017). In the last decade, SFC models have gained traction in ecological macroeconomics too, due to their ability to integrate consistently and comprehensively the flows and stocks of the real economy, the financial sector, and the ecosystem (Dafermos et al., 2017, 2018; Carnevali et al., 2019, 2020, 2023).
+
+However, existing approaches provide only partial insights into the CE transition (for a complete review, see Fevereiro et al., 2023). Multi-regional input-output models capture inter-industry linkages and cross-border ecological footprints, but remain static and fail to capture macroeconomic dynamics, income distribution, and financial constraints. Conversely, ecological stock-flow consistent models capture macro-financial dynamics and distributional effects, but typically rely on highly aggregated production structures, making it difficult to distinguish sectoral demand channels or circular substitution pathways. Only a limited number of studies have so far incorporated explicitly the IO structure of the economy into an SFC dynamic framework, but none in a multi-regional setting (e.g., Berg et al., 2015; Valdecantos and Valentini, 2017; Di Domenico et al., 2024; Thomsen et al., 2025; Jackson and Jackson, 2025; Pettena and Raberto, 2025; Veronese Passarella, 2025).
+
+More recently, Veronese Passarella (2023) has extended a standard aggregative SFC model by introducing both a vertical disaggregation (across institutional sectors) and a horizontal disaggregation (across production industries), and has used this framework to explore simple circular economy scenarios. Subsequent contributions have further developed this line of research by broadening the scope of application and refining the treatment of inter-industry and cross-border linkages. For instance, Fevereiro et al. (2023) have expanded on Veronese Passarella (2023)'s analysis by applying it to a two-area economy, explicitly considering the effects of international trade, supply chain interdependencies, cross-border portfolio investments, and exchange rate fluctuations. While these recent contributions have begun to integrate IO structures within SFC frameworks, they have not systematically addressed the channel-specific nature of CE interventions and their interaction with existing global asymmetries. This paper builds on and extends this emerging literature by developing a two-region ecological IO-SFC model that explicitly incorporates demand-channel heterogeneity, sectoral substitution between primary and secondary production, and cross-border macro-financial linkages.
+
+### Model Characteristics
+
+The analysis relies on a dynamic, ecological, multi-regional input-output, stock-flow consistent (IO-SFC) model calibrated on empirical input-output data (EXIOBASE 3). The model is designed to reproduce the evolution of an interconnected macro-financial-ecological system and to test the implications of alternative circular-economy (CE) trajectories.^[The full description of the equations of the model is presented in Appendix 1.]
+
+The model operates in discrete time and captures how system-level behaviour emerges from the interaction of its components, laying emphasis on financial-real interactions. It enforces stock-flow consistency across all sectors, ensuring that every flow has a corresponding change in a stock and that monetary, real, and physical balances hold by construction. The production side is represented through a two-region input-output structure, so all inter-industry linkages — within each region and across regions — are explicitly accounted for. The framework is fully open-economy: the world is divided into two regions (the European Union and the rest of the world), connected through goods trade and cross-border portfolio flows. Ecological relations are endogenised: emissions, resource extraction, and waste generation are linked directly to production technologies and material flows. Finally, the numerical parameters of the model are anchored in observed data, either drawn directly from existing time series (e.g., technical coefficients) or calibrated to replicate the prevailing levels of key macroeconomic aggregates.
+
+Formally, the model consists of accounting identities and behavioural equations relating industries and institutional sectors. These are organised into three blocks: the economic–financial block, the social block, and the ecological block.
+
+### Economic and Financial Block
+
+Each region comprises five institutional sectors: households, private firms, government, commercial banks, and the central bank. The institutional structure of the economy is identical in the two regions, and in the baseline no trade constraints or financial restrictions are imposed. Households earn wages and capital income (distributed profits, interest, and capital gains) and allocate their disposable income across consumption and asset holdings. Consumption is a fixed function of disposable income and wealth, while portfolio allocation follows a Tobin-type mechanism based on relative returns and liquidity preferences. Households may take out personal loans to finance durable consumption or expenditure exceeding current income.
+
+Contrary to a typical SFC model, private firms are disaggregated into 54 productive sectors based on IO data. Unless specifically affected by change in one of the scenarios tested, firms operate under fixed input proportions (Leontief technology) and constant returns to scale. Industries produce homogeneous outputs and set prices via mark-ups over unit costs, which include intermediate inputs, labour costs, and the depreciation of the capital stock. Firms adjust their capital stock toward a target capital–output ratio; this generates investment demand even when output is constant. Investment is financed through retained earnings, bank credit, and the issuance of shares purchased by domestic and foreign households.
+
+Government consumption expenditure — both consumption and public investment — is exogenous. Revenues accrue from income taxes, VAT, import duties, and central-bank profits. Budget deficits are financed through the issuance of government bills. Central banks accommodate the demand for currency and purchase the portion of government debt not absorbed by the private sector. The policy rate set by the central bank determines the interest rates on loans, deposits, and government bills through sector-specific mark-ups. Commercial banks supply credit elastically: firms receive all the financing they require for production and investment. Deposits exceeding the volume of loans are placed in government bills; if loans exceed deposits, banks borrow from the central bank.
+
+### Social Block
+
+Although households are modelled as an aggregate sector, the framework tracks the distribution of income and wealth between workers and rentiers, both before and after taxes. This allows the model to assess distributional consequences of alternative CE trajectories. Employment is determined by industry-specific labour demand. Population dynamics, and thus the size of the labour force, follow exogenous demographic growth and net immigration inflows. Cross-regional migration reacts to population size, unemployment differentials, and wage gaps.
+
+### Ecological Block
+
+The ecological sub-model follows recent advances in ecological SFC modelling. Waste generation, land use, and water use are tied to industrial production through sector-specific coefficients. In the baseline, waste flows are processed by traditional waste-management industries. In CE scenarios, new recycling/reuse channels are introduced. Industrial CO~2~ emissions depend on the use of non-renewable energy inputs, determined by energy-intensity coefficients, the share of non-renewables in each industry's energy mix, and a uniform emissions factor. Accumulated emissions contribute to atmospheric concentrations, which feed into a simplified climate-response module.
+
+Materials are disaggregated into eight categories: wood, pulp, plastics, metals, glass, food, cement, and energy. Material extraction and energy use reflect both new production and the recycling of socio-economic stocks. Renewable energy is replenished periodically, whereas non-renewables are depleted.
+
+### Data Collection and Calibration
+
+Model simulation is carried out in an R environment, using EXIOBASE 3 v 3.8.2, with data calibrated for the baseline year of 2011. The original 164-sector, 49-region classification is aggregated into two regions (EU and rest of world) and 54 sectors, among which 13 sectors specifically produce goods based on re-processed material inputs.^[A complete list of the sectors is provided in Appendix 2.] From EXIOBASE data we derive the technical coefficients, labour productivity, real wages, sectoral employment (including gender composition), final demand structure, emissions coefficients, and material-use data required to initialise the technological and environmental parameters. In turn, macro aggregates such as GDP, final demand components, trade flows, and gross output serve as calibration targets.
+
+Remaining parameters are assigned through an evolutionary random-search routine. The algorithm perturbs an initial set of parameter values, evaluates the resulting steady-state values of key variables against their targets, and accepts parameter updates only when the goodness-of-fit improves. This process continues until a satisfactory baseline is reached, subject to constraints ensuring economically meaningful outcomes.^[Following post-Keynesian theory, a constraint ensures that the propensity to consume out of wages is higher than out of profits, and in turn out of wealth.] This calibration phase must also stabilise the system so that, at the moment policy shocks are introduced, the model is near a steady configuration. The resulting calibration yields a good but improvable match to observed data, with consumption slightly overestimated in the EU and investment underestimated in both regions.
+
+---
+
+## Descriptive Statistics: the EU-RoW Input-Output Structure of Demand
+
+This section documents the complex multi-region input-output (MRIO) structure of demand for eight key material pairs in the EU and Rest of World (RoW), as calibrated in the model at its baseline at $t = 70$. Its purpose is to establish the structural features of demand — channel scale and cross-border trade flows — that directly anticipate the simulation results. Because the structural Leontief factor $(l_{12} - l_{11}) \approx -1$ across all material pairs, the ranking of CE interventions by ecological impact reduces to a ranking of channel volumes, which the figures below measure directly.
+
+### Full Multi-Region Input-Output Accounting
+
+At the core of the production block is a two-region, 108-sector MRIO system. An MRIO table extends the standard national input-output framework by tracking both inter-industry transactions within each region and cross-border trade flows between regions. Table 1 summarises the full accounting structure. Reading across the rows, the table shows where the output of each region is sold: to other industries as intermediate inputs (the $Z$ blocks), or to final users as consumption, government, or investment. Reading down the columns, it shows what each industry or final-demand category purchases: intermediate inputs from either region, and primary factor payments (wages, profits, taxes) constituting value added. The double-entry structure enforces a fundamental balance: total output for each region equals total intermediate sales plus total final demand sales, and simultaneously equals total intermediate purchases plus total value added.
+
+Concretely, the intermediate demand block consists of four sub-matrices: domestic intermediate flows ($Z_{EU,EU}$, $Z_{RoW,RoW}$) and cross-border flows ($Z_{EU,RoW}$, $Z_{RoW,EU}$). The final demand block disaggregates by institutional channel (household consumption $c$, government consumption $g$, and private investment $id$) and by spending region, so that every cell reflects both a sourcing region and a spending region — the bilateral structure essential for tracing how CE policy shocks propagate across borders. Value added is recorded below the intermediate block, and column sums equal total gross output by sector.
+
+```{r mrio-accounting-table}
+mrio_tbl <- data.frame(
+  type = c(
+    "\\multirow{2}{*}{Industry Output}",
+    "",
+    "\\multirow{3}{*}{Value Added}",
+    "",
+    "",
+    "Total VA",
+    "Total Input"
+  ),
+  region = c("$Z_1$ (EU)", "$Z_2$ (RoW)", "Wages", "Profits", "Taxes", "", ""),
+  id_eu = c(
+    "$Z_{11}$",
+    "$Z_{21}$",
+    "$W_1$",
+    "$P_1$",
+    "$T_1$",
+    "$VA_1$",
+    "$\\mathbf{d}_1^\\top$"
+  ),
+  id_row = c(
+    "$Z_{12}$",
+    "$Z_{22}$",
+    "$W_2$",
+    "$P_2$",
+    "$T_2$",
+    "$VA_2$",
+    "$\\mathbf{d}_2^\\top$"
+  ),
+  fd_eu_hh = c(
+    "\\multirow{2}{*}{$\\underbrace{\\left(\\begin{array}{c}\\boldsymbol{\\beta}_{11}\\cr\\boldsymbol{\\beta}_{21}\\end{array}\\right)}_{\\boldsymbol{\\beta}_1}c_1$}",
+    "",
+    "",
+    "",
+    "",
+    "",
+    ""
+  ),
+  fd_eu_g = c(
+    "\\multirow{2}{*}{$\\underbrace{\\left(\\begin{array}{c}\\boldsymbol{\\sigma}_{11}\\cr\\boldsymbol{\\sigma}_{21}\\end{array}\\right)}_{\\boldsymbol{\\sigma}_1}g_1$}",
+    "",
+    "",
+    "",
+    "",
+    "",
+    ""
+  ),
+  fd_eu_i = c(
+    "\\multirow{2}{*}{$\\underbrace{\\left(\\begin{array}{c}\\boldsymbol{\\iota}_{11}\\cr\\boldsymbol{\\iota}_{21}\\end{array}\\right)}_{\\boldsymbol{\\iota}_1}id_1$}",
+    "",
+    "",
+    "",
+    "",
+    "",
+    ""
+  ),
+  fd_row_hh = c(
+    "\\multirow{2}{*}{$\\underbrace{\\left(\\begin{array}{c}\\boldsymbol{\\beta}_{12}\\cr\\boldsymbol{\\beta}_{22}\\end{array}\\right)}_{\\boldsymbol{\\beta}_2}c_2$}",
+    "",
+    "",
+    "",
+    "",
+    "",
+    ""
+  ),
+  fd_row_g = c(
+    "\\multirow{2}{*}{$\\underbrace{\\left(\\begin{array}{c}\\boldsymbol{\\sigma}_{12}\\cr\\boldsymbol{\\sigma}_{22}\\end{array}\\right)}_{\\boldsymbol{\\sigma}_2}g_2$}",
+    "",
+    "",
+    "",
+    "",
+    "",
+    ""
+  ),
+  fd_row_i = c(
+    "\\multirow{2}{*}{$\\underbrace{\\left(\\begin{array}{c}\\boldsymbol{\\iota}_{12}\\cr\\boldsymbol{\\iota}_{22}\\end{array}\\right)}_{\\boldsymbol{\\iota}_2}id_2$}",
+    "",
+    "",
+    "",
+    "",
+    "",
+    ""
+  ),
+  d = c("$\\mathbf{d}_1$", "$\\mathbf{d}_2$", "", "", "", "", ""),
+  stringsAsFactors = FALSE
+)
+
+mrio_cap <- "MRIO accounting framework. Each Final Demand column shows one column of $\\boldsymbol{\\Phi}$, partitioned by sourcing region: $\\boldsymbol{\\beta}^{(r)}_1 \\in \\mathbb{R}^N$ (EU-sourced, row 1) and $\\boldsymbol{\\beta}^{(r)}_2 \\in \\mathbb{R}^N$ (RoW-sourced, row 2), where superscript $r \\in \\{1,2\\}$ denotes the spending region and subscript the sourcing region. Column header $c_r$ ($g_r$, $id_r$) is the scalar multiplying that column: $\\boldsymbol{\\phi}^{(r,c)} c_r$ gives one additive term in $\\mathbf{f} = \\boldsymbol{\\Phi}\\,\\mathrm{vec}(\\mathbf{F})$. $\\boldsymbol{\\sigma}$, $\\boldsymbol{\\iota}$ defined analogously. $W$=wages; $P$=profits; $T$=taxes; $VA$=value added."
+
+if (knitr::is_html_output() || knitr::is_latex_output()) {
+  mrio_tbl |>
+    kableExtra::kbl(
+      caption = mrio_cap,
+      col.names = c(
+        "",
+        "",
+        "",
+        "",
+        "HH",
+        "Gov.",
+        "Inv.",
+        "HH",
+        "Gov.",
+        "Inv.",
+        "$\\mathbf{d}$"
+      ),
+      align = c("l", "l", "c", "c", "c", "c", "c", "c", "c", "c", "c"),
+      booktabs = TRUE,
+      escape = FALSE
+    ) |>
+    kableExtra::kable_styling(
+      latex_options = c("scale_down", "hold_position"),
+      full_width = FALSE,
+      font_size = 10
+    ) |>
+    kableExtra::row_spec(0, bold = TRUE) |>
+    kableExtra::add_header_above(
+      c(" " = 2, "EU" = 1, "RoW" = 1, "EU" = 3, "RoW" = 3, " " = 1),
+      escape = FALSE,
+      bold = TRUE
+    ) |>
+    kableExtra::add_header_above(
+      c(
+        " " = 2,
+        "Intermediate Demand (ID)" = 2,
+        "Final Demand (FD)" = 6,
+        "Total FD" = 1
+      ),
+      escape = FALSE,
+      bold = TRUE
+    ) |>
+    kableExtra::landscape()
+} else {
+  mrio_tbl |>
+    knitr::kable(
+      caption = mrio_cap,
+      col.names = c(
+        "",
+        "",
+        "EU",
+        "RoW",
+        "c_1",
+        "g_1",
+        "id_1",
+        "c_2",
+        "g_2",
+        "id_2",
+        "D"
+      )
+    )
+}
+```
+
+**IO balance and final-demand algebra.** The MRIO supply–demand equilibrium expresses the $2N \times 1$ gross output vector $\mathbf{x}$ as the sum of intermediate demand and three final-demand channels, then collapses to the Leontief form:
+
+$$\begin{aligned}
+\mathbf{x} = \begin{pmatrix}\mathbf{x}^{(1)}\\\mathbf{x}^{(2)}\end{pmatrix}
+&= \underbrace{\begin{pmatrix}Z_{11} & Z_{12}\\Z_{21} & Z_{22}\end{pmatrix}\mathbf{1}}_{\text{intermediate demand}}
++ \underbrace{\begin{pmatrix}\mathbf{C}_1\\\mathbf{C}_2\end{pmatrix}}_{\text{HH cons.}}
++ \underbrace{\begin{pmatrix}\mathbf{G}_1\\\mathbf{G}_2\end{pmatrix}}_{\text{Govt.}}
++ \underbrace{\begin{pmatrix}\mathbf{Id}_1\\\mathbf{Id}_2\end{pmatrix}}_{\text{Firm inv.}}\\[8pt]
+&= \underbrace{\begin{pmatrix}A_{11} & A_{12}\\A_{21} & A_{22}\end{pmatrix}}_{A\;=\;Z\hat{x}^{-1}}
+\begin{pmatrix}\mathbf{x}^{(1)}\\\mathbf{x}^{(2)}\end{pmatrix}
++\underbrace{\begin{pmatrix}\boldsymbol{\beta}_{11} & \boldsymbol{\beta}_{12}\\\boldsymbol{\beta}_{21} & \boldsymbol{\beta}_{22}\end{pmatrix}}_{B\;\in\;\mathbb{R}^{2N\times2}}
+\begin{pmatrix}c_1\\c_2\end{pmatrix}
++\underbrace{\begin{pmatrix}\boldsymbol{\sigma}_{11} & \boldsymbol{\sigma}_{12}\\\boldsymbol{\sigma}_{21} & \boldsymbol{\sigma}_{22}\end{pmatrix}}_{\Sigma\;\in\;\mathbb{R}^{2N\times2}}
+\begin{pmatrix}g_1\\g_2\end{pmatrix}
++\underbrace{\begin{pmatrix}\boldsymbol{\iota}_{11} & \boldsymbol{\iota}_{12}\\\boldsymbol{\iota}_{21} & \boldsymbol{\iota}_{22}\end{pmatrix}}_{I\;\in\;\mathbb{R}^{2N\times2}}
+\begin{pmatrix}id_1\\id_2\end{pmatrix}\\[8pt]
+&= A\mathbf{x} + \underbrace{\bigl[\,B\quad\Sigma\quad I\,\bigr]}_{\boldsymbol{\Phi}\;\in\;\mathbb{R}^{2N\times6}}\,
+\operatorname{vec}\!\underbrace{\begin{pmatrix}c_1 & g_1 & id_1 \\ c_2 & g_2 & id_2\end{pmatrix}}_{\mathbf{F}\;\in\;\mathbb{R}^{2\times 3}}
+= A\mathbf{x} + \boldsymbol{\Phi}\,\mathbf{f} \tag{2.1}
+\end{aligned}$$
+
+where $Z_{rs}\in\mathbb{R}^{N\times N}$ is the intermediate flow matrix from region $r$ to $s$, $A_{rs}=Z_{rs}\hat{x}_s^{-1}$, $\boldsymbol{\beta}_{sr}\in\mathbb{R}^N$ collects HH expenditure shares of spending region $r$ sourced from region $s$ (analogously $\boldsymbol{\sigma}_{sr},\boldsymbol{\iota}_{sr}$), and $\mathbf{f}=\operatorname{vec}(\mathbf{F})\in\mathbb{R}^{6}$ stacks the $2\times3$ regional expenditure matrix $\mathbf{F}$ column-major; $\boldsymbol{\Phi}=[\,B\;\Sigma\;I\,]\in\mathbb{R}^{2N\times6}$ is the **allocation matrix** with columns $\boldsymbol{\phi}^{(r,k)}$ for channel $k \in \{c,g,id\}$ and region $r$.
+
+**Scalar form.** At the sector level, gross output of sector $i$ in region $r$ satisfies:
+
+$$x_{ri} = \underbrace{\sum_{s,j} a_{ri,sj}\, x_{sj}}_{\text{intermediate demand}} + \underbrace{d_{ri}}_{\text{final demand}} \tag{2.3}$$
+
+Aggregating over spending regions, final demand decomposes as:
+
+$$\mathbf{d} = \sum_{r=1}^{2} \left(\boldsymbol{\phi}^{(r,c)} c_r + \boldsymbol{\phi}^{(r,g)} g_r + \boldsymbol{\phi}^{(r,id)} id_r\right) = \boldsymbol{\Phi}\,\mathbf{f} \tag{2.4}$$
+
+The full Leontief solution is:
+
+$$\mathbf{x} = (I - A)^{-1}\,\boldsymbol{\Phi}\,\mathbf{f} = L\,\boldsymbol{\Phi}\,\mathbf{f} = \mathbf{i} + \mathbf{d} \tag{2.5}$$
+
+where $\mathbf{i}=A\mathbf{x}$ is intermediate demand and $\mathbf{d}=\boldsymbol{\Phi}\mathbf{f}$ is final demand. CE scenarios modify either $A$ (intermediate production shocks) or $\boldsymbol{\Phi}$ (final-demand shocks: channel shares $\boldsymbol{\phi}^{(r,k)}$ shifted from primary to secondary sectors). The empirical content of $\boldsymbol{\beta}^{(r)},\boldsymbol{\sigma}^{(r)},\boldsymbol{\iota}^{(r)}$ across sectors is documented in the figures below: Figure 1 decomposes channel volumes for primary and secondary material pairs (entries of $B,\Sigma,I$); Figure 2 isolates EU import demand from RoW (the cross-border sub-blocks $\boldsymbol{\beta}_{21},\boldsymbol{\sigma}_{21},\boldsymbol{\iota}_{21}$); Figure 3 traces full supply-chain upstream requirements via the Leontief inverse $L$.
+
+### Demand Structure and Channel Architecture
+
+```{r fig-demand-structure, fig.cap="Gross output decomposition for primary and secondary material sectors across EU and RoW. Columns: EU Domestic, EU Cross-border, RoW Domestic, RoW Cross-border demand. Rows: Primary vs Secondary. Bars stacked by institutional demand channel. Source: EXIOBASE 3 v3.8.2, calibrated at t = 70.", fig.scap="Gross output decomposition by material sector and institutional demand channel.", out.width="100%"}
+knitr::include_graphics(file.path(fig_png, "demand", "p_demand_structure.png"))
+```
+
+Figure 1 decomposes gross output for all eight material pairs by institutional demand channel (household consumption, government consumption, firm investment, public investment, and firm intermediate consumption) across four regional flow dimensions. Across most industrial materials, firm intermediate consumption dominates both domestic production and EU import demand, making production-side restructuring the primary CE instrument for these sectors: cement, glass, metals, and pulp are overwhelmingly activated through firm intermediate consumption (93–96% of EU gross output), so that final demand channels are structurally small and demand-side instruments cannot substitute for production-side restructuring. Three sectors diverge from this pattern. Food is the only material where household consumption dominates (65% of EU domestic output), making it the one sector where consumer-facing intervention engages the primary demand channel directly. Energy is structurally intermediate: approximately two-thirds of total demand is driven by industrial intermediate procurement of fossil-fuel electricity, confirming that industrial energy procurement, not consumer behaviour, is the primary driver of fossil-fuel electricity demand. Plastics is analytically exceptional: while approximately 55% of output serves final demand, this component is dominated by government consumption rather than households, making circular public procurement the primary demand-side CE instrument for this material.
+
+
+### Cross-Border Trade Structure and Transmission Channels
+
+```{r fig-import-decomp, fig.cap="EU import demand from RoW decomposed by sector and institutional demand channel. Includes firm intermediate consumption, household consumption, government consumption, and firm investment. Top 20 sectors by total import demand. Source: EXIOBASE 3 v3.8.2, calibrated at t = 70.", fig.scap="EU import demand from RoW decomposed by sector and institutional demand channel.", out.width="65%", fig.align="center"}
+knitr::include_graphics(file.path(fig_png, "demand", "p_import_decomp.png"))
+```
+
+Figure 2 maps EU import demand from RoW by sector and institutional channel — the figure most directly relevant to the paper's cross-regional argument. Firm intermediate consumption dominates EU imports across most high-import sectors. For energy and manufactured goods, cross-border purchases are overwhelmingly industrial inputs rather than consumer goods, implying that CE policies targeting intermediate production substitution have the largest potential to simultaneously reduce import dependency and domestic primary material use. Fossil fuels and carbon energy rank among the highest-import sectors, reflecting the EU's structural dependence on imported fossil-fuel inputs — the channel through which energy CE transitions generate the largest current-account improvements and the most asymmetric RoW burdens. For food and plastics, the secondary sector's higher import content means that EU substitution can generate partial production leakage. The ranking of sectors by total import demand directly anticipates which CE transitions generate the largest trade-balance improvements in the dynamic simulations.
+
+EU import demand is concentrated in firm intermediate purchases of fossil energy and industrial materials sourced from the Rest of the World, establishing the cross-border transmission channels through which CE transitions propagate employment, trade-balance, and ecological effects across regions. Full supply-chain accounting — presented in Figure 3 — reveals that fossil-fuel extraction and processing dominate the upstream input requirements of primary energy, while metals carries the largest aggregate upstream footprint across all material sectors, explaining why the metals CE scenario generates a carbon emission rebound rather than savings.
+
+```{r fig-leontief, fig.cap="Full supply-chain upstream input requirements for EU primary material sectors, showing which upstream sectors k sustain each material sector's gross output across all orders of IO interdependence. Fossil-fuel extraction dominates the energy column — the structural basis for the fossil-import collapse in Sc13; animal farming dominates food — explaining food's domestically-contained household channel; secondary metal production draws heavily on fossil electricity upstream — the mechanism behind the structural emission rebound in Sc10. Source: EXIOBASE 3 v3.8.2, calibrated at t = 70.", fig.scap="Full supply-chain upstream input requirements for EU primary material sectors.", out.width="100%"}
+knitr::include_graphics(file.path(fig_png, "leontief", "p_leontief_primary_heatmap_eu_pure_abs.png"))
+```
+
+```{r scenario-registry-table}
+sc_tbl <- sc |>
+  dplyr::mutate(
+    Name = dplyr::case_when(
+      sector == "Household"  & transaction == "Consumption"      ~ paste(shift, "HH"),
+      sector == "Government" & transaction == "Consumption"      ~ paste(shift, "Gov"),
+      sector == "Firm"       & transaction == "Fixed Investment" ~ paste(shift, "Inv"),
+      sector == "Firm"       & transaction == "Production"       ~ paste(shift, "Int"),
+      TRUE ~ shift
+    )
+  ) |>
+  dplyr::select(
+    Scenario  = shock,
+    Name,
+    Sector    = sector,
+    Channel   = transaction,
+    Material  = shift,
+    Target    = target,
+    Primary   = primary,
+    Secondary = secondary,
+    rho
+  )
+
+reg_cap <- "Scenario Registry. Name: short label as used in figures (HH = Household, Gov = Government, Inv = Fixed Investment, Int = Intermediate Production). Target: share vector modified ($\\beta$ = HH consumption, $\\sigma$ = government, $\\iota$ = investment, $a$ = A-matrix row). Primary/Secondary: EXIOBASE sector indices of the from/to sectors. $\\rho = 0.05$ for Construction scenarios (Sc5, Sc14); $\\rho = 0.20$ otherwise."
+
+if (knitr::is_html_output() || knitr::is_latex_output()) {
+  sc_tbl |>
+    kableExtra::kbl(
+      caption   = reg_cap,
+      col.names = c("Scenario", "Name", "Sector", "Channel", "Material",
+                    "Target", "Primary", "Secondary", "$\\rho$"),
+      align     = c("c","l","l","l","l","c","c","c","c"),
+      booktabs  = TRUE,
+      escape    = FALSE
+    ) |>
+    kableExtra::kable_styling(
+      latex_options = c("hold_position"),
+      full_width    = FALSE,
+      font_size     = 10
+    ) |>
+    kableExtra::row_spec(0, bold = TRUE) |>
+    kableExtra::column_spec(1, width = "1.4cm") |>
+    kableExtra::column_spec(2, width = "2.8cm") |>
+    kableExtra::column_spec(3, width = "2.4cm") |>
+    kableExtra::column_spec(4, width = "3.2cm") |>
+    kableExtra::column_spec(5, width = "2.6cm") |>
+    kableExtra::column_spec(6, width = "1.4cm") |>
+    kableExtra::column_spec(7, width = "1.6cm") |>
+    kableExtra::column_spec(8, width = "1.8cm") |>
+    kableExtra::column_spec(9, width = "1.0cm") |>
+    kableExtra::group_rows("Final Demand",        1,  6, bold = TRUE, italic = FALSE) |>
+    kableExtra::group_rows("Intermediate Demand", 7, 14, bold = TRUE, italic = FALSE) |>
+    kableExtra::landscape()
+} else {
+  sc_tbl |>
+    knitr::kable(caption = reg_cap,
+                 col.names = c("Scenario","Name","Sector","Channel","Material",
+                               "Target","Primary","Secondary","rho"))
+}
+```
+
+---
+
+## Scenario Design
+
+We apply the model to analyse fourteen circular economy scenarios, each redirecting a share $\rho$ of primary material demand toward secondary alternatives across demand channels identified in the MRIO structure. Scenarios are classified by domain (final demand or intermediate inputs), institutional sector (household, government, or firm), and the demand component targeted. Scenarios 1–6 operate through final demand, shifting product-sector shares in household consumption, government consumption, or fixed investment. Scenarios 7–14 operate through the production process by modifying technical coefficients — substituting primary virgin raw materials for secondary re-processed inputs across wood, pulp, plastics, metals, glass, cement, energy, and construction — without changing total input requirements.
+
+The MRIO demand structure established in §3.1 (eqs. 2.1–2.5) defines aggregate gross output as $\mathbf{x} = L\,\boldsymbol{\Phi}\,\mathbf{f} = \mathbf{i} + \mathbf{d}$, where $L = (I-A)^{-1}$ is the Leontief inverse, $\boldsymbol{\Phi}\in\mathbb{R}^{108\times6}$ is the allocation matrix assembling bilateral share vectors $\boldsymbol{\phi}^{(r,k)}$ (i.e.\ $\boldsymbol{\beta}^{(r)}, \boldsymbol{\sigma}^{(r)}, \boldsymbol{\iota}^{(r)}$ for channels $k = c, g, id$), and $\mathbf{f}=\operatorname{vec}(\mathbf{F})\in\mathbb{R}^{6}$ stacks regional expenditure aggregates. Final demand decomposes as (eq.\ 2.4):
+
+The two scenario types modify either $\boldsymbol{\Phi}$ (final-demand shocks) or $A$ (intermediate-demand shocks), leaving all other model equations unchanged.
+
+### CE Shock Operators
+
+For each material pair, let sector 1 denote the primary source and sector 2 the secondary substitute. Both shock types are governed by a substitution intensity $\rho \in [0,1]$.
+
+**Final-demand shocks** (Scenarios 1–6) shift fraction $\rho$ of the primary-material share in a given channel $\phi^z \in \{\boldsymbol{\beta}^z, \boldsymbol{\sigma}^z, \boldsymbol{\iota}^z\}$ toward the secondary sector:
+
+$$\phi'_1 = (1-\rho)\,\phi_1, \qquad \phi'_2 = \phi_2 + \rho\,\phi_1, \qquad \phi'_j = \phi_j \quad (j\neq 1,2) \tag{3.1}$$
+
+Total expenditure is preserved: $\sum_j \phi'_j = \sum_j \phi_j = 1$. The resulting demand shock vector has only two non-zero elements:
+
+$$\Delta d_1 = -\rho\,\phi_1\,D^z, \qquad \Delta d_2 = +\rho\,\phi_1\,D^z \tag{3.2}$$
+
+where $D^z \in \{c^z, g^z, i_d^z\}$ is the relevant regional aggregate. Output responds via $\Delta\mathbf{x} = L\,\Delta\mathbf{d}$.
+
+**Intermediate-demand shocks** (Scenarios 7–14) modify the A-matrix for all using sectors $j$ in region $z$:
+
+$$a'_{1j} = (1-\rho)\,a_{1j}, \qquad a'_{2j} = a_{2j} + \rho\,a_{1j}, \qquad a'_{ij} = a_{ij} \quad (i\neq 1,2) \tag{3.3}$$
+
+Total material input requirements are preserved: $a'_{1j}+a'_{2j} = a_{1j}+a_{2j}$. For small $\rho$, the first-order output change is $\Delta\mathbf{x} \approx L\,\Delta A\,\mathbf{x}$.
+
+### First-Order Material Impact
+
+In both cases, changes in primary material use ($M_1 \equiv x_1$), secondary material use ($M_2 \equiv x_2$), and total material throughput ($M = M_1 + M_2$) are determined by the same Leontief structural factors:
+
+$$\Delta M_1 = \rho\cdot\Omega\cdot(l_{12} - l_{11}), \qquad \Delta M_2 = \rho\cdot\Omega\cdot(l_{22} - l_{21}) \tag{3.4}$$
+
+$$\Delta M = \rho\cdot\Omega\cdot\bigl[(l_{12}+l_{22}) - (l_{11}+l_{21})\bigr] \tag{3.5}$$
+
+where the **scale factor** $\Omega$ equals $\phi_1\,D^z$ for final-demand shocks and $a_{1j}\,x_j$ (summed over using sectors $j$) for intermediate-demand shocks, and $l_{rs}$ are elements of the Leontief inverse $L$. Because $(l_{12}-l_{11})\approx -1$ across all material pairs, the ranking of scenarios by ecological impact reduces to a ranking of $\Omega$ — the volume of the demand channel engaged by the policy instrument. The Leontief structural factor is a near-uniform multiplier; channel scale is the decisive variable. Full derivation and multi-sector extension are in Appendix 3. Table 2 lists all 14 scenarios; Table 3 summarises the key long-term findings.
+
+```{r fig-cross-border, fig.scap="Long-run EU vs.\\ RoW deviations from baseline across 14 CE scenarios.", fig.cap="Long-term (t+20) percentage deviation from baseline for EU (Z1, x-axis) and RoW (Z2, y-axis) under each of the 14 CE scenarios. Point colour identifies the scenario; the semi-transparent halo indicates the transmission pattern (Fossil Import Collapse, Competitive Displacement, Production Leakage, Construction Rebound, or Symmetric Contraction). The diagonal reference line marks the 45° locus of symmetric effects. The bottom-right panel (Dual Inequality) shows scenarios on the EU wage share versus RoW public debt axes, with the upper-left quadrant indicating dual regressivity — simultaneous within-EU functional income compression and cross-border fiscal deterioration in the periphery. All deviations are expressed as percentages relative to the no-policy baseline trajectory.", out.width="100%"}
+knitr::include_graphics(file.path(root, "output", "png", "p_cross_border_asymmetry.png"))
+```
+
+```{r scenario-summary-table}
+smry <- tibble::tribble(
+  ~Scenario,              ~Finding,
+  "Sc1 | Food HH",       "Largest FD employment contraction ($-0.09\\%$ LT); emission savings $-0.42\\%$ but water use $+0.68\\%$. Employment--ecology trade-off.",
+  "Sc2 | Energy HH",     "Strong emission savings ($-0.78\\%$) despite one-third HH channel share; 3.3:1 fossil-to-renewable intensity differential amplifies scale. Current account $+1.0\\%$.",
+  "Sc3 | Wood HH",       "Near-zero effects: household channel is structurally marginal (11\\% of total wood demand).",
+  "Sc4 | Plastics Gov",  "Government procurement rivals intermediate channel (49\\% vs 44\\%); partial material leakage to RoW. First-order plastics CE instrument.",
+  "Sc5 | Constr. Inv",   "Positive EU employment ($+0.03\\%$), but emission rebound $+5.19\\%$. Circular construction more energy-intensive than new-build under current calibration.",
+  "Sc6 | Metal Inv",     "Near-zero: investment channel marginal (3\\% of total metals demand). Slight emission rebound confirms structural pattern.",
+  "Sc7 | Wood Int",      "Largest land saving in scenario set ($-2.30\\%$ LT) with near-zero emissions change. Strong land--climate decoupling.",
+  "Sc8 | Pulp Int",      "Modest effects due to limited sector scale. Emissions fall directionally.",
+  "Sc9 | Plastics Int",  "Comparable leverage to Sc4; both channels near-equal (45\\% vs 49\\%). Effective plastics policy requires Sc4 + Sc9 simultaneously.",
+  "Sc10 | Metal Int",    "Only expansionary production scenario ($+0.04\\%$ output). Material savings $-0.76\\%$, but emission rebound $+0.27\\%$. Largest RoW material contraction.",
+  "Sc11 | Glass Int",    "Small effects due to sector scale. Slight emission rebound; EU employment marginally positive.",
+  "Sc12 | Cement Int",   "Near-zero emission effect: primary and secondary intensities nearly equal. CE leverage limited to material savings ($-0.04\\%$).",
+  "Sc13 | Energy Int",   "Maximum leverage: emissions $-1.56\\%$, primary material $-1.27\\%$, current account $+1.81\\%$. Distributionally regressive; land use $+0.16\\%$. Largest RoW employment contraction.",
+  "Sc14 | Constr. Int",  "Emission rebound $+2.15\\%$ despite material savings $-0.35\\%$. Positive EU employment, negative RoW. Mirrors Sc5 structural pattern."
+)
+
+smry_cap <- "Scenario Summary: key simulation findings at long term ($t+20$ relative to shock). Scenario names follow Table 2 abbreviations (HH = Household, Gov = Government, Inv = Fixed Investment, Int = Intermediate Production). All percentage changes relative to the no-policy baseline."
+
+if (knitr::is_html_output() || knitr::is_latex_output()) {
+  kbl_smry <- smry |>
+    kableExtra::kbl(
+      caption  = smry_cap,
+      col.names = c("Scenario", "Main Finding"),
+      align    = c("l","l"),
+      booktabs = TRUE,
+      escape   = FALSE,
+      linesep  = "\\addlinespace[10pt]"
+    ) |>
+    kableExtra::kable_styling(
+      latex_options = c("hold_position"),
+      full_width    = FALSE,
+      font_size     = 9
+    ) |>
+    kableExtra::row_spec(0, bold = TRUE) |>
+    kableExtra::column_spec(1, width = "4.2cm") |>
+    kableExtra::column_spec(2, width = "13cm") |>
+    kableExtra::group_rows("Final Demand",        1,  6, bold = TRUE, italic = FALSE) |>
+    kableExtra::group_rows("Intermediate Demand", 7, 14, bold = TRUE, italic = FALSE)
+  if (knitr::is_latex_output()) kableExtra::landscape(kbl_smry) else kbl_smry
+} else {
+  smry |>
+    knitr::kable(caption = smry_cap,
+                 col.names = c("Scenario", "Main Finding"))
+}
+```
+
+---
+
+## Scenario Analysis: Three Structural Findings
+
+There is no single CE transition regime but a set of demand channel- and sector-specific outcomes, as the magnitude of ecological and macroeconomic effects is determined by the size and composition of the demand channels targeted. Household food transitions produce the largest final-demand employment contraction and meaningful material savings, reflecting the dominant household share in food demand. Household energy transitions deliver strong emission reductions disproportionate to their one-third channel share, amplified by the 3.3:1 emission intensity differential between fossil and renewable electricity. In contrast, government procurement constitutes a key policy lever for plastics due to its unusually large demand share.
+
+Second, intermediate production restructuring delivers stronger ecological gains — energy is the highest-leverage scenario in emissions and primary material extraction, reflecting the combination of large intermediate demand and a high emission intensity differential between fossil and renewable energy — but at a structural macroeconomic cost. Because secondary sectors require fewer intermediate inputs per unit of output than their primary counterparts, the very substitution that reduces material intensity also contracts overall economic output, compresses the wage share of income, and increases land use through more land-intensive renewable infrastructure. Metals is a remarkable exception: the only production scenario to expand output and employment while delivering the largest material savings, yet it generates a structural carbon emission rebound through the higher fossil-electricity intensity of secondary steel production.
+
+Third, most CE scenarios are distributionally regressive along two simultaneous dimensions — within the EU in functional terms, and between regions in global equality terms. Within the EU, because profit margins are maintained through mark-up pricing as output contracts, the adjustment falls disproportionately on the wage bill: across all intermediate production scenarios, the wage share falls while the profit share rises. Across borders, the same transitions contract RoW economic activity, deteriorate fiscal positions in the periphery, and — in the energy scenario — generate a sustained rise in peripheral public debt as fossil export revenues permanently collapse.
+
+Energy restructuring (Sc13) is the starkest case of dual regressivity: within the EU, the wage share falls $-0.08\%$ and the profit share rises $+0.14\%$ long-term, while fossil-exporting RoW economies face a permanent collapse of export revenues, with rising public debt compounding existing sovereign vulnerabilities (Volz et al., 2015). Food restructuring (Sc1) is the clearest final-demand case: the largest employment contraction in the scenario set ($-0.09\%$ LT) falls disproportionately on food-sector workers, while water use increases ($+0.68\%$) impose an ecological burden not captured by emissions or material metrics. Construction scenarios (Sc5, Sc14) occupy a distinct sub-case: employment is modestly positive, but rising energy costs compress the labour income share, while circular production uniquely reduces material throughput while sharply increasing emissions.
+
+Across the full set of scenarios, the results show a key structural pattern — only visible in the MRIO framework — that CE transitions are characterised by transnational socio-ecological trade-offs. Ecological improvements, macroeconomic performance, and distributional outcomes do not move together automatically. In particular, high-leverage transitions such as energy and metals generate asymmetric cross-regional effects, including shifts in employment, external balances, and fiscal positions between the EU and the rest of the world.
+
+Five cross-border transmission regimes emerge, which the hierarchical cluster analysis confirms reduce to two fundamental directional modes. The first mode — **symmetric effects** — covers scenarios where both regions move in the same direction: *Symmetric Contraction* (Sc3, 6, 7, 8, 11, 12) and *Production Leakage* (Sc1, 4, 9) both produce broadly parallel material contractions or small same-sign deviations across the two regions. The second mode — **asymmetric divergence** (EU expands, RoW contracts) — contains three mechanistically distinct sub-cases that cluster together statistically: *Competitive Displacement* (Sc10, the canonical case), *Fossil Import Collapse* (Sc2, 13), and *Construction Rebound* (Sc5, 14). In divergence space, Construction and Fossil Import Collapse are extreme cases by magnitude that are justifiably placed within either their own named regime or the broader EU+/RoW− cluster: all three share the same directional signature and differ only in mechanism and scale.
+
+```{r fig-portfolio, fig.scap="CE potential captured by demand channel and material sector ($\\rho = 0.2$).", fig.cap="Share of full CE potential captured by each demand channel and material sector at substitution intensity ρ = 0.2. Food is the only sector where household consumption dominates; energy is primarily driven by industrial intermediate procurement despite public discourse emphasising consumer behaviour; and plastics is unique in that government procurement rivals the intermediate channel. Source: EXIOBASE 3 v3.8.2, calibrated at t = 70.", out.width="100%", fig.pos="H"}
+knitr::include_graphics(file.path(fig_png, "portfolio", "p_portfolio_heatmap.png"))
+```
+
+## Scenario Discussion
+
+### The Demand Scale Principle
+
+The most robust finding across all 14 scenarios is that the rank ordering of outcomes is predicted by the absolute scale of the targeted demand channel, not by material-specific multiplier variation or sectoral intensity alone (@fig-portfolio). What varies decisively across scenarios is the size of the demand portfolio the policy instrument engages. Food (Sc1) produces the largest final-demand employment contraction because household food demand is the largest household material channel. Household energy (Sc2) produces strong emission and primary material savings disproportionate to its channel size, amplified by the 3.3:1 fossil-to-renewable intensity differential. Government plastics (Sc4) has disproportionate leverage among FD scenarios because the government procurement channel rivals the intermediate channel in absolute scale — unique among all materials. Energy production (Sc13) dominates all production scenarios, driven by the combination of the largest intermediate channel and the 3.3:1 intensity differential. Metals production (Sc10) produces the largest total material savings because the A-matrix row-sum of secondary metals is less than half that of primary metals. The simulation ranking therefore validates the demand channel decomposition: relative outcome magnitudes can be predicted from channel scale × intensity differential before the model is run.
+
+### Two Demand Transition Regimes
+
+Final-demand reallocation (Scenarios 1–6) spans the full range of outcomes in the scenario set — from near-zero effects to the largest employment contraction and meaningful ecological gains — depending on which demand channel the policy instrument targets. Scenario 1 (Food, HH) produces the largest employment contraction among FD scenarios because food demand is the dominant household material channel. Scenario 4 (Gov Plastics) is structurally distinctive: government procurement accounts for half of plastics demand, making public procurement circularity mandates a genuine first-order CE instrument for this material. Scenario 5 (Construction FD) activates a large fixed-investment channel and is the only FD scenario producing a positive employment effect because renovation is more labour-intensive than new build. Final-demand CE instruments engage channels that are structurally primary for food, construction, and plastics, and cannot be treated as merely symbolic complements to production-side policy.
+
+Intermediate production restructuring (Scenarios 7–14) generally delivers larger ecological gains than final-demand reallocation, in proportion to the intermediate channel's dominance — but with sector-specific ecological profiles: material savings are consistent across the regime, while emission and land effects diverge sharply by sector. Employment effects are modestly negative in most scenarios, with two exceptions: Metals (Sc10), which is expansionary, and Construction (Sc14), which produces positive employment but a strong emission rebound. Distributional costs are non-trivial in the most intensive scenarios: Sc13 compresses the EU wage share while deteriorating fiscal positions in fossil-exporting RoW economies.
+
+\clearpage
+
+```{r fig-comparison-eu, fig.scap="Circular economy scenarios --- domestic effects (EU).", fig.cap="Circular economy scenarios — domestic effects (EU). Percentage deviations from the baseline trajectory at three time horizons (Immediate: t+1; Short-term: t+7; Long-term: t+20) for 14 primary-to-secondary material substitution scenarios, across four variable categories: Macroeconomic, Social, Ecological, and Financial. Left column: Final Demand scenarios; right column: Intermediate Demand scenarios. ρ = 0.20 for all scenarios except Construction (Sc5, Sc14, ρ = 0.05). Scenario labels: HH = household final demand; Gov = government final demand; Inv = firm investment demand; Int = intermediate demand.", fig.env="sidewaysfigure", out.width="\\textheight"}
+knitr::include_graphics(file.path(fig_cmp, "08_comparison_eu.png"))
+```
+
+```{r fig-emis-impact, fig.scap="Analytical first-order CO\\textsubscript{2} emission impact by sector and demand channel.", fig.cap="Analytical first-order CO~2~ emission impact of primary-to-secondary CE substitutions by sector and demand channel, EU region, ρ = 0.2. Positive values indicate a structural emission rebound. Energy intermediate substitution dominates the scenario set by an order of magnitude; metals, paradoxically, generate a rebound despite material savings, driven by the higher fossil-electricity intensity of secondary steel production. Source: EXIOBASE 3 v3.8.2, calibrated at t = 70.", out.width="100%"}
+knitr::include_graphics(file.path(fig_png, "impact", "p_impact_emis.png"))
+```
+
+### The Circular Economy Trilemma
+
+The cross-cutting finding is a structural trilemma: ecological improvement trades off against macroeconomic stability and distributional equity in the intermediate production scenarios, while the construction scenarios produce a second, ecological-internal tension between material savings and emission rebound. Scenario 4 vs Scenario 9 (Plastics) demonstrates that the trilemma can be partially bypassed through public procurement. For plastics — uniquely among all materials — government consumption rivals intermediate demand in absolute scale, making the two channels complementary rather than hierarchical. Neither scenario alone captures most of total plastics demand; effective plastics CE policy requires both instruments simultaneously.
+
+Scenario 10 (Metals) is the most analytically anomalous outcome. It is the only production scenario showing expansionary macroeconomic effects, driven by the lower A-matrix row-sum of secondary metals: substituting secondary for primary frees EU intermediate resources economy-wide and generates a competitive dividend. Simultaneously, emissions increase — the clearest structural rebound in the set. The mechanism is precisely identified: secondary metal production (EAF scrap-based steel) is more electricity-intensive upstream than primary production (blast furnace), and the high fossil emission intensity amplifies this into an EU emission increase even as material throughput falls strongly. Metals CE satisfies the economic arm of the trilemma while failing the ecological arm and requires complementary electricity decarbonisation.
+
+Scenario 13 (Energy) represents maximum leverage and maximum asymmetry simultaneously. Ecological gains are the largest in the set, and the current account improvement (+1.81%) reflects reduced EU fossil import dependency. But the scenario is distributionally regressive and produces the largest cross-border burdens on RoW energy exporters. Despite saving the most emissions, EU land use increases slightly because renewable electricity infrastructure requires substantially more land per unit of output than centralised fossil power plants.
+
+Construction scenarios (Sc5, Sc14) define a third internal tension: material use falls, while emissions, land use, and water use all rebound sharply. Renovation and refurbishment are more energy-intensive per unit of output than new construction in the current A-matrix, meaning the circular reallocation displaces primary material throughput but increases upstream fossil energy demand. The ecological trilemma here is not social vs. ecological but rather material vs. atmospheric: circular construction saves physical material but worsens the emission, land, and water footprint unless accompanied by concurrent renovation energy standards and electricity decarbonisation.
+
+These divergences reinforce that no single ecological indicator is sufficient for CE policy evaluation. Wood-sector restructuring (Sc7) is primarily a land-use intervention, delivering the largest land saving ($-2.30\%$ LT) with near-zero emission effect. Energy-sector restructuring is primarily a climate intervention. Food-sector restructuring ($Sc1$) worsens freshwater pressure despite improving material and emission metrics.
+
+### Symmetric and Asymmetric Cross-Border Transmission Regimes: Simultaneous Contraction, Production Leakage, or Competitive Displacement
+
+A key contribution of the MRIO-SFC framework is tracing bilateral demand flows between EU ($Z_1$) and RoW ($Z_2$), making the cross-border consequences of CE policy directly visible. The five transmission regimes described above group into two directional modes, each with distinct implications for global equity. Table 3 summarises the directional signature of each regime across the key outcome dimensions.
+
+\clearpage
+
+```{r transmission-regime-table}
+# Cols: Regime | Sc | EU_dir | RoW_dir | EU_y-b (5) | RoW_y-b (5) | Mechanism
+# Dir. spans EU+RoW as 2-col group; EU and RoW each span 5 variable cols
+# Asymmetric rows 3-5: multirow for Dir cols (same +/- throughout)
+regime_tbl <- tibble::tribble(
+  ~Regime,                    ~Sc,
+  ~EU_dir,                             ~Rd_dir,
+  ~EU_y,              ~EU_e,                              ~EU_m,           ~EU_ls,          ~EU_b,
+  ~RoW_y,             ~RoW_e,             ~RoW_m,                          ~RoW_ls,         ~RoW_b,
+  ~Mechanism,
+
+  "Symmetric Contraction",  "3, 6, 7, 8,\\newline 11, 12",
+  "$-$",                               "$-$",
+  "$\\downarrow$",    "$\\downarrow$",                    "$\\downarrow$", "$\\downarrow$", "$\\uparrow$",
+  "$\\downarrow$",    "$\\downarrow$",    "$\\downarrow$",                 "$\\downarrow$", "$\\uparrow$",
+  "Global demand contracts; CE reduces throughput in both regions simultaneously",
+
+  "Production Leakage",     "1, 4, 9",
+  "$\\approx$",                        "$-$",
+  "$\\downarrow$",    "$\\downarrow$",                    "$\\downarrow$", "$\\downarrow$", "$\\approx$",
+  "$\\approx$",       "$\\approx$",       "$\\uparrow$",                   "$\\approx$",    "$\\approx$",
+  "Secondary sector carries higher RoW import content; circularity stimulates peripheral extraction",
+
+  "Competitive Displacement","10",
+  "",                                  "",
+  "$\\uparrow$",      "$\\uparrow^{\\dagger}$",           "$\\downarrow$", "$\\approx$",    "$\\downarrow$",
+  "$\\downarrow$",    "$\\downarrow$",    "$\\downarrow\\downarrow$",      "$\\downarrow$", "$\\uparrow$",
+  "Lower A-matrix row-sum of secondary metals frees intermediate inputs economy-wide",
+
+  "Fossil Import Collapse",  "2, 13",
+  "$+$",                               "$-$",
+  "$\\uparrow$",      "$\\downarrow\\downarrow$",         "$\\downarrow$", "$\\downarrow$", "$\\downarrow$",
+  "$\\downarrow\\downarrow$","$\\downarrow$","$\\downarrow$",              "$\\downarrow$", "$\\uparrow\\uparrow$",
+  "Fossil import bill collapses; RoW exporters lose revenue and fiscal capacity",
+
+  "Construction Rebound",    "5, 14",
+  "",                                  "",
+  "$\\uparrow$",      "$\\uparrow\\uparrow^{\\ddagger}$", "$\\downarrow$", "$\\downarrow$", "$\\downarrow$",
+  "$\\downarrow$",    "$\\downarrow$",    "$\\downarrow$",                 "$\\downarrow$", "$\\uparrow$",
+  "Investment multiplier on large fixed-capital channel; renovation more energy-intensive than new build"
+)
+
+reg_cap3 <- "Cross-border transmission regimes. $y$ = gross output; Emis.\\ = emissions; Mat.\\ = primary material use; Lab.Sh.\\ = wage share of income; $B$ = public debt. $\\uparrow$ positive, $\\downarrow$ negative, $\\approx$ near zero relative to baseline; doubled arrow = extreme of the scenario set. Direction = overall directional mode. No scenario produces EU$+$/RoW$+$ or EU$-$/RoW$+$ outcomes. $^{\\dagger}$Emission rebound (Sc10): fossil-electricity intensity of secondary steel (EAF). $^{\\ddagger}$Emission rebound (Sc5/14): renovation energy intensity exceeds new build under current calibration."
+
+if (knitr::is_html_output() || knitr::is_latex_output()) {
+  kbl_smry3 <- regime_tbl |>
+    kableExtra::kbl(
+      caption   = reg_cap3,
+      col.names = c("Regime", "Scenario",
+                    "EU", "RoW",
+                    "$y$", "Emis.", "Mat.", "Lab.Sh.", "$B$",
+                    "$y$", "Emis.", "Mat.", "Lab.Sh.", "$B$",
+                    "Key Mechanism"),
+      align     = c("l","c",
+                    "c","c",
+                    "c","c","c","c","c",
+                    "c","c","c","c","c",
+                    "l"),
+      booktabs  = TRUE,
+      escape    = FALSE,
+      linesep   = "\\addlinespace[2pt]"
+    ) |>
+    kableExtra::kable_styling(
+      latex_options = c("hold_position"),
+      full_width    = FALSE,
+      font_size     = 8
+    ) |>
+    kableExtra::row_spec(0, bold = TRUE) |>
+    kableExtra::column_spec(1,  width = "2.7cm") |>
+    kableExtra::column_spec(2,  width = "1.6cm") |>
+    kableExtra::column_spec(3,  width = "0.55cm")|>
+    kableExtra::column_spec(4,  width = "0.55cm")|>
+    kableExtra::column_spec(5,  width = "0.6cm") |>
+    kableExtra::column_spec(6,  width = "0.65cm")|>
+    kableExtra::column_spec(7,  width = "0.6cm") |>
+    kableExtra::column_spec(8,  width = "0.75cm")|>
+    kableExtra::column_spec(9,  width = "0.6cm") |>
+    kableExtra::column_spec(10, width = "0.6cm") |>
+    kableExtra::column_spec(11, width = "0.65cm")|>
+    kableExtra::column_spec(12, width = "0.85cm")|>
+    kableExtra::column_spec(13, width = "0.75cm")|>
+    kableExtra::column_spec(14, width = "0.6cm") |>
+    kableExtra::column_spec(15, width = "4.8cm") |>
+    kableExtra::add_header_above(
+      c(" " = 2, "Direction" = 2, "EU" = 5, "RoW" = 5, " " = 1),
+      bold = TRUE, escape = FALSE
+    ) |>
+    kableExtra::group_rows("Symmetric",  1, 2,
+                           bold = TRUE, italic = FALSE, hline_before = FALSE,
+                           extra_latex_after = "\\addlinespace[16pt]") |>
+    kableExtra::group_rows("Asymmetric", 3, 5,
+                           bold = TRUE, italic = FALSE, hline_before = TRUE,
+                           extra_latex_after = "\\addlinespace[2pt]")
+  kableExtra::landscape(kbl_smry3)
+} else {
+  regime_tbl |>
+    knitr::kable(caption = reg_cap3,
+                 col.names = c("Regime","Sc","EU Dir","RoW Dir",
+                               "EU y","EU Emis","EU Mat","EU LabSh","EU B",
+                               "RoW y","RoW Emis","RoW Mat","RoW LabSh","RoW B","Mechanism"))
+}
+```
+
+**Symmetric effects.** *Symmetric Material Contraction* (Sc3, 6, 7, 8, 11, 12) is the most common pattern across intermediate scenarios for wood, pulp, glass, and cement: EU circular restructuring contracts global intermediate demand rather than shifting production abroad, producing broadly parallel material reductions in both regions simultaneously. EU CE in this regime does not displace throughput to the RoW — it reduces it globally. Wood restructuring (Sc7) is the limiting case: zero RoW material effect, because EU forestry supply chains are domestically contained. *Production Leakage* (Sc1, 4, 9) occupies the same directional mode but via a different mechanism: the EU's secondary sector carries higher import content than the primary sector it displaces, generating a small positive RoW material effect — circularity in the core reproducing peripheral extraction dependencies through a different supply chain pathway.
+
+**Asymmetric divergence (EU expands, RoW contracts).** Three mechanistically distinct regimes share this signature; hierarchical clustering confirms they form a single statistical grouping, with Construction and Fossil Import Collapse as extreme cases by magnitude.
+
+*Competitive Displacement* — The canonical EU+/RoW− case. The metals scenario (Sc10) illustrates this most clearly: the lower intermediate input requirements of secondary steel generate a net EU macro-expansion while RoW primary metal producers contract, with the largest RoW material reduction in the scenario set. RoW loses production and employment while EU macro-expands — a genuine welfare divergence mediated through the material trade channel, with no scale amplifier beyond the substitution itself.
+
+*Fossil Import Collapse* — The most extreme and fiscally consequential sub-case. As EU industrial fossil-fuel imports collapse under Sc13, RoW fossil exporters face a permanent contraction of export revenues, employment losses ($Z_2$ $n = -0.014\%$ LT), and a sustained rise in public debt as fiscal revenues erode. This fiscal deterioration is not a temporary shock: it persists because the transition permanently removes the EU as a major consumer of RoW fossil inputs. The scale amplifier here is the combination of the largest intermediate channel and the highest intensity differential (3.3:1), making this the extreme outlier of the divergence cluster. Within the EU, the fossil-import dividend accrues disproportionately as firm profits and government savings rather than wage income, compounding the dual-regressivity pattern (Volz et al., 2015).
+
+*Construction Rebound* — The second extreme sub-case, operating through an investment-multiplier mechanism rather than material substitution. CE in construction (Sc5, Sc14) increases fixed investment through the renovation multiplier, expanding EU domestic activity and land-intensive construction output, while simultaneously contracting RoW via reduced primary construction-material imports. Both scenarios can be assigned to either the Construction Rebound regime (mechanistically distinct investment channel) or the broader EU+/RoW− cluster (directionally identical to Sc10 and Sc13): the statistical and mechanistic classifications are complementary rather than contradictory.
+
+\clearpage
+
+```{r fig-comparison-row, fig.scap="Circular economy scenarios --- cross-border effects (Rest of World).", fig.cap="Circular economy scenarios — cross-border effects (Rest of World). As Figure 6, but reporting percentage deviations in RoW (Z2) variables. Cross-border spillovers arise through trade linkages embedded in the MRIO structure: changes in EU final or intermediate demand propagate to RoW via import flows, value-chain restructuring, and shifts in the current account balance.", fig.env="sidewaysfigure", out.width="\\textheight"}
+knitr::include_graphics(file.path(fig_cmp, "09_comparison_row.png"))
+```
+
+---
+
+## Conclusions
+
+This paper has developed a two-region ecological macroeconomic model that integrates a multi-regional input–output structure with stock–flow consistent dynamics to analyse circular economy (CE) transitions in the global context of ecologically unequal exchange. By introducing a channel-based perspective, the paper examined how circular economy policies operating through final demand, intermediate production, and investment generate distinct macroeconomic, social, and ecological outcomes across the European Union (EU) and the Rest of the World (RoW).
+
+The findings of this paper challenge approaches that treat the transition towards a Circular Economy as a purely national, regional, or firm-level strategy. In the context of ecologically unequal exchange, policies aimed at greening production in advanced economies may improve some domestic indicators while worsening employment, external balances, or ecological pressures elsewhere (Hickel et al., 2022). Our analysis suggests that a just and effective transition cannot rely on private behavioural change or isolated technical measures alone: it requires coordinated public intervention that re-shapes production structures, considers macroeconomic and distributive trade-offs, and addresses the international asymmetries through which ecological costs are displaced (Campiglio et al., 2018; Volz et al., 2015). Policy design must be channel-specific and complementary, combining demand-side and production-side measures with macroeconomic and institutional coordination. The key policy divide is not only between linear and circular production, but also between fragmented and cooperative transition strategies, and between circular-economy policies implemented in isolation and those aligned with decarbonisation, macroeconomic stabilisation, and international policy coordination.
+
+In the context of ecologically unequal exchange, intermediate production scenarios consistently contract aggregate demand modestly, reduce wage shares, and expand profit shares — CE transitions in the production regime cannot be treated as costless structural adjustments. The distributional structure revealed by this analysis highlights how the two most consequential transmission regimes — fossil-import collapse and symmetric contraction — are also the most regressive: they generate EU ecological gains by permanently contracting RoW export revenues, compressing peripheral fiscal space, and transferring the adjustment burden onto wage earners in both regions. Pursuing CE transitions through intermediate production restructuring without complementary macroeconomic management and international fiscal coordination risks reproducing, under a green label, the North–South asymmetries that define the current extractive order. Effective and just CE policy therefore requires not only domestic decarbonisation instruments but coordinated international support mechanisms that cushion the fiscal shocks to commodity-export-dependent economies and prevent ecological improvement in the core from becoming a vector of peripheralisation.
+
+This conclusion acquires particular urgency in the current geopolitical moment: the breakdown of fossil-fuel supply chains since 2022, conflict-driven disruptions to critical mineral corridors, and intensifying competition over strategic trade routes have already begun to impose the kind of asymmetric demand shocks our scenarios model. In sum, the transition to a sustainable economy will not be sustainable unless its cross-border distributional consequences are treated as a first-order policy problem.
+
+Several limitations of the current analysis point to productive directions for further work. The model is calibrated to 2011 EXIOBASE data, and the emission intensity of secondary metal production and secondary construction may have changed as electricity grids decarbonise and circular infrastructure matures. Future analyses incorporating dynamic calibration for electricity decarbonisation and technology-learning pathways would substantially strengthen the policy relevance of these findings. More broadly, the model's treatment of the Rest of World as a single undifferentiated aggregate obscures the differential impacts on specific fossil-fuel exporting economies, low-income countries dependent on primary commodity exports, and emerging economies at different stages of their own CE transitions. Disaggregating the RoW aggregate is a priority for future work. Finally, the classification of transmission patterns into regimes presented here rests on qualitative inspection of simulation outputs and cross-border impact profiles; future revisions will document the ANOVA and hierarchical clustering results that formally underpin this taxonomy, and will assess its robustness to alternative shock magnitudes and calibration vintages.
+
+---
+
+## References {.unnumbered}
+
+Aguilar-Hernandez, G. A., Sigüenza-Sanchez, C. P., Donati, F., Rodrigues, J. F. D., Tukker, A. (2018). Assessing circularity interventions: A review of MRIO-based studies. *Journal of Economic Structures*, 8(1), 1–16.
+
+Althouse, J., Guarini, G., Porcile, G. (2020). Ecological macroeconomics in the open economy: Sustainability, unequal exchange and policy coordination in a center–periphery model. *Ecological Economics*, 172, 106628.
+
+Arranz, C.F.A., Arroyabe, M.F., Demirel, P., Kesidou, E., Panwar, R., Pinkse, J., 2026. Reconciling circular economy and net zero: Firm capabilities to resolve sustainability tensions. *British Journal of Management*, 00, e70061.
+
+Barrie, J. et al. (2024). From roadmaps to regulation: global CE policy trends. *Resources, Conservation and Recycling*, forthcoming.
+
+Berg, M., Hartley, B., Richters, O. (2015). A stock-flow consistent input-output model with applications to energy price shocks, interest rates, and heat emissions. *New Journal of Physics*, 17(1), 015011.
+
+Bimpizas-Pinis, M., De Boer, B., Genovese, A., Jabbour, C.J.C., Khan, S.A.R. (2023). A systematic literature review on the environmental impacts of transitioning towards a circular economy. *Journal of Cleaner Production*, 405, 137056.
+
+Campiglio, E., Dafermos, Y., Monnin, P., Ryan-Collins, J., Schotten, G., Tanaka, M., 2018. Climate change challenges for central banks and financial regulators. *Nature Climate Change*, 8(6), 462–468.
+
+Carnevali, E., Deleidi, M., Pariboni, R., Veronese Passarella, M. (2019). Cross-border financial flows and global warming in a two-area ecological SFC model. *Socio-Economic Review*, 17(3), 617–648.
+
+Carnevali, E., Deleidi, M., Pariboni, R., Veronese Passarella, M. (2020). A dynamic stock-flow consistent model with a full recovery of waste and a net-zero emissions target. *Review of Political Economy*, 32(4), 527–552.
+
+Carnevali, E., Deleidi, M., Pariboni, R., Veronese Passarella, M. (2023). SFC models and the ecological transition. *Metroeconomica*, 74(4), 862–905.
+
+Caverzasi, E., Godin, A. (2015). Post-Keynesian stock-flow-consistent modelling: a survey. *Cambridge Journal of Economics*, 39(1), 157–187.
+
+Dafermos, Y., Nikolaidi, M., Galanis, G. (2017). A stock-flow-fund ecological macroeconomic model. *Ecological Economics*, 131, 191–207.
+
+Dafermos, Y., Nikolaidi, M., Galanis, G. (2018). Climate change, financial stability and monetary policy. *Ecological Economics*, 152, 219–234.
+
+De Boer, B. F., Rietveld, E., Rodrigues, J. F., Tukker, A. (2021). Global environmental and socio-economic impacts of a transition to a circular economy in metal and electrical products: A Dutch case study. *Journal of Industrial Ecology*, 25(5), 1264–1271.
+
+Di Domenico, L., Barbieri Góes, M. C., Gallo, E. (2024). Distribution, capital intensity and public debt-to-GDP ratio: an input output-stock flow consistent model. *Economia Politica*, 41(2), 395–416.
+
+Dorninger, C., Hornborg, A., Abson, D. J., von Wehrden, H., Schaffartzik, A., Giljum, S., Engler, J.-O., Feller, R. L., Hubacek, K., Wieland, H. (2021). Global patterns of ecologically unequal exchange: Implications for sustainability in the 21st century. *Ecological Economics*, 179, 106824.
+
+Fevereiro, J.B.R.T., Kaltenbrunner, A., Kesidou, E., Veronese Passarella, M. (2023). A two-area ecological input-output stock-flow consistent model for circular economy analysis. Working Paper, University of Leeds.
+
+Fevereiro, J.B.R.T., Lowe, B.H. (2025). Macroeconomic implications for the Global South of a green transition in the Global North. *Ecological Economics*, 237, 108691.
+
+Geissdoerfer, M., Savaget, P., Bocken, N.M.P., Hultink, E.J., 2017. The circular economy – A new sustainability paradigm? *Journal of Cleaner Production*, 143, 757–768.
+
+Godley, W., Lavoie, M. (2007). *Monetary Economics: An Integrated Approach to Credit, Money, Income, Production and Wealth*. Palgrave Macmillan, Basingstoke.
+
+Gräbner-Radkowitsch, C., Strunk, B. (2023). Degrowth and the Global South: The twin problem of global dependencies. *Ecological Economics*, 213, 107946.
+
+Hardt, L., O'Neill, D. W. (2017). Ecological macroeconomic models: assessing current developments. *Ecological Economics*, 134, 198–211.
+
+Hickel, J., 2020. Quantifying national responsibility for climate breakdown: an equality-based attribution approach for carbon dioxide emissions in excess of the planetary boundary. *The Lancet Planetary Health*, 4(9), e399–e404.
+
+Hickel, J., Dorninger, C., Wieland, H., Suwandi, I., 2022. Imperialist appropriation in the world economy: drain from the Global South through unequal exchange, 1990–2015. *Global Environmental Change*, 73, 102467.
+
+Hornborg, A., 2009. Zero-sum world: challenges in conceptualizing environmental load displacement and ecologically unequal exchange in the world-system. *International Journal of Comparative Sociology*, 50(3–4), 237–262.
+
+Jackson, A., Jackson, T. (2025). Macroeconomic, sectoral and financial dynamics in energy transitions: a stock-flow consistent, input-output approach. *Ecological Economics*, 230, 108507.
+
+Kirchherr, J., Reike, D., Hekkert, M., 2017. Conceptualizing the circular economy: an analysis of 114 definitions. *Resources, Conservation and Recycling*, 127, 221–232.
+
+Korhonen, J., Honkasalo, A., Seppälä, J., 2018. Circular economy: the concept and its limitations. *Ecological Economics*, 143, 37–46.
+
+Lenzen, M., Moran, D., Kanemoto, K., Geschke, A., 2012. Mapping the structure of the world economy. *Environmental Science & Technology*, 46(15), 8374–8381.
+
+Leontief, W. (1936). Quantitative input-output relations in the economic system of the United States. *Review of Economics and Statistics*, 18(3), 105–125.
+
+Leontief, W. (1941). *The Structure of American Economy, 1919–1929*. Harvard University Press, Cambridge.
+
+Nikiforos, M., Zezza, G. (2017). Stock-flow consistent macroeconomic models: a survey. *Journal of Economic Surveys*, 31(5), 1204–1239.
+
+Pettena, M., Raberto, M. (2025). Energy transition and structural change: a calibrated stock-flow consistent input-output model. *Structural Change and Economic Dynamics*, online.
+
+Pollitt, H., Mercure, J.-F., 2018. The role of money and the financial sector in energy-economy models used for assessing climate and energy policy. *Climate Policy*, 18(2), 184–197.
+
+Svartzman, R., Althouse, J. (2020). Greening the international monetary system? Not without addressing the political ecology of global imbalances. *Review of International Political Economy*, 28(4), 966–989.
+
+Thomsen, S. F., Raza, H., Byrialsen, M. R. (2025). An assessment of carbon taxation policies: the case of Denmark. *Ecological Economics*, 238, 108741.
+
+Valdecantos, S., Valentini, S. (2017). Financialization and capital accumulation dynamics in a post-Keynesian input-output macro model. *Working Paper*, Universidad Nacional de General Sarmiento.
+
+Veronese Passarella, M. (2023). Technical change and the monetary circuit: an input-output stock-flow consistent dynamic model. *Quaderni del Dipartimento di Economia Politica e Statistica — Università di Siena*, n. 903.
+
+Veronese Passarella, M. (2025). Destabilizing a stable economy: Minsky meets Graziani's monetary circuit. *International Journal of Political Economy*, 54(3), 338–355.
+
+Volz, U., Böhnke, J., Knierim, L., Richert, K., Röber, G.-M., Eidt, V. (2015). *Financing the Green Transformation: How to Make Green Finance Work in Indonesia*. Palgrave Macmillan, Basingstoke.
+
+Wiedmann, T. O., Schandl, H., Lenzen, M., Moran, D., Suh, S., West, J., Kanemoto, K. (2015). The material footprint of nations. *Proceedings of the National Academy of Sciences*, 112(20), 6271–6276.
+
+---
+
+
+```{r word-count-table, include=TRUE}
+# ── Dynamic word count breakdown ─────────────────────────────────────────────
+qmd_src <- readLines(knitr::current_input())
+
+# Helper: clean and count words in a text string
+wc <- function(txt) {
+  txt <- paste(txt, collapse = " ")
+  txt <- gsub("\\$\\$.*?\\$\\$", " ", txt, perl = TRUE)   # display math
+  txt <- gsub("\\$.*?\\$",        " ", txt, perl = TRUE)   # inline math
+  txt <- gsub("\\\\[a-zA-Z]+\\{[^}]*\\}", " ", txt)        # LaTeX cmds
+  txt <- gsub("\\[[^]]+\\]\\([^)]+\\)", " ", txt)           # md links
+  txt <- gsub("[^A-Za-z' -]", " ", txt)
+  toks <- strsplit(trimws(txt), "\\s+")[[1]]
+  toks <- toks[nchar(toks) > 0]
+  length(toks)
+}
+
+# ── 1. Parse body: separate prose lines, chunk-header lines, chunk-body lines
+yaml_end <- which(cumsum(qmd_src == "---") >= 2)[1]
+body <- qmd_src[seq(yaml_end + 1, length(qmd_src))]
+
+in_chunk  <- FALSE
+prose_lines   <- character()
+chunk_headers <- character()
+chunk_body    <- character()
+for (ln in body) {
+  if (grepl("^```\\{r", ln)) {
+    in_chunk <- TRUE
+    chunk_headers <- c(chunk_headers, ln)
+    next
+  }
+  if (grepl("^```\\s*$", ln) && in_chunk) { in_chunk <- FALSE; next }
+  if (in_chunk) chunk_body <- c(chunk_body, ln)
+  else          prose_lines <- c(prose_lines, ln)
+}
+
+# ── 2. Appendix boundary
+app_idx    <- grep("^## Appendix", prose_lines)[1]
+prose_body <- if (!is.na(app_idx)) prose_lines[seq_len(app_idx - 1)] else prose_lines
+prose_app  <- if (!is.na(app_idx)) prose_lines[seq(app_idx, length(prose_lines))] else character()
+
+# ── 3. Section word counts (prose only, between ## headings, before Appendix)
+sec_labels <- c("Introduction", "Model Overview", "Descriptive Statistics",
+                "Scenario Design", "Scenario Analysis", "Scenario Discussion",
+                "Conclusions")
+h_idx  <- grep("^## ", prose_body)
+h_text <- prose_body[h_idx]
+sec_wc <- setNames(integer(length(sec_labels)), sec_labels)
+for (i in seq_along(sec_labels)) {
+  m <- grep(sec_labels[i], h_text)[1]
+  if (is.na(m)) next
+  start_line <- h_idx[m] + 1
+  next_h     <- h_idx[h_idx > h_idx[m]][1]
+  end_line   <- if (!is.na(next_h)) next_h - 1 else length(prose_body)
+  sec_wc[i]  <- wc(prose_body[seq(start_line, end_line)])
+}
+words_body_prose <- sum(sec_wc)
+
+# ── 4. Figure captions: extract fig.cap="..." from chunk headers
+fig_cap_raw <- regmatches(chunk_headers,
+                          regexpr('fig\\.cap\\s*=\\s*"[^"]+"', chunk_headers))
+fig_cap_txt <- gsub('fig\\.cap\\s*=\\s*"([^"]+)"', "\\1", fig_cap_raw)
+n_figs       <- length(fig_cap_txt)
+words_fig_caps <- sum(sapply(fig_cap_txt, wc))
+
+# ── 5. Table captions: look for *_cap* <- "..." assignment lines in chunk body
+cap_assignment_lines <- grep('_cap[0-9a-z_]* <-\\s*"', chunk_body, value = TRUE)
+# also catch multi-char cap variable names and continuation lines with paste()
+cap_str <- gsub('.*<-\\s*"([^"]+)".*', "\\1", cap_assignment_lines)
+n_tabs       <- length(cap_str)
+words_tab_caps <- sum(sapply(cap_str[nchar(cap_str) > 0], wc))
+
+# ── 6. Table cell content: quoted strings ≥5 chars in chunk body
+#    (excluding caption lines, chunk option lines, and file-path strings)
+cell_lines <- chunk_body[!grepl('_cap|fig_cap|ggsave|file\\.path|include_graphics|library\\(|source\\(', chunk_body)]
+cell_matches <- regmatches(cell_lines, gregexpr('"[A-Za-z][^"]{4,}"', cell_lines))
+cell_txt     <- unlist(lapply(cell_matches, function(x) gsub('"', '', x)))
+# exclude obvious code strings (function names, column names, file paths)
+cell_txt <- cell_txt[!grepl("^[A-Z_]+$|^Z[0-9]|^\\\\|axis|legend|colour|bold|italic|hold|scale|free|left|right|top|bottom|center|white|grey|black|blue|red|green", cell_txt)]
+words_cells  <- sum(sapply(cell_txt, wc))
+
+# ── 7. Appendix prose
+words_app <- wc(prose_app)
+
+# ── 8. Derived totals
+words_extra        <- words_fig_caps + words_tab_caps + words_cells
+words_full_excl_app <- words_body_prose + words_extra
+
+# ── 9. Build table
+n_sec <- length(sec_labels)
+row_body_prose  <- n_sec + 1L
+row_total       <- n_sec + 5L
+row_app         <- n_sec + 6L
+
+wc_rows <- data.frame(
+  Section = c(
+    paste0(seq_along(sec_labels), ".\\ ", sec_labels),
+    "Body Prose",
+    paste0("Figure captions (", n_figs, " figures)"),
+    paste0("Table captions (", n_tabs, " tables)"),
+    "Table cell content",
+    "Total (excl.\\ appendices)",
+    "Appendices (A1--A3)"
+  ),
+  Words = format(c(sec_wc, words_body_prose,
+                   words_fig_caps, words_tab_caps, words_cells,
+                   words_full_excl_app, words_app),
+                 big.mark = ","),
+  stringsAsFactors = FALSE
+)
+
+kableExtra::kbl(
+  wc_rows,
+  caption    = "Manuscript word count. Prose counts exclude code chunks, display mathematics, and YAML. Caption and cell counts are extracted from R chunk code.",
+  col.names  = c("Item", "Words"),
+  align      = c("l", "r"),
+  booktabs   = TRUE,
+  escape     = FALSE,
+  linesep    = ""
+) |>
+  kableExtra::kable_styling(
+    latex_options = c("hold_position"),
+    full_width    = FALSE,
+    font_size     = 10
+  ) |>
+  kableExtra::column_spec(1, width = "9cm") |>
+  kableExtra::column_spec(2, width = "2cm") |>
+  kableExtra::row_spec(c(row_body_prose, row_total), bold = TRUE) |>
+  kableExtra::row_spec(row_body_prose, hline_after = TRUE) |>
+  kableExtra::row_spec(row_total - 1L,  hline_after = TRUE) |>
+  kableExtra::row_spec(row_total,        hline_after = TRUE)
+```

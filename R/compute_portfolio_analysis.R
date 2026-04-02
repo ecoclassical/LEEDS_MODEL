@@ -13,16 +13,16 @@ n_sec <- 54
 
 # ── Output subdirectories ──────────────────────────────────────────────────────
 for (d in c(
-  'output/pdf_figures/demand',
-  'output/png_figures/demand',
-  'output/pdf_figures/intermediate',
-  'output/png_figures/intermediate',
-  'output/pdf_figures/leontief',
-  'output/png_figures/leontief',
-  'output/pdf_figures/portfolio',
-  'output/png_figures/portfolio',
-  'output/pdf_figures/impact',
-  'output/png_figures/impact'
+  'output/pdf/figures/demand',
+  'output/png/demand',
+  'output/pdf/figures/intermediate',
+  'output/png/intermediate',
+  'output/pdf/figures/leontief',
+  'output/png/leontief',
+  'output/pdf/figures/portfolio',
+  'output/png/portfolio',
+  'output/pdf/figures/impact',
+  'output/png/impact'
 )) {
   dir.create(d, showWarnings = FALSE, recursive = TRUE)
 }
@@ -376,16 +376,24 @@ p1 <- ggplot(struct_long, aes(y = material, x = scale, fill = channel)) +
     x = 'Output (model units)',
     y = NULL
   ) +
-  theme_demand()
+  theme_demand(base_size = 22) +
+  theme(
+    strip.text.x = element_text(face = 'bold', size = 20),
+    strip.text.y = element_text(face = 'bold', size = 20, angle = 0),
+    axis.text.y  = element_text(size = 20, hjust = 1),
+    axis.text.x  = element_text(size = 16),
+    plot.title   = element_text(face = 'bold', size = 28, hjust = 0),
+    plot.subtitle = element_text(face = 'italic', size = 24, hjust = 0)
+  )
 
 ggsave(
-  'output/pdf_figures/demand/p_demand_structure.pdf',
+  'output/pdf/figures/demand/p_demand_structure.pdf',
   p1,
   width = 16,
   height = 7
 )
 ggsave(
-  'output/png_figures/demand/p_demand_structure.png',
+  'output/png/demand/p_demand_structure.png',
   p1,
   width = 16,
   height = 7,
@@ -418,13 +426,13 @@ p1b <- ggplot(struct_comp, aes(y = material, x = pct, fill = channel)) +
   theme_demand()
 
 ggsave(
-  'output/pdf_figures/demand/p_demand_composition.pdf',
+  'output/pdf/figures/demand/p_demand_composition.pdf',
   p1b,
   width = 16,
   height = 7
 )
 ggsave(
-  'output/png_figures/demand/p_demand_composition.png',
+  'output/png/demand/p_demand_composition.png',
   p1b,
   width = 16,
   height = 7,
@@ -513,13 +521,13 @@ p1c <- ggplot(import_long, aes(x = label, y = import_demand, fill = channel)) +
   theme(panel.grid.major.y = element_blank())
 
 ggsave(
-  'output/pdf_figures/demand/p_import_decomp.pdf',
+  'output/pdf/figures/demand/p_import_decomp.pdf',
   p1c,
   width = 10,
   height = 8
 )
 ggsave(
-  'output/png_figures/demand/p_import_decomp.png',
+  'output/png/demand/p_import_decomp.png',
   p1c,
   width = 10,
   height = 8,
@@ -623,13 +631,13 @@ p2 <- ggplot(port_rows, aes(x = material, y = portfolio, fill = pct_of_full)) +
   )
 
 ggsave(
-  'output/pdf_figures/portfolio/p_portfolio_heatmap.pdf',
+  'output/pdf/figures/portfolio/p_portfolio_heatmap.pdf',
   p2,
   width = 10,
   height = 6
 )
 ggsave(
-  'output/png_figures/portfolio/p_portfolio_heatmap.png',
+  'output/png/portfolio/p_portfolio_heatmap.png',
   p2,
   width = 10,
   height = 6,
@@ -810,26 +818,26 @@ p_int_pct <- make_int_plot(
 )
 
 ggsave(
-  'output/pdf_figures/intermediate/p_intermediate_abs.pdf',
+  'output/pdf/figures/intermediate/p_intermediate_abs.pdf',
   p_int_abs,
   width = 16,
   height = 8
 )
 ggsave(
-  'output/png_figures/intermediate/p_intermediate_abs.png',
+  'output/png/intermediate/p_intermediate_abs.png',
   p_int_abs,
   width = 16,
   height = 8,
   dpi = 150
 )
 ggsave(
-  'output/pdf_figures/intermediate/p_intermediate_pct.pdf',
+  'output/pdf/figures/intermediate/p_intermediate_pct.pdf',
   p_int_pct,
   width = 16,
   height = 8
 )
 ggsave(
-  'output/png_figures/intermediate/p_intermediate_pct.png',
+  'output/png/intermediate/p_intermediate_pct.png',
   p_int_pct,
   width = 16,
   height = 8,
@@ -1015,26 +1023,26 @@ for (xvar in c('abs_val', 'pct_combined')) {
   p_pri <- make_lf_plot(lf_pri, 'Primary', top_lf_pri, xvar, xlabel)
   p_sec <- make_lf_plot(lf_sec, 'Secondary', top_lf_sec, xvar, xlabel)
   ggsave(
-    sprintf('output/pdf_figures/leontief/p_leontief_primary_%s.pdf', tag),
+    sprintf('output/pdf/figures/leontief/p_leontief_primary_%s.pdf', tag),
     p_pri,
     width = 16,
     height = 10
   )
   ggsave(
-    sprintf('output/png_figures/leontief/p_leontief_primary_%s.png', tag),
+    sprintf('output/png/leontief/p_leontief_primary_%s.png', tag),
     p_pri,
     width = 16,
     height = 10,
     dpi = 150
   )
   ggsave(
-    sprintf('output/pdf_figures/leontief/p_leontief_secondary_%s.pdf', tag),
+    sprintf('output/pdf/figures/leontief/p_leontief_secondary_%s.pdf', tag),
     p_sec,
     width = 16,
     height = 10
   )
   ggsave(
-    sprintf('output/png_figures/leontief/p_leontief_secondary_%s.png', tag),
+    sprintf('output/png/leontief/p_leontief_secondary_%s.png', tag),
     p_sec,
     width = 16,
     height = 10,
@@ -1072,13 +1080,13 @@ for (pair in list(
   list(p = p_sec_eu_abs, tag = 'secondary')
 )) {
   ggsave(
-    sprintf('output/pdf_figures/leontief/p_leontief_%s_abs_eu.pdf', pair$tag),
+    sprintf('output/pdf/figures/leontief/p_leontief_%s_abs_eu.pdf', pair$tag),
     pair$p,
     width = 14,
     height = 10
   )
   ggsave(
-    sprintf('output/png_figures/leontief/p_leontief_%s_abs_eu.png', pair$tag),
+    sprintf('output/png/leontief/p_leontief_%s_abs_eu.png', pair$tag),
     pair$p,
     width = 14,
     height = 10,
@@ -1163,13 +1171,13 @@ for (pair in list(
   list(p = p_hm_sec, tag = 'secondary')
 )) {
   ggsave(
-    sprintf('output/pdf_figures/leontief/p_leontief_%s_heatmap.pdf', pair$tag),
+    sprintf('output/pdf/figures/leontief/p_leontief_%s_heatmap.pdf', pair$tag),
     pair$p,
     width = 14,
     height = 8
   )
   ggsave(
-    sprintf('output/png_figures/leontief/p_leontief_%s_heatmap.png', pair$tag),
+    sprintf('output/png/leontief/p_leontief_%s_heatmap.png', pair$tag),
     pair$p,
     width = 14,
     height = 8,
@@ -1189,7 +1197,7 @@ for (fv in c('pct_combined', 'abs_val')) {
   )) {
     ggsave(
       sprintf(
-        'output/pdf_figures/leontief/p_leontief_%s_heatmap_eu_%s.pdf',
+        'output/pdf/figures/leontief/p_leontief_%s_heatmap_eu_%s.pdf',
         pair$tag,
         fsuffix
       ),
@@ -1199,7 +1207,7 @@ for (fv in c('pct_combined', 'abs_val')) {
     )
     ggsave(
       sprintf(
-        'output/png_figures/leontief/p_leontief_%s_heatmap_eu_%s.png',
+        'output/png/leontief/p_leontief_%s_heatmap_eu_%s.png',
         pair$tag,
         fsuffix
       ),
@@ -1291,7 +1299,7 @@ for (fv in c('pct_combined', 'abs_val')) {
   )) {
     ggsave(
       sprintf(
-        'output/pdf_figures/leontief/p_leontief_%s_heatmap_eu_pure_%s.pdf',
+        'output/pdf/figures/leontief/p_leontief_%s_heatmap_eu_pure_%s.pdf',
         pair$tag,
         fsuffix
       ),
@@ -1301,7 +1309,7 @@ for (fv in c('pct_combined', 'abs_val')) {
     )
     ggsave(
       sprintf(
-        'output/png_figures/leontief/p_leontief_%s_heatmap_eu_pure_%s.png',
+        'output/png/leontief/p_leontief_%s_heatmap_eu_pure_%s.png',
         pair$tag,
         fsuffix
       ),
@@ -1489,13 +1497,13 @@ p4_water <- make_impact_heatmap(
 for (nm in c('emis', 'mat', 'land', 'water')) {
   p <- get(paste0('p4_', nm))
   ggsave(
-    paste0('output/pdf_figures/impact/p_impact_', nm, '.pdf'),
+    paste0('output/pdf/figures/impact/p_impact_', nm, '.pdf'),
     p,
     width = 10,
     height = 8
   )
   ggsave(
-    paste0('output/png_figures/impact/p_impact_', nm, '.png'),
+    paste0('output/png/impact/p_impact_', nm, '.png'),
     p,
     width = 10,
     height = 8,
