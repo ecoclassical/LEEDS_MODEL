@@ -1,0 +1,247 @@
+---
+title: "Supplementary Material"
+subtitle: "The transition to a sustainable economy is not sustainable: an ecological macroeconomic analysis of climate policy, the circular economy, and global inequality"
+format:
+  pdf:
+    toc: true
+    toc-depth: 2
+    number-sections: false
+    geometry:
+      - top=25mm
+      - bottom=25mm
+      - left=25mm
+      - right=25mm
+    fontsize: 11pt
+    linestretch: 1.4
+    keep-tex: false
+    include-in-header:
+      text: |
+        \usepackage{rotating}
+        \usepackage{pdflscape}
+        \usepackage{caption}
+        \captionsetup[figure]{font=it,labelfont=it}
+        \captionsetup[table]{font=bf,labelfont=bf}
+        \usepackage{xcolor}
+        \usepackage{colortbl}
+        \usepackage{etoolbox}
+        \AtBeginEnvironment{tabular}{\linespread{0.85}\selectfont}
+        \AtBeginEnvironment{longtable}{\linespread{0.85}\selectfont}
+execute:
+  echo: false
+  warning: false
+  message: false
+---
+
+```{r setup, include=FALSE}
+library(tidyverse)
+library(knitr)
+library(kableExtra)
+
+qmd_in <- knitr::current_input()
+if (!is.null(qmd_in) && nzchar(qmd_in)) {
+  qmd_path <- normalizePath(qmd_in, winslash = "/")
+  root <- normalizePath(file.path(dirname(qmd_path), ".."), winslash = "/")
+} else {
+  wd0  <- normalizePath(getwd(), winslash = "/")
+  root <- if (basename(wd0) == "qmd") normalizePath("..", winslash = "/") else wd0
+}
+```
+
+## Appendix 1: MVP Model Equations {.unnumbered}
+
+The model consists of difference equations describing the dynamics of the economic variables over a finite time horizon, both at the industry level and at the aggregate level. Each period corresponds to one year. Variables are expressed at time $t$, unless a "$-1$" subscript denotes a lagged value. The superscript $z$ denotes a region ($Z_1$ = EU, $Z_2$ = RoW); $f$ denotes the foreign region. Operators $\odot$ and $\oslash$ denote element-wise (Hadamard) multiplication and division; standard matrix multiplication is denoted by $\cdot$.
+
+### Block 1. Households
+
+Real household consumption:
+
+$$c^z = \alpha_1^z \frac{YD_w^z}{p_A^z} + \alpha_2^z \frac{YD_c^z}{p_A^z} + \alpha_3^z \frac{V_{-1}^z}{p_{A,-1}^z} \tag{1.1}$$
+
+where $p_A^z$ is the consumer price index and $\alpha_1^z > \alpha_2^z > \alpha_3^z$ are the propensities to consume out of disposable labour income ($YD_w^z$), disposable capital income ($YD_c^z$), and net wealth ($V^z$), respectively.
+
+Disposable income:
+
+$$YD^z = WB^z + DIV^z + FB^{z+} + r_{m,-1}^z M_{h,-1}^z + r_{b,-1}^z B_{s,z,-1}^z + xr_{-1}^f r_{b,-1}^f B_{s,z,-1}^f + \Delta xr^f B_{s,z,-1}^f + E_{s,z,-1}^{f+} - r_{h,-1}^z L_{h,-1}^z - T^z \tag{1.2}$$
+
+Net wealth accumulation: $V^z = V_{-1}^z + YD^z - p_A^z c^z$ (1.3).
+
+### Block 2. Production Firms (Current Account)
+
+The final demand faced by production firms is made up of household consumption, corporate investment in fixed capital, government spending, and public investment. Considering $K = 54$ industries at the global level, the demand for final goods and services across both regions stacks into a $2K$-dimensional vector:
+
+$$\mathbf{d} = \sum_{z \in \{Z_1, Z_2\}} \left(\boldsymbol{\beta}^z c^z + \boldsymbol{\sigma}^z g^z + \boldsymbol{\iota}^z i_d^z + \boldsymbol{\iota}_g^z\, i_{d,g}^z\right) \tag{2.1}$$
+
+where $i_d^z$ is real corporate demand for investment, $g^z$ is real government consumption, $\boldsymbol{\beta}^z$ is the vector of household consumption shares ($\sum_{s=1}^{2K}\beta_s^z = 1$), $\boldsymbol{\iota}^z$ is the vector of investment shares ($\sum_{s=1}^{2K}\iota_s^z = 1$), $\boldsymbol{\sigma}^z$ is the vector of government spending shares ($\sum_{s=1}^{2K}\sigma_s^z = 1$), and $\boldsymbol{\iota}_g^z$ is the vector of public investment shares.
+
+Equivalently, in compact matrix–vector form:
+
+$$\mathbf{d} = \boldsymbol{\Phi}\,\mathbf{f} \tag{2.1$'$}$$
+
+where $\boldsymbol{\Phi} = \bigl[\boldsymbol{\beta}^{Z_1},\, \boldsymbol{\beta}^{Z_2},\, \boldsymbol{\sigma}^{Z_1},\, \boldsymbol{\sigma}^{Z_2},\, \boldsymbol{\iota}^{Z_1},\, \boldsymbol{\iota}^{Z_2},\, \boldsymbol{\iota}_g^{Z_1},\, \boldsymbol{\iota}_g^{Z_2}\bigr] \in \mathbb{R}^{2K \times 8}$ is the demand-share matrix and $\mathbf{f} = \bigl(c^{Z_1},\, c^{Z_2},\, g^{Z_1},\, g^{Z_2},\, i_d^{Z_1},\, i_d^{Z_2},\, i_{d,g}^{Z_1},\, i_{d,g}^{Z_2}\bigr)^\top \in \mathbb{R}^{8}$ collects all regional expenditure aggregates.
+
+Each share vector $\boldsymbol{\beta}^z, \boldsymbol{\sigma}^z, \boldsymbol{\iota}^z \in \mathbb{R}^{2K}$ spans all $2K$ sectors across both regions, so that cross-border imports are embedded within the allocation shares rather than separated into explicit export/import terms. Off-diagonal column sums of $\boldsymbol{\Phi}$ give bilateral import flows directly; no separate net-export terms are required.
+
+Gross output via the Leontief inverse:
+
+$$\mathbf{x} = (I - A)^{-1}\,\mathbf{d} = L\,\mathbf{d} \tag{2.2}$$
+
+Corporate profit (residual): $\Pi^z = Y^z - WB^z - r_{l,-1}^z L_{f,-1}^z - \delta K_{-1}^z$ (2.5).
+
+### Block 3. Production Firms (Capital Account)
+
+Target capital stock: $K^{z*} = \kappa^z \mathbf{p}^{z\top} \mathbf{x}^z$ (3.1).
+
+Real investment adjustment: $i_d^z = i_{d,-1}^z + \gamma^z(K^{z*} - K_{-1}^z)/p_{K,-1}^z$ (3.2).
+
+Capital stock evolution: $K^z = K_{-1}^z(1 - \delta^z) + p_K^z i_d^z$ (3.4).
+
+### Block 4. Commercial Banks
+
+Loans supplied on demand: $L_s^z = L_d^z$ (4.1). Deposits supplied on demand: $M_s^z = M_d^z$ (4.2).
+
+### Block 5. Government
+
+Government expenditure is exogenous. Deficit: $GDEF^z = G^z + r_{b,-1}^z B_{s,-1}^z - T^z - F_{cb}^z$ (5.1). Bills outstanding: $B_s^z = B_{s,-1}^z + GDEF^z$ (5.2).
+
+### Block 6. Ecological Extensions
+
+Total CO$_2$ emissions: $\varepsilon^z = \boldsymbol{\varepsilon}^{z\top} \mathbf{x}^z$ (6.1). Total material extraction: $M^z = \mathbf{m}^{z\top} \mathbf{x}^z$ (6.2). Land use: $\Lambda^z = \boldsymbol{\lambda}^{z\top} \mathbf{x}^z$ (6.3). Water use: $\Omega^z = \boldsymbol{\omega}^{z\top} \mathbf{x}^z$ (6.4).
+
+### CE Scenario Design
+
+**Final-demand shocks** shift fraction $\rho$ of primary-sector demand toward the secondary sector. First-order change in primary material output for material $r$:
+
+$$\Delta M_1^r = \rho \cdot fd_{r,1} \cdot (l_{r1,r2} - l_{r1,r1}) \tag{SD.1}$$
+
+**Intermediate-production shocks** adjust the A-matrix: $\Delta a_{r1,sj} = -\rho\, a_{r1,sj}$, $\Delta a_{r2,sj} = +\rho\, a_{r1,sj}$. First-order material impact:
+
+$$\Delta M_1^r = \rho \cdot x_{r,1} \cdot (l_{r1,r2} - l_{r1,r1}) \tag{SD.2}$$
+
+Since $(l_{r1,r2} - l_{r1,r1}) \approx -1$ across all material pairs, the ranking of CE interventions by primary material savings reduces to a ranking of the scale factor ($fd_{r,1}$ or $x_{r,1}$).
+
+---
+
+## Appendix 2: Sector List {.unnumbered}
+
+The model comprises 54 sectors per region (108 total across EU and RoW). Each region shares an identical sector structure. Secondary/reprocessing sectors involved in circular economy substitutions are marked with $\star$.
+
+```{r sector-list-table}
+ce_info <- data.frame(
+  sector_code  = c( 7,  8, 11, 12, 13, 14, 17, 18, 21, 22, 24, 25, 26, 27, 31, 32, 36, 37),
+  Role         = c("Primary","Secondary","Primary","Secondary","Primary","Secondary",
+                   "Primary","Secondary","Primary","Secondary","Primary","Secondary",
+                   "Primary","Secondary","Primary","Secondary","Primary","Secondary"),
+  Scenario     = c("Sc1","Sc1","Sc3, Sc7","Sc3, Sc7","Sc8","Sc8",
+                   "Sc4, Sc9","Sc4, Sc9","Sc11","Sc11","Sc12","Sc12",
+                   "Sc6, Sc10","Sc6, Sc10","Sc2, Sc13","Sc2, Sc13","Sc5, Sc14","Sc5, Sc14"),
+  Channel      = c("Cons.","Cons.",
+                   "Cons., Prod.","Cons., Prod.",
+                   "Prod.","Prod.",
+                   "Cons., Prod.","Cons., Prod.",
+                   "Prod.","Prod.","Prod.","Prod.",
+                   "Fix. Inv., Prod.","Fix. Inv., Prod.",
+                   "Cons., Prod.","Cons., Prod.",
+                   "Fix. Inv., Prod.","Fix. Inv., Prod."),
+  Demand       = c("F","F","F, I","F, I","I","I","F, I","F, I",
+                   "I","I","I","I","F, I","F, I","F, I","F, I","F, I","F, I"),
+  Transmission = c("Prod. Leakage","Prod. Leakage",
+                   "Sym. Contraction","Sym. Contraction",
+                   "Sym. Contraction","Sym. Contraction",
+                   "Prod. Leakage","Prod. Leakage",
+                   "Sym. Contraction","Sym. Contraction",
+                   "Sym. Contraction","Sym. Contraction",
+                   "Comp. Displacement","Comp. Displacement",
+                   "Fossil Collapse","Fossil Collapse",
+                   "Const. Rebound","Const. Rebound"),
+  stringsAsFactors = FALSE
+)
+
+sectors <- read.csv(file.path(root, "data", "sector_list.csv")) |>
+  dplyr::mutate(label = trimws(gsub("<br>", " ", label)),
+                label = gsub("&", "\\\\&", label))   # escape & for LaTeX
+
+df <- sectors |>
+  dplyr::left_join(ce_info, by = "sector_code") |>
+  dplyr::mutate(
+    Sector       = label,
+    Role         = ifelse(is.na(Role),         "", Role),
+    Scenario     = ifelse(is.na(Scenario),     "", Scenario),
+    Channel      = ifelse(is.na(Channel),      "", Channel),
+    Demand       = ifelse(is.na(Demand),       "", Demand),
+    Transmission = ifelse(is.na(Transmission), "", Transmission)
+  )
+
+cap <- "Sector List. CE substitution pairs by transmission regime. F = Final Demand, I = Intermediate Demand. Primary = source sector; Secondary = reprocessing sector."
+
+if (knitr::is_html_output() || knitr::is_latex_output()) {
+  kbl_out <- df |>
+    dplyr::select(num = sector_code, Sector, Role, Scenario, Channel, Demand, Transmission) |>
+    kableExtra::kbl(
+      caption   = cap,
+      col.names = c("\\#", "Sector", "Role", "Scenario", "Channel", "Demand", "Transmission"),
+      align     = c("c","l","l","c","c","c","l"),
+      booktabs  = TRUE,
+      escape    = FALSE
+    ) |>
+    kableExtra::kable_styling(
+      latex_options = c("scale_down", "hold_position"),
+      full_width    = FALSE,
+      font_size     = 9
+    ) |>
+    kableExtra::row_spec(0, bold = TRUE)
+  kbl_out
+} else {
+  df |>
+    dplyr::select(num = sector_code, Sector, Role, Scenario, Channel, Demand, Transmission) |>
+    knitr::kable(caption = cap, col.names = c("#","Sector","Role","Scenario","Channel","Demand","Transmission"),
+                 align = c("c","l","l","c","c","c","l"))
+}
+```
+
+## Appendix 3: Model Calibration {.unnumbered}
+
+The model is calibrated to 2018 EXIOBASE 3 data, aggregated from 44 countries and 5 rest-of-world blocks to two regions (EU and RoW) and from 163 sectors to 54 using concordance tables. Target calibration values are shown in Table A2.
+
+| Variable | EU ($Z_1$) | RoW ($Z_2$) |
+|----------|-----------|------------|
+| Consumption | 626.32 | 2370.71 |
+| Investment | 245.77 | 1135.84 |
+| Government spending | 239.46 | 675.33 |
+| Final exports | 102.78 | 66.36 |
+| Final imports | 66.36 | 102.78 |
+| GDP | 1130.67 | 4162.75 |
+| Gross output | 2153.60 | 8424.52 |
+
+: Target calibration values (€10 billion). Source: EXIOBASE 3. {#tbl-calibration}
+
+The remaining parameters (propensities to consume, portfolio coefficients, mark-up rates, speed-of-adjustment parameters, ecological intensity vectors) are calibrated via an evolutionary random-search algorithm. Starting from initial conditions, the algorithm searches over instrument variables to minimize the goodness-of-fit criterion:
+
+$$\mathcal{G} = \sum_{v} \left(\frac{\hat{y}_v - y_v^*}{y_v^*}\right)^2$$
+
+where $\hat{y}_v$ is the model-simulated value and $y_v^*$ is the EXIOBASE target for variable $v$. At each iteration $i$, instrument values are perturbed from a Gaussian distribution with mean $\boldsymbol{\theta}_{i-1}$ and standard deviation $\sigma$ (a hyperparameter); the new set is accepted if $\mathcal{G}_i < \mathcal{G}_{i-1}$. The algorithm terminates when $\mathcal{G}$ reaches a satisfactory level, typically below 0.01 for all 14 target variables simultaneously. Initial balance-sheet configurations (asset and liability stocks) are included among the instrument variables to ensure stock-flow consistency from period one.
+
+---
+
+## Appendix 4: List of Tables and Figures {.unnumbered}
+
+**Tables**
+
+| # | Caption | Location |
+|---|---------|----------|
+| 1 | Scenario Registry | §3 Scenario Design |
+| 2 | Scenario Summary: key simulation findings at Long Term | §3 Scenario Design |
+| A1 | Sector List | Appendix 2 |
+| A2 | Target calibration values | Appendix 3 |
+
+**Figures**
+
+| # | Caption | Location |
+|---|---------|----------|
+| 1 | EU demand structure: primary vs secondary material sectors | §2 Model Overview |
+| 2 | EU imports from RoW by sector | §2 Model Overview |
+| 3 | Full supply-chain upstream input requirements (Leontief decomposition) | §2 Model Overview |
+| 4 | Cross-border asymmetry: EU vs RoW long-term deviations | §4 Results |
+| 5 | CE portfolio effectiveness heatmap | §4 Results |
+| 6 | CE scenarios — domestic effects (EU) | §4 Results |
+| 7 | CE scenarios — cross-border effects (RoW) | §4 Results |
+

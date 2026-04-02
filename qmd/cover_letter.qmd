@@ -1,0 +1,99 @@
+---
+format:
+  pdf:
+    geometry:
+      - top=25mm
+      - bottom=25mm
+      - left=30mm
+      - right=30mm
+    fontsize: 11pt
+    linestretch: 1.3
+    keep-tex: false
+    include-in-header:
+      text: |
+        \usepackage{xcolor}
+        \usepackage{mdframed}
+        \usepackage{graphicx}
+        \definecolor{jhublue}{RGB}{0,45,114}
+        \definecolor{lightgray}{RGB}{230,230,230}
+        \pagestyle{empty}
+execute:
+  echo: false
+  warning: false
+  message: false
+---
+
+\begin{mdframed}[backgroundcolor=jhublue, linewidth=0pt,
+  innertopmargin=10pt, innerbottommargin=10pt,
+  innerleftmargin=14pt, innerrightmargin=14pt]
+{\color{white}\bfseries\large JOHNS HOPKINS UNIVERSITY}\\[2pt]
+{\color{white}\normalsize Net Zero Industrial Policy Lab $\cdot$ Department of Political Science}\\[2pt]
+{\color{white}\small Baltimore, MD 21218, USA $\quad|\quad$ \texttt{ovalles1@jhu.edu}}
+\end{mdframed}
+
+\vspace{1.8em}
+
+`r format(Sys.Date(), "%B %d, %Y")`
+
+\vspace{1em}
+
+**The Editor and Guest Editors**\
+*Ecological Economics* — Special Issue:\
+*Ecological Macroeconomics Modelling: Exploring Alternative Futures*
+
+\vspace{1.5em}
+
+Dear Editor and Guest Editors,
+
+\vspace{0.5em}
+
+We are pleased to submit our manuscript entitled **"The transition to a sustainable economy is not sustainable: an ecological macroeconomic analysis of climate policy, the circular economy, and global inequality"** for consideration for publication in the special issue *Ecological Macroeconomics Modelling: Exploring Alternative Futures* in *Ecological Economics*.
+
+The paper examines the implications of circular economy (CE) policies using a novel modelling framework that integrates multi-regional input–output analysis with stock–flow consistent dynamics in a two-region (European Union–Rest of the World) ecological macroeconomic model. While circular economy strategies are widely promoted as pathways to sustainability, their broader macroeconomic and global distributional effects remain insufficiently understood. Our contribution addresses this gap by introducing a channel-based analytical framework and by tracing how CE transitions propagate asymmetrically across regions through three distinct demand channels.
+
+The paper makes three main contributions. First, it introduces a channel-based perspective on circular economy transitions, distinguishing between interventions operating through final demand, intermediate production, and investment. Second, it integrates circular economy analysis within an open-economy ecological macroeconomic framework, allowing us to jointly analyse production structures, financial dynamics, and cross-border linkages. Third, it identifies four cross-border transmission regimes — Symmetric Contraction, Production Leakage, Competitive Displacement, and Fossil Import Collapse — through which CE transitions propagate asymmetrically between the EU and the Rest of the World, worsening within-EU labour income shares and RoW fiscal balances and widening within- and between-region inequality. A key result is the *circular economy trilemma*: no circular economy scenario simultaneously achieves ecological improvement, macroeconomic stability, and social equity.
+
+Our results show that the effectiveness of CE policies depends critically on the scale and structure of the demand channels they target. Production-side restructuring consistently delivers stronger ecological outcomes than final-demand interventions, but generates modest macroeconomic contractions and distributionally regressive effects — particularly for the Rest of the World, which bears systematic employment and fiscal costs from EU circular transitions. This finding acquires particular relevance in the current geopolitical context, where fossil-fuel trade disruptions and supply-chain fragmentation are already imposing analogous asymmetric adjustment burdens on commodity-exporting economies.
+
+We believe the manuscript is a strong and timely contribution to the special issue and to the broader *Ecological Economics* readership, given its direct engagement with the open-economy dimensions of ecological macroeconomic modelling. The model, scenarios, and code are available upon request.
+
+For the editors' reference, the manuscript comprises 7,286 words of body prose across seven sections, with a further 1,707 words in figure captions, table captions, and table cell content (8,993 words total):
+
+\vspace{0.5em}
+
+\begin{tabular}{lr}
+\toprule
+\textbf{Section} & \textbf{Word count} \\
+\midrule
+1.\ Introduction          & 1{,}363 \\
+2.\ Model Overview        & 1{,}454 \\
+3.\ Descriptive Statistics & 882 \\
+4.\ Scenario Design       & 809 \\
+5.\ Scenario Analysis     & 650 \\
+6.\ Scenario Discussion   & 1{,}479 \\
+7.\ Conclusions           & 649 \\
+\midrule
+\textbf{Body Prose} & \textbf{7{,}286} \\
+\midrule
+Figure captions (8 figures) & 909 \\
+Table captions (4 tables)   & 510 \\
+Table cell content          & 288 \\
+\midrule
+\textbf{Total (incl.\ captions \& tables)} & \textbf{8{,}993} \\
+\bottomrule
+\end{tabular}
+
+\vspace{1em}
+
+We confirm that this manuscript is original, has not been published previously, and is not under consideration in any other journal. All authors have read and approved the submission. There are no competing interests to declare.
+
+\vspace{1.5em}
+
+Yours sincerely,
+
+\vspace{1em}
+
+**Oriol Vallès Codina**\
+Research Scientist, Department of Political Science\
+Net Zero Industrial Policy Lab, Johns Hopkins University\
+\texttt{ovalles1@jhu.edu} $\;\cdot\;$ \texttt{oriolvallescodina@gmail.com} $\;\cdot\;$ \url{https://ecoclassical.github.io/}
