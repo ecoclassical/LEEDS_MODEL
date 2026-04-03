@@ -342,19 +342,15 @@ struct_long$region_dom <- factor(
 )
 
 # ── Shared theme for p_demand plots ───────────────────────────────────────────
-theme_demand <- function(base_size = 11) {
+# Standard paper theme — matches the figure 3 text sizes the author preferred
+theme_paper <- function(base_size = 13) {
   theme_grey(base_size = base_size) %+replace%
     theme(
-      strip.text.x = element_text(face = 'bold', size = 10),
-      strip.text.y = element_text(face = 'bold', size = 10, angle = 0),
-      axis.text.y = element_text(size = 10, hjust = 1),
-      axis.text.x = element_text(size = 8),
-      legend.position = 'top',
-      legend.direction = 'horizontal',
-      legend.title = element_text(face = 'bold'),
-      panel.grid.major.y = element_blank(),
-      plot.title = element_text(face = 'bold', size = 16, hjust = 0),
-      plot.subtitle = element_text(face = 'italic', size = 14, hjust = 0)
+      plot.title    = element_text(face = 'bold',   size = 16, hjust = 0),
+      plot.subtitle = element_text(face = 'italic',  size = 12, hjust = 0),
+      axis.text.y   = element_text(size = 11, hjust = 1, margin = margin(r = 6)),
+      axis.text.x   = element_text(size = 11),
+      strip.text    = element_text(size = 12)   # not bold
     )
 }
 
@@ -376,27 +372,25 @@ p1 <- ggplot(struct_long, aes(y = material, x = scale, fill = channel)) +
     x = 'Output (model units)',
     y = NULL
   ) +
-  theme_demand(base_size = 22) +
+  theme_paper() +
   theme(
-    strip.text.x = element_text(face = 'bold', size = 20),
-    strip.text.y = element_text(face = 'bold', size = 20, angle = 0),
-    axis.text.y  = element_text(size = 20, hjust = 1),
-    axis.text.x  = element_text(size = 16),
-    plot.title   = element_text(face = 'bold', size = 28, hjust = 0),
-    plot.subtitle = element_text(face = 'italic', size = 24, hjust = 0)
+    strip.text.y    = element_text(size = 12, angle = 0),
+    legend.position = 'top',
+    legend.direction = 'horizontal',
+    panel.grid.major.y = element_blank()
   )
 
 ggsave(
   'output/pdf/figures/demand/p_demand_structure.pdf',
   p1,
   width = 16,
-  height = 7
+  height = 10
 )
 ggsave(
   'output/png/demand/p_demand_structure.png',
   p1,
   width = 16,
-  height = 7,
+  height = 10,
   dpi = 150
 )
 cat('Saved: p_demand_structure\n')
@@ -423,7 +417,12 @@ p1b <- ggplot(struct_comp, aes(y = material, x = pct, fill = channel)) +
     x = '% of primary + secondary material output',
     y = NULL
   ) +
-  theme_demand()
+  theme_paper() +
+  theme(
+    legend.position    = 'top',
+    legend.direction   = 'horizontal',
+    panel.grid.major.y = element_blank()
+  )
 
 ggsave(
   'output/pdf/figures/demand/p_demand_composition.pdf',
@@ -517,8 +516,12 @@ p1c <- ggplot(import_long, aes(x = label, y = import_demand, fill = channel)) +
     x = NULL,
     y = 'Import demand (model units)'
   ) +
-  theme_demand(base_size = 11) +
-  theme(panel.grid.major.y = element_blank())
+  theme_paper() +
+  theme(
+    legend.position    = 'top',
+    legend.direction   = 'horizontal',
+    panel.grid.major.y = element_blank()
+  )
 
 ggsave(
   'output/pdf/figures/demand/p_import_decomp.pdf',
@@ -1151,15 +1154,10 @@ make_lf_heatmap <- function(df, mat_type_lbl, fill_var = 'pct_combined') {
       x = NULL,
       y = NULL
     ) +
-    theme_grey(base_size = 11) +
+    theme_paper() +
     theme(
-      axis.text.x = element_text(angle = 0, hjust = 0.5, size = 9),
-      axis.text.y = element_text(size = 9),
-      strip.text = element_text(face = 'bold', size = 10),
       legend.position = 'right',
-      panel.grid = element_blank(),
-      plot.title = element_text(face = 'bold', size = 14),
-      plot.subtitle = element_text(face = 'italic', size = 10)
+      panel.grid      = element_blank()
     )
 }
 

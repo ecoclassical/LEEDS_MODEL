@@ -69,7 +69,7 @@ circular economy; multi-regional input-output; stock-flow consistent model; ecol
 \begin{itemize}
   \item Two-region MRIO-SFC model tracks CE policies across EU and Rest of World
   \item CE effectiveness depends on scale and structure of targeted demand channel
-  \item Four cross-border transmission regimes identified: Symmetric --- Mutual Contraction and Production Leakage; Asymmetric --- Competitive Displacement and Fossil-Fuel Collapse
+  \item Four cross-border transmission regimes found: symmetric contraction, production leakage, competitive displacement, and fossil-fuel collapse
   \item Production CE transitions improve EU ecological outcomes while worsening EU labour income share and RoW fiscal balance, widening within- and between-region inequality
   \item CE trilemma: no scenario simultaneously achieves ecological improvement, macroeconomic stability, and social equity
 \end{itemize}

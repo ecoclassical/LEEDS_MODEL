@@ -12,10 +12,7 @@ format:
     include-in-header:
       text: |
         \usepackage{xcolor}
-        \usepackage{mdframed}
-        \usepackage{graphicx}
         \definecolor{jhublue}{RGB}{0,45,114}
-        \definecolor{lightgray}{RGB}{230,230,230}
         \pagestyle{empty}
 execute:
   echo: false
@@ -23,15 +20,17 @@ execute:
   message: false
 ---
 
-\begin{mdframed}[backgroundcolor=jhublue, linewidth=0pt,
-  innertopmargin=10pt, innerbottommargin=10pt,
-  innerleftmargin=14pt, innerrightmargin=14pt]
-{\color{white}\bfseries\large JOHNS HOPKINS UNIVERSITY}\\[2pt]
-{\color{white}\normalsize Net Zero Industrial Policy Lab $\cdot$ Department of Political Science}\\[2pt]
-{\color{white}\small Baltimore, MD 21218, USA $\quad|\quad$ \texttt{ovalles1@jhu.edu}}
-\end{mdframed}
+\begin{flushright}
+{\color{jhublue}\small
+Net Zero Industrial Policy Lab\\
+Department of Political Science\\
+Johns Hopkins University\\[4pt]
+Baltimore, MD 21218, USA\\
+\texttt{ovalles1@jhu.edu}
+}
+\end{flushright}
 
-\vspace{1.8em}
+\vspace{1.5em}
 
 April 3, 2026
 
@@ -51,7 +50,7 @@ We are pleased to submit our manuscript entitled **"The transition to a sustaina
 
 The paper examines the implications of circular economy (CE) policies using a novel modelling framework that integrates multi-regional input–output analysis with stock–flow consistent dynamics in a two-region (European Union–Rest of the World) ecological macroeconomic model. While circular economy strategies are widely promoted as pathways to sustainability, their broader macroeconomic and global distributional effects remain insufficiently understood. Our contribution addresses this gap by introducing a channel-based analytical framework and by tracing how CE transitions propagate asymmetrically across regions through three distinct demand channels.
 
-The paper makes three main contributions. First, it introduces a channel-based perspective on circular economy transitions, distinguishing between interventions operating through final demand, intermediate production, and investment. Second, it integrates circular economy analysis within an open-economy ecological macroeconomic framework, allowing us to jointly analyse production structures, financial dynamics, and cross-border linkages. Third, it identifies four cross-border transmission regimes — Symmetric Contraction, Production Leakage, Competitive Displacement, and Fossil Import Collapse — through which CE transitions propagate asymmetrically between the EU and the Rest of the World, worsening within-EU labour income shares and RoW fiscal balances and widening within- and between-region inequality. A key result is the *circular economy trilemma*: no circular economy scenario simultaneously achieves ecological improvement, macroeconomic stability, and social equity.
+The paper makes three main contributions. First, it introduces a channel-based perspective on circular economy transitions, distinguishing between interventions operating through final demand, intermediate production, and investment. Second, it integrates circular economy analysis within an open-economy ecological macroeconomic framework, allowing us to jointly analyse production structures, financial dynamics, and cross-border linkages. Third, it identifies four cross-border transmission regimes — symmetric contraction, production leakage, competitive displacement, and fossil-fuel collapse — through which CE transitions propagate asymmetrically between the EU and the Rest of the World, worsening within-EU labour income shares and RoW fiscal balances and widening within- and between-region inequality. A key result is the *circular economy trilemma*: no circular economy scenario simultaneously achieves ecological improvement, macroeconomic stability, and social equity.
 
 Our results show that the effectiveness of CE policies depends critically on the scale and structure of the demand channels they target. Production-side restructuring consistently delivers stronger ecological outcomes than final-demand interventions, but generates modest macroeconomic contractions and distributionally regressive effects — particularly for the Rest of the World, which bears systematic employment and fiscal costs from EU circular transitions. This finding acquires particular relevance in the current geopolitical context, where fossil-fuel trade disruptions and supply-chain fragmentation are already imposing analogous asymmetric adjustment burdens on commodity-exporting economies.
 

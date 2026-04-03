@@ -21,7 +21,7 @@ author:
   - name: "Marco Veronese Passarella"
     affiliations:
       - "Department of Industrial and Information Engineering and Economics, University of L'Aquila"
-date: "April 2, 2026"
+date: "April 3, 2026"
 format:
   html:
     toc: true
@@ -43,6 +43,7 @@ format:
     number-sections: true
     colorlinks: true
     linkcolor: blue
+    date-format: "MMMM D, YYYY"
     keep-tex: false
     geometry:
       - top=25mm
@@ -151,7 +152,7 @@ Circular economy policies are promoted as a pathway to reduce material throughpu
 
 - Two-region MRIO-SFC model tracks CE policies across EU and Rest of World
 - CE effectiveness depends on scale and structure of targeted demand channel
-- Four cross-border transmission regimes: Symmetric — Mutual Contraction and Production Leakage; Asymmetric — Competitive Displacement and Fossil-Fuel Collapse
+- Four cross-border transmission regimes found: symmetric contraction, production leakage, competitive displacement, and fossil-fuel collapse
 - Production CE transitions improve EU ecological outcomes while worsening EU labour income share and RoW fiscal balance, widening within- and between-region inequality
 - CE trilemma: no scenario simultaneously achieves ecological improvement, macroeconomic stability, and social equity
 
@@ -171,7 +172,7 @@ Yet CE policy is often analyzed from technical or managerial perspectives that e
 
 Addressing such complex research gaps requires a framework that simultaneously tracks sector-level demand channels, cross-border material and financial flows, macroeconomic dynamics, and ecological extensions — a combination that existing approaches provide only partially. Static multi-regional IO models capture cross-border ecological footprints but are silent on income distribution, financial balances, and demand-driven contractions (Wiedmann et al., 2015; Dorninger et al., 2021). Ecological stock-flow consistent models capture macro-financial dynamics and distributional effects but aggregate production into representative sectors, making it impossible to distinguish demand channels or CE substitution pathways (Dafermos et al., 2018; Carnevali et al., 2019). Two-region SFC models without IO structure capture cross-regional financial asymmetries but cannot distinguish material types or the channel architecture that governs policy leverage (Althouse et al., 2020; Fevereiro and Lowe, 2025).
 
-We address this gap through a two-region ecological macroeconomic model, which combines all four dimensions in the global context of the transition to a circular economy, combining multi-regional input–output structure and stock–flow consistent dynamics, calibrated for the European Union and the Rest of the World using EXIOBASE 2011 data and 54 industries covering eight basic materials — food, energy, wood, plastics, pulp, glass, cement, and construction — each disaggregated into a primary (virgin, resource-intensive) and a secondary (resource-efficient) production sector. By combining ecological and input-output extensions with a macro-financial two-region framework, the model allows us to analyse complex circular-economy scenarios as structurally differentiated demand transition regimes rather than isolated technical shocks (Leontief, 1941; Aguilar-Hernandez et al., 2018; Fevereiro et al., 2025).
+We address this gap through a two-region ecological macroeconomic model, which combines all four dimensions in the global context of the transition to a circular economy, combining multi-regional input–output structure and stock–flow consistent dynamics, calibrated for the European Union and the Rest of the World using EXIOBASE 2011 data and 54 industries covering ten basic materials — food, energy, wood, plastics, pulp, paper, metals, glass, cement, and construction — each disaggregated into a primary (virgin, resource-intensive) and a secondary (resource-efficient) production sector. By combining ecological and input-output extensions with a macro-financial two-region framework, the model allows us to analyse complex circular-economy scenarios as structurally differentiated demand transition regimes rather than isolated technical shocks (Leontief, 1941; Aguilar-Hernandez et al., 2018; Fevereiro et al., 2025).
 
 We simulate 14 circular economy transition scenarios, each targeting a different primary-to-secondary substitution pathway and varying systematically by demand channel (final demand, intermediate production, investment) and institutional sectors (households, government, firms). Model simulations show how dynamic sector-level changes in final demand, intermediate production, and sectoral expansion affect value added, employment, income distribution, fiscal and current-account balances, emissions, and material extraction domestically and across borders. In doing so, we examine how circular-economy policies generate transnational socio-ecological trade-offs and cross-regional macro-financial asymmetries.
 
@@ -219,7 +220,7 @@ Although households are modelled as an aggregate sector, the framework tracks th
 
 The ecological sub-model follows recent advances in ecological SFC modelling. Waste generation, land use, and water use are tied to industrial production through sector-specific coefficients. In the baseline, waste flows are processed by traditional waste-management industries. In CE scenarios, new recycling/reuse channels are introduced. Industrial CO~2~ emissions depend on the use of non-renewable energy inputs, determined by energy-intensity coefficients, the share of non-renewables in each industry's energy mix, and a uniform emissions factor. Accumulated emissions contribute to atmospheric concentrations, which feed into a simplified climate-response module.
 
-Materials are disaggregated into eight categories: wood, pulp, plastics, metals, glass, food, cement, and energy. Material extraction and energy use reflect both new production and the recycling of socio-economic stocks. Renewable energy is replenished periodically, whereas non-renewables are depleted.
+Materials are disaggregated into ten categories: food, energy, wood, plastics, pulp, paper, metals, glass, cement, and construction. Material extraction and energy use reflect both new production and the recycling of socio-economic stocks. Renewable energy is replenished periodically, whereas non-renewables are depleted.
 
 ### Data Collection and Calibration
 
@@ -231,7 +232,7 @@ Remaining parameters are assigned through an evolutionary random-search routine 
 
 ## Descriptive Statistics: the EU-RoW Input-Output Structure of Demand
 
-This section documents the complex multi-region input-output (MRIO) structure of demand for eight key material pairs in the EU and Rest of World (RoW), as calibrated in the model at its baseline at $t = 70$. Its purpose is to establish the structural features of demand — channel scale and cross-border trade flows — that directly anticipate the simulation results. Because the structural Leontief factor $(l_{12} - l_{11}) \approx -1$ across all material pairs, the ranking of CE interventions by ecological impact reduces to a ranking of channel volumes, which the figures below measure directly.
+This section documents the complex multi-region input-output (MRIO) structure of demand for ten key material pairs in the EU and Rest of World (RoW), as calibrated in the model at its baseline at $t = 70$. Its purpose is to establish the structural features of demand — channel scale and cross-border trade flows — that directly anticipate the simulation results. Because the structural Leontief factor $(l_{12} - l_{11}) \approx -1$ across all material pairs, the ranking of CE interventions by ecological impact reduces to a ranking of channel volumes, which the figures below measure directly.
 
 ### Full Multi-Region Input-Output Accounting
 
@@ -424,17 +425,18 @@ where
 - $Z_{sr}\in\mathbb{R}^{N\times N}$ is the intermediate flow matrix from supplying region $s$ to demanding region $r$,
 - $A_{rs}=Z_{sr}\hat{x}_r^{-1}$ is the $RN \times RN$ matrix of multi-region input-output coefficients $a_{si,rj}$,
 - $B = \begin{pmatrix}\boldsymbol{\beta}_{11} & \boldsymbol{\beta}_{12}\\\boldsymbol{\beta}_{21} & \boldsymbol{\beta}_{22}\end{pmatrix}\in\mathbb{R}^{RN\times R}$ is the block matrix of column-vector components $\beta_{si,r}$, the household consumption share demanded by region $r$ and supplied by industry $i$ in region $s$; $\Sigma$ and $I$ follow the same structure for government spending and firm investment,
-- $\mathbf{f} \in\mathbb{R}^{RK\times1}$ stacks the $R\times K$ final demand component matrix $\mathbf{F}$ by region $r$ and institutional channel $k \in \{c,\,i,\,g\}$ (household consumption, firm investment, government spending),
-- $\boldsymbol{\Phi}=(B\;\Sigma\;I)\in\mathbb{R}^{RN\times RK}$ is the $RN\times RK$ demand allocation share matrix, with entry $\phi_{si,r,k}$ the share of channel-$k$ spending of region $r$ sourced from industry $i$ in region $s$.
+- $\mathbf{f} = \operatorname{vec}(\mathbf{F}) \in\mathbb{R}^{RK\times1}$ stacks the $R\times K$ final demand expenditure matrix $\mathbf{F}$ by region $r$ and institutional channel $k \in \{c,\,i,\,g\}$ (household consumption, firm investment, government spending),
+- $\boldsymbol{\Phi}=(B\;\Sigma\;I)\in\mathbb{R}^{RN\times RK}$ is the final demand share matrix, with entry $\phi_{si,r,k}$ the share of channel-$k$ spending of region $r$ sourced from industry $i$ in region $s$,
+- $\boldsymbol{\Omega} = \boldsymbol{\Phi}\,\mathbf{f} \in\mathbb{R}^{RN\times1}$ is the final demand volume vector — the sectoral allocation of aggregate expenditure across all channels and regions.
 
-The full Leontief solution is:
+The full MRIO Leontief solution is:
 
-$$\mathbf{x} = (I - A)^{-1}\,\boldsymbol{\Phi}\,\mathbf{f} = L\,\boldsymbol{\Phi}\,\mathbf{f} \tag{2.2}$$
+$$\mathbf{x} = (I - A)^{-1}\,\boldsymbol{\Phi}\,\mathbf{f} = L\,\boldsymbol{\Phi}\,\mathbf{f} = L\,\boldsymbol{\Omega} \tag{2.2}$$
 
-CE scenarios modify either $A$ (intermediate production shocks) or $\boldsymbol{\Phi}$ (final-demand shocks: channel shares $\boldsymbol{\phi}^{(r,k)}$ shifted from primary to secondary sectors). The empirical content of $\boldsymbol{\beta}^{(r)},\boldsymbol{\sigma}^{(r)},\boldsymbol{\iota}^{(r)}$ across sectors is documented in the figures below: @fig-demand-structure decomposes channel volumes (entries of $B,\Sigma,I$) for the eight primary and secondary material pairs that our economy uses:
+Circular economy interventions modify sector-level entries of either $A$ (productivity shocks) or $\boldsymbol{\Phi}$ (final-demand shocks), propagating through $L$ and $\boldsymbol{\Omega}$. The empirical content of $\boldsymbol{\Phi}$ and $\boldsymbol{\Omega}$ across sectors is documented in the figures below: @fig-demand-structure decomposes the channel volumes $\boldsymbol{\Omega}$ — whose composition is given by the columns of $\boldsymbol{\Phi}$ — for the ten primary and secondary material pairs that our economy uses:
 $$M = \{\text{food, energy, wood, plastics, pulp, paper, metals, glass, cement, construction materials}\}$$
 
-@fig-import-decomp isolates EU import demand from RoW (the cross-border sub-blocks $\boldsymbol{\beta}_{21},\boldsymbol{\sigma}_{21},\boldsymbol{\iota}_{21}$); @fig-leontief traces full supply-chain upstream requirements via the Leontief inverse $L$.
+@fig-import-decomp isolates EU import demand from RoW — the cross-border component $\boldsymbol{\Omega}_{21} = \boldsymbol{\Phi}_{21}\mathbf{f}$ — while @fig-leontief traces full supply-chain upstream requirements via the Leontief inverse $L$.
 
 ### Demand Structure and Channel Architecture
 
@@ -442,7 +444,7 @@ $$M = \{\text{food, energy, wood, plastics, pulp, paper, metals, glass, cement, 
 \captionsetup[figure]{font=footnotesize,labelfont=bf}
 ```
 
-```{r fig-demand-structure, fig.cap="Gross output decomposition for primary and secondary material sectors across EU and RoW. Columns: EU Domestic, EU Cross-border, RoW Domestic, RoW Cross-border demand. Rows: Primary vs Secondary. Bars stacked by institutional demand channel. Source: EXIOBASE 3 v3.8.2, calibrated at t = 70.", fig.scap="Gross output decomposition by material sector and institutional demand channel.", out.width="100%", out.height="0.4\\textheight", fig.pos="t"}
+```{r fig-demand-structure, fig.cap="Channel volumes $\\boldsymbol{\\Omega} = \\boldsymbol{\\Phi}\\mathbf{f}$ for ten primary and secondary material sectors across EU and RoW, decomposed by institutional demand channel. Columns: EU Domestic, EU Cross-border, RoW Domestic, RoW Cross-border. Rows: Primary vs Secondary. Bar lengths are $\\boldsymbol{\\Omega}$; bar composition reflects $\\boldsymbol{\\Phi}$. Source: EXIOBASE 3 v3.8.2, calibrated at t = 70.", fig.scap="Channel volumes $\\boldsymbol{\\Omega}$ by material sector and institutional demand channel.", out.width="100%", out.height="0.52\\textheight", fig.pos="t"}
 knitr::include_graphics(file.path(fig_png, "demand", "p_demand_structure.png"))
 ```
 
@@ -450,12 +452,12 @@ knitr::include_graphics(file.path(fig_png, "demand", "p_demand_structure.png"))
 \captionsetup[figure]{font=normalsize,labelfont=normalfont}
 ```
 
-@fig-demand-structure decomposes gross output for all eight material pairs — where carbon energy and meat are the primary sectors and renewable energy and other food are the secondary sectors — by institutional demand channel (household consumption, government consumption, firm investment, public investment, and firm intermediate consumption) across four regional flow dimensions. Across most industrial materials, firm intermediate consumption dominates both domestic production and EU import demand, making production-side restructuring the primary CE instrument for these sectors: cement, glass, metals, and pulp are overwhelmingly activated through firm intermediate consumption (93–96% of EU gross output), so that final demand channels are structurally small and demand-side instruments cannot substitute for production-side restructuring. Three sectors diverge from this pattern. Food is the only material where household consumption dominates (65% of EU domestic output), making it the one sector where consumer-facing intervention engages the primary demand channel directly. Energy is structurally intermediate: approximately two-thirds of total demand is driven by industrial intermediate procurement of fossil-fuel electricity, confirming that industrial energy procurement, not consumer behaviour, is the primary driver of fossil-fuel electricity demand. Plastics is analytically exceptional: while approximately 55% of output serves final demand, this component is dominated by government consumption rather than households, making circular public procurement the primary demand-side CE instrument for this material.
+@fig-demand-structure decomposes gross output for all ten material pairs — where carbon energy and meat are the primary sectors and renewable energy and other food are the secondary sectors — by institutional demand channel (household consumption, government consumption, firm investment, public investment, and firm intermediate consumption) across four regional flow dimensions. Across most industrial materials, firm intermediate consumption dominates both domestic production and EU import demand, making production-side restructuring the primary CE instrument for these sectors: cement, glass, metals, and pulp are overwhelmingly activated through firm intermediate consumption (93–96% of EU gross output), so that final demand channels are structurally small and demand-side instruments cannot substitute for production-side restructuring. Three sectors diverge from this pattern. Food is the only material where household consumption dominates (65% of EU domestic output), making it the one sector where consumer-facing intervention engages the primary demand channel directly. Energy is structurally intermediate: approximately two-thirds of total demand is driven by industrial intermediate procurement of fossil-fuel electricity, confirming that industrial energy procurement, not consumer behaviour, is the primary driver of fossil-fuel electricity demand. Plastics is analytically exceptional: while approximately 55% of output serves final demand, this component is dominated by government consumption rather than households, making circular public procurement the primary demand-side CE instrument for this material.
 
 
 ### Cross-Border Trade Structure and Transmission Channels
 
-```{r fig-import-decomp, fig.cap="EU import demand from RoW decomposed by sector and institutional demand channel. Includes firm intermediate consumption, household consumption, government consumption, and firm investment. Top 20 sectors by total import demand. Source: EXIOBASE 3 v3.8.2, calibrated at t = 70.", fig.scap="EU import demand from RoW decomposed by sector and institutional demand channel.", out.width="65%", fig.align="center", fig.pos="t"}
+```{r fig-import-decomp, fig.cap="Cross-border channel volumes $\\boldsymbol{\\Omega}_{21} = \\boldsymbol{\\Phi}_{21}\\mathbf{f}$: EU import demand from RoW decomposed by sector and institutional demand channel (firm intermediate consumption, household consumption, government consumption, firm investment). Top 20 sectors by total import demand. Source: EXIOBASE 3 v3.8.2, calibrated at t = 70.", fig.scap="Cross-border channel volumes $\\boldsymbol{\\Omega}_{21}$: EU import demand from RoW by sector and channel.", out.width="65%", fig.align="center", fig.pos="t"}
 knitr::include_graphics(file.path(fig_png, "demand", "p_import_decomp.png"))
 ```
 
@@ -576,7 +578,7 @@ $$\Delta M_1 = \rho\cdot\Omega\cdot(l_{12} - l_{11}), \qquad \Delta M_2 = \rho\c
 
 $$\Delta M = \rho\cdot\Omega\cdot\bigl[(l_{12}+l_{22}) - (l_{11}+l_{21})\bigr] \tag{3.5}$$
 
-where the **demand scale factor** $\Omega$ equals $\phi_1\,f^z$ for final-demand shocks and $a_{1j}\,x_j$ (summed over using sectors $j$) for intermediate-demand shocks, and $l_{rs}$ are elements of the Leontief inverse $L$. Because $(l_{12}-l_{11})\approx -1$ across all material pairs, the ranking of scenarios by ecological impact reduces to a ranking of $\Omega$ — the volume of the demand channel engaged by the policy instrument. The Leontief structural factor is a near-uniform multiplier; channel scale is the decisive variable. Table 2 lists all 14 scenarios; Table 3 summarises the key long-term findings.
+where the **demand scale factor** $\Omega$ equals $\phi_1\,f^z$ for final-demand shocks and $a_{1j}\,x_j$ (summed over using sectors $j$) for intermediate-demand shocks — the channel volumes documented in @fig-demand-structure and @fig-import-decomp — and $l_{rs}$ are elements of the Leontief inverse $L$, whose upstream composition is shown in @fig-leontief. Because $(l_{12}-l_{11})\approx -1$ across all material pairs, the ranking of scenarios by ecological impact reduces to a ranking of $\Omega$ — the volume of the demand channel engaged by the policy instrument. The Leontief structural factor is a near-uniform multiplier; channel scale is the decisive variable. Table 2 lists all 14 scenarios; Table 3 summarises the key long-term findings.
 
 ```{r fig-cross-border, fig.scap="Long-run EU vs.\\ RoW deviations from baseline across 14 CE scenarios.", fig.cap="Long-term (t+20) percentage deviation from baseline for EU (Z1, x-axis) and RoW (Z2, y-axis) under each of the 14 CE scenarios. Point colour identifies the scenario; the semi-transparent halo indicates the transmission pattern (Fossil Import Collapse, Competitive Displacement, Production Leakage, Construction Rebound, or Symmetric Contraction). The diagonal reference line marks the 45° locus of symmetric effects. The bottom-right panel (Dual Inequality) shows scenarios on the EU wage share versus RoW public debt axes, with the upper-left quadrant indicating dual regressivity — simultaneous within-EU functional income compression and cross-border fiscal deterioration in the periphery. All deviations are expressed as percentages relative to the no-policy baseline trajectory.", out.width="100%"}
 knitr::include_graphics(file.path(root, "output", "png", "p_cross_border_asymmetry.png"))
