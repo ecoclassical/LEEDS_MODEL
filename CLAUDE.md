@@ -123,39 +123,41 @@ tidyverse, openxlsx, igraph, qgraph, visNetwork, scales, deSolve,
 reshape2, ggrepel, knitr, kableExtra, beepr
 ```
 
-## Current State (March 2026)
+## Current State (April 2026) — SUBMITTED
 
-- All 14 scenarios complete and cached in RDS
-- Three QMD documents exist (design, analysis, takeaways) — need consolidation into one paper section
-- paper2.Rmd has IO network + carbon/matter intensity analysis (old file paths, needs updating)
-- Pending: ΔM plots from analytical formulas, rebound/trajectory plots for M₁, extended intensities (land, water)
-- Paper target: Ecological Economics special issue
-- Timeliness: EU–RoW carbon-industry IO links are the dominant cross-border connections — highly relevant given US–Iran war context and fossil-fuel sanctions
+**Paper submitted** to *Ecological Economics* special issue "Ecological Macroeconomics Modelling: Exploring Alternative Futures" on **2026-04-03**, via personal email to guest editor. Future work = revisions in response to referee reports.
 
-## Pending Work (tracked here)
+### Submission package (`output/pdf/` and `docs/`)
 
-1. **Consolidate** scenario_design + scenario_analysis + scenario_takeaways → single `qmd/scenarios_section.qmd`
-2. **ΔM plots**: visualize analytical ΔM₁, ΔM₂, ΔM by scenario (from R/ scripts)
-3. **Rebound trajectory plots**: baseline vs shock for M₁, cumulative stock differences
-4. **Extended intensities**: add land, water, primary material to paper2 alongside carbon
-5. **Disclaimer section**: future work on carbon-industry IO connections and war/sanctions context
-6. **paper2.Rmd**: update to new file path conventions (bootstrap_2026.R, initial_state_2026.xlsx)
+| File | Description |
+|---|---|
+| `paper_draft.pdf` | Main manuscript, April 3 2026 |
+| `title_page.pdf` | Title, abstract, highlights, CRediT, funding |
+| `cover_letter.pdf` | Plain-text JHU letterhead, right-aligned in jhublue |
+| `supplementary_material.pdf` | Appendices A1–A4 |
+| `suggested_reviewers.pdf` | Morlin, Cano, Yajima |
+| `resum_catala.pdf` | Plain-language Catalan summary with figures |
 
-## Notes
+### Key finalised notation and conventions
 
-- `paper2.Rmd` uses old file path conventions (`functions/`, `data/baseline_nov25.RDS`) — not directly renderable with current infrastructure; content should be ported to a new QMD.
-- **HTML vs QMD freshness check (2026-03-18):**
-  - `scenario_analysis.html` (Feb 26 18:11) was rendered 1 min AFTER `scenario_analysis.qmd` (Feb 26 18:10) — **up to date**.
-  - `scenario_design.html` (Feb 27 11:19) is OLDER than `scenario_design.qmd` (Feb 27 12:31) — **stale**, needs re-render.
-- Intermediate-demand scenarios (7–14): `compute_M_intermediate_demand.R` requires a `using` column in scenarios.csv (column j of A). This column is absent. In `scenarios_section.qmd`, this is handled by summing over ALL sectors j (economy-wide adoption), consistent with how `production_scenarios_2026.R` actually applies the shock.
+- **Ten materials**: food, energy, wood, plastics, pulp, paper, metals, glass, cement, construction
+- **Ω = Φf**: final demand volume vector; eq 2.2 = LΩ; Ω₂₁ = cross-border sub-vector (Fig 2)
+- **CE sentence**: "Circular economy interventions modify sector-level entries of either A (productivity shocks) or Φ (final-demand shocks), propagating through L and Ω"
+- **Four transmission regimes**: symmetric contraction, production leakage, competitive displacement, fossil-fuel collapse
+- **CE trilemma**: no scenario simultaneously achieves ecological improvement, macroeconomic stability, and social equity
 
-## Main Output Document
+### Standard figure theme (`R/compute_portfolio_analysis.R`)
 
-`qmd/scenarios_section.qmd` — consolidated paper section (created 2026-03-18) covering:
-- IO structure + intensities (carbon, land, water, material)
-- Scenario registry + mechanics
-- Analytical ΔM table + plots (structural factor × scale factor)
-- Simulation trajectories (3 representative + all-shock heatmaps)
-- Triple dilemma narrative (3 regimes + EU-RoW asymmetry)
-- Rebound trajectories + cumulative stock plots
-- Forward look / carbon-industry disclaimer
+```r
+theme_paper <- function(base_size = 13) {
+  theme_grey(base_size = base_size) %+replace%
+    theme(
+      plot.title    = element_text(face = 'bold',   size = 16, hjust = 0),
+      plot.subtitle = element_text(face = 'italic',  size = 12, hjust = 0),
+      axis.text.y   = element_text(size = 11, hjust = 1, margin = margin(r = 6)),
+      axis.text.x   = element_text(size = 11),
+      strip.text    = element_text(size = 12)  # not bold
+    )
+}
+```
+Apply `theme_paper()` to all new figures. Add `legend.position = 'top'` as a per-plot override for bar/column charts.
