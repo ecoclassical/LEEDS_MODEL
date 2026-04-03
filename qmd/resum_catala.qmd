@@ -1,0 +1,161 @@
+---
+title: "La transició cap a una economia sostenible no és sostenible"
+subtitle: "Una anàlisi macroeconòmica ecològica de la política climàtica, l'economia circular i la desigualtat global"
+author: "Oriol Vallès Codina, José Bruno R. T. Fevereiro, Andrea Genovese, Annina Kaltenbrunner, Effie Kesidou, Marco Veronese Passarella"
+date: "Abril 2026"
+format:
+  pdf:
+    geometry:
+      - top=25mm
+      - bottom=25mm
+      - left=28mm
+      - right=28mm
+    fontsize: 11pt
+    linestretch: 1.45
+    keep-tex: false
+    include-in-header:
+      text: |
+        \usepackage{xcolor}
+        \usepackage{mdframed}
+        \definecolor{ecogreen}{RGB}{0,100,60}
+        \definecolor{softgray}{RGB}{245,245,245}
+execute:
+  echo: false
+  warning: false
+  message: false
+---
+
+```{r setup, include=FALSE}
+library(knitr)
+root <- normalizePath(file.path(dirname(knitr::current_input()), ".."))
+fig_png <- file.path(root, "output", "png")
+```
+
+---
+
+> *Aquest és un resum divulgatiu de l'article científic publicat a la revista* Ecological Economics. *Està escrit perquè qualsevol persona el pugui entendre, sense necessitat de coneixements d'economia ni de matemàtiques.*
+
+---
+
+## De què tracta aquest estudi?
+
+Vivim en un moment en què governs, empreses i ciutadans parlen molt de l'**economia circular**: la idea que, en comptes de fabricar, usar i llençar, hauríem de reutilitzar, reparar i reciclar. L'objectiu és reduir l'extracció de matèries primeres, les emissions de CO₂ i l'ús de recursos naturals.
+
+Sona bé. Però **funciona realment?** I per a tothom?
+
+Aquest estudi intenta respondre aquestes preguntes amb un model matemàtic que simula com canviaria l'economia europea i mundial si la Unió Europea (UE) apliqués polítiques d'economia circular en deu sectors clau: alimentació, energia, fusta, plàstics, pasta de paper, paper, metalls, vidre, ciment i construcció.
+
+---
+
+## Com ho hem estudiat?
+
+Hem construït un model que representa **dos blocs econòmics**: la Unió Europea (UE) i la resta del món (RdM). El model fa un seguiment de:
+
+- Com produeixen i consumeixen les empreses, les llars i els governs
+- Quins materials i quanta energia es necessiten per produir cada cosa
+- Quines emissions de CO₂ i quins recursos naturals es consumeixen
+- Com circulen els diners entre empreses, treballadors, bancs i governs
+- Com afecta tot plegat les importacions i exportacions entre la UE i la resta del món
+
+Per a cada sector, el model distingeix entre un **sector primari** (que extreu o produeix matèries primeres: aceria convencional, extracció de combustibles, agricultura intensiva…) i un **sector secundari** (que recicla o reaprofita: aceria elèctrica, energies renovables, agricultura regenerativa…). Les polítiques d'economia circular consisteixen a desplaçar la demanda del sector primari cap al secundari.
+
+---
+
+## Quins resultats hem trobat?
+
+### 1. No tots els sectors funcionen igual
+
+```{r fig-demand, fig.cap="Volum de demanda per sector i canal institucional a la UE i la resta del món. Les barres mostren quant de la producció de cada sector prové de les llars, el govern, la inversió empresarial o el consum intermedi entre empreses. Font: EXIOBASE 3, dades de 2018.", out.width="100%", fig.pos="H"}
+knitr::include_graphics(file.path(fig_png, "demand", "p_demand_structure.png"))
+```
+
+La figura anterior mostra que **la major part de la demanda industrial no ve de les llars sinó de les empreses**. Quan una empresa de construcció compra ciment, o una fàbrica compra metall, això representa la gran majoria de la demanda d'aquests sectors. Les famílies, en canvi, només dominen la demanda d'**alimentació**.
+
+Això té una conseqüència important: **les polítiques que canvien el comportament del consumidor** (com comprar menys carn o reciclar més plàstic a casa) **tenen un impacte molt limitat** en la majoria de sectors industrials. Per reduir de veritat l'ús de recursos en ciment, metalls o energia, cal canviar com produeixen les empreses.
+
+Les excepcions són:
+
+- **Alimentació**: el consum de les llars domina (65% de la producció). Aquí sí que el comportament del consumidor importa molt.
+- **Plàstics**: sorprenentment, és la compra pública (governs i administracions) la que domina. La contractació pública circular és la clau per als plàstics.
+- **Energia**: aproximadament dos terços de la demanda prové de la compra industrial d'electricitat de combustibles fòssils. El comportament energètic de les llars és important, però el de les empreses ho és molt més.
+
+---
+
+### 2. La UE depèn molt de la resta del món
+
+```{r fig-imports, fig.cap="Importacions de la UE procedents de la resta del món, per sector i canal de demanda. Els sectors de combustibles fòssils i metalls dominen les importacions industrials europees. Font: EXIOBASE 3, dades de 2018.", out.width="75%", fig.align="center", fig.pos="H"}
+knitr::include_graphics(file.path(fig_png, "demand", "p_import_decomp.png"))
+```
+
+La UE importa enormes quantitats d'energia fòssil i metalls de la resta del món. Aquesta dependència és el canal principal a través del qual les polítiques europees d'economia circular **afecten directament els treballadors i els governs d'altres països**. Quan la UE redueix la seva dependència dels combustibles fòssils, els països exportadors perden ingressos. Quan la UE comença a produir el seu propi acer reciclat, els països que exportaven acer primari es queden sense clients.
+
+---
+
+### 3. L'economia circular funciona ecològicament, però té costos
+
+Les simulacions mostren que les polítiques d'economia circular **sí que redueixen les emissions i l'ús de materials** en la majoria de casos. L'escenari d'energia és el més potent: substituir la producció d'electricitat fòssil per renovable redueix les emissions de CO₂ de manera molt significativa, perquè l'energia és un sector enorme amb una diferència d'intensitat d'emissions molt gran entre el sector primari (combustibles fòssils) i el secundari (renovables).
+
+**Però hi ha costos:**
+
+- Les polítiques de producció circular (canviar com produeixen les empreses) generen una **petita contracció econòmica**: menys producció total, menys ocupació, salaris més baixos. Per què? Perquè els sectors secundaris (reciclatge, renovables) necessiten menys inputs intermedis per produir la mateixa quantitat, i per tant generen menys activitat econòmica en cadena.
+- **Els beneficis van a les empreses, els costos als treballadors**: quan la producció es contrau, les empreses mantenen els seus marges de benefici però els salaris es comprimeixen. La distribució de la renda es fa més desigual dins la UE.
+- **Excepció — metalls**: l'economia circular en metalls (aceria elèctrica en lloc de blast furnace) és l'únic escenari que expandeix l'economia i redueix l'ús de materials alhora. El problema és que l'aceria elèctrica consumeix molta electricitat, i si aquesta electricitat és fòssil, les emissions *augmenten* en lloc de baixar. Una paradoxa.
+
+---
+
+### 4. La resta del món paga una part de la factura
+
+```{r fig-crossborder, fig.cap="Efectes creuats de les polítiques circulars europees: eix horitzontal = efecte sobre la UE, eix vertical = efecte sobre la resta del món. Els punts per sota de la diagonal indiquen que la UE guanya però la resta del món perd. Font: simulació del model.", out.width="90%", fig.align="center", fig.pos="H"}
+knitr::include_graphics(file.path(fig_png, "comparison", "03_ce_scatter_eu.png"))
+```
+
+Aquest és el resultat més sorprenent i preocupant de l'estudi. Quan la UE fa la transició circular, **molts dels costos recauen sobre la resta del món**:
+
+- **Contracció simètrica**: en alguns sectors (fusta, vidre, ciment), tant la UE com la resta del món es contrauen, però proporcionalment. Tots dos perden una mica.
+- **Fugida de producció**: en sectors on els productes secundaris europeus necessiten més components importats que els primaris, una part de la demanda circular "torna" a la resta del món en forma d'importacions. Un efecte paradoxal positiu per a la resta del món.
+- **Desplaçament competitiu**: quan la UE produeix el seu propi acer reciclat, els països exportadors d'acer primari perden clients directament. La UE guanya, la resta del món perd.
+- **Col·lapse de les exportacions de combustibles fòssils**: l'escenari d'energia és el més dramàtic. Quan la UE deixa d'importar combustibles fòssils, els països exportadors (molts del Sud Global) perden ingressos exportadors permanentment, la recaptació fiscal baixa, i el seu deute públic augmenta de manera sostinguda. No és un xoc temporal: és una pèrdua estructural permanent.
+
+---
+
+### 5. El trilema de l'economia circular
+
+```{r fig-portfolio, fig.cap="Efectivitat de les polítiques circulars per sector i canal de demanda. La mida dels cercles indica la magnitud de l'impacte ecològic màxim possible. Font: simulació del model.", out.width="100%", fig.pos="H"}
+knitr::include_graphics(file.path(fig_png, "portfolio", "p_portfolio_heatmap.png"))
+```
+
+Cap escenari aconsegueix simultàniament les tres coses que volem d'una política circular:
+
+| | Millora ecològica | Estabilitat macroeconòmica | Equitat social |
+|---|:---:|:---:|:---:|
+| Polítiques de demanda final | Feble | ✓ | ✓ |
+| Polítiques de producció | **Forta** | Contracció lleugera | ✗ Regresiva |
+| Construcció | ✗ Empitjora | **Expansió** | Neutra |
+
+Això és el **trilema de l'economia circular**: no existeix cap política que sigui ecològicament potent, econòmicament estable *i* socialment equitativa al mateix temps. Sempre hi ha un compromís.
+
+---
+
+## Què vol dir tot això per a la política?
+
+L'estudi no diu que l'economia circular sigui una mala idea. Diu que **la manera com s'implementa importa enormement**:
+
+1. **Les polítiques de producció funcionen millor ecològicament** que les polítiques de consum, però requereixen acompanyament macroeconòmic (inversió pública, polítiques de rendes) per evitar que els costos recaiguin sobre els treballadors.
+
+2. **La transició energètica és la palanca més potent**, però ha d'anar acompanyada de mecanismes de compensació per als països exportadors de combustibles fòssils del Sud Global, que perden ingressos permanents sense haver contribuït al problema.
+
+3. **No n'hi ha prou amb polítiques domèstiques**. Una transició circular europea que no tingui en compte els seus efectes sobre la resta del món simplement exporta la pressió ecològica i econòmica cap a les economies més vulnerables.
+
+4. **El comportament del consumidor importa, però menys del que es diu**. Excepte en alimentació, els canvis més poderosos venen de com produeixen les empreses, no de com consumim les llars.
+
+---
+
+## En resum
+
+La transició cap a una economia circular és necessària. Però si es fa de manera aïllada, sense coordinació internacional i sense polítiques redistributives, pot acabar sent **ecològicament beneficiosa per a Europa però econòmicament perjudicial per als treballadors europeus i fiscalment devastadora per als països del Sud Global** que depenen de l'exportació de matèries primeres.
+
+El repte no és si fer la transició, sinó **com fer-la de manera que sigui justa per a tothom**: tant per als treballadors del Nord com per als països del Sud que han de finançar les seves economies públiques sense els ingressos dels combustibles fòssils que Europa ja no necessitarà.
+
+---
+
+*Per a més informació o per llegir l'article complet, podeu contactar amb l'autor principal: **Oriol Vallès Codina**, Net Zero Industrial Policy Lab, Johns Hopkins University — [ovalles1\@jhu.edu](mailto:ovalles1@jhu.edu)*
